@@ -1,2 +1,2 @@
 include ':swipes'
-include ':libraries:drag-sort-listview'
+include ':libraries:android-swipelistview:swipelistview'

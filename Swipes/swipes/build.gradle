@@ -20,5 +20,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':libraries:drag-sort-listview')
+    compile project(':libraries:android-swipelistview:swipelistview')
 }

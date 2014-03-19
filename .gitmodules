@@ -1,3 +1,3 @@
-[submodule "Swipes/libraries/drag-sort-listview"]
-	path = Swipes/libraries/drag-sort-listview
-	url = https://github.com/felipebari/drag-sort-listview.git
+[submodule "Swipes/libraries/android-swipelistview"]
+	path = Swipes/libraries/android-swipelistview
+	url = https://github.com/felipebari/android-swipelistview.git
