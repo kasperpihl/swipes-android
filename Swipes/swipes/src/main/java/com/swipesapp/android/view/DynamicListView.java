@@ -24,8 +24,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
@@ -68,6 +66,7 @@ public class DynamicListView extends ListView {
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
     private final int MOVE_DURATION = 150;
     private final int LINE_THICKNESS = 15;
+    private final float BITMAP_SCALE = 0.9f;
 
     public ArrayList<String> mCheeseList;
 
@@ -133,7 +132,7 @@ public class DynamicListView extends ListView {
 
                     View selectedView = getChildAt(itemNum);
                     mMobileItemId = getAdapter().getItemId(position);
-                    mHoverCell = getAndAddHoverView(selectedView);
+                    mHoverCell = getAndAddScaledHoverView(selectedView);
                     selectedView.setVisibility(INVISIBLE);
 
                     mCellIsMobile = true;
@@ -145,18 +144,19 @@ public class DynamicListView extends ListView {
             };
 
     /**
-     * Creates the hover cell with the appropriate bitmap and of appropriate
-     * size. The hover cell's BitmapDrawable is drawn on top of the bitmap every
+     * Creates the scaled hover cell with the appropriate bitmap and of appropriate
+     * size. The hover cell's BitmapDrawable is drawn on top of the scaled bitmap every
      * single time an invalidate call is made.
      */
-    private BitmapDrawable getAndAddHoverView(View v) {
+    private BitmapDrawable getAndAddScaledHoverView(View v) {
 
         int w = v.getWidth();
         int h = v.getHeight();
         int top = v.getTop();
         int left = v.getLeft();
 
-        Bitmap b = getBitmapWithBorder(v);
+        // TODO: Figure out why we need an arbitrary value of 0.9f (could be a miscalculation of bounds. The original code was never prepared for scaled bitmaps).
+        Bitmap b = getScaledBitmapFromView(v, BITMAP_SCALE);
 
         BitmapDrawable drawable = new BitmapDrawable(getResources(), b);
 
@@ -168,29 +168,16 @@ public class DynamicListView extends ListView {
         return drawable;
     }
 
-    /** Draws a black border over the screenshot of the view passed in. */
-    private Bitmap getBitmapWithBorder(View v) {
-        Bitmap bitmap = getBitmapFromView(v);
-        Canvas can = new Canvas(bitmap);
+    /** Returns a scaled bitmap showing a screenshot of the view passed in. */
+    private Bitmap getScaledBitmapFromView(View v, float scale) {
+        int width = Math.round(v.getWidth() * scale);
+        int height = Math.round(v.getHeight() * scale);
 
-        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(LINE_THICKNESS);
-        paint.setColor(Color.BLACK);
-
-        can.drawBitmap(bitmap, 0, 0, null);
-        can.drawRect(rect, paint);
-
-        return bitmap;
-    }
-
-    /** Returns a bitmap showing a screenshot of the view passed in. */
-    private Bitmap getBitmapFromView(View v) {
-        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas (bitmap);
         v.draw(canvas);
+
         return bitmap;
     }
 
