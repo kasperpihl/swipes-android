@@ -20,7 +20,7 @@
     android:layout_height="match_parent"
     tools:context=".ListViewAnimations" >
 
-        <com.swipesapp.android.view.DynamicListView
+        <com.swipesapp.android.ui.view.DynamicListView
             android:id="@+id/listview"
             android:background="#0000"
             android:layout_width="match_parent"

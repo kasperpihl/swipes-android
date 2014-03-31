@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.swipesapp.android.activity;
+package com.swipesapp.android.ui.fragments;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.swipesapp.android.Cheeses;
+import com.swipesapp.android.activity.R;
 import com.swipesapp.android.adapter.StableArrayAdapter;
-import com.swipesapp.android.view.DynamicListView;
+import com.swipesapp.android.ui.view.DynamicListView;
 
 import java.util.ArrayList;
 
@@ -34,23 +38,38 @@ import java.util.ArrayList;
  * moved around by tracking and following the movement of the user's finger.
  * When the item is released, it animates to its new position within the listview.
  */
-public class ListViewDraggingAnimation extends Activity {
+public class ListViewDraggingAnimationFragment extends Fragment {
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
+    public static ListViewDraggingAnimationFragment newInstance(int sectionNumber) {
+        ListViewDraggingAnimationFragment fragment = new ListViewDraggingAnimationFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_list_view, container, false);
 
         ArrayList<String>mCheeseList = new ArrayList<String>();
         for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
             mCheeseList.add(Cheeses.sCheeseStrings[i]);
         }
 
-        StableArrayAdapter adapter = new StableArrayAdapter(this, R.layout.text_view, mCheeseList);
-        DynamicListView listView = (DynamicListView) findViewById(R.id.listview);
+        StableArrayAdapter adapter = new StableArrayAdapter(getActivity(), R.layout.text_view, mCheeseList);
+        DynamicListView listView = (DynamicListView) rootView.findViewById(R.id.listview);
 
         listView.setCheeseList(mCheeseList);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+
+        return rootView;
     }
 }

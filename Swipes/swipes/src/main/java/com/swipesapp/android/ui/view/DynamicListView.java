@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.swipesapp.android.view;
+package com.swipesapp.android.ui.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
