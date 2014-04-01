@@ -55,7 +55,7 @@ public class ListViewDraggingAnimationFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_today_list, container, false);
 
         ArrayList<String>mCheeseList = new ArrayList<String>();
         for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
