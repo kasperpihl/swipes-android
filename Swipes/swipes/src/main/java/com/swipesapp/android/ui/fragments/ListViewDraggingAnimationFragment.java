@@ -16,7 +16,7 @@
 
 package com.swipesapp.android.ui.fragments;
 
-import android.app.Fragment;
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * moved around by tracking and following the movement of the user's finger.
  * When the item is released, it animates to its new position within the listview.
  */
-public class ListViewDraggingAnimationFragment extends Fragment {
+public class ListViewDraggingAnimationFragment extends ListFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -63,7 +63,7 @@ public class ListViewDraggingAnimationFragment extends Fragment {
         }
 
         StableArrayAdapter adapter = new StableArrayAdapter(getActivity(), R.layout.text_view, mCheeseList);
-        DynamicListView listView = (DynamicListView) rootView.findViewById(R.id.listview);
+        DynamicListView listView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
         listView.setCheeseList(mCheeseList);
         listView.setAdapter(adapter);
