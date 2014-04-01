@@ -7,7 +7,7 @@
     </style>
 
     <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>
