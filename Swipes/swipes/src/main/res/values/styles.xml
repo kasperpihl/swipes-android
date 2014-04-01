@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
-
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
     <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">

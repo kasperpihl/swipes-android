@@ -20,5 +20,5 @@
     <dimen name="list_item_height">48dip</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
+    <dimen name="date_stamp_margin">16dp</dimen>
 </resources>
