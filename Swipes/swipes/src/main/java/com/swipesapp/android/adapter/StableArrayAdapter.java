@@ -16,23 +16,72 @@
 
 package com.swipesapp.android.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.swipesapp.android.activity.R;
+import com.swipesapp.android.util.Utils;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class StableArrayAdapter extends ArrayAdapter<String> {
+// TODO: Refactor adapter for real usage.
+public class StableArrayAdapter extends ArrayAdapter {
+
+    List data;
+    Context context;
+    int layoutResID;
 
     final int INVALID_ID = -1;
-
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
-    public StableArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-        super(context, textViewResourceId, objects);
-        for (int i = 0; i < objects.size(); ++i) {
-            mIdMap.put(objects.get(i), i);
+    public StableArrayAdapter(Context context, int layoutResourceId, List data) {
+        super(context, layoutResourceId, data);
+
+        this.data = data;
+        this.context = context;
+        this.layoutResID = layoutResourceId;
+
+        for (int i = 0; i < data.size(); ++i) {
+            mIdMap.put(String.valueOf(data.get(i)), i);
         }
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        TaskHolder holder = null;
+        View row = convertView;
+
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            row = inflater.inflate(layoutResID, parent, false);
+
+            holder = new TaskHolder();
+
+            holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
+            holder.backView = (LinearLayout) row.findViewById(R.id.swipe_back);
+            holder.frontText = (TextView) row.findViewById(R.id.item_text);
+
+            row.setTag(holder);
+        } else {
+            holder = (TaskHolder) row.getTag();
+        }
+
+        String itemText = String.valueOf(data.get(position));
+        holder.frontText.setText(itemText);
+
+        // Sets colors for cell, matching the current theme.
+        holder.frontText.setTextColor(Utils.getCurrentThemeTextColor(getContext()));
+        holder.frontView.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(getContext()));
+
+        return row;
     }
 
     @Override
@@ -40,7 +89,7 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
         if (position < 0 || position >= mIdMap.size()) {
             return INVALID_ID;
         }
-        String item = getItem(position);
+        String item = String.valueOf(getItem(position));
         return mIdMap.get(item);
     }
 
@@ -48,4 +97,12 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
     public boolean hasStableIds() {
         return true;
     }
+
+    static class TaskHolder {
+
+        LinearLayout frontView;
+        LinearLayout backView;
+        TextView frontText;
+    }
+
 }

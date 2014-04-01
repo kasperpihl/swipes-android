@@ -34,8 +34,8 @@ import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 
+import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.adapter.StableArrayAdapter;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ import java.util.ArrayList;
  * When the hover cell is either above or below the bounds of the listview, this
  * listview also scrolls on its own so as to reveal additional content.
  */
-public class DynamicListView extends ListView {
+public class DynamicListView extends SwipeListView {
 
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
     private final int MOVE_DURATION = 150;
@@ -89,6 +89,7 @@ public class DynamicListView extends ListView {
     private BitmapDrawable mHoverCell;
     private Rect mHoverCellCurrentBounds;
     private Rect mHoverCellOriginalBounds;
+    private View mMobileView;
 
     private final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -96,8 +97,8 @@ public class DynamicListView extends ListView {
     private boolean mIsWaitingForScrollFinish = false;
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
-    public DynamicListView(Context context) {
-        super(context);
+    public DynamicListView(Context context, int swipeBackView, int swipeFrontView) {
+        super(context, swipeBackView, swipeFrontView);
         init(context);
     }
 
@@ -119,6 +120,16 @@ public class DynamicListView extends ListView {
     }
 
     /**
+     * Sets background colors for swipe gestures.
+     * @param rightColor Right swipe gesture color.
+     * @param leftColor Left swipe gesture color.
+     */
+    public void setSwipeBackgroundColors(int rightColor, int leftColor) {
+        getTouchListener().setRightBackgroundColor(rightColor);
+        getTouchListener().setLeftBackgroundColor(leftColor);
+    }
+
+    /**
      * Listens for long clicks on any items in the listview. When a cell has
      * been selected, the hover cell is created and set up.
      */
@@ -132,6 +143,7 @@ public class DynamicListView extends ListView {
 
                     View selectedView = getChildAt(itemNum);
                     mMobileItemId = getAdapter().getItemId(position);
+                    mMobileView = getViewForID(mMobileItemId);
                     mHoverCell = getAndAddScaledHoverView(selectedView);
                     selectedView.setVisibility(INVISIBLE);
 
@@ -304,7 +316,7 @@ public class DynamicListView extends ListView {
         int deltaYTotal = mHoverCellOriginalBounds.top + mTotalOffset + deltaY;
 
         View belowView = getViewForID(mBelowItemId);
-        View mobileView = getViewForID(mMobileItemId);
+        mMobileView = getViewForID(mMobileItemId);
         View aboveView = getViewForID(mAboveItemId);
 
         boolean isBelow = (belowView != null) && (deltaYTotal > belowView.getTop());
@@ -314,7 +326,7 @@ public class DynamicListView extends ListView {
 
             final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
             View switchView = isBelow ? belowView : aboveView;
-            final int originalItem = getPositionForView(mobileView);
+            final int originalItem = getPositionForView(mMobileView);
 
             if (switchView == null) {
                 updateNeighborViewsForID(mMobileItemId);
@@ -329,7 +341,7 @@ public class DynamicListView extends ListView {
 
             final int switchViewStartTop = switchView.getTop();
 
-            mobileView.setVisibility(View.VISIBLE);
+            mMobileView.setVisibility(View.VISIBLE);
             switchView.setVisibility(View.INVISIBLE);
 
             updateNeighborViewsForID(mMobileItemId);
@@ -365,13 +377,11 @@ public class DynamicListView extends ListView {
         arrayList.set(indexTwo, temp);
     }
 
-
     /**
      * Resets all the appropriate fields to a default state while also animating
      * the hover cell back to its correct location.
      */
     private void touchEventsEnded () {
-        final View mobileView = getViewForID(mMobileItemId);
         if (mCellIsMobile|| mIsWaitingForScrollFinish) {
             mCellIsMobile = false;
             mIsWaitingForScrollFinish = false;
@@ -382,11 +392,12 @@ public class DynamicListView extends ListView {
             // finish in order to determine the final location of where the hover cell
             // should be animated to.
             if (mScrollState != OnScrollListener.SCROLL_STATE_IDLE) {
+                // TODO: Check if this flag is causing the "frozen" cell bug.
                 mIsWaitingForScrollFinish = true;
                 return;
             }
 
-            mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
+            mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mMobileView.getTop());
 
             ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
                     sBoundEvaluator, mHoverCellCurrentBounds);
@@ -407,7 +418,7 @@ public class DynamicListView extends ListView {
                     mAboveItemId = INVALID_ID;
                     mMobileItemId = INVALID_ID;
                     mBelowItemId = INVALID_ID;
-                    mobileView.setVisibility(VISIBLE);
+                    mMobileView.setVisibility(VISIBLE);
                     mHoverCell = null;
                     setEnabled(true);
                     invalidate();
@@ -423,12 +434,11 @@ public class DynamicListView extends ListView {
      * Resets all the appropriate fields to a default state.
      */
     private void touchEventsCancelled () {
-        View mobileView = getViewForID(mMobileItemId);
         if (mCellIsMobile) {
             mAboveItemId = INVALID_ID;
             mMobileItemId = INVALID_ID;
             mBelowItemId = INVALID_ID;
-            mobileView.setVisibility(VISIBLE);
+            mMobileView.setVisibility(VISIBLE);
             mHoverCell = null;
             invalidate();
         }
