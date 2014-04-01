@@ -5,15 +5,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.swipesapp.android.activity.R;
 import com.swipesapp.android.ui.fragments.ListViewDraggingAnimationFragment;
@@ -45,7 +43,11 @@ public class TasksActivity extends Activity implements ActionBar.TabListener {
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#33FFFFFF")));
+        //actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#55FFFFFF")));
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -68,20 +70,20 @@ public class TasksActivity extends Activity implements ActionBar.TabListener {
 
         int[] iconResourceIds = {R.drawable.schedule_black, R.drawable.today_highlighted, R.drawable.done_black};
         // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+//        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setIcon(iconResourceIds[i])
-                            .setTabListener(this)
-            );
-        }
+//            actionBar.addTab(
+//                    actionBar.newTab()
+//                            .setIcon(iconResourceIds[i])
+//                            .setTabListener(this)
+//            );
+//        }
 
         // Tab 2 is default, index starts in 0
-        actionBar.setSelectedNavigationItem(1);
+//        actionBar.setSelectedNavigationItem(1);
     }
 
 
@@ -157,40 +159,4 @@ public class TasksActivity extends Activity implements ActionBar.TabListener {
             return null;
         }
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
 }

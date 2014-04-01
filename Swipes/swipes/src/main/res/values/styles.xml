@@ -3,6 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">
+        <item name="android:background">@android:color/white</item>
     </style>
 
 </resources>
