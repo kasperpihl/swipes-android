@@ -36,13 +36,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.swipesapp.android.adapter.StableArrayAdapter;
+import com.swipesapp.android.adapter.NowListAdapter;
 
 import java.util.ArrayList;
 
 /**
- * The dynamic listview is an extension of listview that supports cell dragging
- * and swapping.
+ * The dynamic listview is an extension of SwipeListView that supports
+ * cell dragging, swapping and swiping.
  *
  * This layout is in charge of positioning the hover cell in the correct location
  * on the screen in response to user touch events. It uses the position of the
@@ -201,7 +201,7 @@ public class DynamicListView extends SwipeListView {
      */
     private void updateNeighborViewsForID(long itemID) {
         int position = getPositionForID(itemID);
-        StableArrayAdapter adapter = ((StableArrayAdapter)getAdapter());
+        NowListAdapter adapter = ((NowListAdapter)getAdapter());
         mAboveItemId = adapter.getItemId(position - 1);
         mBelowItemId = adapter.getItemId(position + 1);
     }
@@ -209,7 +209,7 @@ public class DynamicListView extends SwipeListView {
     /** Retrieves the view in the list corresponding to itemID */
     public View getViewForID (long itemID) {
         int firstVisiblePosition = getFirstVisiblePosition();
-        StableArrayAdapter adapter = ((StableArrayAdapter)getAdapter());
+        NowListAdapter adapter = ((NowListAdapter)getAdapter());
         for(int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
             int position = firstVisiblePosition + i;

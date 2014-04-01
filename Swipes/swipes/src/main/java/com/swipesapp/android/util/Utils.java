@@ -25,7 +25,7 @@ public class Utils {
      */
     public static Themes getCurrentTheme() {
         // TODO: Return a value loaded from preferences.
-        return Themes.DARK;
+        return Themes.LIGHT;
     }
 
     /**

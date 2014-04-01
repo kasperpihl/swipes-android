@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 
 // TODO: Refactor adapter for real usage.
-public class StableArrayAdapter extends ArrayAdapter {
+public class NowListAdapter extends ArrayAdapter {
 
     List data;
     Context context;
@@ -41,7 +41,7 @@ public class StableArrayAdapter extends ArrayAdapter {
     final int INVALID_ID = -1;
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
-    public StableArrayAdapter(Context context, int layoutResourceId, List data) {
+    public NowListAdapter(Context context, int layoutResourceId, List data) {
         super(context, layoutResourceId, data);
 
         this.data = data;
