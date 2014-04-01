@@ -14,7 +14,7 @@ import com.swipesapp.android.Cheeses;
 import com.swipesapp.android.adapter.StableArrayAdapter;
 import com.swipesapp.android.util.Utils;
 import com.swipesapp.android.values.Sections;
-import com.swipesapp.android.view.DynamicListView;
+import com.swipesapp.android.ui.view.DynamicListView;
 
 import java.util.ArrayList;
 

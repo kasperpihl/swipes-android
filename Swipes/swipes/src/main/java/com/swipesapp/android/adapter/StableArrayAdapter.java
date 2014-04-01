@@ -25,7 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.swipesapp.android.activity.R;
+import com.swipesapp.android.R;
 import com.swipesapp.android.util.Utils;
 
 import java.util.HashMap;

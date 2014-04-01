@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 
-import com.swipesapp.android.activity.R;
+import com.swipesapp.android.R;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Themes;
 
