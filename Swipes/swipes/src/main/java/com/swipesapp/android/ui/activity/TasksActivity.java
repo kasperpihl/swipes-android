@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.swipesapp.android.activity.R;
-import com.swipesapp.android.ui.fragments.ListViewDraggingAnimationFragment;
+import com.swipesapp.android.ui.fragments.TasksListFragment;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 
 import java.util.Locale;
@@ -136,7 +136,7 @@ public class TasksActivity extends Activity implements ActionBar.TabListener {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return ListViewDraggingAnimationFragment.newInstance(position + 1);
+            return TasksListFragment.newInstance(position + 1);
         }
 
         @Override

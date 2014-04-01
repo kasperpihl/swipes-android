@@ -38,15 +38,15 @@ import java.util.ArrayList;
  * moved around by tracking and following the movement of the user's finger.
  * When the item is released, it animates to its new position within the listview.
  */
-public class ListViewDraggingAnimationFragment extends ListFragment {
+public class TasksListFragment extends ListFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    public static ListViewDraggingAnimationFragment newInstance(int sectionNumber) {
-        ListViewDraggingAnimationFragment fragment = new ListViewDraggingAnimationFragment();
+    public static TasksListFragment newInstance(int sectionNumber) {
+        TasksListFragment fragment = new TasksListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
