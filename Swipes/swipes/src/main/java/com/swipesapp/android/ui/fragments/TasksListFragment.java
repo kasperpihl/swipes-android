@@ -69,7 +69,6 @@ public class TasksListFragment extends ListFragment {
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-
         return rootView;
     }
 }
