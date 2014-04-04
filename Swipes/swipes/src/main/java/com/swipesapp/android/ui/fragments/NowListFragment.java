@@ -78,8 +78,6 @@ public class NowListFragment extends Fragment {
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
-        /*listView.setOffsetLeft(Utils.convertDpiToPixel(260f)); // left side offset
-        listView.setOffsetRight(Utils.convertDpiToPixel(0f)); // right side offset*/
 
         return rootView;
     }
