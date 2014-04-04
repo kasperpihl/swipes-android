@@ -16,7 +16,7 @@
 
 package com.swipesapp.android.ui.fragments;
 
-import android.app.Fragment;
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Fragment for the list of tasks in the Now section.
  */
-public class NowListFragment extends Fragment {
+public class NowListFragment extends ListFragment {
 
     /**
      * The fragment argument representing the section number for this fragment.

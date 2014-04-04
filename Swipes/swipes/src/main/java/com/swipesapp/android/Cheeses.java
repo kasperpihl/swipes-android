@@ -151,8 +151,8 @@ public class Cheeses {
             "Vieux Corse", "Vignotte", "Vulscombe", "Waimata Farmhouse Blue",
             "Washed Rind Cheese (Australian)", "Waterloo", "Weichkaese", "Wellington",
             "Wensleydale", "White Stilton", "Whitestone Farmhouse", "Wigmore", "Woodside Cabecou",
-            "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",
-            "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano"*/
+            "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",*/
+            "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano"
     };
 
 }
