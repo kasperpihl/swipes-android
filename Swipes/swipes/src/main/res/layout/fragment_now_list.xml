@@ -24,6 +24,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.swipesapp.android.ui.view.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            swipe:swipeBackView="@+id/swipe_back"
+            swipe:swipeFrontView="@+id/swipe_front" />
+
         <ViewStub
             android:id="@android:id/empty"
             android:layout_width="match_parent"

@@ -23,7 +23,7 @@ package com.swipesapp.android;
 public class Cheeses {
 
     public static final String[] sCheeseStrings = {
-            "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
+/*            "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
             "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale",
             "Aisy Cendre", "Allgauer Emmentaler", "Alverca", "Ambert", "American Cheese",
             "Ami du Chambertin", "Anejo Enchilado", "Anneau du Vic-Bilh", "Anthoriro", "Appenzell",
@@ -152,7 +152,7 @@ public class Cheeses {
             "Washed Rind Cheese (Australian)", "Waterloo", "Weichkaese", "Wellington",
             "Wensleydale", "White Stilton", "Whitestone Farmhouse", "Wigmore", "Woodside Cabecou",
             "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",
-            "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano"
+            "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano"*/
     };
 
 }

@@ -65,9 +65,11 @@ public class NowListFragment extends Fragment {
             mCheeseList.add(Cheeses.sCheeseStrings[i]);
         }
 
+        View rootView = inflater.inflate(R.layout.fragment_now_list, container, false);
+
         NowListAdapter adapter = new NowListAdapter(getActivity(), R.layout.swipeable_cell, mCheeseList);
 
-        mListView = new DynamicListView(getActivity(), R.id.swipe_back, R.id.swipe_front);
+        mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
         mListView.setCheeseList(mCheeseList);
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
@@ -79,7 +81,7 @@ public class NowListFragment extends Fragment {
         /*listView.setOffsetLeft(Utils.convertDpiToPixel(260f)); // left side offset
         listView.setOffsetRight(Utils.convertDpiToPixel(0f)); // right side offset*/
 
-        return mListView;
+        return rootView;
     }
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
