@@ -19,14 +19,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/schedule_black" />
+            android:src="@drawable/later_black" />
 
         <ImageButton
             style="@style/swipesTabButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/now_highlighted" />
+            android:src="@drawable/focus_highlighted" />
 
         <ImageButton
             style="@style/swipesTabButton"

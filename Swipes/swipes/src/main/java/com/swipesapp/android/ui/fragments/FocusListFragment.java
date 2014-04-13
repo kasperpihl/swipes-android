@@ -37,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Fragment for the list of tasks in the Now section.
  */
-public class NowListFragment extends ListFragment {
+public class FocusListFragment extends ListFragment {
 
     /**
      * The fragment argument representing the section number for this fragment.
@@ -49,8 +49,8 @@ public class NowListFragment extends ListFragment {
      */
     DynamicListView mListView;
 
-    public static NowListFragment newInstance(int sectionNumber) {
-        NowListFragment fragment = new NowListFragment();
+    public static FocusListFragment newInstance(int sectionNumber) {
+        FocusListFragment fragment = new FocusListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -65,7 +65,7 @@ public class NowListFragment extends ListFragment {
             mCheeseList.add(Cheeses.sCheeseStrings[i]);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_now_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_focus_list, container, false);
 
         NowListAdapter adapter = new NowListAdapter(getActivity(), R.layout.swipeable_cell, mCheeseList);
 
@@ -74,7 +74,7 @@ public class NowListFragment extends ListFragment {
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
         mListView.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(getActivity()));
-        mListView.setSwipeBackgroundColors(Utils.getSectionColor(Sections.COMPLETED, getActivity()), Utils.getSectionColor(Sections.SCHEDULED, getActivity()));
+        mListView.setSwipeBackgroundColors(Utils.getSectionColor(Sections.DONE, getActivity()), Utils.getSectionColor(Sections.LATER, getActivity()));
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);

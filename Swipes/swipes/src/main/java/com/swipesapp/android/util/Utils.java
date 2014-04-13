@@ -64,12 +64,12 @@ public class Utils {
      */
     public static int getSectionColor(Sections section, Context context) {
         switch (section) {
-            case NOW:
-                return context.getResources().getColor(R.color.now_accent_color);
-            case SCHEDULED:
-                return context.getResources().getColor(R.color.schedule_background);
-            case COMPLETED:
-                return context.getResources().getColor(R.color.complete_background);
+            case FOCUS:
+                return context.getResources().getColor(R.color.focus_accent_color);
+            case LATER:
+                return context.getResources().getColor(R.color.later_accent_color);
+            case DONE:
+                return context.getResources().getColor(R.color.done_accent_color);
             default:
                 return DEFAULT_COLOR;
         }

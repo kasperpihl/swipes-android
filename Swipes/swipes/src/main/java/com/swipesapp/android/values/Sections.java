@@ -7,8 +7,8 @@ package com.swipesapp.android.values;
  */
 public enum Sections {
 
-    NOW,
-    SCHEDULED,
-    COMPLETED;
+    FOCUS,
+    LATER,
+    DONE;
 
 }

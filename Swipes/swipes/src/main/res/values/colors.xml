@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="complete_background" type="color">#45d984</item>
-    <item name="schedule_background" type="color">#fc614b</item>
-    <item name="now_accent_color" type="color">#f4cb1c</item>
+    <item name="done_accent_color" type="color">#45d984</item>
+    <item name="later_accent_color" type="color">#fc614b</item>
+    <item name="focus_accent_color" type="color">#f4cb1c</item>
     <item name="light_theme_background" type="color">#ffffff</item>
     <item name="dark_theme_background" type="color">#24282e</item>
     <item name="light_theme_text" type="color">#000000</item>

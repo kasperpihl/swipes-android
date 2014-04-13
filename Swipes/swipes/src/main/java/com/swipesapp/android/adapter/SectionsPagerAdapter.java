@@ -6,7 +6,7 @@ import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.ui.fragments.NowListFragment;
+import com.swipesapp.android.ui.fragments.FocusListFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -29,7 +29,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return NowListFragment.newInstance(position + 1);
+        return FocusListFragment.newInstance(position + 1);
     }
 
     @Override
@@ -43,11 +43,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Locale l = Locale.getDefault();
         switch (position) {
             case 0:
-                return mContext.get().getString(R.string.title_scheduled).toUpperCase(l);
+                return mContext.get().getString(R.string.title_later).toUpperCase(l);
             case 1:
-                return mContext.get().getString(R.string.title_now).toUpperCase(l);
+                return mContext.get().getString(R.string.title_focus).toUpperCase(l);
             case 2:
-                return mContext.get().getString(R.string.title_completed).toUpperCase(l);
+                return mContext.get().getString(R.string.title_done).toUpperCase(l);
         }
         return null;
     }
