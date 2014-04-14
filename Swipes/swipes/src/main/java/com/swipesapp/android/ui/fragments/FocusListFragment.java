@@ -109,7 +109,7 @@ public class FocusListFragment extends ListFragment {
     private void configureEmptyView(int currentSection) {
         switch(currentSection) {
             case 0:
-                mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
+                mViewStub.setLayoutResource(R.layout.tasks_later_empty_view);
                 break;
             case 1:
                 mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
