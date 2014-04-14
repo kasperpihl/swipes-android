@@ -23,18 +23,24 @@ import com.swipesapp.android.ui.fragments.FocusListFragment;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.util.Utils;
 
-public class TasksActivity extends Activity implements View.OnClickListener {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-    private static final String LOG_TAG = TasksActivity.class.getCanonicalName();
+public class TasksActivity extends Activity {
 
-    private Button mButtonLater;
-    private Button mButtonFocus;
-    private Button mButtonDone;
+    @InjectView(R.id.activity_tasks_button_later)
+    Button mButtonLater;
+    @InjectView(R.id.activity_tasks_button_focus)
+    Button mButtonFocus;
+    @InjectView(R.id.activity_tasks_button_done)
+    Button mButtonDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
+        ButterKnife.inject(this);
 
         FocusListFragment focusListFragment = FocusListFragment.newInstance(1);
 
@@ -45,17 +51,19 @@ public class TasksActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    protected void onDestroy() {
+        ButterKnife.reset(this);
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.tasks, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -63,32 +71,18 @@ public class TasksActivity extends Activity implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View target) {
-        switch (target.getId()) {
-            case R.id.activity_tasks_button_later:
-                setupLaterTasksFragment();
-                break;
-            case R.id.activity_tasks_button_focus:
-                setupFocusTasksFragment();
-                break;
-            case R.id.activity_tasks_button_done:
-                setupDoneTasksFragment();
-                break;
-            default:
-                Log.wtf(LOG_TAG, "Clicked some other button");
-        }
-    }
-
-    private void setupDoneTasksFragment() {
-        
-    }
-
-    private void setupFocusTasksFragment() {
+    @OnClick(R.id.activity_tasks_button_done)
+    void setupDoneTasksFragment() {
 
     }
 
-    private void setupLaterTasksFragment() {
+    @OnClick(R.id.activity_tasks_button_focus)
+    void setupFocusTasksFragment() {
+
+    }
+
+    @OnClick(R.id.activity_tasks_button_later)
+    void setupLaterTasksFragment() {
 
     }
 }
