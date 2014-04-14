@@ -9,5 +9,8 @@
     <string name="action_settings">Settings</string>
     <string name="all_done">ALL DONE FOR NOW</string>
     <string name="all_done_message">Hooray! All tasks swiped away, time to\nrelax #ProductiveDay</string>
+    <string name="focus_light"></string>
+    <string name="later_light"></string>
+    <string name="done_light"></string>
 
 </resources>

@@ -14,25 +14,32 @@
         android:divider="@drawable/divider"
         android:weightSum="3">
 
-        <ImageButton
+        <com.swipesapp.android.ui.view.SwipesButton
             style="@style/swipesTabButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="28sp"
+            android:text="@string/later_light"
             android:src="@drawable/later_black" />
 
-        <ImageButton
+        <com.swipesapp.android.ui.view.SwipesButton
             style="@style/swipesTabButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="@string/focus_light"
+            android:textSize="28sp"
+            android:textColor="@color/focus_accent_color"
             android:src="@drawable/focus_highlighted" />
 
-        <ImageButton
+        <com.swipesapp.android.ui.view.SwipesButton
             style="@style/swipesTabButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="@string/done_light"
+            android:textSize="28sp"
             android:src="@drawable/done_black" />
 
     </LinearLayout>
