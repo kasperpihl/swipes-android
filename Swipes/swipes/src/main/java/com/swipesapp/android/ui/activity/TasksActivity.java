@@ -1,27 +1,15 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.fragments.FocusListFragment;
-import com.swipesapp.android.ui.view.NoSwipeViewPager;
-import com.swipesapp.android.util.Utils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
