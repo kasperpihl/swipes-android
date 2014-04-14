@@ -18,9 +18,12 @@ package com.swipesapp.android.ui.fragments;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -34,6 +37,9 @@ import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Fragment for the list of tasks in the Now section.
  */
@@ -43,11 +49,16 @@ public class FocusListFragment extends ListFragment {
      * The fragment argument representing the section number for this fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String LOG_TAG = FocusListFragment.class.getCanonicalName();
 
     /**
      * Customized list view to display tasks.
      */
     DynamicListView mListView;
+    private int mCurrentSection;
+
+    @InjectView(android.R.id.empty)
+    ViewStub mViewStub;
 
     public static FocusListFragment newInstance(int sectionNumber) {
         FocusListFragment fragment = new FocusListFragment();
@@ -61,15 +72,16 @@ public class FocusListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: Remove this and use real data.
         Bundle args = getArguments();
-        int section = args.getInt(ARG_SECTION_NUMBER, 1);
+        mCurrentSection = args.getInt(ARG_SECTION_NUMBER, 1);
         ArrayList<String> mCheeseList = new ArrayList<String>();
-        if (section == 1) {
+        if (mCurrentSection == 1) {
             for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
                 mCheeseList.add(Cheeses.sCheeseStrings[i]);
             }
         }
 
         View rootView = inflater.inflate(R.layout.fragment_focus_list, container, false);
+        ButterKnife.inject(this, rootView);
 
         NowListAdapter adapter = new NowListAdapter(getActivity(), R.layout.swipeable_cell, mCheeseList);
 
@@ -83,7 +95,32 @@ public class FocusListFragment extends ListFragment {
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
 
+        configureEmptyView(mCurrentSection);
+
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    private void configureEmptyView(int currentSection) {
+        switch(currentSection) {
+            case 0:
+                mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
+                break;
+            case 1:
+                mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
+                break;
+            case 2:
+                mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
+                break;
+            default:
+                Log.wtf(LOG_TAG, "Shouldn't be here");
+        }
+
     }
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {

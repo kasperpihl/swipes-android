@@ -33,5 +33,5 @@
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout="@layout/tasks_empty_view"/>
+        android:layout="@layout/tasks_focus_empty_view"/>
 </FrameLayout>
