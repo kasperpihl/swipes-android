@@ -60,9 +60,13 @@ public class FocusListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: Remove this and use real data.
+        Bundle args = getArguments();
+        int section = args.getInt(ARG_SECTION_NUMBER, 1);
         ArrayList<String> mCheeseList = new ArrayList<String>();
-        for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-            mCheeseList.add(Cheeses.sCheeseStrings[i]);
+        if (section == 1) {
+            for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
+                mCheeseList.add(Cheeses.sCheeseStrings[i]);
+            }
         }
 
         View rootView = inflater.inflate(R.layout.fragment_focus_list, container, false);
