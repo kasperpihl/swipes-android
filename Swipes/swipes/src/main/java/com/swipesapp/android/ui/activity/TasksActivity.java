@@ -3,6 +3,7 @@ package com.swipesapp.android.ui.activity;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,18 +60,37 @@ public class TasksActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.activity_tasks_button_done)
-    void setupDoneTasksFragment() {
-
+    private void setButtonsColors(int buttonLaterColorResourceId, int buttonFocusColorResourceId, int buttonDoneColorResourceId) {
+        Resources res = getResources();
+        mButtonLater.setTextColor(res.getColor(buttonLaterColorResourceId));
+        mButtonFocus.setTextColor(res.getColor(buttonFocusColorResourceId));
+        mButtonDone.setTextColor(res.getColor(buttonDoneColorResourceId));
     }
 
-    @OnClick(R.id.activity_tasks_button_focus)
-    void setupFocusTasksFragment() {
+    private void transitionToFragment(int fragmentIndex) {
+        FocusListFragment focusListFragment = FocusListFragment.newInstance(fragmentIndex);
 
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.tasks_fragment_container, focusListFragment);
+        ft.commit();
     }
 
     @OnClick(R.id.activity_tasks_button_later)
     void setupLaterTasksFragment() {
+        setButtonsColors(R.color.later_accent_color, R.color.light_theme_text, R.color.light_theme_text);
+        transitionToFragment(0);
+    }
 
+    @OnClick(R.id.activity_tasks_button_focus)
+    void setupFocusTasksFragment() {
+        setButtonsColors(R.color.light_theme_text, R.color.focus_accent_color, R.color.light_theme_text);
+        transitionToFragment(1);
+    }
+
+    @OnClick(R.id.activity_tasks_button_done)
+    void setupDoneTasksFragment() {
+        setButtonsColors(R.color.light_theme_text, R.color.light_theme_text, R.color.done_accent_color);
+        transitionToFragment(2);
     }
 }
