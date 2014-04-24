@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Swipes</string>
     <string name="title_activity_tasks">TasksActivity</string>
@@ -12,11 +11,9 @@
     <string name="all_done_message">Hooray! All tasks swiped away, time to\nrelax #ProductiveDay</string>
     <string name="schedule">Schedule</string>
     <string name="done">Done</string>
-
     <string name="focus_light"></string>
     <string name="later_light"></string>
     <string name="done_light"></string>
-
     <string name="example_date"><xliff:g id="date" example="– 1 apr –">%s</xliff:g></string>
 
 </resources>
