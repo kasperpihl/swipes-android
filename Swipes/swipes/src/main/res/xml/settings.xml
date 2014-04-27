@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen
+        android:title="@string/settings_plus">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://www.swipesapp.com"/>
+
+    </PreferenceScreen>
+
+    <SwitchPreference
+        android:key="settings_enable_notifications"
+        android:title="@string/notifications"/>
+    <SwitchPreference
+        android:key="settings_enable_location"
+        android:title="@string/location"/>
+    <ListPreference
+        android:key="settings_theme"
+        android:title="@string/theme"
+        android:entries="@array/theme_list"
+        android:entryValues="@array/theme_values_list"
+        android:dialogTitle="@string/settings_theme_chooser_dialog_title"/>
+
+    <PreferenceScreen
+        android:title="@string/snoozes">
+        <ListPreference
+            android:key="settings_snoozes_week_start_dow"
+            android:title="@string/week_start"
+            android:entries="@array/days_of_week_list"
+            android:entryValues="@array/days_of_week_values_list"
+            android:dialogTitle="@string/settings_snoozes_week_start_dialog_title"/>
+        <ListPreference
+            android:key="settings_snoozes_weekend_start_dow"
+            android:title="@string/weekend_start"
+            android:entries="@array/days_of_week_list"
+            android:entryValues="@array/days_of_week_values_list"
+            android:dialogTitle="@string/settings_snoozes_weekend_start_dialog_title"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:title="@string/policies">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://swipesapp.com/policies.pdf"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:title="@string/about">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://www.youtube.com/watch?v=F3gHO1TjUZw"/>
+    </PreferenceScreen>
+</PreferenceScreen>

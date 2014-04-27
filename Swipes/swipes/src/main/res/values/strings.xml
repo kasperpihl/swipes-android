@@ -15,5 +15,20 @@
     <string name="later_light"></string>
     <string name="done_light"></string>
     <string name="example_date"><xliff:g id="date" example="– 1 apr –">%s</xliff:g></string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="general">GENERAL</string>
+    <string name="notifications">Notifications</string>
+    <string name="location">Location</string>
+    <string name="theme">Theme</string>
+    <string name="settings_theme_chooser_dialog_title">Choose a theme</string>
+    <string name="settings_plus">Plus</string>
+    <string name="policies">Policies</string>
+    <string name="about">About</string>
+    <string name="snoozes">Snoozes</string>
+    <string name="weekend_start">Weekend start</string>
+    <string name="settings_snoozes_weekend_start_dialog_title">Weekend start</string>
+    <string name="settings_snoozes_week_start_dialog_title">Week start</string>
+    <string name="week_start">Week start</string>
 
 </resources>
