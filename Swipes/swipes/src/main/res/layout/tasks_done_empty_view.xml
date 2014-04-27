@@ -14,7 +14,7 @@
     <com.swipesapp.android.ui.view.SwipesTextView
         android:id="@+id/tasks_done_empty_view_done_icon"
         android:text="@string/done_light"
-        android:textSize="100sp"
+        android:textSize="75sp"
         android:layout_above="@id/tasks_done_empty_view_done_label"
         android:layout_centerHorizontal="true"
         android:textColor="@color/done_accent_color"
