@@ -30,5 +30,10 @@
     <string name="settings_snoozes_weekend_start_dialog_title">Weekend start</string>
     <string name="settings_snoozes_week_start_dialog_title">Week start</string>
     <string name="week_start">Week start</string>
+    <string name="set">Set</string>
+    <string name="cancel">Cancel</string>
+    <string name="day_start">Day start</string>
+    <string name="weekend_day_start">Weekend day start</string>
+    <string name="evening_start">Evening start</string>
 
 </resources>
