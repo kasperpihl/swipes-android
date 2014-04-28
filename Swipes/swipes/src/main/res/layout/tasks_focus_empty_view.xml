@@ -1,69 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/default_background">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/date_stamp_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/date_stamp_margin"
-        android:src="@drawable/date_stamp_background"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/default_background">
 
-    <TextView
-        android:id="@+id/text_all_done"
-        style="@android:style/TextAppearance.Holo.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/date_stamp_background"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/date_stamp_margin"
-        android:text="@string/all_done"/>
-
-    <TextView
-        android:id="@+id/text_date_stamp_today"
-        style="@android:style/TextAppearance.Holo.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_all_done"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/date_stamp_margin"
-        android:text="@string/example_date"
-        />
-
-    <TextView
-        android:id="@+id/text_date_stamp_message"
-        style="@android:style/TextAppearance.Holo.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_date_stamp_today"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/date_stamp_margin"
-        android:gravity="center"
-        android:text="@string/all_done_message"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_date_stamp_message"
-        android:layout_centerHorizontal="true">
-
-        <Button
-            android:id="@+id/button_date_stamp_facebook"
-            android:layout_width="@dimen/social_buttons_diameter"
-            android:layout_height="@dimen/social_buttons_diameter"
+        <ImageView
+            android:id="@+id/date_stamp_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:background="@drawable/facebook_rounded_button"/>
+            android:src="@drawable/date_stamp_background"/>
 
-        <Button
-            android:id="@+id/button_date_stamp_twitter"
-            android:layout_width="@dimen/social_buttons_diameter"
-            android:layout_height="@dimen/social_buttons_diameter"
+        <TextView
+            android:id="@+id/text_all_done"
+            style="@android:style/TextAppearance.Holo.Large.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_stamp_background"
+            android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:background="@drawable/twitter_rounded_button"/>
-    </LinearLayout>
-</RelativeLayout>
+            android:text="@string/all_done"/>
+
+        <TextView
+            android:id="@+id/text_date_stamp_today"
+            style="@android:style/TextAppearance.Holo.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_all_done"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/date_stamp_margin"
+            android:text="@string/example_date"
+            />
+
+        <TextView
+            android:id="@+id/text_date_stamp_message"
+            style="@android:style/TextAppearance.Holo.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_date_stamp_today"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/date_stamp_margin"
+            android:gravity="center"
+            android:text="@string/all_done_message"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_date_stamp_message"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/button_date_stamp_facebook"
+                android:layout_width="@dimen/social_buttons_diameter"
+                android:layout_height="@dimen/social_buttons_diameter"
+                android:layout_margin="@dimen/date_stamp_margin"
+                android:background="@drawable/facebook_rounded_button"/>
+
+            <Button
+                android:id="@+id/button_date_stamp_twitter"
+                android:layout_width="@dimen/social_buttons_diameter"
+                android:layout_height="@dimen/social_buttons_diameter"
+                android:layout_margin="@dimen/date_stamp_margin"
+                android:background="@drawable/twitter_rounded_button"/>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    <com.swipesapp.android.ui.view.SwipesButton
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/round_add"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</FrameLayout>

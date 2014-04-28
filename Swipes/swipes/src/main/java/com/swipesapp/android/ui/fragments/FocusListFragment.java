@@ -76,7 +76,7 @@ public class FocusListFragment extends ListFragment {
         ArrayList<String> mCheeseList = new ArrayList<String>();
         if (mCurrentSection == 1) {
             for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-                mCheeseList.add(Cheeses.sCheeseStrings[i]);
+//                mCheeseList.add(Cheeses.sCheeseStrings[i]);
             }
         }
 

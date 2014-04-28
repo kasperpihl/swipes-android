@@ -36,5 +36,6 @@
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
     <string name="title_activity_about">AboutActivity</string>
+    <string name="round_add">&#xe62a;</string>
 
 </resources>
