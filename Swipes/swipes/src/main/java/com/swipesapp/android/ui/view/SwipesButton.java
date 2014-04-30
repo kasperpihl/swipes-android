@@ -8,7 +8,7 @@ import android.widget.Button;
 public class SwipesButton extends Button {
     private Context mContext;
     private static Typeface sTypeface;
-    private static final String FONT_NAME = "41158d87.swipes.ttf";
+    private static final String FONT_NAME = "swipes-Regular.ttf";
 
     public SwipesButton(Context context) {
         super(context);
