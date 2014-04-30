@@ -11,9 +11,9 @@
     <string name="all_done_message">Hooray! All tasks swiped away, time to\nrelax #ProductiveDay</string>
     <string name="schedule">Schedule</string>
     <string name="done">Done</string>
-    <string name="focus_light">&#xe603;</string>
-    <string name="later_light">&#xe604;</string>
-    <string name="done_light">&#xe602;</string>
+    <string name="focus_light">&#xe606;</string>
+    <string name="later_light">&#xe624;</string>
+    <string name="done_light">&#xe63d;</string>
     <string name="example_date"><xliff:g id="date" example="– 1 apr –">%s</xliff:g></string>
     <string name="title_activity_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
