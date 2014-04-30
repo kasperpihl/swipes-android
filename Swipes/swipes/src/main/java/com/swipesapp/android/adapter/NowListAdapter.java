@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.Utils;
 
 import java.util.HashMap;
@@ -41,6 +42,13 @@ public class NowListAdapter extends ArrayAdapter {
     final int INVALID_ID = -1;
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
+    private ListContentsListener mListContentsListener;
+
+
+    public void setListContentsListener(ListContentsListener listContentsListener) {
+        mListContentsListener = listContentsListener;
+    }
+
     public NowListAdapter(Context context, int layoutResourceId, List data) {
         super(context, layoutResourceId, data);
 
@@ -51,6 +59,20 @@ public class NowListAdapter extends ArrayAdapter {
         for (int i = 0; i < data.size(); ++i) {
             mIdMap.put(String.valueOf(data.get(i)), i);
         }
+    }
+
+    @Override
+    public int getCount() {
+        int count = super.getCount();
+        // HACK: this is a workaround to notify the activity through the fragment
+        if (mListContentsListener != null) {
+            if (count != 0) {
+                mListContentsListener.onNotEmpty();
+            } else {
+                mListContentsListener.onEmpty();
+            }
+        }
+        return count;
     }
 
     @Override

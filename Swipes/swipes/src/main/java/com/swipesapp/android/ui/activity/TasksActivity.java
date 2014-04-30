@@ -5,19 +5,22 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.ui.fragments.FocusListFragment;
+import com.swipesapp.android.ui.listener.ListContentsListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends Activity {
+public class TasksActivity extends Activity implements ListContentsListener {
 
     @InjectView(R.id.activity_tasks_button_later)
     Button mButtonLater;
@@ -25,6 +28,8 @@ public class TasksActivity extends Activity {
     Button mButtonFocus;
     @InjectView(R.id.activity_tasks_button_done)
     Button mButtonDone;
+    @InjectView(R.id.tasks_activity_container)
+    ViewGroup mActivityMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,5 +100,19 @@ public class TasksActivity extends Activity {
     void setupDoneTasksFragment() {
         setButtonsColors(R.color.light_theme_text, R.color.light_theme_text, R.color.done_accent_color);
         transitionToFragment(2);
+    }
+
+    // HACK: this is a workaround to change the background entirely
+    @Override
+    public void onEmpty() {
+        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+        getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+    }
+
+    // HACK: this is a workaround to change the background entirely
+    @Override
+    public void onNotEmpty() {
+        mActivityMainLayout.setBackgroundResource(0);
+        getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.white));
     }
 }
