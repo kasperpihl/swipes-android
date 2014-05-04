@@ -84,7 +84,7 @@ public class Utils {
      */
     public int convertDpiToPixel(float dpi, Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dpi * (metrics.densityDpi / 160f));
+        int px = Math.round(dpi * metrics.density);
         return px;
     }
 
