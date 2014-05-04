@@ -10,9 +10,13 @@
         <item name="android:background">@android:color/white</item>
     </style>
 
+    <style name="MainActionBar" parent="SwipesActionBar">
+        <item name="android:displayOptions">useLogo|showHome</item>
+    </style>
 
     <style name="ActivityOverlay" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/MainActionBar</item>
     </style>
 
     <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">
