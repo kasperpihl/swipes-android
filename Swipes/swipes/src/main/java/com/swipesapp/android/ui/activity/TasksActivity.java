@@ -94,10 +94,10 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
             View tabView = getLayoutInflater().inflate(R.layout.tab_swipes_layout, null);
             TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
             tabTextView.setText(iconTextIds[i]);
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                tabView .setBackground(getResources().getDrawable(tabIndicators[i]));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                tabView.setBackground(getResources().getDrawable(tabIndicators[i]));
             } else {
-                tabView .setBackgroundDrawable(getResources().getDrawable(tabIndicators[i]));
+                tabView.setBackgroundDrawable(getResources().getDrawable(tabIndicators[i]));
             }
             mActionBar.addTab(mActionBar.newTab()
                     .setCustomView(tabView)
