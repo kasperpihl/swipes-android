@@ -23,6 +23,9 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.util.Utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -71,6 +74,20 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
     private void setupTabs() {
         LinearLayout tabsArea = (LinearLayout) findViewById(R.id.tabs_area);
         tabsArea.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(this));
+
+        final Method setHasEmbeddedTabsMethod;
+        try {
+            setHasEmbeddedTabsMethod = mActionBar.getClass()
+                    .getDeclaredMethod("setHasEmbeddedTabs", boolean.class);
+            setHasEmbeddedTabsMethod.setAccessible(true);
+            setHasEmbeddedTabsMethod.invoke(mActionBar, true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupActionBar() {
