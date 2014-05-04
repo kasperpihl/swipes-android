@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.swipesapp.android.ui.view.SwipesTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/SwipesActionBar"
+    android:gravity="center"
+    android:id="@+id/tab_swipes_title"
+    android:textSize="28sp"
+    android:background="@android:color/transparent"
+    />

@@ -7,10 +7,12 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -92,19 +94,25 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
     private void setupActionBar() {
         mActionBar = getActionBar();
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Utils.getCurrentThemeBackgroundColor(this)));
+
         int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
         TextView title = (TextView) findViewById(titleId);
-
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Utils.getCurrentThemeBackgroundColor(this)));
         if (title != null) {
             title.setTextColor(Utils.getCurrentThemeTextColor(this));
         }
-        
+
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         int[] iconResourceIds = {R.drawable.schedule_black, R.drawable.focus_highlighted, R.drawable.done_black};
+        int[] iconTextIds = {R.string.later_light, R.string.focus_light, R.string.done_light};
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            mActionBar.addTab(mActionBar.newTab().setIcon(iconResourceIds[i]).setTabListener(this));
+            View tabView = getLayoutInflater().inflate(R.layout.tab_swipes_layout, null);
+            TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
+            tabTextView.setText(iconTextIds[i]);
+            mActionBar.addTab(mActionBar.newTab()
+                    .setCustomView(tabTextView)
+                    .setTabListener(this));
         }
     }
 
@@ -181,12 +189,19 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
+        TextView tabTextView = (TextView) tab.getCustomView();
+        tabTextView.setTextColor(getResources().getColor(textColors[tab.getPosition()]));
+        tab.setCustomView(tabTextView);
+
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
+        TextView tabTextView = (TextView) tab.getCustomView();
+        tabTextView.setTextColor(Utils.getCurrentThemeTextColor(this));
+        tab.setCustomView(tabTextView);
     }
 
     @Override
