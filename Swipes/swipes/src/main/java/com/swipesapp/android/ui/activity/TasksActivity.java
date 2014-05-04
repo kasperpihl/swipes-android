@@ -1,9 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
-import com.swipesapp.android.ui.fragments.FocusListFragment;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.util.Utils;
