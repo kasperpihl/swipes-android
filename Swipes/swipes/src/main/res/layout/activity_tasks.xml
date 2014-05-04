@@ -48,8 +48,8 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/tasks_fragment_container"
+    <com.swipesapp.android.ui.view.NoSwipeViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

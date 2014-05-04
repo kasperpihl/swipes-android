@@ -1,5 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -7,20 +8,32 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.fragments.FocusListFragment;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.ui.view.NoSwipeViewPager;
+import com.swipesapp.android.util.Utils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends Activity implements ListContentsListener {
+public class TasksActivity extends Activity implements ListContentsListener, ActionBar.TabListener {
+    SectionsPagerAdapter mSectionsPagerAdapter;
+
+    @InjectView(R.id.pager)
+    NoSwipeViewPager mViewPager;
+
+    ActionBar mActionBar;
 
     @InjectView(R.id.activity_tasks_button_later)
     Button mButtonLater;
@@ -37,12 +50,46 @@ public class TasksActivity extends Activity implements ListContentsListener {
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
 
-        FocusListFragment focusListFragment = FocusListFragment.newInstance(1);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mActionBar.setSelectedNavigationItem(position);
+            }
+        });
+        setupActionBar();
+        setupTabs();
 
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.tasks_fragment_container, focusListFragment);
-        ft.commit();
+//        FocusListFragment focusListFragment = FocusListFragment.newInstance(1);
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//        ft.add(R.id.tasks_fragment_container, focusListFragment);
+//        ft.commit();
+    }
+
+    private void setupTabs() {
+        LinearLayout tabsArea = (LinearLayout) findViewById(R.id.tabs_area);
+        tabsArea.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(this));
+    }
+
+    private void setupActionBar() {
+        mActionBar = getActionBar();
+        int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView title = (TextView) findViewById(titleId);
+
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Utils.getCurrentThemeBackgroundColor(this)));
+        if (title != null) {
+            title.setTextColor(Utils.getCurrentThemeTextColor(this));
+        }
+        mActionBar.setIcon(getResources().getDrawable(R.drawable.ic_action_bar));
+
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        int[] iconResourceIds = {R.drawable.schedule_black, R.drawable.focus_highlighted, R.drawable.done_black};
+        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+            mActionBar.addTab(mActionBar.newTab().setIcon(iconResourceIds[i]).setTabListener(this));
+        }
     }
 
     @Override
@@ -80,7 +127,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.tasks_fragment_container, focusListFragment);
+//        ft.replace(R.id.tasks_fragment_container, focusListFragment);
         ft.commit();
     }
 
@@ -114,5 +161,20 @@ public class TasksActivity extends Activity implements ListContentsListener {
     public void onNotEmpty() {
         mActivityMainLayout.setBackgroundResource(0);
         getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.white));
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
     }
 }
