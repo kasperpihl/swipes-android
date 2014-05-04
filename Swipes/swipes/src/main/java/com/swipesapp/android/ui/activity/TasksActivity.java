@@ -1,5 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -7,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -56,11 +58,8 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
         setupActionBar();
         setupTabs();
 
-//        FocusListFragment focusListFragment = FocusListFragment.newInstance(1);
-//        FragmentManager fm = getFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.add(R.id.tasks_fragment_container, focusListFragment);
-//        ft.commit();
+        // Default to second item, index starts at zero
+        mViewPager.setCurrentItem(1);
     }
 
     private void setupTabs() {
@@ -91,14 +90,20 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        int[] iconResourceIds = {R.drawable.schedule_black, R.drawable.focus_highlighted, R.drawable.done_black};
         int[] iconTextIds = {R.string.later_light, R.string.focus_light, R.string.done_light};
+        int[] tabIndicators = {R.drawable.tab_indicator_ab_later, R.drawable.tab_indicator_ab_focus, R.drawable.tab_indicator_ab_done};
+
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
             View tabView = getLayoutInflater().inflate(R.layout.tab_swipes_layout, null);
             TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
             tabTextView.setText(iconTextIds[i]);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                tabView .setBackground(getResources().getDrawable(tabIndicators[i]));
+            } else {
+                tabView .setBackgroundDrawable(getResources().getDrawable(tabIndicators[i]));
+            }
             mActionBar.addTab(mActionBar.newTab()
-                    .setCustomView(tabTextView)
+                    .setCustomView(tabView)
                     .setTabListener(this));
         }
     }
@@ -126,15 +131,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
         return super.onOptionsItemSelected(item);
     }
 
-    private void transitionToFragment(int fragmentIndex) {
-        FocusListFragment focusListFragment = FocusListFragment.newInstance(fragmentIndex);
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-//        ft.replace(R.id.tasks_fragment_container, focusListFragment);
-        ft.commit();
-    }
-
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onEmpty() {
@@ -152,18 +148,20 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
-        TextView tabTextView = (TextView) tab.getCustomView();
+        ViewGroup tabView = (ViewGroup) tab.getCustomView();
+        TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
         tabTextView.setTextColor(getResources().getColor(textColors[tab.getPosition()]));
-        tab.setCustomView(tabTextView);
+        tab.setCustomView(tabView);
 
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        TextView tabTextView = (TextView) tab.getCustomView();
+        ViewGroup tabView = (ViewGroup) tab.getCustomView();
+        TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
         tabTextView.setTextColor(Utils.getCurrentThemeTextColor(this));
-        tab.setCustomView(tabTextView);
+        tab.setCustomView(tabView);
     }
 
     @Override

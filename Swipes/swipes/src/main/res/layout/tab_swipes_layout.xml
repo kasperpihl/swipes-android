@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.swipesapp.android.ui.view.SwipesTextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    style="@style/SwipesActionBar"
-    android:gravity="center"
-    android:id="@+id/tab_swipes_title"
-    android:textSize="28sp"
-    android:background="@android:color/transparent"
-    />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.swipesapp.android.ui.view.SwipesTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/SwipesActionBar"
+        android:gravity="center"
+        android:id="@+id/tab_swipes_title"
+        android:textSize="28sp"
+        android:background="@android:color/transparent"
+        />
+</LinearLayout>
