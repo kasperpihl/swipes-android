@@ -7,15 +7,12 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
@@ -30,7 +27,6 @@ import java.lang.reflect.Method;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class TasksActivity extends Activity implements ListContentsListener, ActionBar.TabListener {
     SectionsPagerAdapter mSectionsPagerAdapter;
@@ -40,12 +36,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
     ActionBar mActionBar;
 
-    @InjectView(R.id.activity_tasks_button_later)
-    Button mButtonLater;
-    @InjectView(R.id.activity_tasks_button_focus)
-    Button mButtonFocus;
-    @InjectView(R.id.activity_tasks_button_done)
-    Button mButtonDone;
     @InjectView(R.id.tasks_activity_container)
     ViewGroup mActivityMainLayout;
 
@@ -74,9 +64,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
     }
 
     private void setupTabs() {
-        LinearLayout tabsArea = (LinearLayout) findViewById(R.id.tabs_area);
-        tabsArea.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(this));
-
         final Method setHasEmbeddedTabsMethod;
         try {
             setHasEmbeddedTabsMethod = mActionBar.getClass()
@@ -139,13 +126,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
         return super.onOptionsItemSelected(item);
     }
 
-    private void setButtonsColors(int buttonLaterColorResourceId, int buttonFocusColorResourceId, int buttonDoneColorResourceId) {
-        Resources res = getResources();
-        mButtonLater.setTextColor(res.getColor(buttonLaterColorResourceId));
-        mButtonFocus.setTextColor(res.getColor(buttonFocusColorResourceId));
-        mButtonDone.setTextColor(res.getColor(buttonDoneColorResourceId));
-    }
-
     private void transitionToFragment(int fragmentIndex) {
         FocusListFragment focusListFragment = FocusListFragment.newInstance(fragmentIndex);
 
@@ -153,24 +133,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
         FragmentTransaction ft = fm.beginTransaction();
 //        ft.replace(R.id.tasks_fragment_container, focusListFragment);
         ft.commit();
-    }
-
-    @OnClick(R.id.activity_tasks_button_later)
-    void setupLaterTasksFragment() {
-        setButtonsColors(R.color.later_accent_color, R.color.light_theme_text, R.color.light_theme_text);
-        transitionToFragment(0);
-    }
-
-    @OnClick(R.id.activity_tasks_button_focus)
-    void setupFocusTasksFragment() {
-        setButtonsColors(R.color.light_theme_text, R.color.focus_accent_color, R.color.light_theme_text);
-        transitionToFragment(1);
-    }
-
-    @OnClick(R.id.activity_tasks_button_done)
-    void setupDoneTasksFragment() {
-        setButtonsColors(R.color.light_theme_text, R.color.light_theme_text, R.color.done_accent_color);
-        transitionToFragment(2);
     }
 
     // HACK: this is a workaround to change the background entirely
