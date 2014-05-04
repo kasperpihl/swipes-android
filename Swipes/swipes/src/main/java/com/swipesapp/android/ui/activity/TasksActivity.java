@@ -99,8 +99,7 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
         if (title != null) {
             title.setTextColor(Utils.getCurrentThemeTextColor(this));
         }
-        mActionBar.setIcon(getResources().getDrawable(R.drawable.ic_action_bar));
-
+        
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         int[] iconResourceIds = {R.drawable.schedule_black, R.drawable.focus_highlighted, R.drawable.done_black};
