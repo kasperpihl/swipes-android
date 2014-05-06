@@ -16,6 +16,7 @@
 
 package com.swipesapp.android.ui.fragments;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,7 @@ import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.Cheeses;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.NowListAdapter;
+import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.DynamicListView;
 import com.swipesapp.android.util.Utils;
 import com.swipesapp.android.values.Sections;
@@ -76,14 +78,20 @@ public class FocusListFragment extends ListFragment {
         ArrayList<String> mCheeseList = new ArrayList<String>();
         if (mCurrentSection == 1) {
             for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-                mCheeseList.add(Cheeses.sCheeseStrings[i]);
+//                mCheeseList.add(Cheeses.sCheeseStrings[i]);
             }
         }
 
         View rootView = inflater.inflate(R.layout.fragment_focus_list, container, false);
         ButterKnife.inject(this, rootView);
 
+
         NowListAdapter adapter = new NowListAdapter(getActivity(), R.layout.swipeable_cell, mCheeseList);
+
+        Activity hostActivity = getActivity();
+        if (hostActivity instanceof ListContentsListener) {
+            adapter.setListContentsListener((ListContentsListener) hostActivity);
+        }
 
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
         mListView.setCheeseList(mCheeseList);

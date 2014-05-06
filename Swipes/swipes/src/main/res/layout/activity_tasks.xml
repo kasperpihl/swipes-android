@@ -1,54 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
-    android:paddingTop="?android:actionBarSize"
-    tools:context="com.swipesapp.android.ui.activity.TasksActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:id="@+id/tasks_activity_container"
+              android:background="@android:color/white"
+              android:paddingTop="?android:actionBarSize"
+              tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-    <LinearLayout
-        android:id="@+id/tabs_area"
+    <com.swipesapp.android.ui.view.NoSwipeViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/divider"
-        android:weightSum="3">
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            style="@style/swipesTabButton"
-            android:id="@+id/activity_tasks_button_later"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="28sp"
-            android:text="@string/later_light"
-            android:src="@drawable/later_black" />
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            style="@style/swipesTabButton"
-            android:id="@+id/activity_tasks_button_focus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/focus_light"
-            android:textSize="28sp"
-            android:textColor="@color/focus_accent_color"
-            android:src="@drawable/focus_highlighted" />
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            style="@style/swipesTabButton"
-            android:id="@+id/activity_tasks_button_done"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/done_light"
-            android:textSize="28sp"
-            android:src="@drawable/done_black" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/tasks_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </LinearLayout>

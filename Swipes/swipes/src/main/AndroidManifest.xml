@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.swipesapp.android">
+    package="com.swipesapp.android" >
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme">
-
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.swipesapp.android.ui.activity.TasksActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityOverlay" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name="com.swipesapp.android.ui.activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.swipesapp.android.ui.activity.TasksActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.swipesapp.android.ui.activity.TasksActivity" />
+        </activity>
+        <activity
+            android:name="com.swipesapp.android.ui.activity.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

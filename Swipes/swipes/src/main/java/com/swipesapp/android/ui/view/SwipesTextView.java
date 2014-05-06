@@ -8,7 +8,7 @@ import android.widget.TextView;
 public class SwipesTextView extends TextView {
     private Context mContext;
     private static Typeface sTypeface;
-    private static final String FONT_NAME = "41158d87.swipes.ttf";
+    private static final String FONT_NAME = "swipes-Regular.ttf";
 
     public SwipesTextView(Context context) {
         super(context);
