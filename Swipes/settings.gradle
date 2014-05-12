@@ -1,2 +1,3 @@
 include ':swipes'
 include ':libraries:android-swipelistview:swipelistview'
+include ':libraries:PagerSlidingTabStrip:library'

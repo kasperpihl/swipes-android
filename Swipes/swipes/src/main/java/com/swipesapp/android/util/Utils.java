@@ -3,6 +3,7 @@ package com.swipesapp.android.util;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.values.Sections;
@@ -75,17 +76,8 @@ public class Utils {
         }
     }
 
-    /**
-     * Converts a dpi value to pixels.
-     *
-     * @param dpi     Dpi value.
-     * @param context Context to use.
-     * @return Value in pixels.
-     */
-    public int convertDpiToPixel(float dpi, Context context) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dpi * metrics.density);
-        return px;
+    public static int getPxFromSp(Context context, int spValue) {
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, context.getResources().getDisplayMetrics());
     }
 
 }

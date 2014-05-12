@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,11 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Utils;
+import com.swipesapp.android.utils.Constants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,16 +31,19 @@ import java.lang.reflect.Method;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TasksActivity extends Activity implements ListContentsListener, ActionBar.TabListener {
+public class TasksActivity extends Activity implements ListContentsListener, ActionBar.TabListener, ViewPager.OnPageChangeListener {
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
     NoSwipeViewPager mViewPager;
 
-    ActionBar mActionBar;
+    @InjectView(R.id.tabs)
+    PagerSlidingTabStrip mTabs;
 
     @InjectView(R.id.tasks_activity_container)
     ViewGroup mActivityMainLayout;
+
+    private static Typeface sTypeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,63 +53,21 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mActionBar.setSelectedNavigationItem(position);
-            }
-        });
-        setupActionBar();
-        setupTabs();
+        mTabs.setViewPager(mViewPager);
+        if (sTypeface == null) {
+            sTypeface = Typeface.createFromAsset(getAssets(), Constants.FONT_NAME);
+        }
+        mTabs.setTypeface(sTypeface, 0);
+        int dimension = getResources().getDimensionPixelSize(R.dimen.action_bar_icon_size);
+        mTabs.setTextSize(dimension);
+        mTabs.setIndicatorColor(getResources().getColor(R.color.light_theme_text));
+        mTabs.setTextColor(getResources().getColor(R.color.light_theme_text));
+        mTabs.setOnPageChangeListener(this);
+
+        getActionBar().hide();
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(1);
-    }
-
-    private void setupTabs() {
-        final Method setHasEmbeddedTabsMethod;
-        try {
-            setHasEmbeddedTabsMethod = mActionBar.getClass()
-                    .getDeclaredMethod("setHasEmbeddedTabs", boolean.class);
-            setHasEmbeddedTabsMethod.setAccessible(true);
-            setHasEmbeddedTabsMethod.invoke(mActionBar, true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setupActionBar() {
-        mActionBar = getActionBar();
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Utils.getCurrentThemeBackgroundColor(this)));
-
-        int titleId = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-        TextView title = (TextView) findViewById(titleId);
-        if (title != null) {
-            title.setTextColor(Utils.getCurrentThemeTextColor(this));
-        }
-
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        int[] iconTextIds = {R.string.later_light, R.string.focus_light, R.string.done_light};
-        int[] tabIndicators = {R.drawable.tab_indicator_ab_later, R.drawable.tab_indicator_ab_focus, R.drawable.tab_indicator_ab_done};
-
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            View tabView = getLayoutInflater().inflate(R.layout.tab_swipes_layout, null);
-            TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
-            tabTextView.setText(iconTextIds[i]);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                tabView.setBackground(getResources().getDrawable(tabIndicators[i]));
-            } else {
-                tabView.setBackgroundDrawable(getResources().getDrawable(tabIndicators[i]));
-            }
-            mActionBar.addTab(mActionBar.newTab()
-                    .setCustomView(tabView)
-                    .setTabListener(this));
-        }
     }
 
     @Override
@@ -163,6 +128,28 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
+        mTabs.setIndicatorColorResource(textColors[position]);
+        mTabs.setTextColorResource(android.R.color.black);
+        View v = mTabs.getTabView(position);
+        if (v instanceof TextView) {
+            TextView tabTextView = (TextView)v;
+            tabTextView.setTextColor(getResources().getColor(textColors[position]));
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
     }
 }

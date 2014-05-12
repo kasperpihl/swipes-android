@@ -5,10 +5,11 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+import com.swipesapp.android.utils.Constants;
+
 public class SwipesButton extends Button {
     private Context mContext;
     private static Typeface sTypeface;
-    private static final String FONT_NAME = "swipes-Regular.ttf";
 
     public SwipesButton(Context context) {
         super(context);
@@ -30,7 +31,7 @@ public class SwipesButton extends Button {
         if (sTypeface == null) {
             synchronized (SwipesButton.class) {
                 if (sTypeface == null) {
-                    sTypeface = Typeface.createFromAsset(mContext.getAssets(), FONT_NAME);
+                    sTypeface = Typeface.createFromAsset(mContext.getAssets(), Constants.FONT_NAME);
                 }
             }
         }
