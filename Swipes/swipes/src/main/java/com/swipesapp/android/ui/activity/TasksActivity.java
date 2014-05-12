@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TasksActivity extends Activity implements ListContentsListener, ActionBar.TabListener, ViewPager.OnPageChangeListener {
+public class TasksActivity extends Activity implements ListContentsListener, ViewPager.OnPageChangeListener {
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -105,30 +105,6 @@ public class TasksActivity extends Activity implements ListContentsListener, Act
     public void onNotEmpty() {
         mActivityMainLayout.setBackgroundResource(0);
         getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.white));
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
-        ViewGroup tabView = (ViewGroup) tab.getCustomView();
-        TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
-        tabTextView.setTextColor(getResources().getColor(textColors[tab.getPosition()]));
-        tab.setCustomView(tabView);
-
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        ViewGroup tabView = (ViewGroup) tab.getCustomView();
-        TextView tabTextView = (TextView) tabView.findViewById(R.id.tab_swipes_title);
-        tabTextView.setTextColor(Utils.getCurrentThemeTextColor(this));
-        tab.setCustomView(tabView);
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
     }
 
     @Override
