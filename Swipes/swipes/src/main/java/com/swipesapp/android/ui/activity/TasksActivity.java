@@ -2,16 +2,9 @@ package com.swipesapp.android.ui.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,12 +14,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
-import com.swipesapp.android.ui.view.SwipesButton;
-import com.swipesapp.android.util.Utils;
 import com.swipesapp.android.utils.Constants;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -64,7 +52,10 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         mTabs.setTextColor(getResources().getColor(R.color.light_theme_text));
         mTabs.setOnPageChangeListener(this);
 
-        getActionBar().hide();
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(1);
@@ -76,40 +67,21 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         super.onDestroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tasks, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onEmpty() {
         mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
     }
 
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onNotEmpty() {
         mActivityMainLayout.setBackgroundResource(0);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(android.R.color.white));
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        // Needed to comply with interface
     }
 
     @Override
@@ -119,13 +91,13 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         mTabs.setTextColorResource(android.R.color.black);
         View v = mTabs.getTabView(position);
         if (v instanceof TextView) {
-            TextView tabTextView = (TextView)v;
+            TextView tabTextView = (TextView) v;
             tabTextView.setTextColor(getResources().getColor(textColors[position]));
         }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        // Needed to comply with interface
     }
 }
