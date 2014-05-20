@@ -17,7 +17,9 @@ import java.util.Locale;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    /** Context reference. */
+    /**
+     * Context reference.
+     */
     private WeakReference<Context> mContext;
 
     public SectionsPagerAdapter(FragmentManager fm, Context context) {
@@ -35,20 +37,30 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 3;
+        return 4;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         Locale l = Locale.getDefault();
-        switch (position) {
-            case 0:
-                return mContext.get().getString(R.string.title_later).toUpperCase(l);
-            case 1:
-                return mContext.get().getString(R.string.title_focus).toUpperCase(l);
-            case 2:
-                return mContext.get().getString(R.string.title_done).toUpperCase(l);
+        String title = null;
+        Context context = mContext.get();
+        if (context != null) {
+            switch (position) {
+                case 0:
+                    title = context.getString(R.string.title_later).toUpperCase(l);
+                    break;
+                case 1:
+                    title = context.getString(R.string.title_focus).toUpperCase(l);
+                    break;
+                case 2:
+                    title = context.getString(R.string.title_done).toUpperCase(l);
+                    break;
+                case 3:
+                    title = context.getString(R.string.title_settings).toUpperCase(l);
+                    break;
+            }
         }
-        return null;
+        return title;
     }
 }

@@ -86,9 +86,9 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
 
     @Override
     public void onPageSelected(int position) {
-        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
+        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color, R.color.light_theme_text};
         mTabs.setIndicatorColorResource(textColors[position]);
-        mTabs.setTextColorResource(android.R.color.black);
+        mTabs.setTextColorResource(R.color.light_theme_text);
         View v = mTabs.getTabView(position);
         if (v instanceof TextView) {
             TextView tabTextView = (TextView) v;
