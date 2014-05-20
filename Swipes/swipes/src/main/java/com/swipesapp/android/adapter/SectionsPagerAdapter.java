@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.ui.activity.SettingsActivity;
 import com.swipesapp.android.ui.fragments.FocusListFragment;
 
 import java.lang.ref.WeakReference;
@@ -16,6 +17,9 @@ import java.util.Locale;
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+    private static final int TOTAL_FRAGMENTS = 4;
+    private static final int FRAGMENT_SETTINGS_POSITION = TOTAL_FRAGMENTS - 1; //index starts at 0
 
     /**
      * Context reference.
@@ -31,13 +35,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return FocusListFragment.newInstance(position);
+        Fragment result;
+        if (position == FRAGMENT_SETTINGS_POSITION) {
+            result = new SettingsActivity.SettingsFragment();
+        } else {
+            result = FocusListFragment.newInstance(position);
+        }
+
+        return result;
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 4;
+        return TOTAL_FRAGMENTS;
     }
 
     @Override
