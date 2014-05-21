@@ -62,6 +62,11 @@ public class TasksActivity extends Activity implements ListContentsListener {
                     TextView tabTextView = (TextView) v;
                     tabTextView.setTextColor(getResources().getColor(textColors[position]));
                 }
+                if (position == FOCUS_FRAGMENT_POSITION) {
+                    setBackgroundImage();
+                } else {
+                    clearBackgroundImage();
+                }
             }
         };
         ViewPager.SimpleOnPageChangeListener listener = simpleOnPageChangeListener;
