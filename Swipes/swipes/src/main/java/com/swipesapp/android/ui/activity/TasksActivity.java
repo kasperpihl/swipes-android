@@ -19,7 +19,7 @@ import com.swipesapp.android.utils.Constants;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TasksActivity extends Activity implements ListContentsListener, ViewPager.OnPageChangeListener {
+public class TasksActivity extends Activity implements ListContentsListener {
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -50,7 +50,21 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         mTabs.setTextSize(dimension);
         mTabs.setIndicatorColor(getResources().getColor(R.color.light_theme_text));
         mTabs.setTextColor(getResources().getColor(R.color.light_theme_text));
-        mTabs.setOnPageChangeListener(this);
+        ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color, R.color.light_theme_text};
+                mTabs.setIndicatorColorResource(textColors[position]);
+                mTabs.setTextColorResource(R.color.light_theme_text);
+                View v = mTabs.getTabView(position);
+                if (v instanceof TextView) {
+                    TextView tabTextView = (TextView) v;
+                    tabTextView.setTextColor(getResources().getColor(textColors[position]));
+                }
+            }
+        };
+        ViewPager.SimpleOnPageChangeListener listener = simpleOnPageChangeListener;
+        mTabs.setOnPageChangeListener(listener);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -77,27 +91,5 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
     @Override
     public void onNotEmpty() {
         mActivityMainLayout.setBackgroundResource(0);
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // Needed to comply with interface
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color, R.color.light_theme_text};
-        mTabs.setIndicatorColorResource(textColors[position]);
-        mTabs.setTextColorResource(R.color.light_theme_text);
-        View v = mTabs.getTabView(position);
-        if (v instanceof TextView) {
-            TextView tabTextView = (TextView) v;
-            tabTextView.setTextColor(getResources().getColor(textColors[position]));
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // Needed to comply with interface
     }
 }
