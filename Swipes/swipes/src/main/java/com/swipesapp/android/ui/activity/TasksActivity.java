@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class TasksActivity extends Activity implements ListContentsListener {
+    public static final int FOCUS_FRAGMENT_POSITION = 1;
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -75,6 +76,14 @@ public class TasksActivity extends Activity implements ListContentsListener {
         mViewPager.setCurrentItem(1);
     }
 
+    private void clearBackgroundImage() {
+        mActivityMainLayout.setBackgroundResource(0);
+    }
+
+    private void setBackgroundImage() {
+        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+    }
+
     @Override
     protected void onDestroy() {
         ButterKnife.reset(this);
@@ -84,12 +93,12 @@ public class TasksActivity extends Activity implements ListContentsListener {
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onEmpty() {
-        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+        setBackgroundImage();
     }
 
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onNotEmpty() {
-        mActivityMainLayout.setBackgroundResource(0);
+        clearBackgroundImage();
     }
 }
