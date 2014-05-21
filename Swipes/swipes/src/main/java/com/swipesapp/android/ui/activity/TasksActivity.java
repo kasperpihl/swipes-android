@@ -73,7 +73,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
         }
 
         // Default to second item, index starts at zero
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
     }
 
     private void clearBackgroundImage() {
