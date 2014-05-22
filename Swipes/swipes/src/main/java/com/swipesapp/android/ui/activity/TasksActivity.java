@@ -14,6 +14,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.utils.Constants;
 
 import butterknife.ButterKnife;
@@ -21,6 +22,7 @@ import butterknife.InjectView;
 
 public class TasksActivity extends Activity implements ListContentsListener {
     public static final int FOCUS_FRAGMENT_POSITION = 1;
+    public static final int SETTINGS_FRAGMENT_POSITION = 3; //last fragment
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -31,6 +33,9 @@ public class TasksActivity extends Activity implements ListContentsListener {
 
     @InjectView(R.id.tasks_activity_container)
     ViewGroup mActivityMainLayout;
+
+    @InjectView(R.id.button_add_task)
+    SwipesButton mButtonAddTask;
 
     private static Typeface sTypeface;
 
@@ -62,10 +67,17 @@ public class TasksActivity extends Activity implements ListContentsListener {
                     TextView tabTextView = (TextView) v;
                     tabTextView.setTextColor(getResources().getColor(textColors[position]));
                 }
+
                 if (position == FOCUS_FRAGMENT_POSITION) {
                     setBackgroundImage();
                 } else {
                     clearBackgroundImage();
+                }
+
+                if (position == SETTINGS_FRAGMENT_POSITION) {
+                    mButtonAddTask.setVisibility(View.GONE);
+                } else {
+                    mButtonAddTask.setVisibility(View.VISIBLE);
                 }
             }
         };
