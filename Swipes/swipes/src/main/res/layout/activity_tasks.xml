@@ -1,39 +1,46 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@android:color/white"
-             tools:context="com.swipesapp.android.ui.activity.TasksActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
     <LinearLayout
+        android:id="@+id/tasks_activity_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/tasks_activity_container">
+        android:orientation="vertical">
 
         <com.astuetz.PagerSlidingTabStrip
             android:id="@+id/tabs"
-            app:pstsShouldExpand="true"
-            app:pstsIndicatorHeight="2dp"
-            app:pstsUnderlineHeight="0dp"
-            app:pstsDeactivateTextColor="@android:color/black"
             android:layout_width="match_parent"
-            android:layout_height="48dp"/>
+            android:layout_height="48dp"
+            app:pstsDeactivateTextColor="@android:color/black"
+            app:pstsIndicatorHeight="2dp"
+            app:pstsShouldExpand="true"
+            app:pstsUnderlineHeight="0dp" />
 
         <com.swipesapp.android.ui.view.NoSwipeViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/button_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/round_add"
         android:background="@android:color/transparent"
-        android:textSize="30sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:text="@string/round_add"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/edit_text_add_task_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="gone" />
 </FrameLayout>

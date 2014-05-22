@@ -1,5 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
+import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -19,6 +21,7 @@ import com.swipesapp.android.utils.Constants;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class TasksActivity extends Activity implements ListContentsListener {
     public static final int FOCUS_FRAGMENT_POSITION = 1;
@@ -37,7 +40,29 @@ public class TasksActivity extends Activity implements ListContentsListener {
     @InjectView(R.id.button_add_task)
     SwipesButton mButtonAddTask;
 
+    @InjectView(R.id.edit_text_add_task_content)
+    EditText mEditTaskAddNewTask;
+
     private static Typeface sTypeface;
+
+    @OnClick(R.id.button_add_task)
+    protected void startAddTaskWorkflow() {
+        // go to main fragment
+        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
+
+        // animate button down off screen
+        //TODO: animate
+        mButtonAddTask.setVisibility(View.GONE);
+
+        // animate edit text into screen
+        // TODO: animate
+        mEditTaskAddNewTask.setVisibility(View.VISIBLE);
+        mEditTaskAddNewTask.setFocusable(true);
+        mEditTaskAddNewTask.setFocusableInTouchMode(true);
+        mEditTaskAddNewTask.requestFocus();
+
+        //TODO: blur background
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
