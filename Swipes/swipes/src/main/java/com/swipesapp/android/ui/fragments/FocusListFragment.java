@@ -98,7 +98,9 @@ public class FocusListFragment extends ListFragment {
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
         mListView.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(getActivity()));
-        mListView.setSwipeBackgroundColors(Utils.getSectionColor(Sections.DONE, getActivity()), Utils.getSectionColor(Sections.LATER, getActivity()));
+        mListView.setLongSwipeEnabled(true);
+        mListView.setSwipeBackgroundColors(Utils.getSectionColor(Sections.DONE, getActivity()), Utils.getSectionColor(Sections.LATER, getActivity()), getActivity().getResources().getColor(R.color.neutral_background));
+        mListView.setLongSwipeBackgroundColors(Utils.getSectionColor(Sections.LATER, getActivity()), Utils.getSectionColor(Sections.DONE, getActivity()));
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);

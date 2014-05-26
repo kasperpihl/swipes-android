@@ -124,9 +124,28 @@ public class DynamicListView extends SwipeListView {
      * @param rightColor Right swipe gesture color.
      * @param leftColor Left swipe gesture color.
      */
-    public void setSwipeBackgroundColors(int rightColor, int leftColor) {
+    public void setSwipeBackgroundColors(int rightColor, int leftColor, int neutralColor) {
         getTouchListener().setRightBackgroundColor(rightColor);
         getTouchListener().setLeftBackgroundColor(leftColor);
+        getTouchListener().setNeutralBackgroundColor(neutralColor);
+    }
+
+    /**
+     * Sets background colors for long swipe gestures.
+     * @param rightLongColor Long right swipe gesture color.
+     * @param leftLongColor Long left swipe gesture color.
+     */
+    public void setLongSwipeBackgroundColors(int rightLongColor, int leftLongColor) {
+        getTouchListener().setLongRightBackgroundColor(rightLongColor);
+        getTouchListener().setLongLeftBackgroundColor(leftLongColor);
+    }
+
+    /**
+     * Enables or disables long swipes in the list.
+     * @param enabled True to enable, false otherwise.
+     */
+    public void setLongSwipeEnabled(boolean enabled) {
+        getTouchListener().setLongSwipeEnabled(enabled);
     }
 
     /**

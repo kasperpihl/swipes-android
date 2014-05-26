@@ -149,9 +149,9 @@ public class Cheeses {
             "Tupi", "Turunmaa", "Tymsboro", "Tyn Grug", "Tyning", "Ubriaco", "Ulloa",
             "Vacherin-Fribourgeois", "Valencay", "Vasterbottenost", "Venaco", "Vendomois",
             "Vieux Corse", "Vignotte", "Vulscombe", "Waimata Farmhouse Blue",
-            "Washed Rind Cheese (Australian)", "Waterloo", "Weichkaese", "Wellington",
+            "Washed Rind Cheese (Australian)", "Waterloo", "Weichkaese", "Wellington",*/
             "Wensleydale", "White Stilton", "Whitestone Farmhouse", "Wigmore", "Woodside Cabecou",
-            "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",*/
+            "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",
             "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano"
     };
 
