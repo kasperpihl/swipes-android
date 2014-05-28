@@ -38,5 +38,6 @@
     <string name="evening_start">Evening start</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="round_add">&#xe62a;</string>
+    <string name="title_activity_add_task">AddTaskActivity</string>
 
 </resources>
