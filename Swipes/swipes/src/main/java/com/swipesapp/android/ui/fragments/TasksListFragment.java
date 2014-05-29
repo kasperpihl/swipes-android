@@ -78,7 +78,7 @@ public class TasksListFragment extends ListFragment {
         ArrayList<String> cheeseList = new ArrayList<String>();
         if (mCurrentSection == Sections.FOCUS.getSectionNumber()) {
             for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-                cheeseList.add(Cheeses.sCheeseStrings[i]);
+//                cheeseList.add(Cheeses.sCheeseStrings[i]);
             }
         }
 
@@ -117,7 +117,6 @@ public class TasksListFragment extends ListFragment {
         mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
-        mListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_RIGHT);
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
     }

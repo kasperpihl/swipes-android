@@ -78,6 +78,7 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
                 break;
             default:
                 mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+                break;
         }
     }
 
