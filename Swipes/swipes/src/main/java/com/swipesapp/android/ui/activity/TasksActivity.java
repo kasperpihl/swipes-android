@@ -14,7 +14,9 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
+import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.utils.Constants;
+import com.swipesapp.android.values.Sections;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,8 +50,8 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         mTabs.setTypeface(sTypeface, 0);
         int dimension = getResources().getDimensionPixelSize(R.dimen.action_bar_icon_size);
         mTabs.setTextSize(dimension);
-        mTabs.setIndicatorColor(getResources().getColor(R.color.light_theme_text));
-        mTabs.setTextColor(getResources().getColor(R.color.light_theme_text));
+        mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setOnPageChangeListener(this);
 
         ActionBar actionBar = getActionBar();
@@ -69,14 +71,20 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
 
     // HACK: this is a workaround to change the background entirely
     @Override
-    public void onEmpty() {
-        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+    public void onEmpty(Sections currentSection) {
+        switch (currentSection) {
+            case FOCUS:
+                mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+                break;
+            default:
+                mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+        }
     }
 
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onNotEmpty() {
-        mActivityMainLayout.setBackgroundResource(0);
+        mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
     }
 
     @Override
@@ -88,7 +96,7 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
     public void onPageSelected(int position) {
         int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
         mTabs.setIndicatorColorResource(textColors[position]);
-        mTabs.setTextColorResource(android.R.color.black);
+        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         View v = mTabs.getTabView(position);
         if (v instanceof TextView) {
             TextView tabTextView = (TextView) v;

@@ -10,11 +10,11 @@ import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Themes;
 
 /**
- * Utilitary class for common operations.
+ * Utilitary class for theme operations.
  *
  * @author Felipe Bari
  */
-public class Utils {
+public class ThemeUtils {
 
     /**
      * Color applied in case the appropriate ones are missing.
@@ -26,7 +26,7 @@ public class Utils {
      */
     public static Themes getCurrentTheme() {
         // TODO: Return a value loaded from preferences.
-        return Themes.LIGHT;
+        return Themes.DARK;
     }
 
     /**
@@ -74,10 +74,6 @@ public class Utils {
             default:
                 return DEFAULT_COLOR;
         }
-    }
-
-    public static int getPxFromSp(Context context, int spValue) {
-        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, context.getResources().getDisplayMetrics());
     }
 
 }

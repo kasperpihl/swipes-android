@@ -27,13 +27,14 @@ import android.widget.TextView;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.ui.listener.ListContentsListener;
-import com.swipesapp.android.util.Utils;
+import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Sections;
 
 import java.util.HashMap;
 import java.util.List;
 
 // TODO: Refactor adapter for real usage.
-public class NowListAdapter extends ArrayAdapter {
+public class TasksListAdapter extends ArrayAdapter {
 
     List data;
     Context context;
@@ -44,12 +45,13 @@ public class NowListAdapter extends ArrayAdapter {
 
     private ListContentsListener mListContentsListener;
 
+    Sections mCurrentSection;
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
         mListContentsListener = listContentsListener;
     }
 
-    public NowListAdapter(Context context, int layoutResourceId, List data) {
+    public TasksListAdapter(Context context, int layoutResourceId, List data) {
         super(context, layoutResourceId, data);
 
         this.data = data;
@@ -69,7 +71,7 @@ public class NowListAdapter extends ArrayAdapter {
             if (count != 0) {
                 mListContentsListener.onNotEmpty();
             } else {
-                mListContentsListener.onEmpty();
+                mListContentsListener.onEmpty(mCurrentSection);
             }
         }
         return count;
@@ -100,8 +102,8 @@ public class NowListAdapter extends ArrayAdapter {
         holder.frontText.setText(itemText);
 
         // Sets colors for cell, matching the current theme.
-        holder.frontText.setTextColor(Utils.getCurrentThemeTextColor(getContext()));
-        holder.frontView.setBackgroundColor(Utils.getCurrentThemeBackgroundColor(getContext()));
+        holder.frontText.setTextColor(ThemeUtils.getCurrentThemeTextColor(getContext()));
+        holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getContext()));
 
         return row;
     }
@@ -125,6 +127,10 @@ public class NowListAdapter extends ArrayAdapter {
         LinearLayout frontView;
         LinearLayout backView;
         TextView frontText;
+    }
+
+    public void setCurrentSection(Sections section) {
+        mCurrentSection = section;
     }
 
 }

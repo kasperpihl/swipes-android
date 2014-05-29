@@ -6,7 +6,7 @@ import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.ui.fragments.FocusListFragment;
+import com.swipesapp.android.ui.fragments.TasksListFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -29,7 +29,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return FocusListFragment.newInstance(position);
+        return TasksListFragment.newInstance(position);
     }
 
     @Override

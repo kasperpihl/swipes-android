@@ -5,6 +5,8 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+import com.swipesapp.android.R;
+import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.utils.Constants;
 
 public class SwipesButton extends Button {
@@ -36,5 +38,6 @@ public class SwipesButton extends Button {
             }
         }
         this.setTypeface(sTypeface);
+        this.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext));
     }
 }

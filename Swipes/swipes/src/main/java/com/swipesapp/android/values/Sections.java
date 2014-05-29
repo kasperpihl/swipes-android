@@ -1,5 +1,7 @@
 package com.swipesapp.android.values;
 
+import android.util.Log;
+
 /**
  * Holds the possible sections.
  *
@@ -7,8 +9,34 @@ package com.swipesapp.android.values;
  */
 public enum Sections {
 
-    FOCUS,
-    LATER,
-    DONE;
+    LATER(0),
+    FOCUS(1),
+    DONE(2);
+
+    private static final String TAG = Sections.class.getSimpleName();
+
+    public int mSectionNumber;
+
+    Sections(int sectionNumber) {
+        mSectionNumber = sectionNumber;
+    }
+
+    public int getSectionNumber() {
+        return mSectionNumber;
+    }
+
+    public static Sections getSectionByNumber(int sectionNumber) {
+        switch (sectionNumber) {
+            case 0:
+                return LATER;
+            case 1:
+                return FOCUS;
+            case 2:
+                return DONE;
+            default:
+                Log.wtf(TAG, "Section does not exist.");
+                return null;
+        }
+    }
 
 }

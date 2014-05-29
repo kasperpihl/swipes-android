@@ -36,7 +36,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.swipesapp.android.adapter.NowListAdapter;
+import com.swipesapp.android.adapter.TasksListAdapter;
 
 import java.util.ArrayList;
 
@@ -220,7 +220,7 @@ public class DynamicListView extends SwipeListView {
      */
     private void updateNeighborViewsForID(long itemID) {
         int position = getPositionForID(itemID);
-        NowListAdapter adapter = ((NowListAdapter)getAdapter());
+        TasksListAdapter adapter = ((TasksListAdapter)getAdapter());
         mAboveItemId = adapter.getItemId(position - 1);
         mBelowItemId = adapter.getItemId(position + 1);
     }
@@ -228,7 +228,7 @@ public class DynamicListView extends SwipeListView {
     /** Retrieves the view in the list corresponding to itemID */
     public View getViewForID (long itemID) {
         int firstVisiblePosition = getFirstVisiblePosition();
-        NowListAdapter adapter = ((NowListAdapter)getAdapter());
+        TasksListAdapter adapter = ((TasksListAdapter)getAdapter());
         for(int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
             int position = firstVisiblePosition + i;
