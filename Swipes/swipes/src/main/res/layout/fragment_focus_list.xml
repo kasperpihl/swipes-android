@@ -31,15 +31,6 @@
         swipe:swipeBackView="@+id/swipe_back"
         swipe:swipeFrontView="@+id/swipe_front"/>
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/round_add"
-        android:background="@android:color/transparent"
-        android:textSize="30sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <ViewStub
         android:id="@android:id/empty"
         android:layout_width="match_parent"

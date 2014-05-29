@@ -30,6 +30,10 @@
             android:name="com.swipesapp.android.ui.activity.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
+        <activity
+            android:name="com.swipesapp.android.ui.activity.AddTaskActivity"
+            android:label="@string/title_activity_add_task" >
+        </activity>
     </application>
 
 </manifest>

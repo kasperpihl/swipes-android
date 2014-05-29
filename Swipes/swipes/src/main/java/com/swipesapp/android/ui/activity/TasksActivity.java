@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -14,14 +15,18 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.utils.Constants;
 import com.swipesapp.android.values.Sections;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
-public class TasksActivity extends Activity implements ListContentsListener, ViewPager.OnPageChangeListener {
+public class TasksActivity extends Activity implements ListContentsListener {
+    public static final int FOCUS_FRAGMENT_POSITION = 1;
+    public static final int SETTINGS_FRAGMENT_POSITION = 3; //last fragment
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -33,7 +38,32 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
     @InjectView(R.id.tasks_activity_container)
     ViewGroup mActivityMainLayout;
 
+    @InjectView(R.id.button_add_task)
+    SwipesButton mButtonAddTask;
+
+    @InjectView(R.id.edit_text_add_task_content)
+    EditText mEditTaskAddNewTask;
+
     private static Typeface sTypeface;
+
+    @OnClick(R.id.button_add_task)
+    protected void startAddTaskWorkflow() {
+        // go to main fragment
+        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
+
+        // animate button down off screen
+        //TODO: animate
+        mButtonAddTask.setVisibility(View.GONE);
+
+        // animate edit text into screen
+        // TODO: animate
+        mEditTaskAddNewTask.setVisibility(View.VISIBLE);
+        mEditTaskAddNewTask.setFocusable(true);
+        mEditTaskAddNewTask.setFocusableInTouchMode(true);
+        mEditTaskAddNewTask.requestFocus();
+
+        //TODO: blur background
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +82,33 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         mTabs.setTextSize(dimension);
         mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mTabs.setOnPageChangeListener(this);
+        ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color, R.color.light_theme_text};
+                mTabs.setIndicatorColorResource(textColors[position]);
+                mTabs.setTextColorResource(R.color.light_theme_text);
+                View v = mTabs.getTabView(position);
+                if (v instanceof TextView) {
+                    TextView tabTextView = (TextView) v;
+                    tabTextView.setTextColor(getResources().getColor(textColors[position]));
+                }
+
+                if (position == FOCUS_FRAGMENT_POSITION) {
+                    setBackgroundImage(Sections.FOCUS);
+                } else {
+                    clearBackgroundImage();
+                }
+
+                if (position == SETTINGS_FRAGMENT_POSITION) {
+                    mButtonAddTask.setVisibility(View.GONE);
+                } else {
+                    mButtonAddTask.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        ViewPager.SimpleOnPageChangeListener listener = simpleOnPageChangeListener;
+        mTabs.setOnPageChangeListener(listener);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -60,7 +116,22 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
         }
 
         // Default to second item, index starts at zero
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
+    }
+
+    private void clearBackgroundImage() {
+        mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+    }
+
+    private void setBackgroundImage(Sections currentSection) {
+        switch (currentSection) {
+            case FOCUS:
+                mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+                break;
+            default:
+                mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+                break;
+        }
     }
 
     @Override
@@ -72,41 +143,12 @@ public class TasksActivity extends Activity implements ListContentsListener, Vie
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onEmpty(Sections currentSection) {
-        switch (currentSection) {
-            case FOCUS:
-                mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
-                break;
-            default:
-                mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
-                break;
-        }
+        setBackgroundImage(currentSection);
     }
 
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onNotEmpty() {
-        mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // Needed to comply with interface
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color};
-        mTabs.setIndicatorColorResource(textColors[position]);
-        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        View v = mTabs.getTabView(position);
-        if (v instanceof TextView) {
-            TextView tabTextView = (TextView) v;
-            tabTextView.setTextColor(getResources().getColor(textColors[position]));
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // Needed to comply with interface
+        clearBackgroundImage();
     }
 }
