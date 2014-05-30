@@ -20,7 +20,6 @@ import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
-import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 
@@ -133,30 +132,15 @@ public class TasksActivity extends Activity implements ListContentsListener {
 
     private void clearEmptyBackground() {
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
-        resetDividerColor();
+        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
     }
 
     private void setEmptyBackground(Sections currentSection) {
         if (currentSection == Sections.FOCUS) {
             mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
-            // Invert divider color, because otherwise it looks misplaced against the image background.
-            invertDividerColor();
+            // Change divider color, because otherwise it looks misplaced against the image background.
+            mTabs.setDividerColor(ThemeUtils.getCurrentThemeEmptyDividerColor(this));
         }
-    }
-
-    private void invertDividerColor() {
-        switch (ThemeUtils.getCurrentTheme(this)) {
-            case LIGHT:
-                mTabs.setDividerColor(ThemeUtils.getThemeDividerColor(Themes.DARK, this));
-                break;
-            case DARK:
-                mTabs.setDividerColor(ThemeUtils.getThemeDividerColor(Themes.LIGHT, this));
-                break;
-        }
-    }
-
-    private void resetDividerColor() {
-        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
     }
 
     @Override

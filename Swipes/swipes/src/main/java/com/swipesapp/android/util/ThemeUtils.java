@@ -106,16 +106,16 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Theme's divider color.
+     * @return Current theme's empty divider color.
      */
-    public static int getThemeDividerColor(Themes theme, Context context) {
-        switch (theme) {
+    public static int getCurrentThemeEmptyDividerColor(Context context) {
+        switch (getCurrentTheme(context)) {
             case LIGHT:
-                return context.getResources().getColor(R.color.light_theme_divider);
+                return context.getResources().getColor(R.color.light_theme_empty_divider);
             case DARK:
-                return context.getResources().getColor(R.color.dark_theme_divider);
+                return context.getResources().getColor(R.color.dark_theme_empty_divider);
             default:
-                return context.getResources().getColor(R.color.light_theme_divider);
+                return context.getResources().getColor(R.color.light_theme_empty_divider);
         }
     }
 
