@@ -16,22 +16,24 @@
         <item name="android:textColor">@color/light_theme_text</item>
         <item name="android:actionBarStyle">@style/Light_ActionBar</item>
         <item name="android:listViewStyle">@style/Light_ListView</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="Dark_Theme" parent="@android:style/Theme.Holo">
         <item name="android:textColor">@color/dark_theme_text</item>
         <item name="android:actionBarStyle">@style/Dark_ActionBar</item>
         <item name="android:listViewStyle">@style/Dark_ListView</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <!-- Action bar themes -->
     <style name="Light_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/light_theme_background</item>
+        <item name="android:background">@drawable/ab_solid_light</item>
         <item name="android:titleTextStyle">@style/Light_ActionBar_Text</item>
     </style>
 
     <style name="Dark_ActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">@color/dark_theme_background</item>
+        <item name="android:background">@drawable/ab_solid_dark</item>
         <item name="android:titleTextStyle">@style/Dark_ActionBar_Text</item>
     </style>
 
