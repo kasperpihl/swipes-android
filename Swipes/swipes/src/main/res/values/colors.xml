@@ -8,6 +8,8 @@
     <item name="dark_theme_background" type="color">#24282e</item>
     <item name="light_theme_text" type="color">#000000</item>
     <item name="dark_theme_text" type="color">#ffffff</item>
+    <item name="light_theme_divider" type="color">#e8e8e8</item>
+    <item name="dark_theme_divider" type="color">#4e5156</item>
     <item name="neutral_background" type="color">#e3e3e3</item>
 
 </resources>

@@ -18,7 +18,7 @@ public enum Sections {
 
     private static final String TAG = Sections.class.getSimpleName();
 
-    public int mSectionNumber;
+    private int mSectionNumber;
 
     Sections(int sectionNumber) {
         mSectionNumber = sectionNumber;

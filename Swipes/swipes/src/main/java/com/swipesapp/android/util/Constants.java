@@ -1,4 +1,4 @@
-package com.swipesapp.android.utils;
+package com.swipesapp.android.util;
 
 public class Constants {
     private Constants() {

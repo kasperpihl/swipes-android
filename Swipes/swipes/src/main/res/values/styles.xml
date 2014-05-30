@@ -1,26 +1,56 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <!-- Customize your theme here. -->
-        <item name="android:actionBarStyle">@style/SwipesActionBar</item>
-    </style>
-
-    <style name="SwipesActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@android:color/white</item>
-    </style>
-
-    <style name="MainActionBar" parent="SwipesActionBar">
-        <item name="android:displayOptions">useLogo|showHome</item>
-    </style>
+    <style name="AppTheme" parent="android:Theme.Holo.Light" />
 
     <style name="ActivityOverlay" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarStyle">@style/MainActionBar</item>
     </style>
 
     <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!-- Application themes -->
+    <style name="Light_Theme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:textColor">@color/light_theme_text</item>
+        <item name="android:actionBarStyle">@style/Light_ActionBar</item>
+        <item name="android:listViewStyle">@style/Light_ListView</item>
+    </style>
+
+    <style name="Dark_Theme" parent="@android:style/Theme.Holo">
+        <item name="android:textColor">@color/dark_theme_text</item>
+        <item name="android:actionBarStyle">@style/Dark_ActionBar</item>
+        <item name="android:listViewStyle">@style/Dark_ListView</item>
+    </style>
+
+    <!-- Action bar themes -->
+    <style name="Light_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/light_theme_background</item>
+        <item name="android:titleTextStyle">@style/Light_ActionBar_Text</item>
+    </style>
+
+    <style name="Dark_ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/dark_theme_background</item>
+        <item name="android:titleTextStyle">@style/Dark_ActionBar_Text</item>
+    </style>
+
+    <!-- Action bar text themes -->
+    <style name="Light_ActionBar_Text" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/light_theme_text</item>
+    </style>
+
+    <style name="Dark_ActionBar_Text" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/dark_theme_text</item>
+    </style>
+
+    <!-- ListView themes -->
+    <style name="Light_ListView" parent="@android:style/Widget.Holo.Light.ListView">
+        <item name="android:background">@color/light_theme_background</item>
+    </style>
+
+    <style name="Dark_ListView" parent="@android:style/Widget.Holo.ListView">
+        <item name="android:background">@color/dark_theme_background</item>
     </style>
 
 </resources>

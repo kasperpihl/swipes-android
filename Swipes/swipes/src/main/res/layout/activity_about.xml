@@ -1,48 +1,51 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            tools:context="${packageName}.${activityClass}">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context="${packageName}.${activityClass}">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
-        >
+        android:orientation="vertical">
 
         <TextView
-            android:text="This app is brought to you by"
-            style="?android:textAppearanceLarge"
+            android:id="@+id/about_brought_by"
+            style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="This app is brought to you by" />
 
         <com.swipesapp.android.ui.view.SwipesTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="60sp"
-            android:text="&#xe61a;"/>
+            android:layout_marginTop="20dp"
+            android:text="&#xe61a;"
+            android:textSize="60sp" />
 
         <View
+            android:id="@+id/about_signature_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/about_oss_licenses"
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@android:color/darker_gray"
-            />
+            android:text="Open source licenses" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:textAppearanceLarge"
-            android:layout_marginBottom="10dp"
-            android:text="Open source licenses"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TimePreference based on CommonsWare code. Licensed under Apache."
-            />
+            android:text="TimePreference based on CommonsWare code. Licensed under Apache." />
 
     </LinearLayout>
 </ScrollView>

@@ -18,7 +18,7 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.utils.Constants;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
@@ -87,14 +87,14 @@ public class TasksActivity extends Activity implements ListContentsListener {
         mTabs.setTextSize(dimension);
         mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mTabs.setDividerColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
         ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 int[] textColors = {
                         ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
                         ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
-                        ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
+                        ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
                         ThemeUtils.getCurrentThemeTextColor(mContext.get())
                 };
                 mTabs.setIndicatorColor(textColors[position]);

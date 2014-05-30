@@ -2,8 +2,6 @@ package com.swipesapp.android.util;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.values.Sections;
@@ -17,16 +15,31 @@ import com.swipesapp.android.values.Themes;
 public class ThemeUtils {
 
     /**
-     * Color applied in case the appropriate ones are missing.
-     */
-    private static final int DEFAULT_COLOR = Color.WHITE;
-
-    /**
+     * @param context Context to use.
      * @return Current selected theme.
      */
-    public static Themes getCurrentTheme() {
-        // TODO: Return a value loaded from preferences.
-        return Themes.DARK;
+    public static Themes getCurrentTheme(Context context) {
+        String theme = PreferenceUtils.readThemeSetting(context);
+        if (theme != null) {
+            return Themes.getThemeByName(theme);
+        } else {
+            return Themes.LIGHT;
+        }
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's resource file.
+     */
+    public static int getCurrentThemeResource(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return R.style.Light_Theme;
+            case DARK:
+                return R.style.Dark_Theme;
+            default:
+                return R.style.Light_Theme;
+        }
     }
 
     /**
@@ -34,7 +47,7 @@ public class ThemeUtils {
      * @return Current theme's background color.
      */
     public static int getCurrentThemeBackgroundColor(Context context) {
-        switch (getCurrentTheme()) {
+        switch (getCurrentTheme(context)) {
             case LIGHT:
                 return context.getResources().getColor(R.color.light_theme_background);
             case DARK:
@@ -49,7 +62,7 @@ public class ThemeUtils {
      * @return Current theme's text color.
      */
     public static int getCurrentThemeTextColor(Context context) {
-        switch (getCurrentTheme()) {
+        switch (getCurrentTheme(context)) {
             case LIGHT:
                 return context.getResources().getColor(R.color.light_theme_text);
             case DARK:
@@ -72,7 +85,22 @@ public class ThemeUtils {
             case DONE:
                 return context.getResources().getColor(R.color.done_accent_color);
             default:
-                return DEFAULT_COLOR;
+                return Color.TRANSPARENT;
+        }
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's divider color.
+     */
+    public static int getCurrentThemeDividerColor(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return context.getResources().getColor(R.color.light_theme_divider);
+            case DARK:
+                return context.getResources().getColor(R.color.dark_theme_divider);
+            default:
+                return context.getResources().getColor(R.color.light_theme_divider);
         }
     }
 

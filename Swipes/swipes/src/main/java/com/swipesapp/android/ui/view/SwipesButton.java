@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.utils.Constants;
+import com.swipesapp.android.util.Constants;
 
 public class SwipesButton extends Button {
 
