@@ -13,7 +13,6 @@ public class SnoozeSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getCurrentThemeResource(this));
-
         setContentView(R.layout.activity_snooze_settings);
 
         getFragmentManager().beginTransaction().replace(R.id.snooze_settings_content,
@@ -25,7 +24,6 @@ public class SnoozeSettingsActivity extends Activity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-//            getActivity().setTheme(ThemeUtils.getCurrentThemeResource(getActivity()));
 
             addPreferencesFromResource(R.xml.snooze_settings);
         }
