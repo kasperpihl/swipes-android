@@ -14,7 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/date_stamp_margin"
+            android:layout_marginBottom="@dimen/date_stamp_margin"
+            android:layout_marginTop="@dimen/date_stamp_margin_top"
             android:src="@drawable/date_stamp_background" />
 
         <TextView
