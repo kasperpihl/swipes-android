@@ -14,6 +14,8 @@ public enum Sections {
     DONE(2),
     SETTINGS(3);
 
+    private static final int SECTIONS_COUNT = 4;
+
     private static final String TAG = Sections.class.getSimpleName();
 
     public int mSectionNumber;
@@ -34,10 +36,16 @@ public enum Sections {
                 return FOCUS;
             case 2:
                 return DONE;
+            case 3:
+                return SETTINGS;
             default:
                 Log.wtf(TAG, "Section does not exist.");
                 return null;
         }
+    }
+
+    public static int getSectionsCount() {
+        return SECTIONS_COUNT;
     }
 
 }

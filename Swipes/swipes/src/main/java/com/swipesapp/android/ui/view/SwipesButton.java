@@ -5,13 +5,15 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.utils.Constants;
 
 public class SwipesButton extends Button {
+
     private Context mContext;
     private static Typeface sTypeface;
+
+    private static final int BUTTON_SIZE = 40;
 
     public SwipesButton(Context context) {
         super(context);
@@ -39,5 +41,6 @@ public class SwipesButton extends Button {
         }
         this.setTypeface(sTypeface);
         this.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext));
+        this.setTextSize(BUTTON_SIZE);
     }
 }
