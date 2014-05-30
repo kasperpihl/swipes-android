@@ -104,4 +104,19 @@ public class ThemeUtils {
         }
     }
 
+    /**
+     * @param context Context to use.
+     * @return Theme's divider color.
+     */
+    public static int getThemeDividerColor(Themes theme, Context context) {
+        switch (theme) {
+            case LIGHT:
+                return context.getResources().getColor(R.color.light_theme_divider);
+            case DARK:
+                return context.getResources().getColor(R.color.dark_theme_divider);
+            default:
+                return context.getResources().getColor(R.color.light_theme_divider);
+        }
+    }
+
 }

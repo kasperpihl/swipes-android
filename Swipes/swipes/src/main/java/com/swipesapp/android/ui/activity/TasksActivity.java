@@ -17,9 +17,10 @@ import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
-import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 
@@ -106,9 +107,9 @@ public class TasksActivity extends Activity implements ListContentsListener {
                 }
 
                 if (position == Sections.FOCUS.getSectionNumber()) {
-                    setBackgroundImage(Sections.FOCUS);
+                    setEmptyBackground(Sections.FOCUS);
                 } else {
-                    clearBackgroundImage();
+                    clearEmptyBackground();
                 }
 
                 if (position == Sections.SETTINGS.getSectionNumber()) {
@@ -130,19 +131,32 @@ public class TasksActivity extends Activity implements ListContentsListener {
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
     }
 
-    private void clearBackgroundImage() {
+    private void clearEmptyBackground() {
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+        resetDividerColor();
     }
 
-    private void setBackgroundImage(Sections currentSection) {
-        switch (currentSection) {
-            case FOCUS:
-                mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+    private void setEmptyBackground(Sections currentSection) {
+        if (currentSection == Sections.FOCUS) {
+            mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+            // Invert divider color, because otherwise it looks misplaced against the image background.
+            invertDividerColor();
+        }
+    }
+
+    private void invertDividerColor() {
+        switch (ThemeUtils.getCurrentTheme(this)) {
+            case LIGHT:
+                mTabs.setDividerColor(ThemeUtils.getThemeDividerColor(Themes.DARK, this));
                 break;
-            default:
-                mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+            case DARK:
+                mTabs.setDividerColor(ThemeUtils.getThemeDividerColor(Themes.LIGHT, this));
                 break;
         }
+    }
+
+    private void resetDividerColor() {
+        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
     }
 
     @Override
@@ -154,12 +168,12 @@ public class TasksActivity extends Activity implements ListContentsListener {
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onEmpty(Sections currentSection) {
-        setBackgroundImage(currentSection);
+        setEmptyBackground(currentSection);
     }
 
     // HACK: this is a workaround to change the background entirely
     @Override
     public void onNotEmpty() {
-        clearBackgroundImage();
+        clearEmptyBackground();
     }
 }

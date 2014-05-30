@@ -25,7 +25,8 @@
             android:layout_below="@id/date_stamp_background"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:text="@string/all_done" />
+            android:text="@string/all_done"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/text_date_stamp_today"
@@ -35,7 +36,8 @@
             android:layout_below="@id/text_all_done"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:text="@string/example_date" />
+            android:text="@string/example_date"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/text_date_stamp_message"
@@ -46,7 +48,8 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
             android:gravity="center"
-            android:text="@string/all_done_message" />
+            android:text="@string/all_done_message"
+            android:textColor="@android:color/white" />
 
         <LinearLayout
             android:layout_width="wrap_content"
