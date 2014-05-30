@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,13 +21,14 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.utils.Constants;
 import com.swipesapp.android.values.Sections;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class TasksActivity extends Activity implements ListContentsListener {
-    public static final int FOCUS_FRAGMENT_POSITION = 1;
-    public static final int SETTINGS_FRAGMENT_POSITION = 3; //last fragment
+
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @InjectView(R.id.pager)
@@ -46,10 +48,12 @@ public class TasksActivity extends Activity implements ListContentsListener {
 
     private static Typeface sTypeface;
 
+    private WeakReference<Context> mContext;
+
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
         // go to main fragment
-        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
+        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
 
         // animate button down off screen
         //TODO: animate
@@ -70,6 +74,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
+        mContext = new WeakReference<Context>(this);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -82,25 +87,31 @@ public class TasksActivity extends Activity implements ListContentsListener {
         mTabs.setTextSize(dimension);
         mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTabs.setDividerColor(ThemeUtils.getCurrentThemeTextColor(this));
         ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                int[] textColors = {R.color.later_accent_color, R.color.focus_accent_color, R.color.done_accent_color, R.color.light_theme_text};
-                mTabs.setIndicatorColorResource(textColors[position]);
-                mTabs.setTextColorResource(R.color.light_theme_text);
+                int[] textColors = {
+                        ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
+                        ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
+                        ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
+                        ThemeUtils.getCurrentThemeTextColor(mContext.get())
+                };
+                mTabs.setIndicatorColor(textColors[position]);
+                mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
                 View v = mTabs.getTabView(position);
                 if (v instanceof TextView) {
                     TextView tabTextView = (TextView) v;
-                    tabTextView.setTextColor(getResources().getColor(textColors[position]));
+                    tabTextView.setTextColor(textColors[position]);
                 }
 
-                if (position == FOCUS_FRAGMENT_POSITION) {
+                if (position == Sections.FOCUS.getSectionNumber()) {
                     setBackgroundImage(Sections.FOCUS);
                 } else {
                     clearBackgroundImage();
                 }
 
-                if (position == SETTINGS_FRAGMENT_POSITION) {
+                if (position == Sections.SETTINGS.getSectionNumber()) {
                     mButtonAddTask.setVisibility(View.GONE);
                 } else {
                     mButtonAddTask.setVisibility(View.VISIBLE);
@@ -116,7 +127,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
         }
 
         // Default to second item, index starts at zero
-        mViewPager.setCurrentItem(FOCUS_FRAGMENT_POSITION);
+        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
     }
 
     private void clearBackgroundImage() {

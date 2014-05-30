@@ -30,22 +30,21 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
 // TODO: Refactor adapter for real usage.
 public class TasksListAdapter extends ArrayAdapter {
 
-    List data;
-    Context context;
-    int layoutResID;
+    private List mData;
+    private WeakReference<Context> mContext;
+    private int mLayoutResID;
 
-    final int INVALID_ID = -1;
-    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+    private final int INVALID_ID = -1;
+    private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
     private ListContentsListener mListContentsListener;
-
-    Sections mCurrentSection;
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
         mListContentsListener = listContentsListener;
@@ -54,9 +53,9 @@ public class TasksListAdapter extends ArrayAdapter {
     public TasksListAdapter(Context context, int layoutResourceId, List data) {
         super(context, layoutResourceId, data);
 
-        this.data = data;
-        this.context = context;
-        this.layoutResID = layoutResourceId;
+        mData = data;
+        mContext = new WeakReference<Context>(context);
+        mLayoutResID = layoutResourceId;
 
         for (int i = 0; i < data.size(); ++i) {
             mIdMap.put(String.valueOf(data.get(i)), i);
@@ -71,7 +70,7 @@ public class TasksListAdapter extends ArrayAdapter {
             if (count != 0) {
                 mListContentsListener.onNotEmpty();
             } else {
-                mListContentsListener.onEmpty(mCurrentSection);
+                mListContentsListener.onEmpty(Sections.FOCUS);
             }
         }
         return count;
@@ -84,8 +83,8 @@ public class TasksListAdapter extends ArrayAdapter {
         View row = convertView;
 
         if (row == null) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            row = inflater.inflate(layoutResID, parent, false);
+            LayoutInflater inflater = ((Activity) mContext.get()).getLayoutInflater();
+            row = inflater.inflate(mLayoutResID, parent, false);
 
             holder = new TaskHolder();
 
@@ -98,7 +97,7 @@ public class TasksListAdapter extends ArrayAdapter {
             holder = (TaskHolder) row.getTag();
         }
 
-        String itemText = String.valueOf(data.get(position));
+        String itemText = String.valueOf(mData.get(position));
         holder.frontText.setText(itemText);
 
         // Sets colors for cell, matching the current theme.
@@ -127,10 +126,6 @@ public class TasksListAdapter extends ArrayAdapter {
         LinearLayout frontView;
         LinearLayout backView;
         TextView frontText;
-    }
-
-    public void setCurrentSection(Sections section) {
-        mCurrentSection = section;
     }
 
 }

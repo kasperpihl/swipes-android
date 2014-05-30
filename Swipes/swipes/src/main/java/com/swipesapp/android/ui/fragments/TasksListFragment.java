@@ -86,7 +86,6 @@ public class TasksListFragment extends ListFragment {
         ButterKnife.inject(this, rootView);
 
         TasksListAdapter adapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, cheeseList);
-        adapter.setCurrentSection(Sections.getSectionByNumber(mCurrentSection));
 
         Activity hostActivity = getActivity();
         if (hostActivity instanceof ListContentsListener) {

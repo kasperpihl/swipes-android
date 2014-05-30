@@ -11,7 +11,8 @@ public enum Sections {
 
     LATER(0),
     FOCUS(1),
-    DONE(2);
+    DONE(2),
+    SETTINGS(3);
 
     private static final String TAG = Sections.class.getSimpleName();
 
