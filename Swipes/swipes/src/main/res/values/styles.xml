@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light" />
+    <style name="AppTheme" parent="Theme.HoloAccent.Light" />
 
     <style name="ActivityOverlay" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
@@ -12,18 +12,20 @@
     </style>
 
     <!-- Application themes -->
-    <style name="Light_Theme" parent="@android:style/Theme.Holo.Light">
+    <style name="Light_Theme" parent="Theme.HoloAccent.Light">
         <item name="android:textColor">@color/light_theme_text</item>
         <item name="android:actionBarStyle">@style/Light_ActionBar</item>
         <item name="android:listViewStyle">@style/Light_ListView</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="accentColor">@color/light_theme_accent_color</item>
     </style>
 
-    <style name="Dark_Theme" parent="@android:style/Theme.Holo">
+    <style name="Dark_Theme" parent="Theme.HoloAccent">
         <item name="android:textColor">@color/dark_theme_text</item>
         <item name="android:actionBarStyle">@style/Dark_ActionBar</item>
         <item name="android:listViewStyle">@style/Dark_ListView</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="accentColor">@color/dark_theme_accent_color</item>
     </style>
 
     <!-- Action bar themes -->

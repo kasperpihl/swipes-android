@@ -10,13 +10,13 @@
     <com.swipesapp.android.ui.view.TimePreference
         android:key="settings_weekend_day_start"
         android:title="@string/weekend_day_start" />
-    <ListPreference
+    <com.negusoft.holoaccent.preference.ListPreference
         android:dialogTitle="@string/settings_snoozes_week_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"
         android:key="settings_snoozes_week_start_dow"
         android:title="@string/week_start" />
-    <ListPreference
+    <com.negusoft.holoaccent.preference.ListPreference
         android:dialogTitle="@string/settings_snoozes_weekend_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"

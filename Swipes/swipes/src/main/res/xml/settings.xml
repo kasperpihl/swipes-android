@@ -9,13 +9,13 @@
 
     </PreferenceScreen>
 
-    <SwitchPreference
+    <com.negusoft.holoaccent.preference.SwitchPreference
         android:key="settings_enable_notifications"
         android:title="@string/notifications" />
-    <SwitchPreference
+    <com.negusoft.holoaccent.preference.SwitchPreference
         android:key="settings_enable_location"
         android:title="@string/location" />
-    <ListPreference
+    <com.negusoft.holoaccent.preference.ListPreference
         android:dialogTitle="@string/settings_theme_chooser_dialog_title"
         android:entries="@array/theme_list"
         android:entryValues="@array/theme_values_list"

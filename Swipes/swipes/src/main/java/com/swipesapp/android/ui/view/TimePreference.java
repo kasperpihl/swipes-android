@@ -1,21 +1,20 @@
 package com.swipesapp.android.ui.view;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
+import android.preference.Preference;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TimePicker;
 
-import com.swipesapp.android.R;
+import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 
 /**
  * Created by douglasdrumond on 4/27/14.
  */
-public class TimePreference extends DialogPreference {
+public class TimePreference extends Preference {
     private int mLastHour;
     private int mLastMinute;
-    private TimePicker mTimePicker;
 
     public static int getHour(String time) {
         String[] pieces = time.split(":");
@@ -32,39 +31,29 @@ public class TimePreference extends DialogPreference {
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setPositiveButtonText(context.getString(R.string.set));
-        setNegativeButtonText(context.getString(R.string.cancel));
-    }
+        setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
+                        mLastHour = timePicker.getCurrentHour();
+                        mLastMinute = timePicker.getCurrentMinute();
 
-    @Override
-    protected View onCreateDialogView() {
-        mTimePicker = new TimePicker(getContext());
+                        String time = String.valueOf(mLastHour) + ":" + String.valueOf(mLastMinute);
 
-        return mTimePicker;
-    }
+                        if (callChangeListener(time)) {
+                            persistString(time);
+                        }
+                    }
+                };
 
-    @Override
-    protected void onBindDialogView(View v) {
-        super.onBindDialogView(v);
+                new AccentTimePickerDialog(getContext(), listener, mLastHour, mLastMinute,
+                        DateFormat.is24HourFormat(getContext())).show();
 
-        mTimePicker.setCurrentHour(mLastHour);
-        mTimePicker.setCurrentMinute(mLastMinute);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-
-        if (positiveResult) {
-            mLastHour = mTimePicker.getCurrentHour();
-            mLastMinute = mTimePicker.getCurrentMinute();
-
-            String time = String.valueOf(mLastHour) + ":" + String.valueOf(mLastMinute);
-
-            if (callChangeListener(time)) {
-                persistString(time);
+                return true;
             }
-        }
+        });
     }
 
     @Override

@@ -1,16 +1,16 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends AccentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,6 @@ public class SettingsActivity extends Activity {
         public void onResume() {
             super.onResume();
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         }
 
         @Override

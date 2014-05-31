@@ -1,18 +1,18 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class AboutActivity extends Activity {
+public class AboutActivity extends AccentActivity {
 
     @InjectView(R.id.about_view)
     ScrollView mView;

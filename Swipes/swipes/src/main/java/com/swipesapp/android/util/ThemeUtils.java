@@ -119,4 +119,19 @@ public class ThemeUtils {
         }
     }
 
+    /**
+     * @param context Context to use.
+     * @return Current theme's tab background resource.
+     */
+    public static int getCurrentThemeTabBackground(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return R.drawable.background_tab_light;
+            case DARK:
+                return R.drawable.background_tab_dark;
+            default:
+                return R.drawable.background_tab_light;
+        }
+    }
+
 }

@@ -1,13 +1,13 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
 
-public class SnoozeSettingsActivity extends Activity {
+public class SnoozeSettingsActivity extends AccentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

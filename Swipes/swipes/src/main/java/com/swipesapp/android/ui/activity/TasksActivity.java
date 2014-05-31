@@ -1,7 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends Activity implements ListContentsListener {
+public class TasksActivity extends AccentActivity implements ListContentsListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -72,6 +72,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(ThemeUtils.getCurrentThemeResource(this));
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
         mContext = new WeakReference<Context>(this);
@@ -88,6 +89,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
         mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
+        mTabs.setTabBackground(ThemeUtils.getCurrentThemeTabBackground(this));
         ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -138,7 +140,7 @@ public class TasksActivity extends Activity implements ListContentsListener {
     private void setEmptyBackground(Sections currentSection) {
         if (currentSection == Sections.FOCUS) {
             mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
-            // Change divider color, because otherwise it looks misplaced against the image background.
+            // Change divider color, otherwise it will look misplaced against the image background.
             mTabs.setDividerColor(ThemeUtils.getCurrentThemeEmptyDividerColor(this));
         }
     }
