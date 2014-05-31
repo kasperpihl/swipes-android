@@ -48,8 +48,10 @@ public class TimePreference extends Preference {
                     }
                 };
 
-                new AccentTimePickerDialog(getContext(), listener, mLastHour, mLastMinute,
-                        DateFormat.is24HourFormat(getContext())).show();
+                AccentTimePickerDialog dialog = new AccentTimePickerDialog(getContext(), listener, mLastHour, mLastMinute,
+                        DateFormat.is24HourFormat(getContext()));
+                dialog.setTitle(getTitle());
+                dialog.show();
 
                 return true;
             }
