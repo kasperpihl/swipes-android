@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
@@ -78,7 +79,7 @@ public class TasksListFragment extends ListFragment {
         ArrayList<String> cheeseList = new ArrayList<String>();
         if (mCurrentSection == Sections.FOCUS.getSectionNumber()) {
             for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-//                cheeseList.add(Cheeses.sCheeseStrings[i]);
+                cheeseList.add(Cheeses.sCheeseStrings[i]);
             }
         }
 
@@ -138,15 +139,59 @@ public class TasksListFragment extends ListFragment {
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override
-        public void onOpened(int position, boolean toRight) {
+        public void onFinishedSwipeRight(int position) {
+            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
+            switch (currentSection) {
+                case LATER:
+                    // TODO: Move task from Later to Focus.
+                    Toast.makeText(getActivity(), "TODO: Move task to Focus.", Toast.LENGTH_SHORT).show();
+                    break;
+                case FOCUS:
+                    // TODO: Move task from Focus to Done.
+                    Toast.makeText(getActivity(), "TODO: Move task to Done.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
         @Override
-        public void onClosed(int position, boolean fromRight) {
+        public void onFinishedSwipeLeft(int position) {
+            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
+            switch (currentSection) {
+                case LATER:
+                    // TODO: Reschedule task.
+                    Toast.makeText(getActivity(), "TODO: Reschedule task.", Toast.LENGTH_SHORT).show();
+                    break;
+                case FOCUS:
+                    // TODO: Move task from Focus to Later.
+                    Toast.makeText(getActivity(), "TODO: Move task to Later.", Toast.LENGTH_SHORT).show();
+                    break;
+                case DONE:
+                    // TODO: Move task from Done to Focus.
+                    Toast.makeText(getActivity(), "TODO: Move task to Focus.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
         @Override
-        public void onDismiss(int[] reverseSortedPositions) {
+        public void onFinishedLongSwipeRight(int position) {
+            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
+            switch (currentSection) {
+                case LATER:
+                    // TODO: Move task from Later to Done.
+                    Toast.makeText(getActivity(), "TODO: Move task to Done.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+
+        @Override
+        public void onFinishedLongSwipeLeft(int position) {
+            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
+            switch (currentSection) {
+                case DONE:
+                    // TODO: Move task from Done to Later.
+                    Toast.makeText(getActivity(), "TODO: Move task to Later.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
     };
 
