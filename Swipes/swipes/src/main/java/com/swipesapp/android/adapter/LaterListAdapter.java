@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 // TODO: Refactor adapter for real usage.
-public class TasksListAdapter extends ArrayAdapter {
+public class LaterListAdapter extends ArrayAdapter {
 
     private List mData;
     private WeakReference<Context> mContext;
@@ -50,7 +50,7 @@ public class TasksListAdapter extends ArrayAdapter {
         mListContentsListener = listContentsListener;
     }
 
-    public TasksListAdapter(Context context, int layoutResourceId, List data) {
+    public LaterListAdapter(Context context, int layoutResourceId, List data) {
         super(context, layoutResourceId, data);
 
         mData = data;
@@ -70,7 +70,7 @@ public class TasksListAdapter extends ArrayAdapter {
             if (count != 0) {
                 mListContentsListener.onNotEmpty();
             } else {
-                mListContentsListener.onEmpty(Sections.FOCUS);
+                mListContentsListener.onEmpty(Sections.LATER);
             }
         }
         return count;

@@ -1,25 +1,7 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.swipesapp.android.ui.fragments;
 
-import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +12,11 @@ import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.swipesapp.android.Cheeses;
+import com.swipesapp.android.FakeTasks;
 import com.swipesapp.android.R;
-import com.swipesapp.android.adapter.TasksListAdapter;
+import com.swipesapp.android.adapter.DoneListAdapter;
+import com.swipesapp.android.adapter.FocusListAdapter;
+import com.swipesapp.android.adapter.LaterListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.DynamicListView;
 import com.swipesapp.android.util.ThemeUtils;
@@ -52,13 +36,33 @@ public class TasksListFragment extends ListFragment {
      * The fragment argument representing the section number for this fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String LOG_TAG = TasksListFragment.class.getCanonicalName();
 
     /**
-     * Customized list view to display tasks.
+     * Current section loaded.
      */
-    DynamicListView mListView;
-    private int mCurrentSection;
+    private Sections mCurrentSection;
+
+    /**
+     * Customized list views to display tasks.
+     */
+    private DynamicListView mLaterListView;
+    private DynamicListView mFocusListView;
+    private DynamicListView mDoneListView;
+
+    /**
+     * Task lists for each section.
+     */
+    // TODO: Change data type to use real data.
+    private ArrayList<String> mLaterTasks;
+    private ArrayList<String> mFocusTasks;
+    private ArrayList<String> mDoneTasks;
+
+    /**
+     * Adapters for each section.
+     */
+    private LaterListAdapter mLaterAdapter;
+    private FocusListAdapter mFocusAdapter;
+    private DoneListAdapter mDoneAdapter;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -73,31 +77,26 @@ public class TasksListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: Remove this and use real data.
         Bundle args = getArguments();
-        mCurrentSection = args.getInt(ARG_SECTION_NUMBER, 1);
-        ArrayList<String> cheeseList = new ArrayList<String>();
-        if (mCurrentSection == Sections.FOCUS.getSectionNumber()) {
-            for (int i = 0; i < Cheeses.sCheeseStrings.length; ++i) {
-                cheeseList.add(Cheeses.sCheeseStrings[i]);
-            }
-        }
 
-        View rootView = inflater.inflate(R.layout.fragment_focus_list, container, false);
+        int currentSectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
+        mCurrentSection = Sections.getSectionByNumber(currentSectionNumber);
+
+        View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
         ButterKnife.inject(this, rootView);
 
-        TasksListAdapter adapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, cheeseList);
-
-        Activity hostActivity = getActivity();
-        if (hostActivity instanceof ListContentsListener) {
-            adapter.setListContentsListener((ListContentsListener) hostActivity);
+        // Setup view for current section.
+        switch (mCurrentSection) {
+            case LATER:
+                setupLaterView(rootView);
+                break;
+            case FOCUS:
+                setupFocusView(rootView);
+                break;
+            case DONE:
+                setupDoneView(rootView);
+                break;
         }
-
-        mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
-
-        configureListView(adapter, cheeseList);
-
-        configureEmptyView(mCurrentSection);
 
         return rootView;
     }
@@ -108,40 +107,141 @@ public class TasksListFragment extends ListFragment {
         super.onDestroyView();
     }
 
-    private void configureListView(ListAdapter adapter, ArrayList<String> data) {
-        // TODO: Remove and use a different data type with real data.
-        mListView.setCheeseList(data);
-        mListView.setAdapter(adapter);
-        mListView.setSwipeListViewListener(mSwipeListener);
-        mListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
-        mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
-        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
-        mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
-        mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
+    private void setupLaterView(View rootView) {
+        // Load tasks.
+        loadLaterTasks();
+
+        // Initialize adapter.
+        mLaterAdapter = new LaterListAdapter(getActivity(), R.layout.swipeable_cell, mLaterTasks);
+
+        // Set contents listener.
+        if (getActivity() instanceof ListContentsListener) {
+            mLaterAdapter.setListContentsListener((ListContentsListener) getActivity());
+        }
+
+        // Configure list view.
+        mLaterListView = (DynamicListView) rootView.findViewById(android.R.id.list);
+        configureLaterListView(mLaterAdapter);
+
+        // Setup empty view.
+        mViewStub.setLayoutResource(R.layout.tasks_later_empty_view);
     }
 
-    private void configureEmptyView(int currentSection) {
-        switch (currentSection) {
-            case 0:
-                mViewStub.setLayoutResource(R.layout.tasks_later_empty_view);
-                break;
-            case 1:
-                mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
-                break;
-            case 2:
-                mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
-                break;
-            default:
-                Log.wtf(LOG_TAG, "Shouldn't be here");
+    private void setupFocusView(View rootView) {
+        // Load tasks.
+        loadFocusTasks();
+
+        // Initialize adapter.
+        mFocusAdapter = new FocusListAdapter(getActivity(), R.layout.swipeable_cell, mFocusTasks);
+
+        // Set contents listener.
+        if (getActivity() instanceof ListContentsListener) {
+            mFocusAdapter.setListContentsListener((ListContentsListener) getActivity());
         }
+
+        // Configure list view.
+        mFocusListView = (DynamicListView) rootView.findViewById(android.R.id.list);
+        configureFocusListView(mFocusAdapter);
+
+        // Setup empty view.
+        mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
+    }
+
+    private void setupDoneView(View rootView) {
+        // Load tasks.
+        loadDoneTasks();
+
+        // Initialize adapter.
+        mDoneAdapter = new DoneListAdapter(getActivity(), R.layout.swipeable_cell, mDoneTasks);
+
+        // Set contents listener.
+        if (getActivity() instanceof ListContentsListener) {
+            mDoneAdapter.setListContentsListener((ListContentsListener) getActivity());
+        }
+
+        // Configure list view.
+        mDoneListView = (DynamicListView) rootView.findViewById(android.R.id.list);
+        configureDoneListView(mDoneAdapter);
+
+        // Setup empty view.
+        mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
+    }
+
+    private void configureLaterListView(ListAdapter adapter) {
+        // TODO: Refactor list view to use a different data type with real data.
+        mLaterListView.setContentList(mLaterTasks);
+        mLaterListView.setAdapter(adapter);
+        mLaterListView.setSwipeListViewListener(mSwipeListener);
+        mLaterListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mLaterListView.setLongSwipeEnabled(true);
+        mLaterListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mLaterListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), 0);
+        mLaterListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mLaterListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
+        mLaterListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_RIGHT);
+        mLaterListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
+        mLaterListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
+        mLaterListView.setLongSwipeActionRight(SwipeListView.LONG_SWIPE_ACTION_DISMISS);
+    }
+
+    private void configureFocusListView(ListAdapter adapter) {
+        // TODO: Refactor list view to use a different data type with real data.
+        mFocusListView.setContentList(mFocusTasks);
+        mFocusListView.setAdapter(adapter);
+        mFocusListView.setSwipeListViewListener(mSwipeListener);
+        mFocusListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mFocusListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mFocusListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mFocusListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
+        mFocusListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
+        mFocusListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
+    }
+
+    private void configureDoneListView(ListAdapter adapter) {
+        // TODO: Refactor list view to use a different data type with real data.
+        mDoneListView.setContentList(mDoneTasks);
+        mDoneListView.setAdapter(adapter);
+        mDoneListView.setSwipeListViewListener(mSwipeListener);
+        mDoneListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mDoneListView.setLongSwipeEnabled(true);
+        mDoneListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mDoneListView.setLongSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
+        mDoneListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mDoneListView.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
+        mDoneListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_LEFT);
+        mDoneListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_NONE);
+        mDoneListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_DISMISS);
+        mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
+    }
+
+    private void loadLaterTasks() {
+        // TODO: Load scheduled tasks.
+        mLaterTasks = loadFakeData();
+    }
+
+    private void loadFocusTasks() {
+        // TODO: Load focused tasks.
+        mFocusTasks = loadFakeData();
+    }
+
+    private void loadDoneTasks() {
+        // TODO: Load done tasks.
+        mDoneTasks = loadFakeData();
+    }
+
+    // TODO: Remove this when the above methods start loading real data.
+    private ArrayList<String> loadFakeData() {
+        ArrayList<String> fakeTasks = new ArrayList<String>();
+        for (int i = 0; i < FakeTasks.sFakeTasksTitles.length; ++i) {
+//            fakeTasks.add(FakeTasks.sFakeTasksTitles[i]);
+        }
+        return fakeTasks;
     }
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override
         public void onFinishedSwipeRight(int position) {
-            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
-            switch (currentSection) {
+            switch (mCurrentSection) {
                 case LATER:
                     // TODO: Move task from Later to Focus.
                     Toast.makeText(getActivity(), "TODO: Move task to Focus.", Toast.LENGTH_SHORT).show();
@@ -155,8 +255,7 @@ public class TasksListFragment extends ListFragment {
 
         @Override
         public void onFinishedSwipeLeft(int position) {
-            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
-            switch (currentSection) {
+            switch (mCurrentSection) {
                 case LATER:
                     // TODO: Reschedule task.
                     Toast.makeText(getActivity(), "TODO: Reschedule task.", Toast.LENGTH_SHORT).show();
@@ -174,8 +273,7 @@ public class TasksListFragment extends ListFragment {
 
         @Override
         public void onFinishedLongSwipeRight(int position) {
-            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
-            switch (currentSection) {
+            switch (mCurrentSection) {
                 case LATER:
                     // TODO: Move task from Later to Done.
                     Toast.makeText(getActivity(), "TODO: Move task to Done.", Toast.LENGTH_SHORT).show();
@@ -185,8 +283,7 @@ public class TasksListFragment extends ListFragment {
 
         @Override
         public void onFinishedLongSwipeLeft(int position) {
-            Sections currentSection = Sections.getSectionByNumber(mCurrentSection);
-            switch (currentSection) {
+            switch (mCurrentSection) {
                 case DONE:
                     // TODO: Move task from Done to Later.
                     Toast.makeText(getActivity(), "TODO: Move task to Later.", Toast.LENGTH_SHORT).show();

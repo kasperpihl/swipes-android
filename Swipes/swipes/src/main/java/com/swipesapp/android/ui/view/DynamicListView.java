@@ -36,19 +36,18 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.swipesapp.android.adapter.TasksListAdapter;
 
 import java.util.ArrayList;
 
 /**
  * The dynamic listview is an extension of SwipeListView that supports
  * cell dragging, swapping and swiping.
- *
+ * <p/>
  * This layout is in charge of positioning the hover cell in the correct location
  * on the screen in response to user touch events. It uses the position of the
  * hover cell to determine when two cells should be swapped. If two cells should
  * be swapped, all the corresponding data set and layout changes are handled here.
- *
+ * <p/>
  * If no cell is selected, all the touch events are passed down to the listview
  * and behave normally. If one of the items in the listview experiences a
  * long press event, the contents of its current visible state are captured as
@@ -57,7 +56,7 @@ import java.util.ArrayList;
  * hover cell is translated some distance to signify an item swap, a data set change
  * accompanied by animation takes place. When the user releases the hover cell,
  * it animates into its corresponding position in the listview.
- *
+ * <p/>
  * When the hover cell is either above or below the bounds of the listview, this
  * listview also scrolls on its own so as to reveal additional content.
  */
@@ -68,7 +67,7 @@ public class DynamicListView extends SwipeListView {
     private final int LINE_THICKNESS = 15;
     private final float BITMAP_SCALE = 0.9f;
 
-    public ArrayList<String> mCheeseList;
+    public ArrayList<String> mContentList;
 
     private int mLastEventY = -1;
 
@@ -116,13 +115,14 @@ public class DynamicListView extends SwipeListView {
         setOnItemLongClickListener(mOnItemLongClickListener);
         setOnScrollListener(mScrollListener);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
+        mSmoothScrollAmountAtEdge = (int) (SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
     }
 
     /**
      * Sets background colors for swipe gestures.
+     *
      * @param rightColor Right swipe gesture color.
-     * @param leftColor Left swipe gesture color.
+     * @param leftColor  Left swipe gesture color.
      */
     public void setSwipeBackgroundColors(int rightColor, int leftColor, int neutralColor) {
         getTouchListener().setRightBackgroundColor(rightColor);
@@ -132,8 +132,9 @@ public class DynamicListView extends SwipeListView {
 
     /**
      * Sets background colors for long swipe gestures.
+     *
      * @param rightLongColor Long right swipe gesture color.
-     * @param leftLongColor Long left swipe gesture color.
+     * @param leftLongColor  Long left swipe gesture color.
      */
     public void setLongSwipeBackgroundColors(int rightLongColor, int leftLongColor) {
         getTouchListener().setLongRightBackgroundColor(rightLongColor);
@@ -142,6 +143,7 @@ public class DynamicListView extends SwipeListView {
 
     /**
      * Enables or disables long swipes in the list.
+     *
      * @param enabled True to enable, false otherwise.
      */
     public void setLongSwipeEnabled(boolean enabled) {
@@ -199,14 +201,16 @@ public class DynamicListView extends SwipeListView {
         return drawable;
     }
 
-    /** Returns a scaled bitmap showing a screenshot of the view passed in. */
+    /**
+     * Returns a scaled bitmap showing a screenshot of the view passed in.
+     */
     private Bitmap getScaledBitmapFromView(View v, float scale) {
         int width = Math.round(v.getWidth() * scale);
         int height = Math.round(v.getHeight() * scale);
 
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        Canvas canvas = new Canvas (bitmap);
+        Canvas canvas = new Canvas(bitmap);
         v.draw(canvas);
 
         return bitmap;
@@ -220,19 +224,19 @@ public class DynamicListView extends SwipeListView {
      */
     private void updateNeighborViewsForID(long itemID) {
         int position = getPositionForID(itemID);
-        TasksListAdapter adapter = ((TasksListAdapter)getAdapter());
-        mAboveItemId = adapter.getItemId(position - 1);
-        mBelowItemId = adapter.getItemId(position + 1);
+        mAboveItemId = getAdapter().getItemId(position - 1);
+        mBelowItemId = getAdapter().getItemId(position + 1);
     }
 
-    /** Retrieves the view in the list corresponding to itemID */
-    public View getViewForID (long itemID) {
+    /**
+     * Retrieves the view in the list corresponding to itemID
+     */
+    public View getViewForID(long itemID) {
         int firstVisiblePosition = getFirstVisiblePosition();
-        TasksListAdapter adapter = ((TasksListAdapter)getAdapter());
-        for(int i = 0; i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
             int position = firstVisiblePosition + i;
-            long id = adapter.getItemId(position);
+            long id = getAdapter().getItemId(position);
             if (id == itemID) {
                 return v;
             }
@@ -240,8 +244,10 @@ public class DynamicListView extends SwipeListView {
         return null;
     }
 
-    /** Retrieves the position in the list corresponding to itemID */
-    public int getPositionForID (long itemID) {
+    /**
+     * Retrieves the position in the list corresponding to itemID
+     */
+    public int getPositionForID(long itemID) {
         View v = getViewForID(itemID);
         if (v == null) {
             return -1;
@@ -251,9 +257,9 @@ public class DynamicListView extends SwipeListView {
     }
 
     /**
-     *  dispatchDraw gets invoked when all the child views are about to be drawn.
-     *  By overriding this method, the hover cell (BitmapDrawable) can be drawn
-     *  over the listview's items whenever the listview is redrawn.
+     * dispatchDraw gets invoked when all the child views are about to be drawn.
+     * By overriding this method, the hover cell (BitmapDrawable) can be drawn
+     * over the listview's items whenever the listview is redrawn.
      */
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -264,12 +270,12 @@ public class DynamicListView extends SwipeListView {
     }
 
     @Override
-    public boolean onTouchEvent (MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = (int)event.getX();
-                mDownY = (int)event.getY();
+                mDownX = (int) event.getX();
+                mDownY = (int) event.getY();
                 mActivePointerId = event.getPointerId(0);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -352,7 +358,7 @@ public class DynamicListView extends SwipeListView {
                 return;
             }
 
-            swapElements(mCheeseList, originalItem, getPositionForView(switchView));
+            swapElements(mContentList, originalItem, getPositionForView(switchView));
 
             ((BaseAdapter) getAdapter()).notifyDataSetChanged();
 
@@ -400,8 +406,8 @@ public class DynamicListView extends SwipeListView {
      * Resets all the appropriate fields to a default state while also animating
      * the hover cell back to its correct location.
      */
-    private void touchEventsEnded () {
-        if (mCellIsMobile|| mIsWaitingForScrollFinish) {
+    private void touchEventsEnded() {
+        if (mCellIsMobile || mIsWaitingForScrollFinish) {
             mCellIsMobile = false;
             mIsWaitingForScrollFinish = false;
             mIsMobileScrolling = false;
@@ -452,7 +458,7 @@ public class DynamicListView extends SwipeListView {
     /**
      * Resets all the appropriate fields to a default state.
      */
-    private void touchEventsCancelled () {
+    private void touchEventsCancelled() {
         if (mCellIsMobile) {
             mAboveItemId = INVALID_ID;
             mMobileItemId = INVALID_ID;
@@ -480,13 +486,13 @@ public class DynamicListView extends SwipeListView {
         }
 
         public int interpolate(int start, int end, float fraction) {
-            return (int)(start + fraction * (end - start));
+            return (int) (start + fraction * (end - start));
         }
     };
 
     /**
-     *  Determines whether this listview is in a scrolling state invoked
-     *  by the fact that the hover cell is out of the bounds of the listview;
+     * Determines whether this listview is in a scrolling state invoked
+     * by the fact that the hover cell is out of the bounds of the listview;
      */
     private void handleMobileCellScroll() {
         mIsMobileScrolling = handleMobileCellScroll(mHoverCellCurrentBounds);
@@ -518,8 +524,8 @@ public class DynamicListView extends SwipeListView {
         return false;
     }
 
-    public void setCheeseList(ArrayList<String> cheeseList) {
-        mCheeseList = cheeseList;
+    public void setContentList(ArrayList<String> contentList) {
+        mContentList = contentList;
     }
 
     /**
@@ -529,7 +535,7 @@ public class DynamicListView extends SwipeListView {
      * scrolling takes place, the listview continuously checks if new cells became visible
      * and determines whether they are potential candidates for a cell swap.
      */
-    private AbsListView.OnScrollListener mScrollListener = new AbsListView.OnScrollListener () {
+    private AbsListView.OnScrollListener mScrollListener = new AbsListView.OnScrollListener() {
 
         private int mPreviousFirstVisibleItem = -1;
         private int mPreviousVisibleItemCount = -1;

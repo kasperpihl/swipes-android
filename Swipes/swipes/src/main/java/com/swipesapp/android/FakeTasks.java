@@ -16,14 +16,14 @@
 
 package com.swipesapp.android;
 
-// TODO: Remove this class when syncing is done and we have real data.
 /**
  * Fake data for the adapter.
  */
-public class Cheeses {
+// TODO: Remove this class when syncing is done and we have real data.
+public class FakeTasks {
 
-    public static final String[] sCheeseStrings = {
-/*            "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
+    public static final String[] sFakeTasksTitles = {
+            /*"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
             "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale",
             "Aisy Cendre", "Allgauer Emmentaler", "Alverca", "Ambert", "American Cheese",
             "Ami du Chambertin", "Anejo Enchilado", "Anneau du Vic-Bilh", "Anthoriro", "Appenzell",
