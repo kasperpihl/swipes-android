@@ -18,7 +18,7 @@ import com.swipesapp.android.adapter.DoneListAdapter;
 import com.swipesapp.android.adapter.FocusListAdapter;
 import com.swipesapp.android.adapter.LaterListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
-import com.swipesapp.android.ui.view.DynamicListView;
+import com.fortysevendeg.swipelistview.DynamicListView;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 

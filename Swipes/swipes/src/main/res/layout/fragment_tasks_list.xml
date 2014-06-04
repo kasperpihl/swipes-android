@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     tools:context=".ListViewAnimations">
 
-    <com.swipesapp.android.ui.view.DynamicListView
+    <com.fortysevendeg.swipelistview.DynamicListView
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@android:id/list"
         android:layout_width="match_parent"
