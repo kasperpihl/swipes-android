@@ -5,7 +5,7 @@ android {
     buildToolsVersion "19.0.3"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,12 @@ android {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src-gen/main/java']
         }
     }
 }
@@ -28,4 +34,7 @@ dependencies {
     compile 'com.android.support:support-v4:19.+'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.negusoft.holoaccent:library:1.0'
+    compile('de.greenrobot:greendao:1.3.0') {
+        exclude module: 'support-v4'
+    }
 }
