@@ -1,30 +1,32 @@
 package com.swipesapp.android.db;
 
-import de.greenrobot.dao.internal.DaoConfig;
-
 /**
  * Extended DAO for join of tasks and tags, allowing custom DB operations.
  *
  * @author Felipe Bari
  */
-public class ExtTaskTagDao extends TaskTagDao {
+public class ExtTaskTagDao {
 
     private static ExtTaskTagDao sInstance;
+    private TaskTagDao mDao;
 
-    // Custom constructor to comply with TaskTagDao.
-    private ExtTaskTagDao(DaoConfig config) {
-        super(config);
+    private ExtTaskTagDao(DaoSession daoSession) {
+        mDao = daoSession.getTaskTagDao();
     }
 
     public static ExtTaskTagDao getInstance(DaoSession daoSession) {
         if (sInstance == null) {
-            sInstance = (ExtTaskTagDao) daoSession.getTaskTagDao();
+            sInstance = new ExtTaskTagDao(daoSession);
         }
         return sInstance;
     }
 
+    public TaskTagDao getDao() {
+        return mDao;
+    }
+
     public TaskTag selectAssociation(Long taskId, Long tagId) {
-        return queryBuilder().where(Properties.TaskId.eq(taskId), Properties.TagId.eq(tagId)).list().get(0);
+        return mDao.queryBuilder().where(TaskTagDao.Properties.TaskId.eq(taskId), TaskTagDao.Properties.TagId.eq(tagId)).list().get(0);
     }
 
 }

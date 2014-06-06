@@ -3,31 +3,33 @@ package com.swipesapp.android.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.dao.internal.DaoConfig;
-
 /**
  * Extended DAO for tags, allowing custom DB operations.
  *
  * @author Felipe Bari
  */
-public class ExtTagDao extends TagDao {
+public class ExtTagDao {
 
     private static ExtTagDao sInstance;
+    private TagDao mDao;
 
-    // Custom constructor to comply with TagDao.
-    private ExtTagDao(DaoConfig config) {
-        super(config);
+    private ExtTagDao(DaoSession daoSession) {
+        mDao = daoSession.getTagDao();
     }
 
     public static ExtTagDao getInstance(DaoSession daoSession) {
         if (sInstance == null) {
-            sInstance = (ExtTagDao) daoSession.getTagDao();
+            sInstance = new ExtTagDao(daoSession);
         }
         return sInstance;
     }
 
+    public TagDao getDao() {
+        return mDao;
+    }
+
     public List<Tag> listAllTags() {
-        return queryBuilder().list();
+        return mDao.queryBuilder().list();
     }
 
     public List<Task> listTasksForTag(Long tagId) {

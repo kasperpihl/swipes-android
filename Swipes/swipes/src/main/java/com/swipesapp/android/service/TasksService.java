@@ -90,7 +90,7 @@ public class TasksService {
         Task task = tasksFromGson(Arrays.asList(gsonTask)).get(0);
 
         synchronized (this) {
-            Long taskId = mExtTaskDao.insert(task);
+            Long taskId = mExtTaskDao.getDao().insert(task);
             saveTags(taskId, gsonTask.getTags());
         }
     }
@@ -117,7 +117,7 @@ public class TasksService {
         task.setRepeatOption(gsonTask.getRepeatOption());
 
         synchronized (this) {
-            mExtTaskDao.update(task);
+            mExtTaskDao.getDao().update(task);
             saveTags(task.getId(), gsonTask.getTags());
         }
     }
@@ -142,12 +142,12 @@ public class TasksService {
                 // If tag exists, create only association.
                 if (tagId == null) {
                     // Create new tag.
-                    tagId = mExtTagDao.insert(tag);
+                    tagId = mExtTagDao.getDao().insert(tag);
                 }
 
                 // Create association.
                 association = new TaskTag(taskId, tagId);
-                mExtTaskTagDao.insert(association);
+                mExtTaskTagDao.getDao().insert(association);
             }
         }
     }
