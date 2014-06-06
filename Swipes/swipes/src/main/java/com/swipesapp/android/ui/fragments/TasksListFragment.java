@@ -13,20 +13,16 @@ import android.widget.Toast;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.swipesapp.android.FakeTasks;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.DoneListAdapter;
 import com.swipesapp.android.adapter.FocusListAdapter;
 import com.swipesapp.android.adapter.LaterListAdapter;
-import com.swipesapp.android.gson.GsonTag;
 import com.swipesapp.android.gson.GsonTask;
+import com.swipesapp.android.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -69,6 +65,11 @@ public class TasksListFragment extends ListFragment {
     private FocusListAdapter mFocusAdapter;
     private DoneListAdapter mDoneAdapter;
 
+    /**
+     * Service to perform tasks operations.
+     */
+    private TasksService mTasksService;
+
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
@@ -83,6 +84,8 @@ public class TasksListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
+
+        mTasksService = TasksService.getInstance(getActivity().getApplicationContext());
 
         int currentSectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mCurrentSection = Sections.getSectionByNumber(currentSectionNumber);
@@ -114,7 +117,7 @@ public class TasksListFragment extends ListFragment {
 
     private void setupLaterView(View rootView) {
         // Load tasks.
-        loadLaterTasks();
+        mLaterTasks = mTasksService.loadScheduledTasks();
 
         // Initialize adapter.
         mLaterAdapter = new LaterListAdapter(getActivity(), R.layout.swipeable_cell, mLaterTasks);
@@ -134,7 +137,7 @@ public class TasksListFragment extends ListFragment {
 
     private void setupFocusView(View rootView) {
         // Load tasks.
-        loadFocusTasks();
+        mFocusTasks = mTasksService.loadFocusedTasks();
 
         // Initialize adapter.
         mFocusAdapter = new FocusListAdapter(getActivity(), R.layout.swipeable_cell, mFocusTasks);
@@ -154,7 +157,7 @@ public class TasksListFragment extends ListFragment {
 
     private void setupDoneView(View rootView) {
         // Load tasks.
-        loadDoneTasks();
+        mDoneTasks = mTasksService.loadCompletedTasks();
 
         // Initialize adapter.
         mDoneAdapter = new DoneListAdapter(getActivity(), R.layout.swipeable_cell, mDoneTasks);
@@ -217,30 +220,6 @@ public class TasksListFragment extends ListFragment {
         mDoneListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_NONE);
         mDoneListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_DISMISS);
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
-    }
-
-    private void loadLaterTasks() {
-        // TODO: Load scheduled tasks.
-        mLaterTasks = loadFakeData();
-    }
-
-    private void loadFocusTasks() {
-        // TODO: Load focused tasks.
-        mFocusTasks = loadFakeData();
-    }
-
-    private void loadDoneTasks() {
-        // TODO: Load done tasks.
-        mDoneTasks = loadFakeData();
-    }
-
-    // TODO: Remove this when the above methods start loading real data.
-    private List<GsonTask> loadFakeData() {
-        List<GsonTask> fakeTasks = new ArrayList<GsonTask>();
-        for (int i = 0; i < FakeTasks.sFakeTasksTitles.length; ++i) {
-//            fakeTasks.add(new GsonTask(null, "XYZ", "XYZ", new Date(), new Date(), false, FakeTasks.sFakeTasksTitles[i], "XYZ", i, 0, null, new Date(), "XYZ", new Date(), RepeatOptions.NEVER.getValue(), new ArrayList<GsonTag>()));
-        }
-        return fakeTasks;
     }
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
