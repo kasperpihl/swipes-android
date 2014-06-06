@@ -6,8 +6,10 @@ import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.ExtTagDao;
 import com.swipesapp.android.db.ExtTaskDao;
+import com.swipesapp.android.db.ExtTaskTagDao;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
+import com.swipesapp.android.db.TaskTag;
 import com.swipesapp.android.gson.GsonTag;
 import com.swipesapp.android.gson.GsonTask;
 
@@ -27,6 +29,7 @@ public class TasksService {
 
     private ExtTaskDao mExtTaskDao;
     private ExtTagDao mExtTagDao;
+    private ExtTaskTagDao mExtTaskTagDao;
 
     private WeakReference<Context> mContext;
 
@@ -46,6 +49,7 @@ public class TasksService {
 
         mExtTaskDao = ExtTaskDao.getInstance(daoSession);
         mExtTagDao = ExtTagDao.getInstance(daoSession);
+        mExtTaskTagDao = ExtTaskTagDao.getInstance(daoSession);
     }
 
     /**
@@ -60,6 +64,92 @@ public class TasksService {
             sInstance = new TasksService(context);
         }
         return sInstance;
+    }
+
+    /**
+     * Creates a new task, or updates an existing one.
+     *
+     * @param gsonTask Object holding task data.
+     */
+    public void saveTask(GsonTask gsonTask) {
+        Task task = mExtTaskDao.selectTask(gsonTask.getObjectId());
+
+        if (task == null) {
+            createTask(gsonTask);
+        } else {
+            updateTask(gsonTask, task);
+        }
+    }
+
+    /**
+     * Creates a new task.
+     *
+     * @param gsonTask Object holding new task data.
+     */
+    private void createTask(GsonTask gsonTask) {
+        Task task = tasksFromGson(Arrays.asList(gsonTask)).get(0);
+
+        synchronized (this) {
+            Long taskId = mExtTaskDao.insert(task);
+            saveTags(taskId, gsonTask.getTags());
+        }
+    }
+
+    /**
+     * Updates an existing task.
+     *
+     * @param gsonTask Object holding updated data.
+     * @param task     Task to update.
+     */
+    private void updateTask(GsonTask gsonTask, Task task) {
+        // Update only mutable attributes.
+        task.setTempId(gsonTask.getTempId());
+        task.setUpdatedAt(gsonTask.getUpdatedAt());
+        task.setDeleted(gsonTask.getDeleted());
+        task.setTitle(gsonTask.getTitle());
+        task.setNotes(gsonTask.getNotes());
+        task.setOrder(gsonTask.getOrder());
+        task.setPriority(gsonTask.getPriority());
+        task.setCompletionDate(gsonTask.getCompletionDate());
+        task.setSchedule(gsonTask.getSchedule());
+        task.setLocation(gsonTask.getLocation());
+        task.setRepeatDate(gsonTask.getRepeatDate());
+        task.setRepeatOption(gsonTask.getRepeatOption());
+
+        synchronized (this) {
+            mExtTaskDao.update(task);
+            saveTags(task.getId(), gsonTask.getTags());
+        }
+    }
+
+    /**
+     * Creates new tags, or associates existing ones with a task.
+     *
+     * @param taskId   ID of the task.
+     * @param gsonTags List of objects holding tag data.
+     */
+    private void saveTags(Long taskId, List<GsonTag> gsonTags) {
+        List<Tag> tags = tagsFromGson(gsonTags);
+
+        for (Tag tag : tags) {
+            Long tagId = tag.getId();
+
+            // Search for association between task and tag.
+            TaskTag association = mExtTaskTagDao.selectAssociation(taskId, tagId);
+
+            // If an association already exists, do nothing.
+            if (association == null) {
+                // If tag exists, create only association.
+                if (tagId == null) {
+                    // Create new tag.
+                    tagId = mExtTagDao.insert(tag);
+                }
+
+                // Create association.
+                association = new TaskTag(taskId, tagId);
+                mExtTaskTagDao.insert(association);
+            }
+        }
     }
 
     /**
@@ -167,6 +257,38 @@ public class TasksService {
         }
 
         return gsonTags;
+    }
+
+    /**
+     * Converts a list of GsonTask to Task objects.
+     *
+     * @param gsonTasks List of GsonTask.
+     * @return Converted list.
+     */
+    private ArrayList<Task> tasksFromGson(List<GsonTask> gsonTasks) {
+        ArrayList<Task> tasks = new ArrayList<Task>();
+
+        for (GsonTask gsonTask : gsonTasks) {
+            tasks.add(new Task(null, gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.getDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption()));
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Converts a list of GsonTag to Tag objects.
+     *
+     * @param gsonTags List of GsonTag.
+     * @return Converted list.
+     */
+    private ArrayList<Tag> tagsFromGson(List<GsonTag> gsonTags) {
+        ArrayList<Tag> tags = new ArrayList<Tag>();
+
+        for (GsonTag gsonTag : gsonTags) {
+            tags.add(new Tag(gsonTag.getTagId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
+        }
+
+        return tags;
     }
 
 }
