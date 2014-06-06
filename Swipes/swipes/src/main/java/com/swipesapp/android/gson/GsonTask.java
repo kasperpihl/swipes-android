@@ -2,8 +2,8 @@ package com.swipesapp.android.gson;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Gson mapping class for task fields.
@@ -43,9 +43,9 @@ public class GsonTask {
     @Expose
     private String repeatOption;
     @Expose
-    private ArrayList<GsonTag> tags;
+    private List<GsonTag> tags;
 
-    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, ArrayList<GsonTag> tags) {
+    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, List<GsonTag> tags) {
         this.objectId = objectId;
         this.tempId = tempId;
         this.parentId = parentId;
@@ -184,11 +184,11 @@ public class GsonTask {
         return repeatOption;
     }
 
-    public void setTags(ArrayList<GsonTag> tags) {
+    public void setTags(List<GsonTag> tags) {
         this.tags = tags;
     }
 
-    public ArrayList<GsonTag> getTags() {
+    public List<GsonTag> getTags() {
         return tags;
     }
 

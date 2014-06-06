@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.gson.GsonTask;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
@@ -37,7 +38,7 @@ import java.util.List;
 // TODO: Refactor adapter for real usage.
 public class LaterListAdapter extends ArrayAdapter {
 
-    private List mData;
+    private List<GsonTask> mData;
     private WeakReference<Context> mContext;
     private int mLayoutResID;
 
@@ -50,15 +51,15 @@ public class LaterListAdapter extends ArrayAdapter {
         mListContentsListener = listContentsListener;
     }
 
-    public LaterListAdapter(Context context, int layoutResourceId, List data) {
+    public LaterListAdapter(Context context, int layoutResourceId, List<GsonTask> data) {
         super(context, layoutResourceId, data);
 
         mData = data;
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
 
-        for (int i = 0; i < data.size(); ++i) {
-            mIdMap.put(String.valueOf(data.get(i)), i);
+        for (int i = 0; i < mData.size(); ++i) {
+            mIdMap.put(mData.get(i).getObjectId(), i);
         }
     }
 
@@ -97,7 +98,7 @@ public class LaterListAdapter extends ArrayAdapter {
             holder = (TaskHolder) row.getTag();
         }
 
-        String itemText = String.valueOf(mData.get(position));
+        String itemText = mData.get(position).getTitle();
         holder.frontText.setText(itemText);
 
         // Sets colors for cell, matching the current theme.
@@ -112,8 +113,8 @@ public class LaterListAdapter extends ArrayAdapter {
         if (position < 0 || position >= mIdMap.size()) {
             return INVALID_ID;
         }
-        String item = String.valueOf(getItem(position));
-        return mIdMap.get(item);
+        String key = mData.get(position).getObjectId();
+        return mIdMap.get(key);
     }
 
     @Override

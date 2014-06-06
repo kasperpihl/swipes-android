@@ -167,7 +167,7 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public ArrayList<GsonTask> loadAllTasks() {
+    private List<GsonTask> loadAllTasks() {
         return gsonFromTasks(mExtTaskDao.listAllTasks());
     }
 
@@ -176,7 +176,7 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public ArrayList<GsonTask> loadScheduledTasks() {
+    public List<GsonTask> loadScheduledTasks() {
         return gsonFromTasks(mExtTaskDao.listScheduledTasks());
     }
 
@@ -185,7 +185,7 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public ArrayList<GsonTask> loadFocusedTasks() {
+    public List<GsonTask> loadFocusedTasks() {
         return gsonFromTasks(mExtTaskDao.listFocusedTasks());
     }
 
@@ -194,7 +194,7 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public ArrayList<GsonTask> loadCompletedTasks() {
+    public List<GsonTask> loadCompletedTasks() {
         return gsonFromTasks(mExtTaskDao.listCompletedTasks());
     }
 
@@ -203,7 +203,7 @@ public class TasksService {
      *
      * @return List of tags.
      */
-    public ArrayList<GsonTag> loadAllTags() {
+    public List<GsonTag> loadAllTags() {
         return gsonFromTags(mExtTagDao.listAllTags());
     }
 
@@ -213,7 +213,7 @@ public class TasksService {
      * @param tagId ID of the tag.
      * @return List of tasks.
      */
-    public ArrayList<GsonTask> loadTasksForTag(Long tagId) {
+    public List<GsonTask> loadTasksForTag(Long tagId) {
         return gsonFromTasks(mExtTagDao.listTasksForTag(tagId));
     }
 
@@ -223,7 +223,7 @@ public class TasksService {
      * @param taskId ID of the task.
      * @return List of tags.
      */
-    private ArrayList<GsonTag> loadTagsForTask(Long taskId) {
+    private List<GsonTag> loadTagsForTask(Long taskId) {
         return gsonFromTags(mExtTaskDao.listTagsForTask(taskId));
     }
 
@@ -233,8 +233,8 @@ public class TasksService {
      * @param tasks List of tasks.
      * @return Converted list.
      */
-    private ArrayList<GsonTask> gsonFromTasks(List<Task> tasks) {
-        ArrayList<GsonTask> gsonTasks = new ArrayList<GsonTask>();
+    private List<GsonTask> gsonFromTasks(List<Task> tasks) {
+        List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
 
         for (Task task : tasks) {
             gsonTasks.add(new GsonTask(task.getObjectId(), task.getTempId(), task.getParentId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), loadTagsForTask(task.getId())));
@@ -249,8 +249,8 @@ public class TasksService {
      * @param tags List of tags.
      * @return Converted list.
      */
-    private ArrayList<GsonTag> gsonFromTags(List<Tag> tags) {
-        ArrayList<GsonTag> gsonTags = new ArrayList<GsonTag>();
+    private List<GsonTag> gsonFromTags(List<Tag> tags) {
+        List<GsonTag> gsonTags = new ArrayList<GsonTag>();
 
         for (Tag tag : tags) {
             gsonTags.add(new GsonTag(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
@@ -265,8 +265,8 @@ public class TasksService {
      * @param gsonTasks List of GsonTask.
      * @return Converted list.
      */
-    private ArrayList<Task> tasksFromGson(List<GsonTask> gsonTasks) {
-        ArrayList<Task> tasks = new ArrayList<Task>();
+    private List<Task> tasksFromGson(List<GsonTask> gsonTasks) {
+        List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
             tasks.add(new Task(null, gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.getDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption()));
@@ -281,8 +281,8 @@ public class TasksService {
      * @param gsonTags List of GsonTag.
      * @return Converted list.
      */
-    private ArrayList<Tag> tagsFromGson(List<GsonTag> gsonTags) {
-        ArrayList<Tag> tags = new ArrayList<Tag>();
+    private List<Tag> tagsFromGson(List<GsonTag> gsonTags) {
+        List<Tag> tags = new ArrayList<Tag>();
 
         for (GsonTag gsonTag : gsonTags) {
             tags.add(new Tag(gsonTag.getTagId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));

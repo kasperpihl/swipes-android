@@ -11,18 +11,23 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
+import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.FakeTasks;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.DoneListAdapter;
 import com.swipesapp.android.adapter.FocusListAdapter;
 import com.swipesapp.android.adapter.LaterListAdapter;
+import com.swipesapp.android.gson.GsonTag;
+import com.swipesapp.android.gson.GsonTask;
 import com.swipesapp.android.ui.listener.ListContentsListener;
-import com.fortysevendeg.swipelistview.DynamicListView;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,9 +58,9 @@ public class TasksListFragment extends ListFragment {
      * Task lists for each section.
      */
     // TODO: Change data type to use real data.
-    private ArrayList<String> mLaterTasks;
-    private ArrayList<String> mFocusTasks;
-    private ArrayList<String> mDoneTasks;
+    private List<GsonTask> mLaterTasks;
+    private List<GsonTask> mFocusTasks;
+    private List<GsonTask> mDoneTasks;
 
     /**
      * Adapters for each section.
@@ -230,10 +235,10 @@ public class TasksListFragment extends ListFragment {
     }
 
     // TODO: Remove this when the above methods start loading real data.
-    private ArrayList<String> loadFakeData() {
-        ArrayList<String> fakeTasks = new ArrayList<String>();
+    private List<GsonTask> loadFakeData() {
+        List<GsonTask> fakeTasks = new ArrayList<GsonTask>();
         for (int i = 0; i < FakeTasks.sFakeTasksTitles.length; ++i) {
-//            fakeTasks.add(FakeTasks.sFakeTasksTitles[i]);
+//            fakeTasks.add(new GsonTask(null, "XYZ", "XYZ", new Date(), new Date(), false, FakeTasks.sFakeTasksTitles[i], "XYZ", i, 0, null, new Date(), "XYZ", new Date(), RepeatOptions.NEVER.getValue(), new ArrayList<GsonTag>()));
         }
         return fakeTasks;
     }
