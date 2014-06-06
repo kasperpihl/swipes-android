@@ -1,13 +1,18 @@
 package com.swipesapp.android.ui.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -15,6 +20,7 @@ import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
@@ -44,30 +50,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     SwipesButton mButtonAddTask;
 
     @InjectView(R.id.edit_text_add_task_content)
-    EditText mEditTaskAddNewTask;
+    EditText mEditTextAddNewTask;
+
+    @InjectView(R.id.blur_background)
+    ImageView mBlurBackground;
 
     private static Typeface sTypeface;
 
     private WeakReference<Context> mContext;
-
-    @OnClick(R.id.button_add_task)
-    protected void startAddTaskWorkflow() {
-        // go to main fragment
-        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-
-        // animate button down off screen
-        //TODO: animate
-        mButtonAddTask.setVisibility(View.GONE);
-
-        // animate edit text into screen
-        // TODO: animate
-        mEditTaskAddNewTask.setVisibility(View.VISIBLE);
-        mEditTaskAddNewTask.setFocusable(true);
-        mEditTaskAddNewTask.setFocusableInTouchMode(true);
-        mEditTaskAddNewTask.requestFocus();
-
-        //TODO: blur background
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +122,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
     }
 
+    @Override
+    protected void onDestroy() {
+        ButterKnife.reset(this);
+        super.onDestroy();
+    }
+
     private void clearEmptyBackground() {
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
         mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
@@ -145,11 +141,72 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        ButterKnife.reset(this);
-        super.onDestroy();
+    @OnClick(R.id.button_add_task)
+    protected void startAddTaskWorkflow() {
+        // Go to main fragment.
+        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+
+        // Blur background.
+        Bitmap blurBitmap = BlurBuilder.blur(mActivityMainLayout);
+        mBlurBackground.setImageBitmap(blurBitmap);
+
+        // Fade in the blur background.
+        mBlurBackground.setAlpha(0f);
+        mBlurBackground.setVisibility(View.VISIBLE);
+        mBlurBackground.animate().alpha(1f).setDuration(500).setListener(mBlurFadeInListener);
+
+        // Show and hide keyboard automatically.
+        mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
+
+        // Display edit text.
+        mEditTextAddNewTask.setVisibility(View.VISIBLE);
+        mEditTextAddNewTask.setFocusable(true);
+        mEditTextAddNewTask.setFocusableInTouchMode(true);
+        mEditTextAddNewTask.requestFocus();
+        mEditTextAddNewTask.bringToFront();
     }
+
+    @OnClick(R.id.blur_background)
+    protected void endAddTaskWorkflow() {
+        // Remove focus and hide text view.
+        mEditTextAddNewTask.clearFocus();
+        mEditTextAddNewTask.setVisibility(View.GONE);
+
+        // Show the main layout.
+        mActivityMainLayout.setAlpha(1f);
+        mActivityMainLayout.setVisibility(View.VISIBLE);
+
+        // Fade out the blur background.
+        mBlurBackground.animate().alpha(0f).setDuration(500).setListener(mBlurFadeOutListener);
+    }
+
+    private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            // Hide the main layout.
+            mActivityMainLayout.setVisibility(View.GONE);
+        }
+    };
+
+    private AnimatorListenerAdapter mBlurFadeOutListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            // Hide the blur background.
+            mBlurBackground.setVisibility(View.GONE);
+        }
+    };
+
+    private View.OnFocusChangeListener mFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (hasFocus) {
+                imm.showSoftInput(mEditTextAddNewTask, InputMethodManager.SHOW_IMPLICIT);
+            } else {
+                imm.hideSoftInputFromWindow(mEditTextAddNewTask.getWindowToken(), 0);
+            }
+        }
+    };
 
     // HACK: this is a workaround to change the background entirely
     @Override
@@ -162,4 +219,5 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     public void onNotEmpty() {
         clearEmptyBackground();
     }
+
 }

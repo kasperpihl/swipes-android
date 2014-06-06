@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
     <LinearLayout
@@ -43,4 +42,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/blur_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>
