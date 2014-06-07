@@ -1,4 +1,4 @@
-package com.swipesapp.android.service;
+package com.swipesapp.android.sync.service;
 
 import android.content.Context;
 
@@ -10,8 +10,8 @@ import com.swipesapp.android.db.ExtTaskTagDao;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;
-import com.swipesapp.android.gson.GsonTag;
-import com.swipesapp.android.gson.GsonTask;
+import com.swipesapp.android.sync.gson.GsonTag;
+import com.swipesapp.android.sync.gson.GsonTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

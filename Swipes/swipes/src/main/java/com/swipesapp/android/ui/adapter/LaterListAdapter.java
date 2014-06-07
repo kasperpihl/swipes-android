@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.swipesapp.android.adapter;
+package com.swipesapp.android.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.gson.GsonTask;
+import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;

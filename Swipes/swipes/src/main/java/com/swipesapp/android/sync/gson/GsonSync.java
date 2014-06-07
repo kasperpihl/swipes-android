@@ -1,4 +1,4 @@
-package com.swipesapp.android.gson;
+package com.swipesapp.android.sync.gson;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

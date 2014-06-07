@@ -1,4 +1,4 @@
-package com.swipesapp.android.adapter;
+package com.swipesapp.android.ui.adapter;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
