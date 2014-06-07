@@ -40,5 +40,6 @@
     <string name="title_activity_about">About</string>
     <string name="round_add">&#xe62a;</string>
     <string name="title_activity_add_task">Add Task</string>
+    <string name="left_arrow">&#xe63f;</string>
 
 </resources>

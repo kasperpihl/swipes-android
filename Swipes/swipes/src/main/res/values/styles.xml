@@ -18,6 +18,7 @@
         <item name="android:listViewStyle">@style/Light_ListView</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="accentColor">@color/light_theme_accent_color</item>
+        <item name="android:editTextBackground">@drawable/light_theme_edit_text_background</item>
     </style>
 
     <style name="Dark_Theme" parent="Theme.HoloAccent">
@@ -26,6 +27,7 @@
         <item name="android:listViewStyle">@style/Dark_ListView</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="accentColor">@color/dark_theme_accent_color</item>
+        <item name="android:editTextBackground">@drawable/dark_theme_edit_text_background</item>
     </style>
 
     <!-- Action bar themes -->

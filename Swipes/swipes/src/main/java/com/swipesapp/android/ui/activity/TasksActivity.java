@@ -11,8 +11,10 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -49,11 +51,20 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @InjectView(R.id.button_add_task)
     SwipesButton mButtonAddTask;
 
+    @InjectView(R.id.blur_background)
+    ImageView mBlurBackground;
+
+    @InjectView(R.id.add_task_container)
+    RelativeLayout mAddTaskContainer;
+
     @InjectView(R.id.edit_text_add_task_content)
     EditText mEditTextAddNewTask;
 
-    @InjectView(R.id.blur_background)
-    ImageView mBlurBackground;
+    @InjectView(R.id.button_confirm_add_task)
+    SwipesButton mButtonConfirmAddTask;
+
+    @InjectView(R.id.button_add_task_priority)
+    CheckBox mButtonAddTaskPriority;
 
     private static Typeface sTypeface;
 
@@ -120,6 +131,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+
+        // HACK: Flip add task confirm button, so the arrow points to the right.
+        mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
     }
 
     @Override
@@ -144,7 +158,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
         // Go to main fragment.
-        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+//        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
 
         // Blur background.
         Bitmap blurBitmap = BlurBuilder.blur(mActivityMainLayout);
@@ -164,6 +178,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mEditTextAddNewTask.setFocusableInTouchMode(true);
         mEditTextAddNewTask.requestFocus();
         mEditTextAddNewTask.bringToFront();
+
+        // Display add task area.
+        mAddTaskContainer.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.blur_background)
@@ -171,6 +188,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Remove focus and hide text view.
         mEditTextAddNewTask.clearFocus();
         mEditTextAddNewTask.setVisibility(View.GONE);
+
+        // Hide add task area.
+        mAddTaskContainer.setVisibility(View.GONE);
 
         // Show the main layout.
         mActivityMainLayout.setAlpha(1f);
