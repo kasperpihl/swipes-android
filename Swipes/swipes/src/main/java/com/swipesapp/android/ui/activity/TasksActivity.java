@@ -21,15 +21,22 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.adapter.SectionsPagerAdapter;
+import com.swipesapp.android.gson.GsonTag;
+import com.swipesapp.android.gson.GsonTask;
+import com.swipesapp.android.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -67,6 +74,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     CheckBox mButtonAddTaskPriority;
 
     private static Typeface sTypeface;
+
+    // TODO: Populate list of selected tags.
+    private List<GsonTag> mSelectedTags;
 
     private WeakReference<Context> mContext;
 
@@ -129,6 +139,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             actionBar.hide();
         }
 
+        mSelectedTags = new ArrayList<GsonTag>();
+
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
 
@@ -155,10 +167,27 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
+    @OnClick(R.id.button_confirm_add_task)
+    protected void addTask() {
+        TasksService service = TasksService.getInstance(getApplicationContext());
+
+        String title = mEditTextAddNewTask.getText().toString();
+        Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
+        // TODO: What should the IDs be?
+        String objectId = title + new Date().getTime();
+        String tempId = "";
+        Integer order = service.getNumberOfFocusedTasks();
+
+        GsonTask task = new GsonTask(objectId, tempId, null, new Date(), new Date(), false, title, null, order, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
+        service.saveTask(task);
+
+        endAddTaskWorkflow();
+    }
+
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
         // Go to main fragment.
-//        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
 
         // Blur background.
         Bitmap blurBitmap = BlurBuilder.blur(mActivityMainLayout);
@@ -188,6 +217,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Remove focus and hide text view.
         mEditTextAddNewTask.clearFocus();
         mEditTextAddNewTask.setVisibility(View.GONE);
+
+        // Reset fields.
+        mEditTextAddNewTask.setText("");
+        mButtonAddTaskPriority.setChecked(false);
 
         // Hide add task area.
         mAddTaskContainer.setVisibility(View.GONE);

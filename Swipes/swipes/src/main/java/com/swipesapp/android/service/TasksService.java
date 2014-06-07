@@ -244,6 +244,15 @@ public class TasksService {
     }
 
     /**
+     * Retrieve the number of focused tasks.
+     *
+     * @return Count of a query for focused tasks.
+     */
+    public Integer getNumberOfFocusedTasks() {
+        return mExtTaskDao.countFocusedTasks().intValue();
+    }
+
+    /**
      * Converts a list of Tag objects to GsonTag.
      *
      * @param tags List of tags.
