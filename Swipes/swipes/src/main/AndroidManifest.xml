@@ -49,10 +49,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
         </activity>
-        <activity
-            android:name="com.swipesapp.android.ui.activity.AddTaskActivity"
-            android:label="@string/title_activity_add_task"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

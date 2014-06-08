@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
@@ -85,9 +86,9 @@ public class TasksListAdapter extends ArrayAdapter {
 
             holder = new TaskHolder();
 
-            holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
+            holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (LinearLayout) row.findViewById(R.id.swipe_back);
-            holder.frontText = (TextView) row.findViewById(R.id.item_text);
+            holder.frontText = (TextView) row.findViewById(R.id.task_title);
 
             row.setTag(holder);
         } else {
@@ -141,7 +142,7 @@ public class TasksListAdapter extends ArrayAdapter {
 
     private static class TaskHolder {
 
-        LinearLayout frontView;
+        RelativeLayout frontView;
         LinearLayout backView;
         TextView frontText;
     }

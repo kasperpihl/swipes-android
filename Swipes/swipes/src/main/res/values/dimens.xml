@@ -2,12 +2,13 @@
 <resources>
 
     <dimen name="list_text_size">16sp</dimen>
-    <dimen name="list_item_height">48dp</dimen>
+    <dimen name="list_item_height">60dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="date_stamp_margin">16dp</dimen>
     <dimen name="date_stamp_margin_top">40dp</dimen>
     <dimen name="social_buttons_diameter">36dp</dimen>
     <dimen name="task_circles_size">20dp</dimen>
+    <dimen name="task_properties_margin">5dp</dimen>
 
 </resources>
