@@ -133,6 +133,12 @@ public class TasksListAdapter extends ArrayAdapter {
         return mData;
     }
 
+    public void update(List<GsonTask> data) {
+        mData = data;
+        updateIdMap();
+        notifyDataSetChanged();
+    }
+
     private static class TaskHolder {
 
         LinearLayout frontView;

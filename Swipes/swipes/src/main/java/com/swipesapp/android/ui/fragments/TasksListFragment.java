@@ -1,6 +1,10 @@
 package com.swipesapp.android.ui.fragments;
 
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +106,24 @@ public class TasksListFragment extends ListFragment {
     public void onDestroyView() {
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        updateTaskList();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(TasksService.ACTION_TASKS_CHANGED);
+        getActivity().registerReceiver(mTasksReceiver, filter);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(mTasksReceiver);
+
+        super.onPause();
     }
 
     private void setupLaterView(View rootView) {
@@ -207,6 +229,30 @@ public class TasksListFragment extends ListFragment {
         mDoneListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_DISMISS);
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
+
+    // TODO: Find out why this is not working.
+    private void updateTaskList() {
+        // Update adapter with new data.
+        switch (mCurrentSection) {
+            case LATER:
+                mLaterAdapter.update(mTasksService.loadFocusedTasks());
+                break;
+            case FOCUS:
+                mFocusAdapter.update(mTasksService.loadFocusedTasks());
+                break;
+            case DONE:
+                mDoneAdapter.update(mTasksService.loadFocusedTasks());
+                break;
+        }
+    }
+
+    // TODO: Find out why onReceive is being called twice.
+    public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            updateTaskList();
+        }
+    };
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override

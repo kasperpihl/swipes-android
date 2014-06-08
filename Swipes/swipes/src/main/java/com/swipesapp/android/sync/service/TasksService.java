@@ -1,6 +1,7 @@
 package com.swipesapp.android.sync.service;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
@@ -35,6 +36,8 @@ public class TasksService {
 
     private static final String DB_NAME = "swipes-db";
 
+    public static final String ACTION_TASKS_CHANGED = "com.swipesapp.android.ACTION_TASKS_CHANGED";
+
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
      *
@@ -67,6 +70,15 @@ public class TasksService {
     }
 
     /**
+     * Sends a broadcast of changed tasks.
+     */
+    private void sendBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_TASKS_CHANGED);
+        mContext.get().sendBroadcast(intent);
+    }
+
+    /**
      * Creates a new task, or updates an existing one.
      *
      * @param gsonTask Object holding task data.
@@ -79,6 +91,8 @@ public class TasksService {
         } else {
             updateTask(gsonTask, task);
         }
+
+        sendBroadcast();
     }
 
     /**
