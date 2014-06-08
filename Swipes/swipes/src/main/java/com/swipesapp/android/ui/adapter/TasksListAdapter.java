@@ -36,31 +36,27 @@ import java.util.HashMap;
 import java.util.List;
 
 // TODO: Refactor adapter for real usage.
-public class LaterListAdapter extends ArrayAdapter {
+public class TasksListAdapter extends ArrayAdapter {
 
     private List<GsonTask> mData;
     private WeakReference<Context> mContext;
     private int mLayoutResID;
+    private Sections mSection;
 
     private final int INVALID_ID = -1;
     private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
     private ListContentsListener mListContentsListener;
 
-    public void setListContentsListener(ListContentsListener listContentsListener) {
-        mListContentsListener = listContentsListener;
-    }
-
-    public LaterListAdapter(Context context, int layoutResourceId, List<GsonTask> data) {
+    public TasksListAdapter(Context context, int layoutResourceId, List<GsonTask> data, Sections section) {
         super(context, layoutResourceId, data);
 
         mData = data;
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
+        mSection = section;
 
-        for (int i = 0; i < mData.size(); ++i) {
-            mIdMap.put(mData.get(i).getObjectId(), i);
-        }
+        updateIdMap();
     }
 
     @Override
@@ -71,7 +67,7 @@ public class LaterListAdapter extends ArrayAdapter {
             if (count != 0) {
                 mListContentsListener.onNotEmpty();
             } else {
-                mListContentsListener.onEmpty(Sections.LATER);
+                mListContentsListener.onEmpty(Sections.FOCUS);
             }
         }
         return count;
@@ -122,7 +118,22 @@ public class LaterListAdapter extends ArrayAdapter {
         return true;
     }
 
-    static class TaskHolder {
+    private void updateIdMap() {
+        mIdMap.clear();
+        for (int i = 0; i < mData.size(); ++i) {
+            mIdMap.put(mData.get(i).getObjectId(), i);
+        }
+    }
+
+    public void setListContentsListener(ListContentsListener listContentsListener) {
+        mListContentsListener = listContentsListener;
+    }
+
+    public List<GsonTask> getData() {
+        return mData;
+    }
+
+    private static class TaskHolder {
 
         LinearLayout frontView;
         LinearLayout backView;

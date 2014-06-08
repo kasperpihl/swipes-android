@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,11 +13,9 @@ import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.R;
-import com.swipesapp.android.ui.adapter.DoneListAdapter;
-import com.swipesapp.android.ui.adapter.FocusListAdapter;
-import com.swipesapp.android.ui.adapter.LaterListAdapter;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
@@ -51,19 +48,11 @@ public class TasksListFragment extends ListFragment {
     private DynamicListView mDoneListView;
 
     /**
-     * Task lists for each section.
-     */
-    // TODO: Change data type to use real data.
-    private List<GsonTask> mLaterTasks;
-    private List<GsonTask> mFocusTasks;
-    private List<GsonTask> mDoneTasks;
-
-    /**
      * Adapters for each section.
      */
-    private LaterListAdapter mLaterAdapter;
-    private FocusListAdapter mFocusAdapter;
-    private DoneListAdapter mDoneAdapter;
+    private TasksListAdapter mLaterAdapter;
+    private TasksListAdapter mFocusAdapter;
+    private TasksListAdapter mDoneAdapter;
 
     /**
      * Service to perform tasks operations.
@@ -117,10 +106,10 @@ public class TasksListFragment extends ListFragment {
 
     private void setupLaterView(View rootView) {
         // Load tasks.
-        mLaterTasks = mTasksService.loadScheduledTasks();
+        List<GsonTask> laterTasks = mTasksService.loadScheduledTasks();
 
         // Initialize adapter.
-        mLaterAdapter = new LaterListAdapter(getActivity(), R.layout.swipeable_cell, mLaterTasks);
+        mLaterAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, laterTasks, mCurrentSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -137,10 +126,10 @@ public class TasksListFragment extends ListFragment {
 
     private void setupFocusView(View rootView) {
         // Load tasks.
-        mFocusTasks = mTasksService.loadFocusedTasks();
+        List<GsonTask> focusTasks = mTasksService.loadFocusedTasks();
 
         // Initialize adapter.
-        mFocusAdapter = new FocusListAdapter(getActivity(), R.layout.swipeable_cell, mFocusTasks);
+        mFocusAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, focusTasks, mCurrentSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -157,10 +146,10 @@ public class TasksListFragment extends ListFragment {
 
     private void setupDoneView(View rootView) {
         // Load tasks.
-        mDoneTasks = mTasksService.loadCompletedTasks();
+        List<GsonTask> doneTasks = mTasksService.loadCompletedTasks();
 
         // Initialize adapter.
-        mDoneAdapter = new DoneListAdapter(getActivity(), R.layout.swipeable_cell, mDoneTasks);
+        mDoneAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, doneTasks, mCurrentSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -175,9 +164,8 @@ public class TasksListFragment extends ListFragment {
         mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
     }
 
-    private void configureLaterListView(ListAdapter adapter) {
-        // TODO: Refactor list view to use a different data type with real data.
-        mLaterListView.setContentList(mLaterTasks);
+    private void configureLaterListView(TasksListAdapter adapter) {
+        mLaterListView.setContentList(adapter.getData());
         mLaterListView.setAdapter(adapter);
         mLaterListView.setSwipeListViewListener(mSwipeListener);
         mLaterListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
@@ -192,9 +180,8 @@ public class TasksListFragment extends ListFragment {
         mLaterListView.setLongSwipeActionRight(SwipeListView.LONG_SWIPE_ACTION_DISMISS);
     }
 
-    private void configureFocusListView(ListAdapter adapter) {
-        // TODO: Refactor list view to use a different data type with real data.
-        mFocusListView.setContentList(mFocusTasks);
+    private void configureFocusListView(TasksListAdapter adapter) {
+        mFocusListView.setContentList(adapter.getData());
         mFocusListView.setAdapter(adapter);
         mFocusListView.setSwipeListViewListener(mSwipeListener);
         mFocusListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
@@ -205,9 +192,8 @@ public class TasksListFragment extends ListFragment {
         mFocusListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
     }
 
-    private void configureDoneListView(ListAdapter adapter) {
-        // TODO: Refactor list view to use a different data type with real data.
-        mDoneListView.setContentList(mDoneTasks);
+    private void configureDoneListView(TasksListAdapter adapter) {
+        mDoneListView.setContentList(adapter.getData());
         mDoneListView.setAdapter(adapter);
         mDoneListView.setSwipeListViewListener(mSwipeListener);
         mDoneListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
