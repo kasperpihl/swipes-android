@@ -20,10 +20,10 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
-import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
@@ -170,15 +170,16 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @OnClick(R.id.button_confirm_add_task)
     protected void addTask() {
         TasksService service = TasksService.getInstance(getApplicationContext());
+        Date currentDate = new Date();
 
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
         // TODO: What should the IDs be?
-        String objectId = title + new Date().getTime();
+        String objectId = title + currentDate.getTime();
         String tempId = "";
         Integer order = service.getNumberOfFocusedTasks();
 
-        GsonTask task = new GsonTask(objectId, tempId, null, new Date(), new Date(), false, title, null, order, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
+        GsonTask task = new GsonTask(objectId, tempId, null, currentDate, currentDate, false, title, null, order, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
         service.saveTask(task);
 
         endAddTaskWorkflow();

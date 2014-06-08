@@ -1,21 +1,23 @@
 package com.swipesapp.android.ui.fragments;
 
 import android.app.ListFragment;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
+import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -24,6 +26,8 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -246,6 +250,18 @@ public class TasksListFragment extends ListFragment {
         }
     }
 
+    private GsonTask getTask(int position) {
+        switch (mCurrentSection) {
+            case LATER:
+                return mLaterAdapter.getData().get(position);
+            case FOCUS:
+                return mFocusAdapter.getData().get(position);
+            case DONE:
+                return mDoneAdapter.getData().get(position);
+        }
+        return null;
+    }
+
     // TODO: Find out why onReceive is being called twice.
     public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
@@ -259,12 +275,14 @@ public class TasksListFragment extends ListFragment {
         public void onFinishedSwipeRight(int position) {
             switch (mCurrentSection) {
                 case LATER:
-                    // TODO: Move task from Later to Focus.
-                    Toast.makeText(getActivity(), "TODO: Move task to Focus.", Toast.LENGTH_SHORT).show();
+                    // Move task from Later to Focus.
+                    getTask(position).setSchedule(new Date());
+                    mTasksService.saveTask(getTask(position));
                     break;
                 case FOCUS:
-                    // TODO: Move task from Focus to Done.
-                    Toast.makeText(getActivity(), "TODO: Move task to Done.", Toast.LENGTH_SHORT).show();
+                    // Move task from Focus to Done.
+                    getTask(position).setCompletionDate(new Date());
+                    mTasksService.saveTask(getTask(position));
                     break;
             }
         }
@@ -273,16 +291,17 @@ public class TasksListFragment extends ListFragment {
         public void onFinishedSwipeLeft(int position) {
             switch (mCurrentSection) {
                 case LATER:
-                    // TODO: Reschedule task.
-                    Toast.makeText(getActivity(), "TODO: Reschedule task.", Toast.LENGTH_SHORT).show();
+                    // TODO: Call the real snooze flow.
+                    fakeSnoozeTask(getTask(position));
                     break;
                 case FOCUS:
-                    // TODO: Move task from Focus to Later.
-                    Toast.makeText(getActivity(), "TODO: Move task to Later.", Toast.LENGTH_SHORT).show();
+                    // TODO: Call the real snooze flow.
+                    fakeSnoozeTask(getTask(position));
                     break;
                 case DONE:
-                    // TODO: Move task from Done to Focus.
-                    Toast.makeText(getActivity(), "TODO: Move task to Focus.", Toast.LENGTH_SHORT).show();
+                    // Move task from Done to Focus.
+                    getTask(position).setCompletionDate(null);
+                    mTasksService.saveTask(getTask(position));
                     break;
             }
         }
@@ -291,8 +310,9 @@ public class TasksListFragment extends ListFragment {
         public void onFinishedLongSwipeRight(int position) {
             switch (mCurrentSection) {
                 case LATER:
-                    // TODO: Move task from Later to Done.
-                    Toast.makeText(getActivity(), "TODO: Move task to Done.", Toast.LENGTH_SHORT).show();
+                    // Move task from Later to Done.
+                    getTask(position).setCompletionDate(new Date());
+                    mTasksService.saveTask(getTask(position));
                     break;
             }
         }
@@ -301,11 +321,39 @@ public class TasksListFragment extends ListFragment {
         public void onFinishedLongSwipeLeft(int position) {
             switch (mCurrentSection) {
                 case DONE:
-                    // TODO: Move task from Done to Later.
-                    Toast.makeText(getActivity(), "TODO: Move task to Later.", Toast.LENGTH_SHORT).show();
+                    // TODO: Call the real snooze flow.
+                    fakeSnoozeTask(getTask(position));
                     break;
             }
         }
     };
+
+    private void fakeSnoozeTask(final GsonTask task) {
+        // Create time picker listener.
+        TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
+                // Set new schedule date.
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+                Date schedule = calendar.getTime();
+
+                // Save task changes.
+                task.setSchedule(schedule);
+                mTasksService.saveTask(task);
+            }
+        };
+
+        // Get current hour and minutes.
+        Calendar calendar = Calendar.getInstance();
+        final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        final int currentMinute = calendar.get(Calendar.MINUTE);
+
+        // Show time picker dialog.
+        AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), listener, currentHour, currentMinute, DateFormat.is24HourFormat(getActivity()));
+        dialog.setTitle("Snooze until");
+        dialog.show();
+    }
 
 }
