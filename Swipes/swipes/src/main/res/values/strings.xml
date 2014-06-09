@@ -50,5 +50,8 @@
     <string name="settings_light">&#xe601;</string>
     <string name="round_add">&#xe62a;</string>
     <string name="left_arrow">&#xe63f;</string>
+    <string name="edit_location">&#xe60d;</string>
+    <string name="edit_notes">&#xe609;</string>
+    <string name="edit_repeat">&#xe60a;</string>
 
 </resources>

@@ -87,6 +87,59 @@
                     android:text="//"
                     android:textColor="@android:color/darker_gray" />
 
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/task_location_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:layout_marginTop="@dimen/task_icons_margin_top"
+                    android:layout_toRightOf="@id/task_properties_divider"
+                    android:gravity="top"
+                    android:text="@string/edit_location"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/task_icons_size" />
+
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/task_notes_icon"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:layout_marginTop="@dimen/task_icons_margin_top"
+                    android:layout_toRightOf="@id/task_location_icon"
+                    android:gravity="top"
+                    android:text="@string/edit_notes"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/task_icons_size" />
+
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/task_repeat_icon"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:layout_marginTop="@dimen/task_icons_margin_top"
+                    android:layout_toRightOf="@id/task_notes_icon"
+                    android:gravity="top"
+                    android:text="@string/edit_repeat"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/task_icons_size" />
+
+                <TextView
+                    android:id="@+id/task_labels_divider"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:layout_toRightOf="@id/task_repeat_icon"
+                    android:gravity="top"
+                    android:text="//"
+                    android:textColor="@android:color/darker_gray" />
+
                 <TextView
                     android:id="@+id/task_labels"
                     style="?android:textAppearanceSmall"
@@ -94,7 +147,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
-                    android:layout_toRightOf="@id/task_properties_divider"
+                    android:layout_toRightOf="@id/task_labels_divider"
                     android:gravity="top"
                     android:text="swipes, work"
                     android:textColor="@android:color/darker_gray" />
