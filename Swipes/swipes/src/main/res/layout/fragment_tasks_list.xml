@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:dividerHeight="0dp"
+        swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
+        swipe:swipeBackIconRight="@+id/swipe_back_icon_right"
         swipe:swipeBackView="@+id/swipe_back"
         swipe:swipeFrontView="@+id/swipe_front" />
 

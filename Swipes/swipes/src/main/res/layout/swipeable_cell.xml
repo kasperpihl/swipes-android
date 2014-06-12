@@ -4,23 +4,31 @@
     android:layout_height="wrap_content">
 
     <!-- Back view -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/swipe_back"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
         android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.swipesapp.android.ui.view.SwipesTextView
-            android:id="@+id/swipe_back_icon"
+            android:id="@+id/swipe_back_icon_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:text="@string/done_full"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="-40dp"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
-    </LinearLayout>
+
+        <com.swipesapp.android.ui.view.SwipesTextView
+            android:id="@+id/swipe_back_icon_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="-40dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <!-- Front view -->
     <RelativeLayout

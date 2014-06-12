@@ -87,7 +87,7 @@ public class TasksListAdapter extends ArrayAdapter {
             holder = new TaskHolder();
 
             holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
-            holder.backView = (LinearLayout) row.findViewById(R.id.swipe_back);
+            holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
             holder.frontText = (TextView) row.findViewById(R.id.task_title);
 
             row.setTag(holder);
@@ -143,7 +143,7 @@ public class TasksListAdapter extends ArrayAdapter {
     private static class TaskHolder {
 
         RelativeLayout frontView;
-        LinearLayout backView;
+        RelativeLayout backView;
         TextView frontText;
     }
 
