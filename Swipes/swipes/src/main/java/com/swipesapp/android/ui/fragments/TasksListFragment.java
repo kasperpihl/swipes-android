@@ -191,15 +191,25 @@ public class TasksListFragment extends ListFragment {
     }
 
     private void configureLaterListView(TasksListAdapter adapter) {
+        // Setup content.
         mLaterListView.setContentList(adapter.getData());
         mLaterListView.setAdapter(adapter);
         mLaterListView.setSwipeListViewListener(mSwipeListener);
+
+        // Setup back view.
         mLaterListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mLaterListView.setLongSwipeEnabled(true);
         mLaterListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mLaterListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), 0);
         mLaterListView.setBackIconText(R.string.focus_full, R.string.later_full);
         mLaterListView.setLongSwipeBackIconText(R.string.done_full, 0);
+
+        // Setup priority button.
+        mLaterListView.setFrontIcon(R.id.button_task_priority);
+        mLaterListView.setFrontIconBackgrounds(R.drawable.focus_circle_selector, R.drawable.later_circle_selector, R.drawable.later_circle_selector);
+        mLaterListView.setFrontIconLongSwipeBackgrounds(R.drawable.done_circle_selector, 0);
+
+        // Setup actions.
         mLaterListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mLaterListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
         mLaterListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_RIGHT);
@@ -209,12 +219,21 @@ public class TasksListFragment extends ListFragment {
     }
 
     private void configureFocusListView(TasksListAdapter adapter) {
+        // Setup content.
         mFocusListView.setContentList(adapter.getData());
         mFocusListView.setAdapter(adapter);
         mFocusListView.setSwipeListViewListener(mSwipeListener);
+
+        // Setup back view.
         mFocusListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mFocusListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mFocusListView.setBackIconText(R.string.done_full, R.string.later_full);
+
+        // Setup priority button.
+        mFocusListView.setFrontIcon(R.id.button_task_priority);
+        mFocusListView.setFrontIconBackgrounds(R.drawable.done_circle_selector, R.drawable.later_circle_selector, R.drawable.focus_circle_selector);
+
+        // Setup actions.
         mFocusListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mFocusListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
         mFocusListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
@@ -222,15 +241,25 @@ public class TasksListFragment extends ListFragment {
     }
 
     private void configureDoneListView(TasksListAdapter adapter) {
+        // Setup content.
         mDoneListView.setContentList(adapter.getData());
         mDoneListView.setAdapter(adapter);
         mDoneListView.setSwipeListViewListener(mSwipeListener);
+
+        // Setup back view.
         mDoneListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mDoneListView.setLongSwipeEnabled(true);
         mDoneListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mDoneListView.setLongSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mDoneListView.setBackIconText(0, R.string.focus_full);
         mDoneListView.setLongSwipeBackIconText(0, R.string.later_full);
+
+        // Setup priority button.
+        mDoneListView.setFrontIcon(R.id.button_task_priority);
+        mDoneListView.setFrontIconBackgrounds(0, R.drawable.focus_circle_selector, R.drawable.done_circle_selector);
+        mDoneListView.setFrontIconLongSwipeBackgrounds(0, R.drawable.later_circle_selector);
+
+        // Setup actions.
         mDoneListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mDoneListView.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
         mDoneListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_LEFT);
