@@ -45,7 +45,6 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/focus_circle_selector"
             android:button="@null" />
 
         <!-- Task title and properties container -->
@@ -62,14 +61,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_weight="0.5"
-                android:gravity="bottom" />
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
 
-            <!-- Time and labels container -->
+            <!-- Time and tags container -->
             <RelativeLayout
+                android:id="@+id/task_properties_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.5">
+                android:layout_weight="0"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/task_time"
@@ -80,8 +81,8 @@
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:gravity="top"
-                    android:text="09:00"
-                    android:textColor="@color/focus_accent_color" />
+                    android:textColor="@color/focus_accent_color"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/task_properties_divider"
@@ -92,8 +93,9 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_time"
                     android:gravity="top"
-                    android:text="//"
-                    android:textColor="@android:color/darker_gray" />
+                    android:text="@string/double_slash_divider"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="gone" />
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_location_icon"
@@ -106,7 +108,8 @@
                     android:gravity="top"
                     android:text="@string/edit_location"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/task_icons_size" />
+                    android:textSize="@dimen/task_icons_size"
+                    android:visibility="gone" />
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_notes_icon"
@@ -120,7 +123,8 @@
                     android:gravity="top"
                     android:text="@string/edit_notes"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/task_icons_size" />
+                    android:textSize="@dimen/task_icons_size"
+                    android:visibility="gone" />
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_repeat_icon"
@@ -134,10 +138,11 @@
                     android:gravity="top"
                     android:text="@string/edit_repeat"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/task_icons_size" />
+                    android:textSize="@dimen/task_icons_size"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/task_labels_divider"
+                    android:id="@+id/task_tags_divider"
                     style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -145,20 +150,21 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_repeat_icon"
                     android:gravity="top"
-                    android:text="//"
-                    android:textColor="@android:color/darker_gray" />
+                    android:text="@string/double_slash_divider"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/task_labels"
+                    android:id="@+id/task_tags"
                     style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
-                    android:layout_toRightOf="@id/task_labels_divider"
+                    android:layout_toRightOf="@id/task_tags_divider"
                     android:gravity="top"
-                    android:text="swipes, work"
-                    android:textColor="@android:color/darker_gray" />
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </LinearLayout>
