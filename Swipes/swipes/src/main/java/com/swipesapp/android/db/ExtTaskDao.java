@@ -55,8 +55,4 @@ public class ExtTaskDao {
         return new ArrayList<Tag>();
     }
 
-    public Long countFocusedTasks() {
-        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(new Date()), TaskDao.Properties.CompletionDate.isNull()).buildCount().count();
-    }
-
 }
