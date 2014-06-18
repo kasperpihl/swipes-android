@@ -37,6 +37,9 @@ public class TasksListAdapter extends ArrayAdapter {
     private int mLayoutResID;
     private Sections mSection;
 
+    // Controls the display of properties line below task title.
+    boolean mDisplayProperties = false;
+
     private final int INVALID_ID = -1;
     private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
@@ -119,9 +122,6 @@ public class TasksListAdapter extends ArrayAdapter {
     }
 
     private void customizeView(TaskHolder holder, int position) {
-        // Controls the display of the properties line below the title.
-        boolean displayProperties = false;
-
         // Attributes displayed for all sections.
         String title = mData.get(position).getTitle();
         List<GsonTag> tagList = mData.get(position).getTags();
@@ -146,28 +146,28 @@ public class TasksListAdapter extends ArrayAdapter {
             holder.tagsDivider.setVisibility(View.VISIBLE);
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
-            displayProperties = true;
+            mDisplayProperties = true;
         }
 
         // Display notes icon.
         if (notes != null && !notes.isEmpty()) {
             holder.propertiesDivider.setVisibility(View.VISIBLE);
             holder.notesIcon.setVisibility(View.VISIBLE);
-            displayProperties = true;
+            mDisplayProperties = true;
         }
 
         // Display repeat icon.
         if (repeatDate != null) {
             holder.propertiesDivider.setVisibility(View.VISIBLE);
             holder.repeatIcon.setVisibility(View.VISIBLE);
-            displayProperties = true;
+            mDisplayProperties = true;
         }
 
         // Specific rules for each section.
-        customizeViewForSection(holder, position, displayProperties);
+        customizeViewForSection(holder, position);
 
         // Display properties line.
-        if (displayProperties) {
+        if (mDisplayProperties) {
             holder.propertiesContainer.setVisibility(View.VISIBLE);
 
             // Change layout weights to properly split cell spacing.
@@ -183,7 +183,7 @@ public class TasksListAdapter extends ArrayAdapter {
         holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getContext()));
     }
 
-    private void customizeViewForSection(TaskHolder holder, int position, boolean displayProperties) {
+    private void customizeViewForSection(TaskHolder holder, int position) {
         switch (mSection) {
             case LATER:
                 // Set priority button color.
@@ -202,7 +202,7 @@ public class TasksListAdapter extends ArrayAdapter {
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
                 }
 
-                displayProperties = true;
+                mDisplayProperties = true;
                 break;
             case FOCUS:
                 // Set priority button color.
@@ -222,7 +222,7 @@ public class TasksListAdapter extends ArrayAdapter {
                 }
 
                 holder.repeatIcon.setVisibility(View.GONE);
-                displayProperties = true;
+                mDisplayProperties = true;
                 break;
         }
     }
