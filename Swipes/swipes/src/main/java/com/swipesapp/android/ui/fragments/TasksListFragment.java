@@ -273,13 +273,13 @@ public class TasksListFragment extends ListFragment {
         // Update adapter with new data.
         switch (mCurrentSection) {
             case LATER:
-                mLaterAdapter.update(mTasksService.loadFocusedTasks());
+                mLaterAdapter.update(mTasksService.loadScheduledTasks());
                 break;
             case FOCUS:
                 mFocusAdapter.update(mTasksService.loadFocusedTasks());
                 break;
             case DONE:
-                mDoneAdapter.update(mTasksService.loadFocusedTasks());
+                mDoneAdapter.update(mTasksService.loadCompletedTasks());
                 break;
         }
     }
