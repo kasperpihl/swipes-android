@@ -60,7 +60,7 @@ public class TasksListAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
-        int count = super.getCount();
+        int count = mData.size();
         // HACK: this is a workaround to notify the activity through the fragment
         if (mListContentsListener != null) {
             if (count != 0) {
@@ -74,7 +74,6 @@ public class TasksListAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         TaskHolder holder;
         View row = convertView;
 

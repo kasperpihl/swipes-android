@@ -296,11 +296,10 @@ public class TasksListFragment extends ListFragment {
         return null;
     }
 
-    // TODO: Find out why onReceive is being called twice.
     public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            updateTaskList();
+            updateTaskList();
         }
     };
 
