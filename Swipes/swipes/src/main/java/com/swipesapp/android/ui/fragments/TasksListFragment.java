@@ -367,14 +367,20 @@ public class TasksListFragment extends ListFragment {
         TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
-                // Set new schedule date.
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-                Date schedule = calendar.getTime();
+                // Set snooze date.
+                Calendar snooze = Calendar.getInstance();
+                snooze.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+                snooze.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+
+                // Check if the selected time should be in the next day.
+                if (snooze.before(Calendar.getInstance())) {
+                    // Add a day to the snooze time.
+                    snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
+                }
 
                 // Save task changes.
-                task.setSchedule(schedule);
+                task.setSchedule(snooze.getTime());
+                task.setCompletionDate(null);
                 mTasksService.saveTask(task);
             }
         };
