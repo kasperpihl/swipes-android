@@ -34,8 +34,6 @@ public class TasksService {
 
     private WeakReference<Context> mContext;
 
-    private int mNumberOfFocusedTasks;
-
     private static final String DB_NAME = "swipes-db";
 
     public static final String ACTION_TASKS_CHANGED = "com.swipesapp.android.ACTION_TASKS_CHANGED";
@@ -202,10 +200,7 @@ public class TasksService {
      * @return List of tasks.
      */
     public List<GsonTask> loadFocusedTasks() {
-        List<GsonTask> gsonTasks = gsonFromTasks(mExtTaskDao.listFocusedTasks());
-        mNumberOfFocusedTasks = gsonTasks != null ? gsonTasks.size() : 0;
-
-        return gsonTasks;
+        return gsonFromTasks(mExtTaskDao.listFocusedTasks());
     }
 
     /**
@@ -260,15 +255,6 @@ public class TasksService {
         }
 
         return gsonTasks;
-    }
-
-    /**
-     * Retrieve the number of focused tasks.
-     *
-     * @return Number of tasks.
-     */
-    public int getNumberOfFocusedTasks() {
-        return mNumberOfFocusedTasks;
     }
 
     /**

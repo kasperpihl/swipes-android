@@ -177,9 +177,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // TODO: What should the IDs be?
         String objectId = title + currentDate.getTime();
         String tempId = "";
-        Integer order = service.getNumberOfFocusedTasks();
 
-        GsonTask task = new GsonTask(objectId, tempId, null, currentDate, currentDate, false, title, null, order, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
+        GsonTask task = new GsonTask(objectId, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
         service.saveTask(task);
 
         endAddTaskWorkflow();

@@ -43,7 +43,7 @@ public class ExtTaskDao {
 
     public List<Task> listFocusedTasks() {
         return mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.lt(new Date()), TaskDao.Properties.Schedule.isNull()),
-                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order).list();
+                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order).orderDesc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listCompletedTasks() {
