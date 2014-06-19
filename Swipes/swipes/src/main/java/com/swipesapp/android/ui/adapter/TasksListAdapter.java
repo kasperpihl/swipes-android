@@ -127,9 +127,13 @@ public class TasksListAdapter extends ArrayAdapter {
         String tags = null;
         String notes = mData.get(position).getNotes();
         Date repeatDate = mData.get(position).getRepeatDate();
+        Integer priority = mData.get(position).getPriority();
 
         // Set task title.
         holder.title.setText(title);
+
+        // Set priority.
+        holder.priorityButton.setChecked(priority == 1);
 
         // Build the formatted tags.
         if (tagList != null && !tagList.isEmpty()) {
