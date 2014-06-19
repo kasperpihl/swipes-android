@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
@@ -120,7 +121,7 @@ public class TasksListAdapter extends ArrayAdapter {
         return true;
     }
 
-    private void customizeView(TaskHolder holder, int position) {
+    private void customizeView(TaskHolder holder, final int position) {
         // Attributes displayed for all sections.
         String title = mData.get(position).getTitle();
         List<GsonTag> tagList = mData.get(position).getTags();
@@ -134,6 +135,20 @@ public class TasksListAdapter extends ArrayAdapter {
 
         // Set priority.
         holder.priorityButton.setChecked(priority == 1);
+
+        // Listener to persist priority.
+        holder.priorityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckBox priorityButton = (CheckBox) view;
+                Integer priority = priorityButton.isChecked() ? 1 : 0;
+
+                GsonTask task = mData.get(position);
+                task.setPriority(priority);
+
+                TasksService.getInstance(mContext.get()).saveTask(task);
+            }
+        });
 
         // Build the formatted tags.
         if (tagList != null && !tagList.isEmpty()) {
