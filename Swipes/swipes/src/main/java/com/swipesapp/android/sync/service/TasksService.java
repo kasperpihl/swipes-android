@@ -13,6 +13,7 @@ import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.values.Actions;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -35,8 +36,6 @@ public class TasksService {
     private WeakReference<Context> mContext;
 
     private static final String DB_NAME = "swipes-db";
-
-    public static final String ACTION_TASKS_CHANGED = "com.swipesapp.android.ACTION_TASKS_CHANGED";
 
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
@@ -70,11 +69,13 @@ public class TasksService {
     }
 
     /**
-     * Sends a broadcast of changed tasks.
+     * Sends a broadcast.
+     *
+     * @param action Action to broadcast.
      */
-    private void sendBroadcast() {
+    public void sendBroadcast(String action) {
         Intent intent = new Intent();
-        intent.setAction(ACTION_TASKS_CHANGED);
+        intent.setAction(action);
         mContext.get().sendBroadcast(intent);
     }
 
@@ -92,7 +93,7 @@ public class TasksService {
             updateTask(gsonTask, task);
         }
 
-        sendBroadcast();
+        sendBroadcast(Actions.TASKS_CHANGED);
     }
 
     /**

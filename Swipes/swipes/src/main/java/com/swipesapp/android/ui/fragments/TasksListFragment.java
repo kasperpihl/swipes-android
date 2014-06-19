@@ -24,6 +24,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
 
 import java.util.Calendar;
@@ -114,10 +115,11 @@ public class TasksListFragment extends ListFragment {
 
     @Override
     public void onResume() {
-        updateTaskList();
+        refreshTaskList();
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(TasksService.ACTION_TASKS_CHANGED);
+        filter.addAction(Actions.TASKS_CHANGED);
+        filter.addAction(Actions.TAB_CHANGED);
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         super.onResume();
@@ -268,8 +270,7 @@ public class TasksListFragment extends ListFragment {
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
 
-    // TODO: Find out why this is not working.
-    private void updateTaskList() {
+    private void refreshTaskList() {
         // Update adapter with new data.
         switch (mCurrentSection) {
             case LATER:
@@ -299,7 +300,8 @@ public class TasksListFragment extends ListFragment {
     public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateTaskList();
+            // TODO: When needed, filter intents to refresh or sync.
+            refreshTaskList();
         }
     };
 

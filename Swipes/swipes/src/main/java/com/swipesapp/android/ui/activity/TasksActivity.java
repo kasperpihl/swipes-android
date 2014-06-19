@@ -30,6 +30,7 @@ import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
@@ -91,48 +92,19 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabs.setViewPager(mViewPager);
+
         if (sTypeface == null) {
             sTypeface = Typeface.createFromAsset(getAssets(), Constants.FONT_NAME);
         }
         mTabs.setTypeface(sTypeface, 0);
+
         int dimension = getResources().getDimensionPixelSize(R.dimen.action_bar_icon_size);
         mTabs.setTextSize(dimension);
         mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
         mTabs.setTabBackground(ThemeUtils.getCurrentThemeTabBackground(this));
-        ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                int[] textColors = {
-                        ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
-                        ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
-                        ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
-                        ThemeUtils.getCurrentThemeTextColor(mContext.get())
-                };
-                mTabs.setIndicatorColor(textColors[position]);
-                mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
-                View v = mTabs.getTabView(position);
-                if (v instanceof TextView) {
-                    TextView tabTextView = (TextView) v;
-                    tabTextView.setTextColor(textColors[position]);
-                }
-
-                if (position == Sections.FOCUS.getSectionNumber()) {
-                    setEmptyBackground(Sections.FOCUS);
-                } else {
-                    clearEmptyBackground();
-                }
-
-                if (position == Sections.SETTINGS.getSectionNumber()) {
-                    mButtonAddTask.setVisibility(View.GONE);
-                } else {
-                    mButtonAddTask.setVisibility(View.VISIBLE);
-                }
-            }
-        };
-        ViewPager.SimpleOnPageChangeListener listener = simpleOnPageChangeListener;
-        mTabs.setOnPageChangeListener(listener);
+        mTabs.setOnPageChangeListener(mSimpleOnPageChangeListener);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -153,6 +125,40 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         ButterKnife.reset(this);
         super.onDestroy();
     }
+
+    private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            int[] textColors = {
+                    ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
+                    ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
+                    ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
+                    ThemeUtils.getCurrentThemeTextColor(mContext.get())
+            };
+            mTabs.setIndicatorColor(textColors[position]);
+            mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
+            View v = mTabs.getTabView(position);
+            if (v instanceof TextView) {
+                TextView tabTextView = (TextView) v;
+                tabTextView.setTextColor(textColors[position]);
+            }
+
+            if (position == Sections.FOCUS.getSectionNumber()) {
+                setEmptyBackground(Sections.FOCUS);
+            } else {
+                clearEmptyBackground();
+            }
+
+            if (position == Sections.SETTINGS.getSectionNumber()) {
+                mButtonAddTask.setVisibility(View.GONE);
+            } else {
+                mButtonAddTask.setVisibility(View.VISIBLE);
+            }
+
+            // Notify listeners that current tab has changed.
+            TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TAB_CHANGED);
+        }
+    };
 
     private void clearEmptyBackground() {
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
