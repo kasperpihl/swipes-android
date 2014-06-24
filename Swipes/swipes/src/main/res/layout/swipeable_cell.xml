@@ -35,6 +35,7 @@
         android:id="@+id/swipe_front"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
+        android:descendantFocusability="blocksDescendants"
         android:orientation="horizontal">
 
         <CheckBox
