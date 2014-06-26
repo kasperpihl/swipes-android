@@ -162,7 +162,9 @@
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_tags_divider"
+                    android:ellipsize="end"
                     android:gravity="top"
+                    android:maxLines="1"
                     android:textColor="@android:color/darker_gray"
                     android:visibility="gone" />
             </RelativeLayout>

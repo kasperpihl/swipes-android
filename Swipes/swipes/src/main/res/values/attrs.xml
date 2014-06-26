@@ -5,4 +5,9 @@
         <attr name="exampleColor" format="color" />
         <attr name="exampleDrawable" format="color|reference" />
     </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="android:verticalSpacing" />
+        <attr name="android:horizontalSpacing" />
+    </declare-styleable>
 </resources>
