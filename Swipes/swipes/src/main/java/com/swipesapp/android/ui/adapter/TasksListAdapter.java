@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class TasksListAdapter extends ArrayAdapter {
 
-    private List<GsonTask> mData;
+    private List mData;
     private WeakReference<Context> mContext;
     private int mLayoutResID;
     private Sections mSection;
@@ -112,7 +112,7 @@ public class TasksListAdapter extends ArrayAdapter {
         if (position < 0 || position >= mIdMap.size()) {
             return INVALID_ID;
         }
-        String key = mData.get(position).getObjectId();
+        String key = String.valueOf(mData.get(position));
         return mIdMap.get(key);
     }
 
@@ -122,13 +122,19 @@ public class TasksListAdapter extends ArrayAdapter {
     }
 
     private void customizeView(TaskHolder holder, final int position) {
+        // HACK: The DynamicListView can only handle generic lists inside the adapter, so mData is
+        // a generic list in order to fix a bug that keeps drag and drop from working as expected.
+        // A cast needs to be done here to properly display custom data. This behavior is not ideal,
+        // so the DynamicListView should be revised in the future to avoid the need of hacks.
+        final List<GsonTask> tasks = (List<GsonTask>) mData;
+
         // Attributes displayed for all sections.
-        String title = mData.get(position).getTitle();
-        List<GsonTag> tagList = mData.get(position).getTags();
+        String title = tasks.get(position).getTitle();
+        List<GsonTag> tagList = tasks.get(position).getTags();
         String tags = null;
-        String notes = mData.get(position).getNotes();
-        Date repeatDate = mData.get(position).getRepeatDate();
-        Integer priority = mData.get(position).getPriority();
+        String notes = tasks.get(position).getNotes();
+        Date repeatDate = tasks.get(position).getRepeatDate();
+        Integer priority = tasks.get(position).getPriority();
 
         // Set task title.
         holder.title.setText(title);
@@ -143,7 +149,7 @@ public class TasksListAdapter extends ArrayAdapter {
                 CheckBox priorityButton = (CheckBox) view;
                 Integer priority = priorityButton.isChecked() ? 1 : 0;
 
-                GsonTask task = mData.get(position);
+                GsonTask task = tasks.get(position);
                 task.setPriority(priority);
 
                 TasksService.getInstance(mContext.get()).saveTask(task);
@@ -182,7 +188,7 @@ public class TasksListAdapter extends ArrayAdapter {
         }
 
         // Specific rules for each section.
-        customizeViewForSection(holder, position);
+        customizeViewForSection(holder, position, tasks);
 
         // Display properties line.
         if (mDisplayProperties) {
@@ -201,15 +207,15 @@ public class TasksListAdapter extends ArrayAdapter {
         holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getContext()));
     }
 
-    private void customizeViewForSection(TaskHolder holder, int position) {
+    private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
         switch (mSection) {
             case LATER:
                 // Set priority button color.
                 holder.priorityButton.setBackgroundResource(R.drawable.later_circle_selector);
 
                 // Display scheduled time or location icon (never both).
-                Date schedule = mData.get(position).getSchedule();
-                String location = mData.get(position).getLocation();
+                Date schedule = tasks.get(position).getSchedule();
+                String location = tasks.get(position).getLocation();
 
                 if (location != null && !location.isEmpty()) {
                     holder.propertiesDivider.setVisibility(View.GONE);
@@ -231,7 +237,7 @@ public class TasksListAdapter extends ArrayAdapter {
                 holder.priorityButton.setBackgroundResource(R.drawable.done_circle_selector);
 
                 // Display completion time and hide repeat icon.
-                Date completionDate = mData.get(position).getCompletionDate();
+                Date completionDate = tasks.get(position).getCompletionDate();
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
@@ -248,7 +254,7 @@ public class TasksListAdapter extends ArrayAdapter {
     private void updateIdMap() {
         mIdMap.clear();
         for (int i = 0; i < mData.size(); ++i) {
-            mIdMap.put(mData.get(i).getObjectId(), i);
+            mIdMap.put(String.valueOf(mData.get(i)), i);
         }
     }
 

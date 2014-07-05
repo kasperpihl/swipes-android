@@ -271,16 +271,23 @@ public class TasksListFragment extends ListFragment {
     }
 
     private void refreshTaskList() {
+        List<GsonTask> tasks;
         // Update adapter with new data.
         switch (mCurrentSection) {
             case LATER:
-                mLaterAdapter.update(mTasksService.loadScheduledTasks());
+                tasks = mTasksService.loadScheduledTasks();
+                mLaterAdapter.update(tasks);
+                mLaterListView.setContentList(tasks);
                 break;
             case FOCUS:
-                mFocusAdapter.update(mTasksService.loadFocusedTasks());
+                tasks = mTasksService.loadFocusedTasks();
+                mFocusAdapter.update(tasks);
+                mFocusListView.setContentList(tasks);
                 break;
             case DONE:
-                mDoneAdapter.update(mTasksService.loadCompletedTasks());
+                tasks = mTasksService.loadCompletedTasks();
+                mDoneAdapter.update(tasks);
+                mDoneListView.setContentList(tasks);
                 break;
         }
     }
