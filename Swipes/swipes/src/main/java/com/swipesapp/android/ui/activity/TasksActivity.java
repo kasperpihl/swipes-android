@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,6 +76,21 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @InjectView(R.id.button_add_task_priority)
     CheckBox mButtonAddTaskPriority;
+
+    @InjectView(R.id.edit_tasks_bar)
+    LinearLayout mEditTasksBar;
+
+    @InjectView(R.id.button_edit_task)
+    SwipesButton mButtonEditTask;
+
+    @InjectView(R.id.button_assign_tags)
+    SwipesButton mButtonAssignTags;
+
+    @InjectView(R.id.button_delete_tasks)
+    SwipesButton mButtonDeleteTasks;
+
+    @InjectView(R.id.button_share_tasks)
+    SwipesButton mButtonShareTasks;
 
     private static Typeface sTypeface;
 
@@ -162,6 +178,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             // Notify listeners that current tab has changed.
             TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TAB_CHANGED);
+
+            hideEditBar();
         }
     };
 
@@ -185,6 +203,34 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             // Change divider color, otherwise it will look misplaced against the image background.
             mTabs.setDividerColor(ThemeUtils.getCurrentThemeEmptyDividerColor(this));
         }
+    }
+
+    /**
+     * Shows the task edit bar.
+     *
+     * @param isBatchOperation True when multiple tasks are selected.
+     */
+    public void showEditBar(boolean isBatchOperation) {
+        // TODO: Animate transitions.
+        mButtonAddTask.setVisibility(View.GONE);
+        mEditTasksBar.setVisibility(View.VISIBLE);
+
+        // The edit button shouldn't be used for multiple tasks at once.
+        if (isBatchOperation) {
+            // Disable button and make it transparent instead of invisible, to preserve layout positions.
+            mButtonEditTask.setEnabled(false);
+            mButtonEditTask.setTextColor(0);
+        } else {
+            // Enable button and apply color.
+            mButtonEditTask.setEnabled(true);
+            mButtonEditTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        }
+    }
+
+    public void hideEditBar() {
+        // TODO: Animate transitions.
+        mButtonAddTask.setVisibility(View.VISIBLE);
+        mEditTasksBar.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.button_confirm_add_task)
@@ -250,6 +296,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Fade out the blur background.
         mBlurBackground.animate().alpha(0f).setDuration(500).setListener(mBlurFadeOutListener);
+    }
+
+    @OnClick(R.id.button_delete_tasks)
+    protected void deleteTasks() {
+        // Send a broadcast to delete tasks. The fragment should handle it, since it contains the list.
+        TasksService.getInstance(this).sendBroadcast(Actions.DELETE_TASKS);
     }
 
     private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {

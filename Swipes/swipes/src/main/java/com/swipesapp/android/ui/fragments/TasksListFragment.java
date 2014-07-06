@@ -4,6 +4,7 @@ import android.app.ListFragment;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
+import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -28,6 +30,7 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +72,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
      */
     private TasksService mTasksService;
 
+    /**
+     * List of selected tasks.
+     */
+    private List<GsonTask> mSelectedTasks;
+
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
@@ -85,6 +93,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Bundle args = getArguments();
 
         mTasksService = TasksService.getInstance(getActivity().getApplicationContext());
+
+        mSelectedTasks = new ArrayList<GsonTask>();
 
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mSection = Sections.getSectionByNumber(sectionNumber);
@@ -121,6 +131,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.TASKS_CHANGED);
         filter.addAction(Actions.TAB_CHANGED);
+        filter.addAction(Actions.DELETE_TASKS);
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         super.onResume();
@@ -313,13 +324,21 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         return null;
     }
 
-    public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Listen to broadcasts intended for this section.
             if (isCurrentSection()) {
-                // TODO: When needed, filter intents to refresh or sync.
-                refreshTaskList();
+                // Filter intent actions.
+                if (intent.getAction().equals(Actions.TASKS_CHANGED) || intent.getAction().equals(Actions.TAB_CHANGED)) {
+                    // Perform refresh.
+                    refreshTaskList();
+                    // Clear selected tasks.
+                    mSelectedTasks.clear();
+                } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
+                    // Delete tasks.
+                    deleteSelectedTasks();
+                }
             }
         }
     };
@@ -390,11 +409,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Deselect task.
                 task.setSelected(false);
                 selectedIndicator.setBackgroundColor(0);
+                mSelectedTasks.remove(task);
             } else {
                 // Select task.
                 task.setSelected(true);
                 selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+                mSelectedTasks.add(task);
             }
+
+            handleEditBar();
         }
     };
 
@@ -413,6 +436,36 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             task.setOrder(i);
             mTasksService.saveTask(task);
         }
+    }
+
+    private void handleEditBar() {
+        if (!mSelectedTasks.isEmpty()) {
+            // Display bar.
+            ((TasksActivity) getActivity()).showEditBar(mSelectedTasks.size() > 1);
+        } else {
+            // Hide bar.
+            ((TasksActivity) getActivity()).hideEditBar();
+        }
+    }
+
+    private void deleteSelectedTasks() {
+        // Display confirmation dialog.
+        new AccentAlertDialog.Builder(getActivity())
+                .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, mSelectedTasks.size(), mSelectedTasks.size()))
+                .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, mSelectedTasks.size()))
+                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Proceed with delete.
+                        mTasksService.deleteTasks(mSelectedTasks);
+                    }
+                })
+                .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing.
+                    }
+                })
+                .create()
+                .show();
     }
 
     private void fakeSnoozeTask(final GsonTask task) {

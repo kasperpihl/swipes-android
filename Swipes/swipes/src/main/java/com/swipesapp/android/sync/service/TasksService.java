@@ -97,6 +97,19 @@ public class TasksService {
     }
 
     /**
+     * Deletes tasks.
+     *
+     * @param tasks List containing tasks to delete.
+     */
+    public void deleteTasks(List<GsonTask> tasks) {
+        for (GsonTask task : tasks) {
+            // Mark task as deleted and persist change.
+            task.setDeleted(true);
+            saveTask(task);
+        }
+    }
+
+    /**
      * Creates a new task.
      *
      * @param gsonTask Object holding new task data.

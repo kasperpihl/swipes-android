@@ -17,4 +17,9 @@ public class Actions {
      */
     public static final String TAB_CHANGED = "com.swipesapp.android.ACTION_TAB_CHANGED";
 
+    /**
+     * Notifies listeners to delete tasks.
+     */
+    public static final String DELETE_TASKS = "com.swipesapp.android.ACTION_DELETE_TASKS";
+
 }

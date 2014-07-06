@@ -41,6 +41,20 @@
     <string name="evening_start">Evening start</string>
     <string name="title_activity_about">About</string>
 
+    <!-- Actions -->
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+
+    <!-- Plurals -->
+    <plurals name="delete_task_dialog_title">
+        <item quantity="one">Delete task</item>
+        <item quantity="other">Delete %d tasks</item>
+    </plurals>
+    <plurals name="delete_task_dialog_text">
+        <item quantity="one">Are you sure you want to permanently delete this task?</item>
+        <item quantity="other">Are you sure you want to permanently delete these tasks?</item>
+    </plurals>
+
     <!-- Icons -->
     <string name="later_light">&#xe604;</string>
     <string name="focus_light">&#xe603;</string>
@@ -54,5 +68,9 @@
     <string name="edit_location">&#xe60d;</string>
     <string name="edit_notes">&#xe609;</string>
     <string name="edit_repeat">&#xe60a;</string>
+    <string name="action_tag">&#xe60b;</string>
+    <string name="action_share">&#xe633;</string>
+    <string name="action_delete">&#xe635;</string>
+    <string name="action_edit">&#xe636;</string>
 
 </resources>

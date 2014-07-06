@@ -87,6 +87,7 @@ public class TasksListAdapter extends ArrayAdapter {
             holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
+            holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
             holder.time = (TextView) row.findViewById(R.id.task_time);
             holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties_container);
@@ -141,6 +142,9 @@ public class TasksListAdapter extends ArrayAdapter {
 
         // Set priority.
         holder.priorityButton.setChecked(priority == 1);
+
+        // Clear selection.
+        holder.selectedIndicator.setBackgroundColor(0);
 
         // Listener to persist priority.
         holder.priorityButton.setOnClickListener(new View.OnClickListener() {
@@ -278,8 +282,9 @@ public class TasksListAdapter extends ArrayAdapter {
         RelativeLayout frontView;
         RelativeLayout backView;
 
-        // Priority.
+        // Priority and selection.
         CheckBox priorityButton;
+        View selectedIndicator;
 
         // Main attributes.
         TextView title;
