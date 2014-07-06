@@ -85,7 +85,7 @@ public class TasksService {
      * @param gsonTask Object holding task data.
      */
     public void saveTask(GsonTask gsonTask) {
-        Task task = mExtTaskDao.selectTask(gsonTask.getObjectId());
+        Task task = mExtTaskDao.selectTask(gsonTask.getTempId());
 
         if (task == null) {
             createTask(gsonTask);
@@ -170,11 +170,11 @@ public class TasksService {
     /**
      * Loads a single task.
      *
-     * @param objectId Object ID of the task.
+     * @param tempId Temp ID of the task.
      * @return Selected task.
      */
-    public GsonTask loadTask(String objectId) {
-        return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(objectId))).get(0);
+    public GsonTask loadTask(String tempId) {
+        return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(tempId))).get(0);
     }
 
     /**

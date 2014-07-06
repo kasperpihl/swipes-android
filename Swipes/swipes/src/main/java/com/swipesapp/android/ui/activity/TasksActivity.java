@@ -180,11 +180,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
-        // TODO: What should the IDs be?
-        String objectId = title + currentDate.getTime();
-        String tempId = "";
+        // TODO: What should the temp ID be?
+        String tempId = title + currentDate.getTime();
 
-        GsonTask task = new GsonTask(objectId, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
+        GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, null, null, null, RepeatOptions.NEVER.getValue(), mSelectedTags);
         service.saveTask(task);
 
         endAddTaskWorkflow();
