@@ -21,6 +21,7 @@ import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.util.ThemeUtils;
@@ -45,9 +46,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     /**
-     * Current section loaded.
+     * Section the fragment belongs to.
      */
-    private Sections mCurrentSection;
+    private Sections mSection;
 
     /**
      * Customized list views to display tasks.
@@ -85,14 +86,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mTasksService = TasksService.getInstance(getActivity().getApplicationContext());
 
-        int currentSectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
-        mCurrentSection = Sections.getSectionByNumber(currentSectionNumber);
+        int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
+        mSection = Sections.getSectionByNumber(sectionNumber);
 
         View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
         ButterKnife.inject(this, rootView);
 
         // Setup view for current section.
-        switch (mCurrentSection) {
+        switch (mSection) {
             case LATER:
                 setupLaterView(rootView);
                 break;
@@ -132,12 +133,18 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         super.onPause();
     }
 
+    private boolean isCurrentSection() {
+        // Retrieve current section being displayed and compare with this fragment's section.
+        Sections currentSection = ((TasksActivity) getActivity()).getCurrentSection();
+        return mSection == currentSection;
+    }
+
     private void setupLaterView(View rootView) {
         // Load tasks.
         List<GsonTask> laterTasks = mTasksService.loadScheduledTasks();
 
         // Initialize adapter.
-        mLaterAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, laterTasks, mCurrentSection);
+        mLaterAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, laterTasks, mSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -157,7 +164,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         List<GsonTask> focusTasks = mTasksService.loadFocusedTasks();
 
         // Initialize adapter.
-        mFocusAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, focusTasks, mCurrentSection);
+        mFocusAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, focusTasks, mSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -177,7 +184,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         List<GsonTask> doneTasks = mTasksService.loadCompletedTasks();
 
         // Initialize adapter.
-        mDoneAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, doneTasks, mCurrentSection);
+        mDoneAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, doneTasks, mSection);
 
         // Set contents listener.
         if (getActivity() instanceof ListContentsListener) {
@@ -275,7 +282,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void refreshTaskList() {
         List<GsonTask> tasks;
         // Update adapter with new data.
-        switch (mCurrentSection) {
+        switch (mSection) {
             case LATER:
                 tasks = mTasksService.loadScheduledTasks();
                 mLaterAdapter.update(tasks);
@@ -295,7 +302,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private GsonTask getTask(int position) {
-        switch (mCurrentSection) {
+        switch (mSection) {
             case LATER:
                 return mLaterAdapter.getData().get(position);
             case FOCUS:
@@ -309,15 +316,18 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO: When needed, filter intents to refresh or sync.
-            refreshTaskList();
+            // Listen to broadcasts intended for this section.
+            if (isCurrentSection()) {
+                // TODO: When needed, filter intents to refresh or sync.
+                refreshTaskList();
+            }
         }
     };
 
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override
         public void onFinishedSwipeRight(int position) {
-            switch (mCurrentSection) {
+            switch (mSection) {
                 case LATER:
                     // Move task from Later to Focus.
                     getTask(position).setSchedule(new Date());
@@ -333,7 +343,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedSwipeLeft(int position) {
-            switch (mCurrentSection) {
+            switch (mSection) {
                 case LATER:
                     // TODO: Call the real snooze flow.
                     fakeSnoozeTask(getTask(position));
@@ -352,7 +362,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedLongSwipeRight(int position) {
-            switch (mCurrentSection) {
+            switch (mSection) {
                 case LATER:
                     // Move task from Later to Done.
                     getTask(position).setCompletionDate(new Date());
@@ -363,7 +373,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedLongSwipeLeft(int position) {
-            switch (mCurrentSection) {
+            switch (mSection) {
                 case DONE:
                     // TODO: Call the real snooze flow.
                     fakeSnoozeTask(getTask(position));
@@ -383,14 +393,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             } else {
                 // Select task.
                 task.setSelected(true);
-                selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mCurrentSection, getActivity()));
+                selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
             }
         }
     };
 
     @Override
     public void listReordered(List list) {
-        if (mCurrentSection == Sections.FOCUS) {
+        if (mSection == Sections.FOCUS) {
             reorderTasks((List<GsonTask>) list);
             refreshTaskList();
         }

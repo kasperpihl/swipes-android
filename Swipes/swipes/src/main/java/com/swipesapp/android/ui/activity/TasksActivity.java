@@ -47,6 +47,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
+    Sections mCurrentSection;
+
     @InjectView(R.id.pager)
     NoSwipeViewPager mViewPager;
 
@@ -115,6 +117,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        mCurrentSection = Sections.FOCUS;
 
         // HACK: Flip add task confirm button, so the arrow points to the right.
         mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
@@ -155,10 +158,21 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 mButtonAddTask.setVisibility(View.VISIBLE);
             }
 
+            mCurrentSection = Sections.getSectionByNumber(position);
+
             // Notify listeners that current tab has changed.
             TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TAB_CHANGED);
         }
     };
+
+    /**
+     * Returns the current section being displayed.
+     *
+     * @return Current section.
+     */
+    public Sections getCurrentSection() {
+        return mCurrentSection;
+    }
 
     private void clearEmptyBackground() {
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
