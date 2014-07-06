@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +28,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.BlurBuilder;
+import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
@@ -36,6 +38,7 @@ import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,6 +102,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private WeakReference<Context> mContext;
 
+    private static final String LOG_TAG = TasksActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +142,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // HACK: Flip add task confirm button, so the arrow points to the right.
         mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
+
+        // Define a custom duration to the page scroller, providing a more natural feel.
+        customizeScroller();
     }
 
     @Override
@@ -190,6 +198,17 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
      */
     public Sections getCurrentSection() {
         return mCurrentSection;
+    }
+
+    private void customizeScroller() {
+        try {
+            // HACK: Use reflection to access the scroller and customize it.
+            Field scroller = ViewPager.class.getDeclaredField("mScroller");
+            scroller.setAccessible(true);
+            scroller.set(mViewPager, new FactorSpeedScroller(this));
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Something went wrong accessing field \"mScroller\" inside ViewPager class", e);
+        }
     }
 
     private void clearEmptyBackground() {
