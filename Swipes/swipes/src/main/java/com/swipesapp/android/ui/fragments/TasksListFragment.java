@@ -37,7 +37,7 @@ import butterknife.InjectView;
 /**
  * Fragment for the list of tasks.
  */
-public class TasksListFragment extends ListFragment {
+public class TasksListFragment extends ListFragment implements DynamicListView.ListOrderListener {
 
     /**
      * The fragment argument representing the section number for this fragment.
@@ -225,6 +225,7 @@ public class TasksListFragment extends ListFragment {
         mFocusListView.setContentList(adapter.getData());
         mFocusListView.setAdapter(adapter);
         mFocusListView.setSwipeListViewListener(mSwipeListener);
+        mFocusListView.setListOrderListener(this);
 
         // Setup back view.
         mFocusListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
@@ -236,6 +237,7 @@ public class TasksListFragment extends ListFragment {
         mFocusListView.setFrontIconBackgrounds(R.drawable.done_circle_selector, R.drawable.later_circle_selector, R.drawable.focus_circle_selector);
 
         // Setup actions.
+        mFocusListView.setDragAndDropEnabled(true);
         mFocusListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mFocusListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
         mFocusListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
@@ -369,6 +371,23 @@ public class TasksListFragment extends ListFragment {
             }
         }
     };
+
+    @Override
+    public void listReordered(List list) {
+        if (mCurrentSection == Sections.FOCUS) {
+            reorderTasks((List<GsonTask>) list);
+            refreshTaskList();
+        }
+    }
+
+    private void reorderTasks(List<GsonTask> tasks) {
+        // Save task order as its position on the list.
+        for (int i = 0; i < tasks.size(); i++) {
+            GsonTask task = tasks.get(i);
+            task.setOrder(i);
+            mTasksService.saveTask(task);
+        }
+    }
 
     private void fakeSnoozeTask(final GsonTask task) {
         // Create time picker listener.
