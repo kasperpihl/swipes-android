@@ -370,6 +370,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     break;
             }
         }
+
+        @Override
+        public void onClickFrontView(View view, int position) {
+            GsonTask task = getTask(position);
+            View selectedIndicator = view.findViewById(R.id.selected_indicator);
+
+            if (task.isSelected()) {
+                // Deselect task.
+                task.setSelected(false);
+                selectedIndicator.setBackgroundColor(0);
+            } else {
+                // Select task.
+                task.setSelected(true);
+                selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mCurrentSection, getActivity()));
+            }
+        }
     };
 
     @Override

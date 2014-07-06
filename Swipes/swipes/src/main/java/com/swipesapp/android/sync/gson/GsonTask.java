@@ -45,6 +45,9 @@ public class GsonTask {
     @Expose
     private List<GsonTag> tags;
 
+    // Local properties.
+    private boolean isSelected;
+
     public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, List<GsonTag> tags) {
         this.objectId = objectId;
         this.tempId = tempId;
@@ -190,6 +193,14 @@ public class GsonTask {
 
     public List<GsonTag> getTags() {
         return tags;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
 }

@@ -35,8 +35,9 @@
         android:id="@+id/swipe_front"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
-        android:descendantFocusability="blocksDescendants"
         android:orientation="horizontal">
+
+        <include layout="@layout/selected_indicator" />
 
         <CheckBox
             android:id="@+id/button_task_priority"
@@ -46,7 +47,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:button="@null" />
+            android:button="@null"
+            android:focusable="false" />
 
         <!-- Task title and properties container -->
         <LinearLayout
