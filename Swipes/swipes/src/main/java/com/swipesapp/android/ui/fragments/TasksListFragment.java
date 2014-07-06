@@ -131,7 +131,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.TASKS_CHANGED);
         filter.addAction(Actions.TAB_CHANGED);
+        filter.addAction(Actions.EDIT_TASK);
+        filter.addAction(Actions.ASSIGN_TAGS);
         filter.addAction(Actions.DELETE_TASKS);
+        filter.addAction(Actions.SHARE_TASKS);
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         super.onResume();
@@ -335,9 +338,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     refreshTaskList();
                     // Clear selected tasks.
                     mSelectedTasks.clear();
+                } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
+                    // TODO: Call task edit activity, passing the tempId of the selected task as parameter.
+                } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
+                    // TODO: Display tag selection screen.
                 } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
                     // Delete tasks.
                     deleteSelectedTasks();
+                } else if (intent.getAction().equals(Actions.SHARE_TASKS)) {
+                    // TODO: Send intent to share tasks by email.
                 }
             }
         }

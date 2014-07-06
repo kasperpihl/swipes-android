@@ -298,10 +298,28 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mBlurBackground.animate().alpha(0f).setDuration(500).setListener(mBlurFadeOutListener);
     }
 
+    @OnClick(R.id.button_edit_task)
+    protected void editTask() {
+        // Send a broadcast to edit the currently selected task. The fragment should handle it.
+        TasksService.getInstance(this).sendBroadcast(Actions.EDIT_TASK);
+    }
+
+    @OnClick(R.id.button_assign_tags)
+    protected void assignTags() {
+        // Send a broadcast to assign tags to the selected tasks. The fragment should handle it.
+        TasksService.getInstance(this).sendBroadcast(Actions.ASSIGN_TAGS);
+    }
+
     @OnClick(R.id.button_delete_tasks)
     protected void deleteTasks() {
         // Send a broadcast to delete tasks. The fragment should handle it, since it contains the list.
         TasksService.getInstance(this).sendBroadcast(Actions.DELETE_TASKS);
+    }
+
+    @OnClick(R.id.button_share_tasks)
+    protected void shareTasks() {
+        // Send a broadcast to share selected tasks. The fragment should handle it.
+        TasksService.getInstance(this).sendBroadcast(Actions.SHARE_TASKS);
     }
 
     private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {
