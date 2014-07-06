@@ -29,6 +29,7 @@ import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
+import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
@@ -36,6 +37,7 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -95,6 +97,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @InjectView(R.id.button_share_tasks)
     SwipesButton mButtonShareTasks;
 
+    @InjectView(R.id.add_task_tag_container)
+    FlowLayout mAddTaskTagContainer;
+
+    @InjectView(R.id.button_add_task_tag)
+    CheckBox mButtonAddTaskTag;
+
     private static Typeface sTypeface;
 
     // TODO: Populate list of selected tags.
@@ -145,6 +153,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
+
+        // Customize tag button to match current theme.
+        customizeTagButton();
     }
 
     @Override
@@ -209,6 +220,13 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         } catch (Exception e) {
             Log.e(LOG_TAG, "Something went wrong accessing field \"mScroller\" inside ViewPager class", e);
         }
+    }
+
+    private void customizeTagButton() {
+        int background = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.drawable.tag_selector_light : R.drawable.tag_selector_dark;
+        int color = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.color.text_color_selector_light : R.color.text_color_selector_dark;
+        mButtonAddTaskTag.setBackgroundResource(background);
+        mButtonAddTaskTag.setTextColor(getResources().getColorStateList(color));
     }
 
     private void clearEmptyBackground() {
@@ -294,6 +312,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Display add task area.
         mAddTaskContainer.setVisibility(View.VISIBLE);
+
+        // Display tags area.
+        mAddTaskTagContainer.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.blur_background)
@@ -308,6 +329,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Hide add task area.
         mAddTaskContainer.setVisibility(View.GONE);
+
+        // Hide tags area.
+        mAddTaskTagContainer.setVisibility(View.GONE);
 
         // Show the main layout.
         mActivityMainLayout.setAlpha(1f);

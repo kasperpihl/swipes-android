@@ -44,6 +44,7 @@
     <!-- Actions -->
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="add_task_hint">Add a new task</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

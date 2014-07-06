@@ -84,7 +84,6 @@
             android:background="@android:color/transparent"
             android:text="@string/action_share"
             android:textSize="@dimen/action_buttons_size" />
-
     </LinearLayout>
 
     <!-- Add task area -->
@@ -97,7 +96,7 @@
     <RelativeLayout
         android:id="@+id/add_task_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone">
 
@@ -105,7 +104,6 @@
             android:id="@+id/button_add_task_priority"
             android:layout_width="@dimen/task_circles_size"
             android:layout_height="@dimen/task_circles_size"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
@@ -117,7 +115,6 @@
             android:id="@+id/button_confirm_add_task"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="7dp"
@@ -130,33 +127,35 @@
             android:id="@+id/edit_text_add_task_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/button_confirm_add_task"
             android:layout_toRightOf="@id/button_add_task_priority"
+            android:hint="@string/add_task_hint"
             android:inputType="text" />
-
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/add_task_tag_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/edit_text_add_task_content"
-            android:layout_centerVertical="true">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/tag_selector"
-                android:button="@null"
-                android:padding="15dp"
-                android:text="tag 0" />
-
-
-        </com.swipesapp.android.ui.view.FlowLayout>
     </RelativeLayout>
+
+    <!-- Tags area -->
+    <com.swipesapp.android.ui.view.FlowLayout
+        android:id="@+id/add_task_tag_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/add_task_container"
+        android:layout_marginBottom="17dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/button_add_task_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="12dp"
+            android:background="@drawable/tag_selector_light"
+            android:button="@null"
+            android:padding="9dp"
+            android:text="swipes"
+            android:textColor="@color/text_color_selector_light" />
+    </com.swipesapp.android.ui.view.FlowLayout>
 
 </RelativeLayout>
