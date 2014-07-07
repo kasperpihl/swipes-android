@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- Welcome -->
+    <string name="welcome_task_one">Swipe right to complete</string>
+    <string name="welcome_task_two">Swipe left to snooze</string>
+
     <!-- Sections -->
     <string name="app_name">Swipes</string>
     <string name="action_settings">Settings</string>
