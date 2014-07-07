@@ -4,13 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/swipes_brand_color">
 
-    <com.swipesapp.android.ui.view.SwipesTextView
+    <ImageView
         android:id="@+id/splash_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/swipes_logo"
-        android:textColor="@android:color/white"
-        android:textSize="70sp" />
+        android:src="@drawable/swipes_logo" />
 
 </RelativeLayout>
