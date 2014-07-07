@@ -2,12 +2,14 @@ package com.swipesapp.android.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,10 +52,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class TasksActivity extends AccentActivity implements ListContentsListener {
-
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
-    Sections mCurrentSection;
 
     @InjectView(R.id.pager)
     NoSwipeViewPager mViewPager;
@@ -103,14 +101,21 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @InjectView(R.id.button_add_task_tag)
     CheckBox mButtonAddTaskTag;
 
+    private static final String LOG_TAG = TasksActivity.class.getSimpleName();
+
+    private WeakReference<Context> mContext;
+
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private Sections mCurrentSection;
+
     private static Typeface sTypeface;
 
     // TODO: Populate list of selected tags.
     private List<GsonTag> mSelectedTags;
 
-    private WeakReference<Context> mContext;
-
-    private static final String LOG_TAG = TasksActivity.class.getSimpleName();
+    // Used by animator to store tags container position.
+    private float mTagsTranslationY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +148,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
 
         mSelectedTags = new ArrayList<GsonTag>();
+
+        mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
@@ -298,7 +305,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Fade in the blur background.
         mBlurBackground.setAlpha(0f);
         mBlurBackground.setVisibility(View.VISIBLE);
-        mBlurBackground.animate().alpha(1f).setDuration(500).setListener(mBlurFadeInListener);
+        mBlurBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeInListener);
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -314,7 +321,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mAddTaskContainer.setVisibility(View.VISIBLE);
 
         // Display tags area.
-        mAddTaskTagContainer.setVisibility(View.VISIBLE);
+        animateTags(false);
     }
 
     @OnClick(R.id.blur_background)
@@ -331,14 +338,25 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mAddTaskContainer.setVisibility(View.GONE);
 
         // Hide tags area.
-        mAddTaskTagContainer.setVisibility(View.GONE);
+        animateTags(true);
 
         // Show the main layout.
         mActivityMainLayout.setAlpha(1f);
         mActivityMainLayout.setVisibility(View.VISIBLE);
 
         // Fade out the blur background.
-        mBlurBackground.animate().alpha(0f).setDuration(500).setListener(mBlurFadeOutListener);
+        mBlurBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeOutListener);
+    }
+
+    private void animateTags(boolean isHiding) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        float fromY = isHiding ? mAddTaskTagContainer.getY() : -displaymetrics.heightPixels;
+        float toY = isHiding ? -displaymetrics.heightPixels : mTagsTranslationY;
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mAddTaskTagContainer, "translationY", fromY, toY);
+        animator.setDuration(Constants.ANIMATION_DURATION).start();
     }
 
     @OnClick(R.id.button_edit_task)
