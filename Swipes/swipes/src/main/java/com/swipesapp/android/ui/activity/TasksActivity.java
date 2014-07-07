@@ -13,6 +13,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -260,9 +262,15 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
      * @param isBatchOperation True when multiple tasks are selected.
      */
     public void showEditBar(boolean isBatchOperation) {
-        // TODO: Animate transitions.
-        mButtonAddTask.setVisibility(View.GONE);
-        mEditTasksBar.setVisibility(View.VISIBLE);
+        // Animate views only when necessary.
+        if (mEditTasksBar.getVisibility() == View.GONE) {
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            slideDown.setAnimationListener(mShowEditBarListener);
+            mButtonAddTask.startAnimation(slideDown);
+
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            mEditTasksBar.startAnimation(slideUp);
+        }
 
         // The edit button shouldn't be used for multiple tasks at once.
         if (isBatchOperation) {
@@ -277,10 +285,48 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     public void hideEditBar() {
-        // TODO: Animate transitions.
-        mButtonAddTask.setVisibility(View.VISIBLE);
-        mEditTasksBar.setVisibility(View.GONE);
+        // Animate views only when necessary.
+        if (mButtonAddTask.getVisibility() == View.GONE) {
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            slideDown.setAnimationListener(mHideEditBarListener);
+            mEditTasksBar.startAnimation(slideDown);
+
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            mButtonAddTask.startAnimation(slideUp);
+        }
     }
+
+    Animation.AnimationListener mShowEditBarListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mEditTasksBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mButtonAddTask.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    Animation.AnimationListener mHideEditBarListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mButtonAddTask.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mEditTasksBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
 
     @OnClick(R.id.button_confirm_add_task)
     protected void addTask() {
