@@ -1,5 +1,6 @@
 package com.swipesapp.android.ui.adapter;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Gravity;
@@ -136,6 +137,11 @@ public class TasksListAdapter extends ArrayAdapter {
         String notes = tasks.get(position).getNotes();
         Date repeatDate = tasks.get(position).getRepeatDate();
         Integer priority = tasks.get(position).getPriority();
+
+        // Reset cell state.
+        holder.frontView.setVisibility(View.VISIBLE);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
+        animator.start();
 
         // Set task title.
         holder.title.setText(title);

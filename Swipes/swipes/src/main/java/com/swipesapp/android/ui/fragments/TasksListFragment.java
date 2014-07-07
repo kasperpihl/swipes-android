@@ -479,7 +479,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void fakeSnoozeTask(final GsonTask task) {
         // Create time picker listener.
-        TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
                 // Set snooze date.
@@ -500,13 +500,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             }
         };
 
+        // Dialog dismissed listener.
+        DialogInterface.OnDismissListener dismissListener = new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                refreshTaskList();
+            }
+        };
+
         // Get current hour and minutes.
         Calendar calendar = Calendar.getInstance();
         final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         final int currentMinute = calendar.get(Calendar.MINUTE);
 
         // Show time picker dialog.
-        AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), listener, currentHour, currentMinute, DateFormat.is24HourFormat(getActivity()));
+        AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), timeSetListener, currentHour, currentMinute, DateFormat.is24HourFormat(getActivity()));
+        dialog.setOnDismissListener(dismissListener);
         dialog.setTitle("Snooze until");
         dialog.show();
     }
