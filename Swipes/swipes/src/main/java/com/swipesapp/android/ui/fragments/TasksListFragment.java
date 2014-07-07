@@ -517,9 +517,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Calendar calendar = Calendar.getInstance();
         final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         final int currentMinute = calendar.get(Calendar.MINUTE);
+        final int laterToday = currentHour + 3;
 
         // Show time picker dialog.
-        AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), timeSetListener, currentHour, currentMinute, DateFormat.is24HourFormat(getActivity()));
+        AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), timeSetListener, laterToday, currentMinute, DateFormat.is24HourFormat(getActivity()));
         dialog.setOnDismissListener(dismissListener);
         dialog.setTitle("Snooze until");
         dialog.show();

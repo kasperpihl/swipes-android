@@ -268,9 +268,10 @@ public class EditTaskActivity extends AccentActivity {
         Calendar calendar = Calendar.getInstance();
         final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         final int currentMinute = calendar.get(Calendar.MINUTE);
+        final int laterToday = currentHour + 3;
 
         // Show time picker dialog.
-        AccentTimePickerDialog dialog = new AccentTimePickerDialog(this, timeSetListener, currentHour, currentMinute, DateFormat.is24HourFormat(this));
+        AccentTimePickerDialog dialog = new AccentTimePickerDialog(this, timeSetListener, laterToday, currentMinute, DateFormat.is24HourFormat(this));
         dialog.setTitle("Snooze until");
         dialog.show();
     }
