@@ -43,12 +43,16 @@ public class GsonTask {
     @Expose
     private String repeatOption;
     @Expose
+    private String origin;
+    @Expose
+    private String originIdentifier;
+    @Expose
     private List<GsonTag> tags;
 
     // Local properties.
     private boolean isSelected;
 
-    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, List<GsonTag> tags) {
+    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags) {
         this.objectId = objectId;
         this.tempId = tempId;
         this.parentId = parentId;
@@ -64,6 +68,8 @@ public class GsonTask {
         this.location = location;
         this.repeatDate = repeatDate;
         this.repeatOption = repeatOption;
+        this.origin = origin;
+        this.originIdentifier = originIdentifier;
         this.tags = tags;
     }
 
@@ -201,6 +207,22 @@ public class GsonTask {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getOriginIdentifier() {
+        return originIdentifier;
+    }
+
+    public void setOriginIdentifier(String originIdentifier) {
+        this.originIdentifier = originIdentifier;
     }
 
 }

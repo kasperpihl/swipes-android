@@ -26,7 +26,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property ObjectId = new Property(1, String.class, "objectId", false, "OBJECT_ID");
         public final static Property TempId = new Property(2, String.class, "tempId", false, "TEMP_ID");
-        public final static Property ParentId = new Property(3, String.class, "parentId", false, "PARENT_ID");
+        public final static Property ParentLocalId = new Property(3, String.class, "parentLocalId", false, "PARENT_LOCAL_ID");
         public final static Property CreatedAt = new Property(4, java.util.Date.class, "createdAt", false, "CREATED_AT");
         public final static Property UpdatedAt = new Property(5, java.util.Date.class, "updatedAt", false, "UPDATED_AT");
         public final static Property Deleted = new Property(6, Boolean.class, "deleted", false, "DELETED");
@@ -39,6 +39,8 @@ public class TaskDao extends AbstractDao<Task, Long> {
         public final static Property Location = new Property(13, String.class, "location", false, "LOCATION");
         public final static Property RepeatDate = new Property(14, java.util.Date.class, "repeatDate", false, "REPEAT_DATE");
         public final static Property RepeatOption = new Property(15, String.class, "repeatOption", false, "REPEAT_OPTION");
+        public final static Property Origin = new Property(16, String.class, "origin", false, "ORIGIN");
+        public final static Property OriginIdentifier = new Property(17, String.class, "originIdentifier", false, "ORIGIN_IDENTIFIER");
     };
 
     private DaoSession daoSession;
@@ -60,7 +62,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'OBJECT_ID' TEXT," + // 1: objectId
                 "'TEMP_ID' TEXT," + // 2: tempId
-                "'PARENT_ID' TEXT," + // 3: parentId
+                "'PARENT_LOCAL_ID' TEXT," + // 3: parentLocalId
                 "'CREATED_AT' INTEGER," + // 4: createdAt
                 "'UPDATED_AT' INTEGER," + // 5: updatedAt
                 "'DELETED' INTEGER," + // 6: deleted
@@ -72,7 +74,9 @@ public class TaskDao extends AbstractDao<Task, Long> {
                 "'SCHEDULE' INTEGER," + // 12: schedule
                 "'LOCATION' TEXT," + // 13: location
                 "'REPEAT_DATE' INTEGER," + // 14: repeatDate
-                "'REPEAT_OPTION' TEXT);"); // 15: repeatOption
+                "'REPEAT_OPTION' TEXT," + // 15: repeatOption
+                "'ORIGIN' TEXT," + // 16: origin
+                "'ORIGIN_IDENTIFIER' TEXT);"); // 17: originIdentifier
     }
 
     /** Drops the underlying database table. */
@@ -101,9 +105,9 @@ public class TaskDao extends AbstractDao<Task, Long> {
             stmt.bindString(3, tempId);
         }
  
-        String parentId = entity.getParentId();
-        if (parentId != null) {
-            stmt.bindString(4, parentId);
+        String parentLocalId = entity.getParentLocalId();
+        if (parentLocalId != null) {
+            stmt.bindString(4, parentLocalId);
         }
  
         java.util.Date createdAt = entity.getCreatedAt();
@@ -165,6 +169,16 @@ public class TaskDao extends AbstractDao<Task, Long> {
         if (repeatOption != null) {
             stmt.bindString(16, repeatOption);
         }
+ 
+        String origin = entity.getOrigin();
+        if (origin != null) {
+            stmt.bindString(17, origin);
+        }
+ 
+        String originIdentifier = entity.getOriginIdentifier();
+        if (originIdentifier != null) {
+            stmt.bindString(18, originIdentifier);
+        }
     }
 
     @Override
@@ -186,7 +200,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // objectId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tempId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // parentId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // parentLocalId
             cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)), // createdAt
             cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)), // updatedAt
             cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0, // deleted
@@ -198,7 +212,9 @@ public class TaskDao extends AbstractDao<Task, Long> {
             cursor.isNull(offset + 12) ? null : new java.util.Date(cursor.getLong(offset + 12)), // schedule
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // location
             cursor.isNull(offset + 14) ? null : new java.util.Date(cursor.getLong(offset + 14)), // repeatDate
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // repeatOption
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // repeatOption
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // origin
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // originIdentifier
         );
         return entity;
     }
@@ -209,7 +225,7 @@ public class TaskDao extends AbstractDao<Task, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setObjectId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setTempId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setParentId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setParentLocalId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCreatedAt(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
         entity.setUpdatedAt(cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)));
         entity.setDeleted(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
@@ -222,6 +238,8 @@ public class TaskDao extends AbstractDao<Task, Long> {
         entity.setLocation(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setRepeatDate(cursor.isNull(offset + 14) ? null : new java.util.Date(cursor.getLong(offset + 14)));
         entity.setRepeatOption(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setOrigin(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setOriginIdentifier(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     /** @inheritdoc */

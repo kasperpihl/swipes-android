@@ -265,7 +265,7 @@ public class TasksService {
         List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
 
         for (Task task : tasks) {
-            gsonTasks.add(new GsonTask(task.getObjectId(), task.getTempId(), task.getParentId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), loadTagsForTask(task.getId())));
+            gsonTasks.add(new GsonTask(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId())));
         }
 
         return gsonTasks;
@@ -297,7 +297,7 @@ public class TasksService {
         List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
-            tasks.add(new Task(null, gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.getDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption()));
+            tasks.add(new Task(null, gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.getDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier(), gsonTask.getRepeatOption()));
         }
 
         return tasks;

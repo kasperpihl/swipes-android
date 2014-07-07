@@ -26,7 +26,7 @@ public class SwipesDaoGenerator {
         task.addIdProperty();
         task.addStringProperty("objectId");
         task.addStringProperty("tempId");
-        task.addStringProperty("parentId");
+        task.addStringProperty("parentLocalId");
         task.addDateProperty("createdAt");
         task.addDateProperty("updatedAt");
         task.addBooleanProperty("deleted");
@@ -39,6 +39,8 @@ public class SwipesDaoGenerator {
         task.addStringProperty("location");
         task.addDateProperty("repeatDate");
         task.addStringProperty("repeatOption");
+        task.addStringProperty("origin");
+        task.addStringProperty("originIdentifier");
 
         // Tag table.
         Entity tag = schema.addEntity("Tag");
@@ -49,7 +51,15 @@ public class SwipesDaoGenerator {
         tag.addDateProperty("updatedAt");
         tag.addStringProperty("title");
 
-        // Join table.
+        // Attachment table.
+        Entity attachment = schema.addEntity("Attachment");
+        attachment.addIdProperty();
+        attachment.addStringProperty("identifier");
+        attachment.addStringProperty("service");
+        attachment.addStringProperty("title");
+        attachment.addBooleanProperty("sync");
+
+        // Join table for tasks and tags.
         Entity taskTag = schema.addEntity("TaskTag");
         Property taskId = taskTag.addLongProperty("taskId").notNull().getProperty();
         Property tagId = taskTag.addLongProperty("tagId").notNull().getProperty();
@@ -66,6 +76,11 @@ public class SwipesDaoGenerator {
         // Tag relation to join table.
         ToMany tagToTasks = tag.addToMany(taskTag, tagId);
         tagToTasks.setName("taskTags");
+
+        // To-Many relation of tasks and attachments.
+        Property attTaskId = attachment.addLongProperty("taskId").notNull().getProperty();
+        ToMany taskToAttachment = task.addToMany(attachment, attTaskId);
+        taskToAttachment.setName("attachments");
     }
 
 }

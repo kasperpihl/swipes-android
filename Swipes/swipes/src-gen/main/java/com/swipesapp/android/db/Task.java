@@ -16,7 +16,7 @@ public class Task {
     private Long id;
     private String objectId;
     private String tempId;
-    private String parentId;
+    private String parentLocalId;
     private java.util.Date createdAt;
     private java.util.Date updatedAt;
     private Boolean deleted;
@@ -29,6 +29,8 @@ public class Task {
     private String location;
     private java.util.Date repeatDate;
     private String repeatOption;
+    private String origin;
+    private String originIdentifier;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -37,6 +39,7 @@ public class Task {
     private transient TaskDao myDao;
 
     private List<TaskTag> taskTags;
+    private List<Attachment> attachments;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -48,11 +51,11 @@ public class Task {
         this.id = id;
     }
 
-    public Task(Long id, String objectId, String tempId, String parentId, java.util.Date createdAt, java.util.Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, java.util.Date completionDate, java.util.Date schedule, String location, java.util.Date repeatDate, String repeatOption) {
+    public Task(Long id, String objectId, String tempId, String parentLocalId, java.util.Date createdAt, java.util.Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, java.util.Date completionDate, java.util.Date schedule, String location, java.util.Date repeatDate, String repeatOption, String origin, String originIdentifier) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
-        this.parentId = parentId;
+        this.parentLocalId = parentLocalId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
@@ -65,6 +68,8 @@ public class Task {
         this.location = location;
         this.repeatDate = repeatDate;
         this.repeatOption = repeatOption;
+        this.origin = origin;
+        this.originIdentifier = originIdentifier;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -97,12 +102,12 @@ public class Task {
         this.tempId = tempId;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getParentLocalId() {
+        return parentLocalId;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParentLocalId(String parentLocalId) {
+        this.parentLocalId = parentLocalId;
     }
 
     public java.util.Date getCreatedAt() {
@@ -201,6 +206,22 @@ public class Task {
         this.repeatOption = repeatOption;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getOriginIdentifier() {
+        return originIdentifier;
+    }
+
+    public void setOriginIdentifier(String originIdentifier) {
+        this.originIdentifier = originIdentifier;
+    }
+
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<TaskTag> getTaskTags() {
         if (taskTags == null) {
@@ -221,6 +242,28 @@ public class Task {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetTaskTags() {
         taskTags = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<Attachment> getAttachments() {
+        if (attachments == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            AttachmentDao targetDao = daoSession.getAttachmentDao();
+            List<Attachment> attachmentsNew = targetDao._queryTask_Attachments(id);
+            synchronized (this) {
+                if(attachments == null) {
+                    attachments = attachmentsNew;
+                }
+            }
+        }
+        return attachments;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetAttachments() {
+        attachments = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
