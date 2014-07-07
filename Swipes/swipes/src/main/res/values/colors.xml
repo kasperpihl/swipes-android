@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <item name="swipes_brand_color" type="color">#fd4534</item>
     <item name="done_accent_color" type="color">#45d984</item>
     <item name="later_accent_color" type="color">#fc614b</item>
     <item name="focus_accent_color" type="color">#f4cb1c</item>

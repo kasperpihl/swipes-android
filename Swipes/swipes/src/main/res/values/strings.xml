@@ -57,6 +57,7 @@
     </plurals>
 
     <!-- Icons -->
+    <string name="swipes_logo">&#xe600;</string>
     <string name="later_light">&#xe604;</string>
     <string name="focus_light">&#xe603;</string>
     <string name="done_light">&#xe602;</string>
