@@ -33,6 +33,8 @@ public class AboutActivity extends AccentActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.inject(this);
 
+        getActionBar().setDisplayShowTitleEnabled(false);
+
         mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
         mBroughtBy.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));

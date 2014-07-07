@@ -40,11 +40,21 @@
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
     <string name="title_activity_about">About</string>
+    <string name="title_activity_edit_task">Edit task</string>
 
     <!-- Actions -->
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="add_task_hint">Add a new task</string>
+
+    <!-- Scheduler -->
+    <string name="date_today">Today&#160;</string>
+    <string name="date_tomorrow">Tomorrow&#160;</string>
+
+    <!-- Edit task -->
+    <string name="edit_task_repeat_default_mode">Never repeat</string>
+    <string name="edit_task_tags_default_text">Set tags</string>
+    <string name="edit_task_notes_default_text">Add notes</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
@@ -74,5 +84,6 @@
     <string name="action_share">&#xe633;</string>
     <string name="action_delete">&#xe635;</string>
     <string name="action_edit">&#xe636;</string>
+    <string name="edit_schedule">&#xe60c;</string>
 
 </resources>

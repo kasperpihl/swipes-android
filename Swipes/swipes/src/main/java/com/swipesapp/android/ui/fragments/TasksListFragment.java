@@ -23,9 +23,11 @@ import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
@@ -339,7 +341,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Clear selected tasks.
                     mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
-                    // TODO: Call task edit activity, passing the tempId of the selected task as parameter.
+                    // Call task edit activity, passing the tempId of the selected task as parameter.
+                    Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
+                    editTaskIntent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mSelectedTasks.get(0).getTempId());
+                    startActivity(editTaskIntent);
                 } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
                     // TODO: Display tag selection screen.
                 } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
