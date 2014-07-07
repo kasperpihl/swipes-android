@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.negusoft.holoaccent.activity.AccentActivity;
@@ -163,6 +164,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Customize tag button to match current theme.
         customizeTagButton();
+
+        // TODO: Remove this when tagging is working. The container is hidden for the first beta.
+        mAddTaskTagContainer.setEnabled(false);
+        mAddTaskTagContainer.setAlpha(0f);
     }
 
     @Override
@@ -369,6 +374,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     protected void assignTags() {
         // Send a broadcast to assign tags to the selected tasks. The fragment should handle it.
         TasksService.getInstance(this).sendBroadcast(Actions.ASSIGN_TAGS);
+
+        // TODO: Remove this when tagging is working.
+        Toast.makeText(this, "Tags coming soon", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button_delete_tasks)
@@ -381,6 +389,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     protected void shareTasks() {
         // Send a broadcast to share selected tasks. The fragment should handle it.
         TasksService.getInstance(this).sendBroadcast(Actions.SHARE_TASKS);
+
+        // TODO: Remove this when sharing is working.
+        Toast.makeText(this, "Sharing coming soon", Toast.LENGTH_SHORT).show();
     }
 
     private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {
