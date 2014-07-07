@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.swipesapp.android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -50,6 +52,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
         </activity>
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="17aee5fa869f24b705e00dba6d43c51becf5c7e4" />
     </application>
 
 </manifest>

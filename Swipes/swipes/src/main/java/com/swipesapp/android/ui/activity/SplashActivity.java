@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 
+import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
 
 public class SplashActivity extends Activity {
@@ -15,6 +16,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
