@@ -130,7 +130,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public void onResume() {
         mTasksService = TasksService.getInstance(getActivity());
 
-        refreshTaskList();
+        refreshTaskList(false);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.TASKS_CHANGED);
@@ -297,24 +297,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
 
-    private void refreshTaskList() {
+    private void refreshTaskList(boolean resetCells) {
         List<GsonTask> tasks;
         // Update adapter with new data.
         switch (mSection) {
             case LATER:
                 tasks = mTasksService.loadScheduledTasks();
-                mLaterAdapter.update(tasks);
                 mLaterListView.setContentList(tasks);
+                mLaterAdapter.update(tasks, resetCells);
                 break;
             case FOCUS:
                 tasks = mTasksService.loadFocusedTasks();
-                mFocusAdapter.update(tasks);
                 mFocusListView.setContentList(tasks);
+                mFocusAdapter.update(tasks, resetCells);
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
-                mDoneAdapter.update(tasks);
                 mDoneListView.setContentList(tasks);
+                mDoneAdapter.update(tasks, resetCells);
                 break;
         }
     }
@@ -339,7 +339,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Filter intent actions.
                 if (intent.getAction().equals(Actions.TASKS_CHANGED) || intent.getAction().equals(Actions.TAB_CHANGED)) {
                     // Perform refresh.
-                    refreshTaskList();
+                    refreshTaskList(false);
                     // Clear selected tasks.
                     mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
@@ -516,10 +516,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         };
 
         // Dialog dismissed listener.
-        DialogInterface.OnDismissListener dismissListener = new DialogInterface.OnDismissListener() {
+        DialogInterface.OnCancelListener cancelListener = new DialogInterface.OnCancelListener() {
             @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                refreshTaskList();
+            public void onCancel(DialogInterface dialogInterface) {
+                refreshTaskList(true);
             }
         };
 
@@ -531,7 +531,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Show time picker dialog.
         AccentTimePickerDialog dialog = new AccentTimePickerDialog(getActivity(), timeSetListener, laterToday, currentMinute, DateFormat.is24HourFormat(getActivity()));
-        dialog.setOnDismissListener(dismissListener);
+        dialog.setOnCancelListener(cancelListener);
         dialog.setTitle("Snooze until");
         dialog.show();
     }

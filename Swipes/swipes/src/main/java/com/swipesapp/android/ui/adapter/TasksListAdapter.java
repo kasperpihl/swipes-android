@@ -40,12 +40,15 @@ public class TasksListAdapter extends ArrayAdapter {
     private Sections mSection;
 
     // Controls the display of properties line below task title.
-    boolean mDisplayProperties = false;
+    private boolean mDisplayProperties;
 
     private final int INVALID_ID = -1;
     private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
     private ListContentsListener mListContentsListener;
+
+    // When true, cell state resets will be animated.
+    private boolean mAnimateReset;
 
     private static final String TAG_SEPARATOR = ", ";
 
@@ -140,8 +143,12 @@ public class TasksListAdapter extends ArrayAdapter {
 
         // Reset cell state.
         holder.frontView.setVisibility(View.VISIBLE);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
-        animator.start();
+        if (mAnimateReset) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
+            animator.start();
+        } else {
+            holder.frontView.setTranslationX(0);
+        }
 
         // Set task title.
         holder.title.setText(title);
@@ -276,8 +283,9 @@ public class TasksListAdapter extends ArrayAdapter {
         return mData;
     }
 
-    public void update(List<GsonTask> data) {
+    public void update(List<GsonTask> data, boolean resetCells) {
         mData = data;
+        mAnimateReset = resetCells;
         updateIdMap();
         notifyDataSetChanged();
     }
