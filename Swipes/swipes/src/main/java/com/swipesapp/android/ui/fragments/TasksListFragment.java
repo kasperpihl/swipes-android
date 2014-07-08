@@ -297,24 +297,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
 
-    private void refreshTaskList(boolean resetCells) {
+    private void refreshTaskList(boolean animateRefresh) {
         List<GsonTask> tasks;
         // Update adapter with new data.
         switch (mSection) {
             case LATER:
                 tasks = mTasksService.loadScheduledTasks();
                 mLaterListView.setContentList(tasks);
-                mLaterAdapter.update(tasks, resetCells);
+                mLaterAdapter.update(tasks, true, animateRefresh);
                 break;
             case FOCUS:
                 tasks = mTasksService.loadFocusedTasks();
                 mFocusListView.setContentList(tasks);
-                mFocusAdapter.update(tasks, resetCells);
+                mFocusAdapter.update(tasks, true, animateRefresh);
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
                 mDoneListView.setContentList(tasks);
-                mDoneAdapter.update(tasks, resetCells);
+                mDoneAdapter.update(tasks, true, animateRefresh);
                 break;
         }
     }
@@ -441,7 +441,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public void listReordered(List list) {
         if (mSection == Sections.FOCUS) {
             reorderTasks((List<GsonTask>) list);
-            refreshTaskList();
+            refreshTaskList(false);
         }
     }
 

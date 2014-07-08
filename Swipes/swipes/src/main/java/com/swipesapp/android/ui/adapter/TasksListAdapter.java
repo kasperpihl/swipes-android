@@ -47,6 +47,8 @@ public class TasksListAdapter extends BaseAdapter {
 
     private ListContentsListener mListContentsListener;
 
+    private boolean mResetCells;
+
     // When true, cell state resets will be animated.
     private boolean mAnimateReset;
 
@@ -78,7 +80,10 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        if (position < 0 || position >= mData.size()) {
+            return -1;
+        }
+        return ((GsonTask) getItem(position)).getItemId();
     }
 
     @Override
@@ -133,7 +138,7 @@ public class TasksListAdapter extends BaseAdapter {
         Integer priority = tasks.get(position).getPriority();
 
         // Reset cell attributes to avoid recycling misbehavior.
-        resetCellState(holder);
+        if (mResetCells) resetCellState(holder, position);
 
         // Set task title.
         holder.title.setText(title);
@@ -253,7 +258,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    private void resetCellState(TaskHolder holder) {
+    private void resetCellState(TaskHolder holder, int position) {
         // Reset visibility.
         holder.frontView.setVisibility(View.VISIBLE);
         holder.containerView.setVisibility(View.VISIBLE);
@@ -270,6 +275,9 @@ public class TasksListAdapter extends BaseAdapter {
         ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
         layoutParams.height = mContext.get().getResources().getDimensionPixelSize(R.dimen.list_item_height);
         holder.containerView.setLayoutParams(layoutParams);
+
+        // Reset flags when views are done loading.
+        if (position == mData.size() - 1) mResetCells = false;
     }
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
@@ -280,10 +288,16 @@ public class TasksListAdapter extends BaseAdapter {
         return mData;
     }
 
-    public void update(List<GsonTask> data, boolean resetCells) {
+    public void update(List<GsonTask> data, boolean resetCells, boolean animateReset) {
+        // Check for thread safety.
         ThreadUtils.checkOnMainThread();
+
+        // Update data and flags.
         mData = data;
-        mAnimateReset = resetCells;
+        mResetCells = resetCells;
+        mAnimateReset = animateReset;
+
+        // Refresh adapter.
         notifyDataSetChanged();
     }
 

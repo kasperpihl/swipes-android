@@ -338,7 +338,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // TODO: What should the temp ID be?
         String tempId = title + currentDate.getTime();
 
-        GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags);
+        GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
         service.saveTask(task);
 
         endAddTaskWorkflow();

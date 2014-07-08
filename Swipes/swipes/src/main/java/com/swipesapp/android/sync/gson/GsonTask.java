@@ -50,9 +50,10 @@ public class GsonTask {
     private List<GsonTag> tags;
 
     // Local properties.
+    private long itemId;
     private boolean isSelected;
 
-    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags) {
+    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
         this.objectId = objectId;
         this.tempId = tempId;
         this.parentId = parentId;
@@ -71,6 +72,7 @@ public class GsonTask {
         this.origin = origin;
         this.originIdentifier = originIdentifier;
         this.tags = tags;
+        this.itemId = itemId;
     }
 
     public void setObjectId(String objectId) {
@@ -201,14 +203,6 @@ public class GsonTask {
         return tags;
     }
 
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
     public String getOrigin() {
         return origin;
     }
@@ -223,6 +217,22 @@ public class GsonTask {
 
     public void setOriginIdentifier(String originIdentifier) {
         this.originIdentifier = originIdentifier;
+    }
+
+    public long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
 }
