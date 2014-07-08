@@ -330,7 +330,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @OnClick(R.id.button_confirm_add_task)
     protected void addTask() {
-        TasksService service = TasksService.getInstance(getApplicationContext());
+        TasksService service = TasksService.getInstance(this);
         Date currentDate = new Date();
 
         String title = mEditTextAddNewTask.getText().toString();

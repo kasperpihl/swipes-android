@@ -40,7 +40,7 @@ public class TasksService {
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
      *
-     * @param context Context instance.
+     * @param context Context reference.
      */
     private TasksService(Context context) {
         mContext = new WeakReference<Context>(context);
@@ -58,14 +58,25 @@ public class TasksService {
      * Returns an existing instance of the service, or loads a new one if needed.
      * This ensures only one DAO session is active at any given time.
      *
-     * @param context
+     * @param context Context reference.
      * @return Service instance.
      */
     public static TasksService getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new TasksService(context);
+        } else {
+            sInstance.updateContext(context);
         }
         return sInstance;
+    }
+
+    /**
+     * Updates the context reference.
+     *
+     * @param context Context reference.
+     */
+    private void updateContext(Context context) {
+        mContext = new WeakReference<Context>(context);
     }
 
     /**

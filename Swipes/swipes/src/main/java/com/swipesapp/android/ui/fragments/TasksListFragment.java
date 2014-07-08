@@ -94,7 +94,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
 
-        mTasksService = TasksService.getInstance(getActivity().getApplicationContext());
+        mTasksService = TasksService.getInstance(getActivity());
 
         mSelectedTasks = new ArrayList<GsonTask>();
 
@@ -128,6 +128,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @Override
     public void onResume() {
+        mTasksService = TasksService.getInstance(getActivity());
+
         refreshTaskList();
 
         IntentFilter filter = new IntentFilter();
