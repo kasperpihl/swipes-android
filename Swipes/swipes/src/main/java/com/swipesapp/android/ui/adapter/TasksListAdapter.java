@@ -7,8 +7,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
@@ -22,17 +23,19 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.util.ThreadUtils;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Adapter for task lists.
  */
-public class TasksListAdapter extends ArrayAdapter {
+public class TasksListAdapter extends BaseAdapter {
+
+    private static final String TAG_SEPARATOR = ", ";
 
     private List mData;
     private WeakReference<Context> mContext;
@@ -42,25 +45,16 @@ public class TasksListAdapter extends ArrayAdapter {
     // Controls the display of properties line below task title.
     private boolean mDisplayProperties;
 
-    private final int INVALID_ID = -1;
-    private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
     private ListContentsListener mListContentsListener;
 
     // When true, cell state resets will be animated.
     private boolean mAnimateReset;
 
-    private static final String TAG_SEPARATOR = ", ";
-
     public TasksListAdapter(Context context, int layoutResourceId, List<GsonTask> data, Sections section) {
-        super(context, layoutResourceId, data);
-
         mData = data;
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
         mSection = section;
-
-        updateIdMap();
     }
 
     @Override
@@ -71,10 +65,20 @@ public class TasksListAdapter extends ArrayAdapter {
             if (count != 0) {
                 mListContentsListener.onNotEmpty();
             } else {
-                mListContentsListener.onEmpty(Sections.FOCUS);
+                mListContentsListener.onEmpty(mSection);
             }
         }
         return count;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mData.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -88,6 +92,7 @@ public class TasksListAdapter extends ArrayAdapter {
 
             holder = new TaskHolder();
 
+            holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
             holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
@@ -112,20 +117,6 @@ public class TasksListAdapter extends ArrayAdapter {
         return row;
     }
 
-    @Override
-    public long getItemId(int position) {
-        if (position < 0 || position >= mIdMap.size()) {
-            return INVALID_ID;
-        }
-        String key = String.valueOf(mData.get(position));
-        return mIdMap.get(key);
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
     private void customizeView(TaskHolder holder, final int position) {
         // HACK: The DynamicListView can only handle generic lists inside the adapter, so mData is
         // a generic list in order to fix a bug that keeps drag and drop from working as expected.
@@ -141,14 +132,8 @@ public class TasksListAdapter extends ArrayAdapter {
         Date repeatDate = tasks.get(position).getRepeatDate();
         Integer priority = tasks.get(position).getPriority();
 
-        // Reset cell state.
-        holder.frontView.setVisibility(View.VISIBLE);
-        if (mAnimateReset) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
-            animator.start();
-        } else {
-            holder.frontView.setTranslationX(0);
-        }
+        // Reset cell attributes to avoid recycling misbehavior.
+        resetCellState(holder);
 
         // Set task title.
         holder.title.setText(title);
@@ -220,8 +205,8 @@ public class TasksListAdapter extends ArrayAdapter {
         }
 
         // Sets colors for cell, matching the current theme.
-        holder.title.setTextColor(ThemeUtils.getCurrentThemeTextColor(getContext()));
-        holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getContext()));
+        holder.title.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
+        holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(mContext.get()));
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
@@ -268,11 +253,23 @@ public class TasksListAdapter extends ArrayAdapter {
         }
     }
 
-    private void updateIdMap() {
-        mIdMap.clear();
-        for (int i = 0; i < mData.size(); ++i) {
-            mIdMap.put(String.valueOf(mData.get(i)), i);
+    private void resetCellState(TaskHolder holder) {
+        // Reset visibility.
+        holder.frontView.setVisibility(View.VISIBLE);
+        holder.containerView.setVisibility(View.VISIBLE);
+
+        // Reset translation.
+        if (mAnimateReset) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
+            animator.start();
+        } else {
+            holder.frontView.setTranslationX(0);
         }
+
+        // Reset height.
+        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
+        layoutParams.height = mContext.get().getResources().getDimensionPixelSize(R.dimen.list_item_height);
+        holder.containerView.setLayoutParams(layoutParams);
     }
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
@@ -284,15 +281,16 @@ public class TasksListAdapter extends ArrayAdapter {
     }
 
     public void update(List<GsonTask> data, boolean resetCells) {
+        ThreadUtils.checkOnMainThread();
         mData = data;
         mAnimateReset = resetCells;
-        updateIdMap();
         notifyDataSetChanged();
     }
 
     private static class TaskHolder {
 
         // Containers.
+        FrameLayout containerView;
         RelativeLayout frontView;
         RelativeLayout backView;
 
