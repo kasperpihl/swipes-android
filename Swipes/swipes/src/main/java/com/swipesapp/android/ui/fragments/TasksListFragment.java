@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,6 +117,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 setupDoneView(rootView);
                 break;
         }
+
+        mTasksRefresher.run();
 
         return rootView;
     }
@@ -535,5 +538,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         dialog.setTitle("Snooze until");
         dialog.show();
     }
+
+    // TODO: Remove this when scheduler service is ready.
+    Runnable mTasksRefresher = new Runnable() {
+        @Override
+        public void run() {
+            refreshTaskList(false);
+            new Handler().postDelayed(mTasksRefresher, 60000);
+        }
+    };
 
 }
