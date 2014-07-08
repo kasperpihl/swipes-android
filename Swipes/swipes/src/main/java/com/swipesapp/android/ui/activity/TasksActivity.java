@@ -286,7 +286,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     public void hideEditBar() {
         // Animate views only when necessary.
-        if (mButtonAddTask.getVisibility() == View.GONE) {
+        if (mEditTasksBar.isShown()) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
             slideDown.setAnimationListener(mHideEditBarListener);
             mEditTasksBar.startAnimation(slideDown);
