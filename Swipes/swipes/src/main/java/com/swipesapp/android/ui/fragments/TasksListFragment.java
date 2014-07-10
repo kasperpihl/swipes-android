@@ -302,6 +302,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void refreshTaskList(boolean animateRefresh) {
         List<GsonTask> tasks;
+
         // Update adapter with new data.
         switch (mSection) {
             case LATER:
@@ -320,6 +321,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 mDoneAdapter.update(tasks, true, animateRefresh);
                 break;
         }
+
+        // Always hide the edit bar when refreshing.
+        ((TasksActivity) getActivity()).hideEditBar();
+
+        // Clear selected tasks.
+        mSelectedTasks.clear();
     }
 
     private GsonTask getTask(int position) {
@@ -343,8 +350,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 if (intent.getAction().equals(Actions.TASKS_CHANGED) || intent.getAction().equals(Actions.TAB_CHANGED)) {
                     // Perform refresh.
                     refreshTaskList(false);
-                    // Clear selected tasks.
-                    mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
