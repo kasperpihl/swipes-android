@@ -44,7 +44,7 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's resource file.
+     * @return Current theme's dialog resource file.
      */
     public static int getCurrentDialogThemeResource(Context context) {
         switch (getCurrentTheme(context)) {
@@ -54,6 +54,21 @@ public class ThemeUtils {
                 return R.style.Dark_Theme_Dialog;
             default:
                 return R.style.Light_Theme_Dialog;
+        }
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's picker resource file.
+     */
+    public static int getCurrentPickerThemeResource(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return R.style.Light_Picker;
+            case DARK:
+                return R.style.Dark_Picker;
+            default:
+                return R.style.Light_Picker;
         }
     }
 
