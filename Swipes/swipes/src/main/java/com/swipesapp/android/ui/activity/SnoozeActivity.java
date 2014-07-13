@@ -1,22 +1,20 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.format.DateFormat;
+import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
-import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Themes;
 
 import java.util.Calendar;
 
@@ -25,7 +23,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class SnoozeActivity extends AccentActivity {
+public class SnoozeActivity extends FragmentActivity {
 
     @InjectView(R.id.snooze_view)
     LinearLayout mView;
@@ -84,7 +82,7 @@ public class SnoozeActivity extends AccentActivity {
     @InjectView(R.id.snooze_pick_date_title)
     TextView mPickDateTitle;
 
-    private static final String LOG_TAG = SnoozeActivity.class.getSimpleName();
+    private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
 
     private TasksService mTasksService;
 
@@ -289,41 +287,24 @@ public class SnoozeActivity extends AccentActivity {
 
     private void fakeSnoozeTask() {
         // Create time picker listener.
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            // HACK: There is a bug on Android that makes onTimeSet() be called twice, and also
-            // be called when dismissing the dialog. This call count is used to prevent that.
-            int callCount = 0;
-
+        RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
-                // Refer to the "HACK" note above. Avoid execution when call count is zero.
-                if (callCount == 1) {
-                    // Set snooze date.
-                    Calendar snooze = Calendar.getInstance();
-                    snooze.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-                    snooze.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+            public void onTimeSet(RadialTimePickerDialog dialog, int hourOfDay, int minute) {
+                // Set snooze date.
+                Calendar snooze = Calendar.getInstance();
+                snooze.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                snooze.set(Calendar.MINUTE, minute);
 
-                    applyNextDayTreatment(snooze);
+                applyNextDayTreatment(snooze);
 
-                    // Perform task changes.
-                    mTask.setSchedule(snooze.getTime());
-                    mTask.setCompletionDate(null);
+                // Perform task changes.
+                mTask.setSchedule(snooze.getTime());
+                mTask.setCompletionDate(null);
 
-                    // Mark schedule as performed.
-                    mHasScheduled = true;
+                // Mark schedule as performed.
+                mHasScheduled = true;
 
-                    finish();
-                }
-                callCount++;
-            }
-        };
-
-        // Dialog dismissed listener.
-        DialogInterface.OnCancelListener cancelListener = new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                // Mark schedule as canceled.
-                mHasScheduled = false;
+                finish();
             }
         };
 
@@ -334,10 +315,15 @@ public class SnoozeActivity extends AccentActivity {
         final int laterToday = currentHour + 3;
 
         // Show time picker dialog.
-        AccentTimePickerDialog dialog = new AccentTimePickerDialog(this, timeSetListener, laterToday, currentMinute, DateFormat.is24HourFormat(this));
-        dialog.setOnCancelListener(cancelListener);
-        dialog.setTitle("Snooze until");
-        dialog.show();
+        RadialTimePickerDialog dialog = new RadialTimePickerDialog();
+        dialog.setStartTime(laterToday, currentMinute);
+        dialog.setOnTimeSetListener(timeSetListener);
+        dialog.setDoneText("Snooze");
+        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
+        dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
+
+        // Mark schedule as not performed.
+        mHasScheduled = false;
     }
 
     private void applyNextDayTreatment(Calendar snooze) {
