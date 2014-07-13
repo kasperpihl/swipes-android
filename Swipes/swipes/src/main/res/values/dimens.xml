@@ -15,5 +15,8 @@
     <dimen name="add_task_button_size">40sp</dimen>
     <dimen name="action_buttons_size">23sp</dimen>
     <dimen name="edit_bar_margin">12dp</dimen>
+    <dimen name="schedule_options_icon_size">40sp</dimen>
+    <dimen name="schedule_options_margin_vertical">20dp</dimen>
+    <dimen name="schedule_options_margin_sides">15dp</dimen>
 
 </resources>

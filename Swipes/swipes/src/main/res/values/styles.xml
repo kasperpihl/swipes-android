@@ -32,6 +32,22 @@
         <item name="android:homeAsUpIndicator">@drawable/dark_theme_back_icon</item>
     </style>
 
+    <style name="Light_Theme_Dialog" parent="Theme.HoloAccent.Light.Dialog.NoActionBar">
+        <item name="android:textColor">@color/light_theme_text</item>
+        <item name="android:listViewStyle">@style/Light_ListView</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="accentColor">@color/light_theme_accent_color</item>
+        <item name="android:editTextBackground">@drawable/light_theme_edit_text_background</item>
+    </style>
+
+    <style name="Dark_Theme_Dialog" parent="Theme.HoloAccent.Dialog.NoActionBar">
+        <item name="android:textColor">@color/dark_theme_text</item>
+        <item name="android:listViewStyle">@style/Dark_ListView</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="accentColor">@color/dark_theme_accent_color</item>
+        <item name="android:editTextBackground">@drawable/dark_theme_edit_text_background</item>
+    </style>
+
     <!-- Action bar themes -->
     <style name="Light_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_solid_light</item>

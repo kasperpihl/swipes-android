@@ -1,0 +1,318 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/snooze_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.swipesapp.android.ui.activity.EditTaskActivity">
+
+    <!-- First row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/schedule_options_margin_vertical"
+        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+        android:layout_marginRight="@dimen/schedule_options_margin_sides"
+        android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+        android:weightSum="1">
+
+        <!-- Later today -->
+        <LinearLayout
+            android:id="@+id/snooze_later_today"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_later_today_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_coffee"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_later_today_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_later_today" />
+        </LinearLayout>
+
+        <!-- This evening -->
+        <LinearLayout
+            android:id="@+id/snooze_this_evening"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_this_evening_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_moon"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_this_evening_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_this_evening" />
+        </LinearLayout>
+
+        <!-- Tomorrow -->
+        <LinearLayout
+            android:id="@+id/snooze_tomorrow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_tomorrow_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_sun"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_tomorrow_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_tomorrow" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Second row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/schedule_options_margin_vertical"
+        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+        android:layout_marginRight="@dimen/schedule_options_margin_sides"
+        android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+        android:weightSum="1">
+
+        <!-- Two days -->
+        <LinearLayout
+            android:id="@+id/snooze_two_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_two_days_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_logbook"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_two_days_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_two_days_default" />
+        </LinearLayout>
+
+        <!-- This weekend -->
+        <LinearLayout
+            android:id="@+id/snooze_this_weekend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_this_weekend_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_glass"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_this_weekend_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_this_weekend" />
+        </LinearLayout>
+
+        <!-- Next week -->
+        <LinearLayout
+            android:id="@+id/snooze_next_week"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_next_week_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_circle"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_next_week_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_next_week" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Third row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/schedule_options_margin_vertical"
+        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+        android:layout_marginRight="@dimen/schedule_options_margin_sides"
+        android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+        android:weightSum="1">
+
+        <!-- Unspecified -->
+        <!--<LinearLayout-->
+        <!--android:id="@+id/snooze_unspecified"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="@dimen/schedule_options_margin_sides"-->
+        <!--android:layout_weight="0.33"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<com.swipesapp.android.ui.view.SwipesTextView-->
+        <!--android:id="@+id/snooze_unspecified_icon"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/schedule_cloud"-->
+        <!--android:textSize="@dimen/schedule_options_icon_size" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/snooze_unspecified_title"-->
+        <!--style="?android:textAppearanceSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/schedule_options_margin_vertical"-->
+        <!--android:background="@color/transparent"-->
+        <!--android:ellipsize="end"-->
+        <!--android:focusableInTouchMode="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:text="@string/snooze_unspecified" />-->
+        <!--</LinearLayout>-->
+
+        <!-- At location -->
+        <LinearLayout
+            android:id="@+id/snooze_at_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_at_location_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_location"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_at_location_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_at_location" />
+        </LinearLayout>
+
+        <!-- Pick date -->
+        <LinearLayout
+            android:id="@+id/snooze_pick_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/schedule_options_margin_sides"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/snooze_pick_date_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule_calendar"
+                android:textSize="@dimen/schedule_options_icon_size" />
+
+            <TextView
+                android:id="@+id/snooze_pick_date_title"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="@string/snooze_pick_date" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

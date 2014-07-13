@@ -62,6 +62,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.TasksActivity" />
         </activity>
+        <activity
+            android:name="com.swipesapp.android.ui.activity.SnoozeActivity"
+            android:label="@string/title_activity_edit_task"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

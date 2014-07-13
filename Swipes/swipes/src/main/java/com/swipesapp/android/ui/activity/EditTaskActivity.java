@@ -1,10 +1,10 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.TimePickerDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -14,13 +14,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
-import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -31,7 +29,6 @@ import com.swipesapp.android.util.ThemeUtils;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,29 +44,21 @@ public class EditTaskActivity extends AccentActivity {
     @InjectView(R.id.edit_task_title)
     EditText mTitle;
 
-    @InjectView(R.id.schedule_container)
-    RelativeLayout mScheduleContainer;
     @InjectView(R.id.edit_task_schedule_icon)
     SwipesTextView mScheduleIcon;
     @InjectView(R.id.edit_task_schedule)
     TextView mSchedule;
 
-    @InjectView(R.id.repeat_container)
-    RelativeLayout mRepeatContainer;
     @InjectView(R.id.edit_task_repeat_icon)
     SwipesTextView mRepeatIcon;
     @InjectView(R.id.edit_task_repeat)
     TextView mRepeat;
 
-    @InjectView(R.id.tags_container)
-    RelativeLayout mTagsContainer;
     @InjectView(R.id.edit_task_tags_icon)
     SwipesTextView mTagsIcon;
     @InjectView(R.id.edit_task_tags)
     TextView mTags;
 
-    @InjectView(R.id.notes_container)
-    RelativeLayout mNotesContainer;
     @InjectView(R.id.edit_task_notes_icon)
     SwipesTextView mNotesIcon;
     @InjectView(R.id.edit_task_notes)
@@ -140,6 +129,19 @@ public class EditTaskActivity extends AccentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check if the request code the one from snooze task.
+        if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // Task has been snoozed. Update views.
+                    updateViews();
+                    break;
+            }
+        }
+    }
+
     private void updateViews() {
         mTask = mTasksService.loadTask(mTempId);
 
@@ -199,7 +201,7 @@ public class EditTaskActivity extends AccentActivity {
 
     @OnClick(R.id.schedule_container)
     protected void setSchedule() {
-        fakeSnoozeTask();
+        openSnoozeSelector();
     }
 
     @OnClick(R.id.repeat_container)
@@ -239,49 +241,10 @@ public class EditTaskActivity extends AccentActivity {
                 .show();
     }
 
-    private void fakeSnoozeTask() {
-        // Create time picker listener.
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            // HACK: There is a bug on Android that makes onTimeSet() be called twice, and also
-            // be called when dismissing the dialog. This call count is used to prevent that.
-            int callCount = 0;
-
-            @Override
-            public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
-                // Refer to the "HACK" note above. Avoid execution when call count is zero.
-                if (callCount == 1) {
-                    // Set snooze date.
-                    Calendar snooze = Calendar.getInstance();
-                    snooze.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-                    snooze.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-
-                    // Check if the selected time should be in the next day.
-                    if (snooze.before(Calendar.getInstance())) {
-                        // Add a day to the snooze time.
-                        snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
-                    }
-
-                    // Save task changes.
-                    mTask.setSchedule(snooze.getTime());
-                    mTask.setCompletionDate(null);
-                    mTasksService.saveTask(mTask);
-
-                    updateViews();
-                }
-                callCount++;
-            }
-        };
-
-        // Get current hour and minutes.
-        Calendar calendar = Calendar.getInstance();
-        final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int currentMinute = calendar.get(Calendar.MINUTE);
-        final int laterToday = currentHour + 3;
-
-        // Show time picker dialog.
-        AccentTimePickerDialog dialog = new AccentTimePickerDialog(this, timeSetListener, laterToday, currentMinute, DateFormat.is24HourFormat(this));
-        dialog.setTitle("Snooze until");
-        dialog.show();
+    private void openSnoozeSelector() {
+        Intent intent = new Intent(this, SnoozeActivity.class);
+        intent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mTask.getTempId());
+        startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
     }
 
 }

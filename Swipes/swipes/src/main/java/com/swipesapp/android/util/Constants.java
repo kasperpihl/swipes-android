@@ -20,4 +20,14 @@ public class Constants {
      */
     public static final String EXTRA_TASK_TEMP_ID = "TASK_TEMP_ID";
 
+    /**
+     * Request code for task snooze.
+     */
+    public static final int SNOOZE_REQUEST_CODE = 1;
+
+    /**
+     * Request code for edit task.
+     */
+    public static final int EDIT_TASK_REQUEST_CODE = 2;
+
 }

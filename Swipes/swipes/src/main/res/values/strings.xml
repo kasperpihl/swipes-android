@@ -54,6 +54,15 @@
     <!-- Scheduler -->
     <string name="date_today">Today&#160;</string>
     <string name="date_tomorrow">Tomorrow&#160;</string>
+    <string name="snooze_later_today">Later Today</string>
+    <string name="snooze_this_evening">This Evening</string>
+    <string name="snooze_tomorrow">Tomorrow</string>
+    <string name="snooze_two_days_default">Monday</string>
+    <string name="snooze_this_weekend">This Weekend</string>
+    <string name="snooze_next_week">Next Week</string>
+    <string name="snooze_unspecified">Unspecified</string>
+    <string name="snooze_at_location">At Location</string>
+    <string name="snooze_pick_date">Pick Date</string>
 
     <!-- Edit task -->
     <string name="edit_task_repeat_default_mode">Never repeat</string>
@@ -89,5 +98,14 @@
     <string name="action_delete">&#xe635;</string>
     <string name="action_edit">&#xe636;</string>
     <string name="edit_schedule">&#xe60c;</string>
+    <string name="schedule_coffee">&#xe645;</string>
+    <string name="schedule_moon">&#xe638;</string>
+    <string name="schedule_sun">&#xe643;</string>
+    <string name="schedule_logbook">&#xe642;</string>
+    <string name="schedule_glass">&#xe641;</string>
+    <string name="schedule_circle">&#xe640;</string>
+    <string name="schedule_cloud">&#xe612;</string>
+    <string name="schedule_location">&#xe63e;</string>
+    <string name="schedule_calendar">&#xe63d;</string>
 
 </resources>
