@@ -424,7 +424,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             switch (mSection) {
                 case LATER:
                     // Move task from Later to Done.
-                    getTask(position).setCompletionDate(new Date());
+                    Date currentDate = new Date();
+                    getTask(position).setCompletionDate(currentDate);
+                    getTask(position).setSchedule(currentDate);
                     mTasksService.saveTask(getTask(position));
                     break;
             }
