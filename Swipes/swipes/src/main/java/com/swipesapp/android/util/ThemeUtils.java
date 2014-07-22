@@ -136,21 +136,6 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's empty divider color.
-     */
-    public static int getCurrentThemeEmptyDividerColor(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return context.getResources().getColor(R.color.light_theme_empty_divider);
-            case DARK:
-                return context.getResources().getColor(R.color.dark_theme_empty_divider);
-            default:
-                return context.getResources().getColor(R.color.light_theme_empty_divider);
-        }
-    }
-
-    /**
-     * @param context Context to use.
      * @return Current theme's tab background resource.
      */
     public static int getCurrentThemeTabBackground(Context context) {
@@ -161,6 +146,21 @@ public class ThemeUtils {
                 return R.drawable.background_tab_dark;
             default:
                 return R.drawable.background_tab_light;
+        }
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's edit text background resource.
+     */
+    public static int getCurrentThemeEditTextBackground(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return R.drawable.light_theme_edit_text_background;
+            case DARK:
+                return R.drawable.dark_theme_edit_text_background;
+            default:
+                return R.drawable.light_theme_edit_text_background;
         }
     }
 

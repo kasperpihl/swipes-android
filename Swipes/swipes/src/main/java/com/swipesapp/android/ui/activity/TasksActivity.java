@@ -244,16 +244,37 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     private void clearEmptyBackground() {
+        // Reset background and divider color.
         mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
         mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
+
+        // Reset tab colors.
+        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
+
+        // Reset buttons and text colors.
+        mButtonAddTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mButtonConfirmAddTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mEditTextAddNewTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mEditTextAddNewTask.setBackgroundResource(ThemeUtils.getCurrentThemeEditTextBackground(this));
     }
 
-    private void setEmptyBackground(Sections currentSection) {
-        if (currentSection == Sections.FOCUS) {
-            mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
-            // Change divider color, otherwise it will look misplaced against the image background.
-            mTabs.setDividerColor(ThemeUtils.getCurrentThemeEmptyDividerColor(this));
-        }
+    private void setEmptyBackground() {
+        // Change background.
+        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+
+        // Load white color.
+        int white = getResources().getColor(R.color.white);
+
+        // Change tab colors, otherwise they look misplaced against the image background.
+        mTabs.setTextColor(white);
+        mTabs.setDividerColor(getResources().getColor(R.color.empty_divider));
+
+        // Change buttons and text colors to improve visibility.
+        mButtonAddTask.setTextColor(white);
+        mButtonConfirmAddTask.setTextColor(white);
+        mEditTextAddNewTask.setTextColor(white);
+        mEditTextAddNewTask.setBackgroundResource(R.drawable.dark_theme_edit_text_background);
     }
 
     /**

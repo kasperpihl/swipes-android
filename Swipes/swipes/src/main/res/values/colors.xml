@@ -12,8 +12,7 @@
     <item name="dark_theme_text" type="color">#ffffff</item>
     <item name="light_theme_divider" type="color">#e8e8e8</item>
     <item name="dark_theme_divider" type="color">#4e5156</item>
-    <item name="light_theme_empty_divider" type="color">#4e5156</item>
-    <item name="dark_theme_empty_divider" type="color">#e8e8e8</item>
+    <item name="empty_divider" type="color">#e8e8e8</item>
     <item name="light_theme_accent_color" type="color">#e8e8e8</item>
     <item name="dark_theme_accent_color" type="color">#4e5156</item>
 
