@@ -165,6 +165,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Perform task changes.
         mTask.setSchedule(snooze.getTime());
+        mTask.setCompletionDate(null);
         mHasScheduled = true;
 
         finish();
@@ -187,6 +188,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Perform task changes.
         mTask.setSchedule(snooze.getTime());
+        mTask.setCompletionDate(null);
         mHasScheduled = true;
 
         finish();
@@ -208,6 +210,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Perform task changes.
         mTask.setSchedule(snooze.getTime());
+        mTask.setCompletionDate(null);
         mHasScheduled = true;
 
         finish();
