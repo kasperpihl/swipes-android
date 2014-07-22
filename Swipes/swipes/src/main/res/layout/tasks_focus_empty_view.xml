@@ -38,7 +38,8 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
             android:text="@string/example_date"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/text_date_stamp_message"
