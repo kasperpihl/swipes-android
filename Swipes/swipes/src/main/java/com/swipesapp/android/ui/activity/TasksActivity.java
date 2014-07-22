@@ -330,16 +330,16 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @OnClick(R.id.button_confirm_add_task)
     protected void addTask() {
-        TasksService service = TasksService.getInstance(this);
         Date currentDate = new Date();
-
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
         // TODO: What should the temp ID be?
         String tempId = title + currentDate.getTime();
 
-        GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
-        service.saveTask(task);
+        if (!title.isEmpty()) {
+            GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
+            TasksService.getInstance(this).saveTask(task);
+        }
 
         endAddTaskWorkflow();
     }
