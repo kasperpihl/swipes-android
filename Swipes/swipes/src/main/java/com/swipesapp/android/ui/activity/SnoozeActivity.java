@@ -90,8 +90,6 @@ public class SnoozeActivity extends FragmentActivity {
 
     private GsonTask mTask;
 
-    private boolean mHasScheduled;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,19 +106,6 @@ public class SnoozeActivity extends FragmentActivity {
         mTask = mTasksService.loadTask(mTempId);
 
         customizeViews();
-    }
-
-    @Override
-    protected void onStop() {
-        // Save changes or inform cancellation.
-        if (mHasScheduled) {
-            mTasksService.saveTask(mTask);
-            setResult(RESULT_OK);
-        } else {
-            setResult(RESULT_CANCELED);
-        }
-
-        super.onStop();
     }
 
     private void customizeViews() {
@@ -163,12 +148,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        // Perform task changes.
-        mTask.setSchedule(snooze.getTime());
-        mTask.setCompletionDate(null);
-        mHasScheduled = true;
-
-        finish();
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_later_today)
@@ -186,12 +166,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        // Perform task changes.
-        mTask.setSchedule(snooze.getTime());
-        mTask.setCompletionDate(null);
-        mHasScheduled = true;
-
-        finish();
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_this_evening)
@@ -208,12 +183,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
-        // Perform task changes.
-        mTask.setSchedule(snooze.getTime());
-        mTask.setCompletionDate(null);
-        mHasScheduled = true;
-
-        finish();
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_tomorrow)
@@ -300,14 +270,7 @@ public class SnoozeActivity extends FragmentActivity {
 
                 applyNextDayTreatment(snooze);
 
-                // Perform task changes.
-                mTask.setSchedule(snooze.getTime());
-                mTask.setCompletionDate(null);
-
-                // Mark schedule as performed.
-                mHasScheduled = true;
-
-                finish();
+                performChanges(snooze);
             }
         };
 
@@ -326,7 +289,19 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
         // Mark schedule as not performed.
-        mHasScheduled = false;
+        setResult(RESULT_CANCELED);
+    }
+
+    private void performChanges(Calendar snooze) {
+        // Perform task changes.
+        mTask.setSchedule(snooze.getTime());
+        mTask.setCompletionDate(null);
+        mTasksService.saveTask(mTask);
+
+        // Mark schedule as performed.
+        setResult(RESULT_OK);
+
+        finish();
     }
 
     private void applyNextDayTreatment(Calendar snooze) {
