@@ -197,6 +197,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
+                clearEmptyBackground();
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
             }
