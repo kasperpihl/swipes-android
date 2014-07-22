@@ -482,4 +482,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         clearEmptyBackground();
     }
 
+    public void shareOnFacebook(View v) {
+        // TODO: Call sharing flow.
+        Toast.makeText(this, "Facebook share coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    public void shareOnTwitter(View v) {
+        // TODO: Call sharing flow.
+        Toast.makeText(this, "Twitter share coming soon", Toast.LENGTH_SHORT).show();
+    }
+
 }

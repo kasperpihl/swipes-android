@@ -64,14 +64,16 @@
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
                 android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/facebook_rounded_button" />
+                android:background="@drawable/facebook_rounded_button"
+                android:onClick="shareOnFacebook" />
 
             <Button
                 android:id="@+id/button_date_stamp_twitter"
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
                 android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/twitter_rounded_button" />
+                android:background="@drawable/twitter_rounded_button"
+                android:onClick="shareOnTwitter" />
 
         </LinearLayout>
 
