@@ -61,16 +61,7 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        int count = mData.size();
-        // HACK: this is a workaround to notify the activity through the fragment
-        if (mListContentsListener != null) {
-            if (count != 0) {
-                mListContentsListener.onNotEmpty();
-            } else {
-                mListContentsListener.onEmpty(mSection);
-            }
-        }
-        return count;
+        return mData.size();
     }
 
     @Override
@@ -299,6 +290,20 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Refresh adapter.
         notifyDataSetChanged();
+
+        // Check for empty data.
+        checkEmpty();
+    }
+
+    private void checkEmpty() {
+        // HACK: This is a workaround to notify the activity through the fragment.
+        if (mListContentsListener != null) {
+            if (mData.size() > 0) {
+                mListContentsListener.onNotEmpty(mSection);
+            } else {
+                mListContentsListener.onEmpty(mSection);
+            }
+        }
     }
 
     private static class TaskHolder {

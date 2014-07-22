@@ -195,12 +195,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 tabTextView.setTextColor(textColors[position]);
             }
 
-            if (position == Sections.FOCUS.getSectionNumber()) {
-                setEmptyBackground(Sections.FOCUS);
-            } else {
-                clearEmptyBackground();
-            }
-
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
             } else {
@@ -367,8 +361,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
-        // Go to main fragment.
-        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        // Go to main fragment if needed.
+        if (mCurrentSection != Sections.FOCUS) {
+            mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        }
 
         // Blur background.
         Bitmap blurBitmap = BlurBuilder.blur(mActivityMainLayout);
@@ -491,16 +487,24 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     };
 
-    // HACK: this is a workaround to change the background entirely
+    // HACK: This is a workaround to change the background entirely.
     @Override
-    public void onEmpty(Sections currentSection) {
-        setEmptyBackground(currentSection);
+    public void onEmpty(Sections section) {
+        if (section == mCurrentSection) {
+            if (section == Sections.FOCUS) {
+                setEmptyBackground();
+            } else {
+                clearEmptyBackground();
+            }
+        }
     }
 
-    // HACK: this is a workaround to change the background entirely
+    // HACK: This is a workaround to change the background entirely.
     @Override
-    public void onNotEmpty() {
-        clearEmptyBackground();
+    public void onNotEmpty(Sections section) {
+        if (section == mCurrentSection) {
+            clearEmptyBackground();
+        }
     }
 
     public void shareOnFacebook(View v) {
