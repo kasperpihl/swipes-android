@@ -167,6 +167,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Customize tag button to match current theme.
         customizeTagButton();
 
+        // Set button selectors.
+        mButtonAddTask.setSelector(R.string.round_add, R.string.round_add_full);
+
         // TODO: Remove this when tagging is working. The container is hidden for the first beta.
         mAddTaskTagContainer.setEnabled(false);
         mAddTaskTagContainer.setAlpha(0f);
