@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -114,6 +115,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private static Typeface sTypeface;
 
+    private TransitionDrawable mBackgroundTransition;
+
+    private boolean mIsEmptyBackground;
+
     // TODO: Populate list of selected tags.
     private List<GsonTag> mSelectedTags;
 
@@ -167,6 +172,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Customize tag button to match current theme.
         customizeTagButton();
 
+        // Setup background.
+        mActivityMainLayout.setBackgroundResource(ThemeUtils.getCurrentThemeTransitionBackground(this));
+        mBackgroundTransition = (TransitionDrawable) mActivityMainLayout.getBackground();
+
         // Set button selectors.
         mButtonAddTask.setSelector(R.string.round_add, R.string.round_add_full);
 
@@ -198,9 +207,13 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 tabTextView.setTextColor(textColors[position]);
             }
 
+            if (position != Sections.FOCUS.getSectionNumber()) {
+                clearEmptyBackground();
+                mIsEmptyBackground = false;
+            }
+
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
-                clearEmptyBackground();
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
             }
@@ -243,8 +256,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private void clearEmptyBackground() {
         // Reset background and divider color.
-        mActivityMainLayout.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
-        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
+        mBackgroundTransition.resetTransition();
 
         // Reset tab colors.
         mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
@@ -259,7 +271,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private void setEmptyBackground() {
         // Change background.
-        mActivityMainLayout.setBackgroundResource(R.drawable.default_background);
+        mBackgroundTransition.startTransition(Constants.ANIMATION_DURATION);
 
         // Load white color.
         int white = getResources().getColor(R.color.white);
@@ -494,20 +506,18 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onEmpty(Sections section) {
-        if (section == mCurrentSection) {
-            if (section == Sections.FOCUS) {
-                setEmptyBackground();
-            } else {
-                clearEmptyBackground();
-            }
+        if (section == mCurrentSection && section == Sections.FOCUS && !mIsEmptyBackground) {
+            setEmptyBackground();
+            mIsEmptyBackground = true;
         }
     }
 
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onNotEmpty(Sections section) {
-        if (section == mCurrentSection) {
+        if (section == mCurrentSection && section == Sections.FOCUS && mIsEmptyBackground) {
             clearEmptyBackground();
+            mIsEmptyBackground = false;
         }
     }
 

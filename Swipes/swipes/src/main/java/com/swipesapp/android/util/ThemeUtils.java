@@ -164,4 +164,19 @@ public class ThemeUtils {
         }
     }
 
+    /**
+     * @param context Context to use.
+     * @return Current theme's transition background resource.
+     */
+    public static int getCurrentThemeTransitionBackground(Context context) {
+        switch (getCurrentTheme(context)) {
+            case LIGHT:
+                return R.drawable.background_transition_light;
+            case DARK:
+                return R.drawable.background_transition_dark;
+            default:
+                return R.drawable.background_transition_light;
+        }
+    }
+
 }
