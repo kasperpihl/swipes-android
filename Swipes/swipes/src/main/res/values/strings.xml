@@ -79,7 +79,7 @@
         <item quantity="other">Are you sure you want to permanently delete these tasks?</item>
     </plurals>
 
-    <!-- Icons -->
+    <!-- Section icons -->
     <string name="swipes_logo">&#xe600;</string>
     <string name="later_light">&#xe604;</string>
     <string name="focus_light">&#xe603;</string>
@@ -88,9 +88,13 @@
     <string name="focus_full">&#xe607;</string>
     <string name="done_full">&#xe606;</string>
     <string name="settings_light">&#xe601;</string>
+
+    <!-- Action icons -->
     <string name="round_add">&#xe62a;</string>
     <string name="round_add_full">&#xe62f;</string>
     <string name="left_arrow">&#xe63f;</string>
+
+    <!-- Edit task icons -->
     <string name="edit_location">&#xe60d;</string>
     <string name="edit_notes">&#xe609;</string>
     <string name="edit_repeat">&#xe60a;</string>
@@ -99,14 +103,25 @@
     <string name="action_delete">&#xe635;</string>
     <string name="action_edit">&#xe636;</string>
     <string name="edit_schedule">&#xe60c;</string>
+
+    <!-- Scheduler icons -->
     <string name="schedule_coffee">&#xe645;</string>
+    <string name="schedule_coffee_full">&#xe64e;</string>
     <string name="schedule_moon">&#xe638;</string>
+    <string name="schedule_moon_full">&#xe61c;</string>
     <string name="schedule_sun">&#xe643;</string>
+    <string name="schedule_sun_full">&#xe64c;</string>
     <string name="schedule_logbook">&#xe642;</string>
+    <string name="schedule_logbook_full">&#xe64b;</string>
     <string name="schedule_glass">&#xe641;</string>
+    <string name="schedule_glass_full">&#xe64a;</string>
     <string name="schedule_circle">&#xe640;</string>
+    <string name="schedule_circle_full">&#xe649;</string>
     <string name="schedule_cloud">&#xe612;</string>
+    <string name="schedule_cloud_full">&#xe614;</string>
     <string name="schedule_location">&#xe63e;</string>
+    <string name="schedule_location_full">&#xe647;</string>
     <string name="schedule_calendar">&#xe63d;</string>
+    <string name="schedule_calendar_full">&#xe646;</string>
 
 </resources>

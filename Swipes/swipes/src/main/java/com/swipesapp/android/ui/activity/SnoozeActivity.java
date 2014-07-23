@@ -2,6 +2,8 @@ package com.swipesapp.android.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -111,32 +113,61 @@ public class SnoozeActivity extends FragmentActivity {
     private void customizeViews() {
         mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
 
+        setSelector(mLaterTodayIcon, R.string.schedule_coffee, R.string.schedule_coffee_full);
         mLaterTodayIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mLaterTodayTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mThisEveningIcon, R.string.schedule_moon, R.string.schedule_moon_full);
         mThisEveningIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mThisEveningTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mTomorrowIcon, R.string.schedule_sun, R.string.schedule_sun_full);
         mTomorrowIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTomorrowTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mTwoDaysIcon, R.string.schedule_logbook, R.string.schedule_logbook_full);
         mTwoDaysIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mTwoDaysTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mThisWeekendIcon, R.string.schedule_glass, R.string.schedule_glass_full);
         mThisWeekendIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mThisWeekendTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mNextWeekIcon, R.string.schedule_circle, R.string.schedule_circle_full);
         mNextWeekIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mNextWeekTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+//        setSelector(mUnspecifiedIcon, R.string.schedule_cloud, R.string.schedule_cloud_full);
 //        mUnspecifiedIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 //        mUnspecifiedTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mAtLocationIcon, R.string.schedule_location, R.string.schedule_location_full);
         mAtLocationIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mAtLocationTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
+        setSelector(mPickDateIcon, R.string.schedule_calendar, R.string.schedule_calendar_full);
         mPickDateIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mPickDateTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+    }
+
+    public void setSelector(final SwipesTextView icon, final int resource, final int resourceFull) {
+        // Create selector based on touch state.
+        ((View) icon.getParent()).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change resource to pressed state.
+                        icon.setText(getString(resourceFull));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        // Change resource to default state.
+                        icon.setText(getString(resource));
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @OnClick(R.id.snooze_later_today)
