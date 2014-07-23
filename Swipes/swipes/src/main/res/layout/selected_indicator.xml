@@ -1,4 +1,5 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/selected_indicator"
     android:layout_width="5dip"
-    android:layout_height="fill_parent" />
+    android:layout_height="fill_parent"
+    android:clickable="false" />

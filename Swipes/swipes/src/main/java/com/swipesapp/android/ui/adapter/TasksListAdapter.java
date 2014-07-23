@@ -91,6 +91,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
             holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
+            holder.priorityContainer = (FrameLayout) row.findViewById(R.id.task_priority_container);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
@@ -113,7 +114,7 @@ public class TasksListAdapter extends BaseAdapter {
         return row;
     }
 
-    private void customizeView(TaskHolder holder, final int position) {
+    private void customizeView(final TaskHolder holder, final int position) {
         // HACK: The DynamicListView can only handle generic lists inside the adapter, so mData is
         // a generic list in order to fix a bug that keeps drag and drop from working as expected.
         // A cast needs to be done here to properly display custom data. This behavior is not ideal,
@@ -141,11 +142,12 @@ public class TasksListAdapter extends BaseAdapter {
         holder.selectedIndicator.setBackgroundColor(0);
 
         // Listener to persist priority.
-        holder.priorityButton.setOnClickListener(new View.OnClickListener() {
+        holder.priorityContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckBox priorityButton = (CheckBox) view;
-                Integer priority = priorityButton.isChecked() ? 1 : 0;
+                boolean checked = !holder.priorityButton.isChecked();
+                holder.priorityButton.setChecked(checked);
+                Integer priority = checked ? 1 : 0;
 
                 GsonTask task = tasks.get(position);
                 task.setPriority(priority);
@@ -314,6 +316,7 @@ public class TasksListAdapter extends BaseAdapter {
         RelativeLayout backView;
 
         // Priority and selection.
+        FrameLayout priorityContainer;
         CheckBox priorityButton;
         View selectedIndicator;
 
