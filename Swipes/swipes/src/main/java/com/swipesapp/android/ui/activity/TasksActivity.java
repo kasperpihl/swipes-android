@@ -258,8 +258,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Reset background and divider color.
         mBackgroundTransition.resetTransition();
 
-        // Reset tab colors.
-        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        // Reset divider color.
         mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
 
         // Reset buttons and text colors.
@@ -276,8 +275,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Load white color.
         int white = getResources().getColor(R.color.white);
 
-        // Change tab colors, otherwise they look misplaced against the image background.
-        mTabs.setTextColor(white);
+        // Change divider color, otherwise it looks misplaced against the image background.
         mTabs.setDividerColor(getResources().getColor(R.color.empty_divider));
 
         // Change buttons and text colors to improve visibility.
