@@ -19,5 +19,6 @@
     <dimen name="schedule_options_icon_size">40sp</dimen>
     <dimen name="schedule_options_margin_vertical">20dp</dimen>
     <dimen name="schedule_options_margin_sides">15dp</dimen>
+    <dimen name="edit_task_title_max_height">130dp</dimen>
 
 </resources>
