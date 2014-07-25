@@ -302,14 +302,24 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
 
         // The edit button shouldn't be used for multiple tasks at once.
-        if (isBatchOperation) {
-            // Disable button and make it transparent instead of invisible, to preserve layout positions.
+        if (isBatchOperation && mButtonEditTask.isEnabled()) {
+            // Animate view.
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            slideDown.setFillAfter(true);
+            slideDown.setDuration(Constants.ANIMATION_DURATION_SHORT);
+            mButtonEditTask.startAnimation(slideDown);
+
+            // Disable button.
             mButtonEditTask.setEnabled(false);
-            mButtonEditTask.setTextColor(0);
-        } else {
-            // Enable button and apply color.
+        } else if (!isBatchOperation && !mButtonEditTask.isEnabled()) {
+            // Animate view.
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            slideUp.setFillAfter(true);
+            slideUp.setDuration(Constants.ANIMATION_DURATION_SHORT);
+            mButtonEditTask.startAnimation(slideUp);
+
+            // Enable button.
             mButtonEditTask.setEnabled(true);
-            mButtonEditTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         }
     }
 
