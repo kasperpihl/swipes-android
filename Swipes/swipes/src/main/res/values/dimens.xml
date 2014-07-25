@@ -3,6 +3,7 @@
 
     <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
+    <dimen name="list_item_height_large">80dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="date_stamp_margin">16dp</dimen>

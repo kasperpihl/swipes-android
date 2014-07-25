@@ -2,13 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/list_item_height">
 
     <!-- Back view -->
     <RelativeLayout
         android:id="@+id/swipe_back"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -35,7 +35,7 @@
     <RelativeLayout
         android:id="@+id/swipe_front"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <include layout="@layout/selected_indicator" />
@@ -44,7 +44,7 @@
         <FrameLayout
             android:id="@+id/task_priority_container"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
@@ -55,7 +55,6 @@
                 android:id="@+id/button_task_priority"
                 android:layout_width="@dimen/task_circles_size"
                 android:layout_height="@dimen/task_circles_size"
-                android:layout_gravity="center"
                 android:button="@null"
                 android:clickable="false"
                 android:focusable="false" />
@@ -64,35 +63,33 @@
         <!-- Task title and properties container -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@id/task_priority_container"
-            android:orientation="vertical"
-            android:weightSum="1">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/task_title"
                 style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical" />
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2" />
 
             <!-- Time and tags container -->
             <RelativeLayout
                 android:id="@+id/task_properties_container"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0"
+                android:layout_height="wrap_content"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/task_time"
                     style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/task_properties_margin"
-                    android:gravity="top"
                     android:textColor="@color/focus_accent_color"
                     android:visibility="gone" />
 
@@ -104,7 +101,6 @@
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_time"
-                    android:gravity="top"
                     android:text="@string/double_slash_divider"
                     android:textColor="@android:color/darker_gray"
                     android:visibility="gone" />
@@ -117,7 +113,6 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_marginTop="@dimen/task_icons_margin_top"
                     android:layout_toRightOf="@id/task_properties_divider"
-                    android:gravity="top"
                     android:text="@string/edit_location"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/task_icons_size"
@@ -132,7 +127,6 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_marginTop="@dimen/task_icons_margin_top"
                     android:layout_toRightOf="@id/task_location_icon"
-                    android:gravity="top"
                     android:text="@string/edit_notes"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/task_icons_size"
@@ -147,7 +141,6 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_marginTop="@dimen/task_icons_margin_top"
                     android:layout_toRightOf="@id/task_notes_icon"
-                    android:gravity="top"
                     android:text="@string/edit_repeat"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/task_icons_size"
@@ -161,7 +154,6 @@
                     android:layout_marginLeft="@dimen/task_properties_margin"
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_repeat_icon"
-                    android:gravity="top"
                     android:text="@string/double_slash_divider"
                     android:textColor="@android:color/darker_gray"
                     android:visibility="gone" />
@@ -175,7 +167,6 @@
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:layout_toRightOf="@id/task_tags_divider"
                     android:ellipsize="end"
-                    android:gravity="top"
                     android:maxLines="1"
                     android:textColor="@android:color/darker_gray"
                     android:visibility="gone" />

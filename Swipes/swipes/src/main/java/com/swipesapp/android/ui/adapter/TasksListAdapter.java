@@ -3,16 +3,13 @@ package com.swipesapp.android.ui.adapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
@@ -135,6 +132,13 @@ public class TasksListAdapter extends BaseAdapter {
         // Set task title.
         holder.title.setText(title);
 
+        // Set cell height based on title size.
+        if (holder.title.getLineCount() > 1) {
+            setCellHeight(holder, R.dimen.list_item_height_large);
+        } else {
+            setCellHeight(holder, R.dimen.list_item_height);
+        }
+
         // Set priority.
         holder.priorityButton.setChecked(priority == 1);
 
@@ -193,13 +197,6 @@ public class TasksListAdapter extends BaseAdapter {
         // Display properties line.
         if (mDisplayProperties) {
             holder.propertiesContainer.setVisibility(View.VISIBLE);
-
-            // Change layout weights to properly split cell spacing.
-            holder.title.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0.5f));
-            holder.propertiesContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0.5f));
-
-            // Change title alignment.
-            holder.title.setGravity(Gravity.BOTTOM);
         }
 
         // Sets colors for cell, matching the current theme.
@@ -251,6 +248,13 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
+    private void setCellHeight(TaskHolder holder, int dimension) {
+        // Set cell container height.
+        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
+        layoutParams.height = mContext.get().getResources().getDimensionPixelSize(dimension);
+        holder.containerView.setLayoutParams(layoutParams);
+    }
+
     private void resetCellState(TaskHolder holder, int position) {
         // Reset visibility.
         holder.frontView.setVisibility(View.VISIBLE);
@@ -263,11 +267,6 @@ public class TasksListAdapter extends BaseAdapter {
         } else {
             holder.frontView.setTranslationX(0);
         }
-
-        // Reset height.
-        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
-        layoutParams.height = mContext.get().getResources().getDimensionPixelSize(R.dimen.list_item_height);
-        holder.containerView.setLayoutParams(layoutParams);
 
         // Reset flags when views are done loading.
         if (position == mData.size() - 1) mResetCells = false;
