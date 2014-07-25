@@ -369,6 +369,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
                     editTaskIntent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mSelectedTasks.get(0).getTempId());
                     startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
+
+                    // Clear selected tasks.
+                    mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
                     // TODO: Display tag selection screen.
                 } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
