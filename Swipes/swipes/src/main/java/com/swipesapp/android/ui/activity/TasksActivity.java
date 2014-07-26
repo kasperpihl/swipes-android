@@ -193,24 +193,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            int[] textColors = {
-                    ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
-                    ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
-                    ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
-                    ThemeUtils.getCurrentThemeTextColor(mContext.get())
-            };
-            mTabs.setIndicatorColor(textColors[position]);
-            mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
-            View v = mTabs.getTabView(position);
-            if (v instanceof TextView) {
-                TextView tabTextView = (TextView) v;
-                tabTextView.setTextColor(textColors[position]);
-            }
-
             if (position != Sections.FOCUS.getSectionNumber()) {
                 clearEmptyBackground();
                 mIsEmptyBackground = false;
             }
+
+            customizeTabColors(ThemeUtils.getCurrentThemeTextColor(mContext.get()), ThemeUtils.getCurrentThemeDividerColor(mContext.get()), position);
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
@@ -254,17 +242,40 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mButtonAddTaskTag.setTextColor(getResources().getColorStateList(color));
     }
 
+    private void customizeTabColors(int textColor, int dividerColor, int position) {
+        int[] textColors = {
+                ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
+                ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
+                ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
+                textColor
+        };
+
+        mTabs.setIndicatorColor(textColors[position]);
+        mTabs.setTextColor(textColor);
+        mTabs.setDividerColor(dividerColor);
+
+        View view = mTabs.getTabView(position);
+
+        if (view instanceof TextView) {
+            TextView tabTextView = (TextView) view;
+            tabTextView.setTextColor(textColors[position]);
+        }
+    }
+
     private void clearEmptyBackground() {
         // Reset background and divider color.
         mBackgroundTransition.resetTransition();
 
-        // Reset divider color.
-        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
+        // Load text color.
+        int textColor = ThemeUtils.getCurrentThemeTextColor(this);
+
+        // Reset tab colors.
+        customizeTabColors(textColor, ThemeUtils.getCurrentThemeDividerColor(this), mCurrentSection.getSectionNumber());
 
         // Reset buttons and text colors.
-        mButtonAddTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mButtonConfirmAddTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mEditTextAddNewTask.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mButtonAddTask.setTextColor(textColor);
+        mButtonConfirmAddTask.setTextColor(textColor);
+        mEditTextAddNewTask.setTextColor(textColor);
         mEditTextAddNewTask.setBackgroundResource(ThemeUtils.getCurrentThemeEditTextBackground(this));
     }
 
@@ -275,8 +286,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Load white color.
         int white = getResources().getColor(R.color.white);
 
-        // Change divider color, otherwise it looks misplaced against the image background.
-        mTabs.setDividerColor(getResources().getColor(R.color.empty_divider));
+        // Change tab colors, otherwise they look misplaced against the image background.
+        customizeTabColors(white, getResources().getColor(R.color.empty_divider), mCurrentSection.getSectionNumber());
 
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(white);
