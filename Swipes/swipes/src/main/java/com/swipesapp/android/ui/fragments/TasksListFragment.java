@@ -246,22 +246,23 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mLaterListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
         mLaterListView.setLongSwipeEnabled(true);
         mLaterListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
-        mLaterListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), 0);
+        mLaterListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mLaterListView.setBackIconText(R.string.focus_full, R.string.later_full);
-        mLaterListView.setLongSwipeBackIconText(R.string.done_full, 0);
+        mLaterListView.setLongSwipeBackIconText(R.string.done_full, R.string.later_full);
 
         // Setup priority button.
         mLaterListView.setFrontIcon(R.id.button_task_priority);
         mLaterListView.setFrontIconBackgrounds(R.drawable.focus_circle_selector, R.drawable.later_circle_selector, R.drawable.later_circle_selector);
-        mLaterListView.setFrontIconLongSwipeBackgrounds(R.drawable.done_circle_selector, 0);
+        mLaterListView.setFrontIconLongSwipeBackgrounds(R.drawable.done_circle_selector, R.drawable.later_circle_selector);
 
         // Setup actions.
         mLaterListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mLaterListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
-        mLaterListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_RIGHT);
+        mLaterListView.setLongSwipeMode(SwipeListView.LONG_SWIPE_MODE_BOTH);
         mLaterListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mLaterListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
         mLaterListView.setLongSwipeActionRight(SwipeListView.LONG_SWIPE_ACTION_DISMISS);
+        mLaterListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
 
     private void configureFocusListView(TasksListAdapter adapter) {
@@ -436,6 +437,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         @Override
         public void onFinishedLongSwipeLeft(int position) {
             switch (mSection) {
+                case LATER:
+                    // Reschedule task.
+                    openSnoozeSelector(getTask(position));
+                    break;
                 case DONE:
                     // Move task from Done to Later.
                     openSnoozeSelector(getTask(position));
