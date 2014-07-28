@@ -136,6 +136,7 @@
                 android:layout_toLeftOf="@id/button_confirm_add_task"
                 android:layout_toRightOf="@id/button_add_task_priority"
                 android:hint="@string/add_task_hint"
+                android:imeOptions="actionDone"
                 android:inputType="text"
                 android:textCursorDrawable="@null" />
         </RelativeLayout>

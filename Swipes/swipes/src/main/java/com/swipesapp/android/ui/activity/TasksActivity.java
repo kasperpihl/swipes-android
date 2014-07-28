@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -379,7 +381,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     };
 
     @OnClick(R.id.button_confirm_add_task)
-    protected void addTask() {
+    protected void confirmAddTask() {
         Date currentDate = new Date();
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
@@ -412,6 +414,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
+        mEditTextAddNewTask.setOnEditorActionListener(mEnterListener);
 
         // Display edit text.
         mEditTextAddNewTask.setVisibility(View.VISIBLE);
@@ -521,6 +524,18 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             }
         }
     };
+
+    private TextView.OnEditorActionListener mEnterListener =
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, save new task.
+                        confirmAddTask();
+                    }
+                    return true;
+                }
+            };
 
     // HACK: This is a workaround to change the background entirely.
     @Override
