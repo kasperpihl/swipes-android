@@ -125,6 +125,7 @@ public class TasksListAdapter extends BaseAdapter {
         String notes = tasks.get(position).getNotes();
         Date repeatDate = tasks.get(position).getRepeatDate();
         Integer priority = tasks.get(position).getPriority();
+        boolean selected = tasks.get(position).isSelected();
 
         // Reset cell attributes to avoid recycling misbehavior.
         if (mResetCells) resetCellState(holder, position);
@@ -142,9 +143,6 @@ public class TasksListAdapter extends BaseAdapter {
         // Set priority.
         holder.priorityButton.setChecked(priority == 1);
 
-        // Clear selection.
-        holder.selectedIndicator.setBackgroundColor(0);
-
         // Listener to persist priority.
         holder.priorityContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +157,13 @@ public class TasksListAdapter extends BaseAdapter {
                 TasksService.getInstance(mContext.get()).saveTask(task);
             }
         });
+
+        // Set selection.
+        if (selected) {
+            holder.selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, mContext.get()));
+        } else {
+            holder.selectedIndicator.setBackgroundColor(0);
+        }
 
         // Build the formatted tags.
         if (tagList != null && !tagList.isEmpty()) {
