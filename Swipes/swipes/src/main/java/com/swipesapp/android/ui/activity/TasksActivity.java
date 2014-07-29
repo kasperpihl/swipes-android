@@ -258,7 +258,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         View view = mTabs.getTabView(position);
 
-        if (view instanceof TextView) {
+        if (view != null && view instanceof TextView) {
             TextView tabTextView = (TextView) view;
             tabTextView.setTextColor(textColors[position]);
         }
