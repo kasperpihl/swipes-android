@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
-import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
@@ -142,21 +141,6 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Set priority.
         holder.priorityButton.setChecked(priority == 1);
-
-        // Listener to persist priority.
-        holder.priorityContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean checked = !holder.priorityButton.isChecked();
-                holder.priorityButton.setChecked(checked);
-                Integer priority = checked ? 1 : 0;
-
-                GsonTask task = tasks.get(position);
-                task.setPriority(priority);
-
-                TasksService.getInstance(mContext.get()).saveTask(task);
-            }
-        });
 
         // Set selection.
         if (selected) {

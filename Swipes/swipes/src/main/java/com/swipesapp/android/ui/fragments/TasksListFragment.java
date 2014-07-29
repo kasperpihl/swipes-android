@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -466,6 +467,19 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             }
 
             handleEditBar();
+        }
+
+        @Override
+        public void onClickCheckbox(View view, int position) {
+            CheckBox priorityButton = (CheckBox) view;
+            boolean checked = !priorityButton.isChecked();
+            priorityButton.setChecked(checked);
+            Integer priority = checked ? 1 : 0;
+
+            GsonTask task = getTask(position);
+            task.setPriority(priority);
+
+            mTasksService.saveTask(task);
         }
     };
 
