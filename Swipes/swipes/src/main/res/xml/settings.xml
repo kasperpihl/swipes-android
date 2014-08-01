@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen android:title="@string/settings_plus">
-
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="http://www.swipesapp.com" />
-
-    </PreferenceScreen>
+    <Preference
+        android:key="invite"
+        android:title="@string/settings_invite" />
 
     <com.negusoft.holoaccent.preference.SwitchPreference
         android:key="settings_enable_notifications"
