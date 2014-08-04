@@ -48,7 +48,7 @@
 
     <!-- TODO: Change strings to the real invite. -->
     <!-- Invite -->
-    <string name="settings_invite">Invite</string>
+    <string name="settings_invite">Invite friends to Swipes</string>
     <string name="invite_subject">Join the Swipes for Android BETA</string>
     <string name="invite_html_body"><html><body><h1>This is a test. We can put simple HTML here.</h1></body></html></string>
     <string name="invite_body">This is a test. We can NOT put HTML here.</string>
