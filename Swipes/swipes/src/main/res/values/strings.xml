@@ -34,7 +34,6 @@
     <string name="settings_theme_chooser_dialog_title">Choose a theme</string>
     <string name="settings_plus">Plus</string>
     <string name="policies">Policies</string>
-    <string name="about">About</string>
     <string name="snoozes">Snoozes</string>
     <string name="weekend_start">Weekend start</string>
     <string name="settings_snoozes_weekend_start_dialog_title">Weekend start</string>
@@ -45,7 +44,14 @@
     <string name="day_start">Day start</string>
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
+
+    <!-- About -->
+    <string name="about">About</string>
     <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">This app is brought to you by</string>
+    <string name="about_app_version">App version</string>
+    <string name="about_oss_licenses">Open source licenses</string>
+    <string name="about_oss_license_1">TimePreference based on CommonsWare code. Licensed under Apache.</string>
 
     <!-- TODO: Change strings to the real invite. -->
     <!-- Invite -->
@@ -97,6 +103,7 @@
     <string name="focus_full">&#xe607;</string>
     <string name="done_full">&#xe606;</string>
     <string name="settings_light">&#xe601;</string>
+    <string name="swipes_signature">&#xe61a;</string>
 
     <!-- Action icons -->
     <string name="round_add">&#xe62a;</string>

@@ -19,13 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="This app is brought to you by" />
+            android:text="@string/about_brought_by" />
 
         <com.swipesapp.android.ui.view.SwipesTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="&#xe61a;"
+            android:text="@string/swipes_signature"
             android:textSize="60sp" />
 
         <View
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="App version" />
+            android:text="@string/about_app_version" />
 
         <TextView
             android:id="@+id/about_version"
@@ -53,12 +53,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Open source licenses" />
+            android:text="@string/about_oss_licenses" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TimePreference based on CommonsWare code. Licensed under Apache." />
+            android:text="@string/about_oss_license_1" />
 
     </LinearLayout>
 </ScrollView>
