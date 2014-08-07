@@ -54,12 +54,10 @@
     <string name="about_oss_licenses">Open source licenses</string>
     <string name="about_oss_license_1">TimePreference based on CommonsWare code. Licensed under Apache.</string>
 
-    <!-- TODO: Change strings to the real invite. -->
     <!-- Invite -->
     <string name="settings_invite">Invite friends to Swipes</string>
-    <string name="invite_subject">Join the Swipes for Android BETA</string>
-    <string name="invite_html_body"><html><body><h1>This is a test. We can put simple HTML here.</h1></body></html></string>
-    <string name="invite_body">This is a test. We can NOT put HTML here.</string>
+    <string name="invite_subject">Check out this new cool app</string>
+    <string name="invite_body">I’m trying this new app - Swipes, for organizing my day. \n\nIt makes it easy to plan the day, snooze tasks for later or complete them with just a swipe. It’s in BETA test now but I can invite you to join in. I thought it’s really something you’d like.\n\nCheck it out here:\n\n1. Press this link - http://plus.google.com/communities/110833959414105515907 and join the community of Google Play testers with your Google+ account.\n\n2. Once you’ve joined, click this link - http://play.google.com/apps/testing/com.swipesapp.android and join the Swipes Test Group.\n\n3. Finally, press this link - http://play.google.com/store/apps/details?id=com.swipesapp.android and download the Swipes BETA.</string>
     <string name="invite_chooser_title">Invite with:</string>
 
     <!-- Actions -->

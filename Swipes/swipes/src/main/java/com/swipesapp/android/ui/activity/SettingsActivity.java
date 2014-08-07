@@ -7,7 +7,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.text.Html;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
@@ -68,15 +67,14 @@ public class SettingsActivity extends AccentActivity {
             Intent inviteIntent = new Intent(Intent.ACTION_SEND);
             inviteIntent.setType("text/html");
             inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.invite_subject));
+            inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.invite_body));
 
-            // Try to open HTML invite directly in Gmail.
+            // Try to open invite directly in Gmail.
             try {
                 inviteIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-                inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.invite_html_body)));
                 startActivity(inviteIntent);
             } catch (ActivityNotFoundException e) {
-                // If Gmail is not available, fallback to non-HTML invite and app selector.
-                inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.invite_body));
+                // If Gmail is not available, fallback to app selector.
                 startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
             }
         }
