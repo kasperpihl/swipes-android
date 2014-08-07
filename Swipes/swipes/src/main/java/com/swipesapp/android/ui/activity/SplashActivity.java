@@ -19,7 +19,7 @@ import java.util.Date;
 
 public class SplashActivity extends Activity {
 
-    private static int SPLASH_TIMEOUT = 1000;
+    private static final int SPLASH_TIMEOUT = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -90,4 +90,9 @@
         <item name="bpDividerColor">@color/dark_theme_divider</item>
     </style>
 
+    <!-- Splash screen theme. -->
+    <style name="Splash_Theme" parent="android:Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+    </style>
+
 </resources>
