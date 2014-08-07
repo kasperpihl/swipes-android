@@ -4,6 +4,7 @@
     <!-- Welcome -->
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>
+    <string name="welcome_task_three">Tap to show more actions</string>
 
     <!-- Sections -->
     <string name="app_name">Swipes</string>

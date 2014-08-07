@@ -69,6 +69,14 @@ public class SplashActivity extends Activity {
         task.setTempId(tempId);
 
         service.saveTask(task);
+
+        // Save third task.
+        title = getString(R.string.welcome_task_three);
+        tempId = title + currentDate.getTime();
+        task.setTitle(title);
+        task.setTempId(tempId);
+
+        service.saveTask(task);
     }
 
 }
