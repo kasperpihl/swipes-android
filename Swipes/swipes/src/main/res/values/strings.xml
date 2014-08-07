@@ -45,6 +45,7 @@
     <string name="day_start">Day start</string>
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
+    <string name="app_version">%1$s (%2$s)</string>
 
     <!-- TODO: Change strings to the real invite. -->
     <!-- Invite -->

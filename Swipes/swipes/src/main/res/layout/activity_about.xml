@@ -35,6 +35,19 @@
             android:layout_marginBottom="20dp" />
 
         <TextView
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="App version" />
+
+        <TextView
+            android:id="@+id/about_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp" />
+
+        <TextView
             android:id="@+id/about_oss_licenses"
             style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"

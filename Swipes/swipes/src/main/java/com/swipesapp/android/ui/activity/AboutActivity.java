@@ -6,6 +6,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
 
@@ -26,6 +27,9 @@ public class AboutActivity extends AccentActivity {
     @InjectView(R.id.about_signature_line)
     View mSignatureLine;
 
+    @InjectView(R.id.about_version)
+    TextView mVersion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,5 +43,8 @@ public class AboutActivity extends AccentActivity {
         mBroughtBy.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
         mSignatureLine.setBackgroundColor(ThemeUtils.getCurrentThemeDividerColor(this));
+
+        String version = getString(R.string.app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+        mVersion.setText(version);
     }
 }
