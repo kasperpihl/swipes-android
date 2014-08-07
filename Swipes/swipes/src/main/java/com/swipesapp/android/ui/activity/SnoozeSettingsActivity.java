@@ -17,6 +17,8 @@ public class SnoozeSettingsActivity extends AccentActivity {
 
         getFragmentManager().beginTransaction().replace(R.id.snooze_settings_content,
                 new SnoozeSettingsFragment()).commit();
+
+        getActionBar().setDisplayShowTitleEnabled(false);
     }
 
     public static class SnoozeSettingsFragment extends PreferenceFragment {
