@@ -16,6 +16,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Themes;
 
 import java.util.Calendar;
@@ -114,39 +115,39 @@ public class SnoozeActivity extends FragmentActivity {
         mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
 
         setSelector(mLaterTodayIcon, R.string.schedule_coffee, R.string.schedule_coffee_full);
-        mLaterTodayIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mLaterTodayIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mLaterTodayTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mThisEveningIcon, R.string.schedule_moon, R.string.schedule_moon_full);
-        mThisEveningIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mThisEveningIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mThisEveningTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mTomorrowIcon, R.string.schedule_sun, R.string.schedule_sun_full);
-        mTomorrowIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTomorrowIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mTomorrowTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mTwoDaysIcon, R.string.schedule_logbook, R.string.schedule_logbook_full);
-        mTwoDaysIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTwoDaysIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mTwoDaysTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mThisWeekendIcon, R.string.schedule_glass, R.string.schedule_glass_full);
-        mThisWeekendIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mThisWeekendIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mThisWeekendTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mNextWeekIcon, R.string.schedule_circle, R.string.schedule_circle_full);
-        mNextWeekIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mNextWeekIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mNextWeekTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
 //        setSelector(mUnspecifiedIcon, R.string.schedule_cloud, R.string.schedule_cloud_full);
-//        mUnspecifiedIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+//        mUnspecifiedIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
 //        mUnspecifiedTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mAtLocationIcon, R.string.schedule_location, R.string.schedule_location_full);
-        mAtLocationIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mAtLocationIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mAtLocationTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
 
         setSelector(mPickDateIcon, R.string.schedule_calendar, R.string.schedule_calendar_full);
-        mPickDateIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mPickDateIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
         mPickDateTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
     }
 
