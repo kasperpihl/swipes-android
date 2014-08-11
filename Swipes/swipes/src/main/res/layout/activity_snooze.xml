@@ -114,10 +114,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/schedule_options_margin_vertical"
+        android:layout_marginBottom="@dimen/schedule_options_margin_middle"
         android:layout_marginLeft="@dimen/schedule_options_margin_sides"
         android:layout_marginRight="@dimen/schedule_options_margin_sides"
-        android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+        android:layout_marginTop="@dimen/schedule_options_margin_middle"
         android:weightSum="1">
 
         <!-- Two days -->
