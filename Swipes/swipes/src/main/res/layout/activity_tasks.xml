@@ -162,7 +162,7 @@
                 android:button="@null"
                 android:padding="9dp"
                 android:text="swipes"
-                android:textColor="@color/text_color_selector_light" />
+                android:textColor="@color/tag_text_color_selector_light" />
         </com.swipesapp.android.ui.view.FlowLayout>
 
     </RelativeLayout>

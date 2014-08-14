@@ -3,6 +3,7 @@ package com.swipesapp.android.ui.adapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,14 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,15 +41,18 @@ public class TasksListAdapter extends BaseAdapter {
     private int mLayoutResID;
     private Sections mSection;
 
+    private ListContentsListener mListContentsListener;
+
     // Controls the display of properties line below task title.
     private boolean mDisplayProperties;
 
-    private ListContentsListener mListContentsListener;
+    private boolean mIsShowingOld;
 
-    private boolean mResetCells;
+    // Determines if old tasks will be animated into the screen.
+    private boolean mAnimateOld;
 
-    // When true, cell state resets will be animated.
-    private boolean mAnimateReset;
+    // Determines if cells will be animated after refresh.
+    private boolean mAnimateRefresh;
 
     public TasksListAdapter(Context context, int layoutResourceId, List<GsonTask> data, Sections section) {
         mData = data;
@@ -107,6 +113,8 @@ public class TasksListAdapter extends BaseAdapter {
 
         customizeView(holder, position);
 
+        animateOldTask(holder, position);
+
         return row;
     }
 
@@ -127,7 +135,7 @@ public class TasksListAdapter extends BaseAdapter {
         boolean selected = tasks.get(position).isSelected();
 
         // Reset cell attributes to avoid recycling misbehavior.
-        if (mResetCells) resetCellState(holder, position);
+        resetCellState(holder);
 
         // Set task title.
         holder.title.setText(title);
@@ -244,21 +252,32 @@ public class TasksListAdapter extends BaseAdapter {
         holder.containerView.setLayoutParams(layoutParams);
     }
 
-    private void resetCellState(TaskHolder holder, int position) {
+    private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         holder.frontView.setVisibility(View.VISIBLE);
         holder.containerView.setVisibility(View.VISIBLE);
 
         // Reset translation.
-        if (mAnimateReset) {
+        if (mAnimateRefresh) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
             animator.start();
         } else {
             holder.frontView.setTranslationX(0);
         }
+    }
 
-        // Reset flags when views are done loading.
-        if (position == mData.size() - 1) mResetCells = false;
+    private void animateOldTask(TaskHolder holder, int position) {
+        // Animate display of old tasks only when needed.
+        if (mAnimateOld && mIsShowingOld && position >= getFirstOldPosition()) {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) mContext.get()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+            float fromY = displaymetrics.heightPixels;
+            float toY = holder.containerView.getTranslationY();
+
+            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.containerView, "translationY", fromY, toY);
+            animator.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        }
     }
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
@@ -269,14 +288,17 @@ public class TasksListAdapter extends BaseAdapter {
         return mData;
     }
 
-    public void update(List<GsonTask> data, boolean resetCells, boolean animateReset) {
+    public void update(List<GsonTask> data, boolean animateRefresh) {
         // Check for thread safety.
         ThreadUtils.checkOnMainThread();
 
         // Update data and flags.
         mData = data;
-        mResetCells = resetCells;
-        mAnimateReset = animateReset;
+        mAnimateRefresh = animateRefresh;
+        mAnimateOld = false;
+
+        // Remove old tasks if needed.
+        handleOldTasks();
 
         // Refresh adapter.
         notifyDataSetChanged();
@@ -288,12 +310,65 @@ public class TasksListAdapter extends BaseAdapter {
     private void checkEmpty() {
         // HACK: This is a workaround to notify the activity through the fragment.
         if (mListContentsListener != null) {
-            if (mData.size() > 0) {
-                mListContentsListener.onNotEmpty(mSection);
-            } else {
+            if (mData.isEmpty()) {
                 mListContentsListener.onEmpty(mSection);
+            } else {
+                mListContentsListener.onNotEmpty(mSection);
             }
         }
+    }
+
+    public void showOld(List<GsonTask> data) {
+        // Check for thread safety.
+        ThreadUtils.checkOnMainThread();
+
+        // Update data and flags.
+        mData = data;
+        mIsShowingOld = true;
+        mAnimateOld = true;
+
+        // Refresh adapter.
+        notifyDataSetChanged();
+    }
+
+    public void hideOld() {
+        // Reset flag.
+        mIsShowingOld = false;
+    }
+
+    public boolean isShowingOld() {
+        return mIsShowingOld;
+    }
+
+    private void handleOldTasks() {
+        // Check if old tasks should be displayed.
+        if (!mIsShowingOld) {
+            List<GsonTask> oldTasks = new ArrayList<GsonTask>();
+
+            for (GsonTask task : (List<GsonTask>) mData) {
+                // Check if it's an old task.
+                if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+                    // Add it to the removal list.
+                    oldTasks.add(task);
+                }
+            }
+
+            // Remove old tasks from view.
+            ((List<GsonTask>) mData).removeAll(oldTasks);
+        }
+    }
+
+    private int getFirstOldPosition() {
+        int position;
+        for (position = 0; position < mData.size(); position++) {
+            GsonTask task = ((List<GsonTask>) mData).get(position);
+            // Check if completion date is older than today.
+            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+                // First old task position found.
+                break;
+            }
+        }
+        return position;
     }
 
     private static class TaskHolder {

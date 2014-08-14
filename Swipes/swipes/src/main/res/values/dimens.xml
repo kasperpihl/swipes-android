@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Tasks list -->
     <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_height_large">80dp</dimen>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="date_stamp_margin">16dp</dimen>
-    <dimen name="date_stamp_margin_top">40dp</dimen>
-    <dimen name="social_buttons_diameter">36dp</dimen>
     <dimen name="task_circles_size">20dp</dimen>
     <dimen name="task_properties_margin">5dp</dimen>
     <dimen name="task_icons_size">11sp</dimen>
     <dimen name="task_icons_margin_top">5dp</dimen>
     <dimen name="add_task_button_size">40sp</dimen>
+
+    <!-- Empty view -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="date_stamp_margin">16dp</dimen>
+    <dimen name="date_stamp_margin_top">40dp</dimen>
+    <dimen name="social_buttons_diameter">36dp</dimen>
+
+    <!-- Edit -->
     <dimen name="action_buttons_size">23sp</dimen>
     <dimen name="edit_bar_margin">12dp</dimen>
+    <dimen name="edit_task_title_max_height">130dp</dimen>
+
+    <!-- Scheduler -->
     <dimen name="schedule_options_icon_size">40sp</dimen>
     <dimen name="schedule_options_margin_vertical">20dp</dimen>
     <dimen name="schedule_options_margin_middle">15dp</dimen>
     <dimen name="schedule_options_margin_sides">10dp</dimen>
-    <dimen name="edit_task_title_max_height">130dp</dimen>
+
+    <!-- Done -->
+    <dimen name="done_footer_margin_bottom">65dp</dimen>
+    <dimen name="done_buttons_height">35dp</dimen>
+    <dimen name="done_buttons_width">135dp</dimen>
+    <dimen name="done_buttons_margin_vertical">12dp</dimen>
+    <dimen name="done_buttons_margin_sides">12dp</dimen>
+    <dimen name="done_buttons_margin_middle">9dp</dimen>
 
 </resources>

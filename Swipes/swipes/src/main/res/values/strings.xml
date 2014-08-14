@@ -64,6 +64,12 @@
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="add_task_hint">Add a new task</string>
+    <string name="show_old">Show old tasks</string>
+    <string name="clear_old">Clear old tasks</string>
+    <string name="clear_old_dialog_title">Are you sure?</string>
+    <string name="clear_old_dialog_text">Deleting old completed tasks can\'t be undone</string>
+    <string name="clear_old_dialog_yes">Delete them</string>
+    <string name="clear_old_dialog_no">Cancel</string>
 
     <!-- Scheduler -->
     <string name="date_today">Today&#160;</string>

@@ -52,7 +52,7 @@ public class DateUtils {
     /**
      * Returns date formatted as "Today", "Tomorrow" or a regular date.
      *
-     * @param rawDate    Date to format.
+     * @param rawDate Date to format.
      * @param context Context instance.
      * @return Formatted date.
      * @throws ParseException When the provided date can't be parsed.
@@ -74,6 +74,29 @@ public class DateUtils {
         } else {
             return date;
         }
+    }
+
+    /**
+     * Checks if the provided date is older than today.
+     *
+     * @param date Date to check.
+     * @return True if date is older than today.
+     */
+    public static boolean isOlderThanToday(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(date);
+        Calendar currentDate = Calendar.getInstance();
+
+        int providedYear = providedDate.get(Calendar.YEAR);
+        int currentYear = currentDate.get(Calendar.YEAR);
+        int providedDay = providedDate.get(Calendar.DAY_OF_YEAR);
+        int currentDay = currentDate.get(Calendar.DAY_OF_YEAR);
+
+        return providedYear <= currentYear && (providedDay < currentDay || providedYear < currentYear);
     }
 
 }

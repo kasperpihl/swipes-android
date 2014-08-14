@@ -21,6 +21,11 @@ public class Constants {
     public static final int ANIMATION_DURATION_SHORT = 200;
 
     /**
+     * Medium animation duration.
+     */
+    public static final int ANIMATION_DURATION_MEDIUM = 300;
+
+    /**
      * Intent extra for task tempId.
      */
     public static final String EXTRA_TASK_TEMP_ID = "TASK_TEMP_ID";

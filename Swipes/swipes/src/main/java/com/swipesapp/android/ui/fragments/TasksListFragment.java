@@ -1,5 +1,7 @@
 package com.swipesapp.android.ui.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -28,10 +31,13 @@ import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.ui.view.TransparentButton;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Themes;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +45,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Fragment for the list of tasks.
@@ -81,6 +88,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
+
+    @InjectView(R.id.footer_view)
+    LinearLayout mFooterView;
+
+    @InjectView(R.id.button_show_old)
+    TransparentButton mButtonShowOld;
+
+    @InjectView(R.id.button_clear_old)
+    TransparentButton mButtonClearOld;
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
@@ -235,11 +251,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Setup empty view.
         mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
+
+        // Customize button colors.
+        customizeDoneButtons();
+    }
+
+    private void customizeDoneButtons() {
+        int background = ThemeUtils.getCurrentTheme(getActivity()) == Themes.LIGHT ? R.drawable.transparent_button_selector_light : R.drawable.transparent_button_selector_dark;
+        int color = ThemeUtils.getCurrentTheme(getActivity()) == Themes.LIGHT ? R.color.button_text_color_selector_light : R.color.button_text_color_selector_dark;
+
+        mButtonShowOld.setBackgroundResource(background);
+        mButtonShowOld.setTextColor(getResources().getColorStateList(color));
+
+        mButtonClearOld.setBackgroundResource(background);
+        mButtonClearOld.setTextColor(getResources().getColorStateList(color));
     }
 
     private void configureLaterListView(TasksListAdapter adapter) {
         // Setup content.
-        mLaterListView.setContentList(adapter.getData());
         mLaterListView.setAdapter(adapter);
         mLaterListView.setSwipeListViewListener(mSwipeListener);
 
@@ -292,7 +321,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void configureDoneListView(TasksListAdapter adapter) {
         // Setup content.
-        mDoneListView.setContentList(adapter.getData());
         mDoneListView.setAdapter(adapter);
         mDoneListView.setSwipeListViewListener(mSwipeListener);
 
@@ -325,18 +353,19 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         switch (mSection) {
             case LATER:
                 tasks = mTasksService.loadScheduledTasks();
-                mLaterListView.setContentList(tasks);
-                mLaterAdapter.update(tasks, true, animateRefresh);
+                mLaterAdapter.update(tasks, animateRefresh);
                 break;
             case FOCUS:
                 tasks = mTasksService.loadFocusedTasks();
                 mFocusListView.setContentList(tasks);
-                mFocusAdapter.update(tasks, true, animateRefresh);
+                mFocusAdapter.update(tasks, animateRefresh);
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
-                mDoneListView.setContentList(tasks);
-                mDoneAdapter.update(tasks, true, animateRefresh);
+                mDoneAdapter.update(tasks, animateRefresh);
+
+                // Hide or show buttons.
+                handleDoneButtons();
                 break;
         }
     }
@@ -363,6 +392,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Perform refresh.
                     refreshTaskList(false);
                 } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
+                    // Hide old tasks in the done section.
+                    if (mSection == Sections.DONE) mDoneAdapter.hideOld();
+
                     // Clear selected tasks and perform refresh.
                     mSelectedTasks.clear();
                     refreshTaskList(false);
@@ -515,22 +547,79 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
+    private void handleDoneButtons() {
+        if (isCurrentSection()) {
+            // Load date of the oldest completed task.
+            List<GsonTask> completedTasks = mTasksService.loadCompletedTasks();
+            GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
+            Date completionDate = oldestTask != null ? oldestTask.getCompletionDate() : null;
+
+            // Only display buttons in the done section and when the oldest completed task is older than today.
+            if (mSection == Sections.DONE && !mDoneAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
+                mFooterView.setVisibility(View.VISIBLE);
+                mFooterView.setAlpha(1f);
+            } else {
+                mFooterView.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void deleteSelectedTasks() {
         // Display confirmation dialog.
         new AccentAlertDialog.Builder(getActivity())
                 .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, mSelectedTasks.size(), mSelectedTasks.size()))
                 .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, mSelectedTasks.size()))
                 .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+
                     public void onClick(DialogInterface dialog, int which) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(mSelectedTasks);
                     }
                 })
-                .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.dialog_no), null)
+                .create()
+                .show();
+    }
+
+    @OnClick(R.id.button_show_old)
+    protected void showOldTasks() {
+        // Animate footer view.
+        mFooterView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Hide buttons.
+                mFooterView.setVisibility(View.GONE);
+                // Show old tasks.
+                mDoneAdapter.showOld(mTasksService.loadCompletedTasks());
+            }
+        });
+    }
+
+    @OnClick(R.id.button_clear_old)
+    protected void clearOldTasks() {
+        // Display confirmation dialog.
+        new AccentAlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.clear_old_dialog_title))
+                .setMessage(getString(R.string.clear_old_dialog_text))
+                .setPositiveButton(getString(R.string.clear_old_dialog_yes), new DialogInterface.OnClickListener() {
+
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing.
+                        // List of old tasks to delete.
+                        List<GsonTask> oldTasks = new ArrayList<GsonTask>();
+
+                        for (GsonTask task : mTasksService.loadCompletedTasks()) {
+                            // Check if it's an old task.
+                            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+                                // Add to the removal list.
+                                oldTasks.add(task);
+                            }
+                        }
+
+                        // Proceed with delete.
+                        mTasksService.deleteTasks(oldTasks);
                     }
                 })
+                .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
                 .create()
                 .show();
     }

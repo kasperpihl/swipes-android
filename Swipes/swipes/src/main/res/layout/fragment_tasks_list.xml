@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
+    <!-- List view area -->
     <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:divider="@null"
         android:dividerHeight="0dp"
         swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
@@ -20,6 +24,47 @@
     <ViewStub
         android:id="@android:id/empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout="@layout/tasks_focus_empty_view" />
-</FrameLayout>
+
+    <!-- Buttons area -->
+    <LinearLayout
+        android:id="@+id/footer_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/done_footer_margin_bottom"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.swipesapp.android.ui.view.TransparentButton
+            android:id="@+id/button_show_old"
+            style="?android:textAppearanceSmall"
+            android:layout_width="@dimen/done_buttons_width"
+            android:layout_height="@dimen/done_button_height"
+            android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
+            android:layout_marginLeft="@dimen/done_buttons_margin_sides"
+            android:layout_marginRight="@dimen/done_buttons_margin_middle"
+            android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+            android:background="@drawable/transparent_button_selector_light"
+            android:button="@null"
+            android:text="@string/show_old"
+            android:textColor="@color/button_text_color_selector_light" />
+
+        <com.swipesapp.android.ui.view.TransparentButton
+            android:id="@+id/button_clear_old"
+            style="?android:textAppearanceSmall"
+            android:layout_width="@dimen/done_buttons_width"
+            android:layout_height="@dimen/done_button_height"
+            android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
+            android:layout_marginLeft="@dimen/done_buttons_margin_middle"
+            android:layout_marginRight="@dimen/done_buttons_margin_sides"
+            android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+            android:background="@drawable/transparent_button_selector_light"
+            android:button="@null"
+            android:text="@string/clear_old"
+            android:textColor="@color/button_text_color_selector_light" />
+    </LinearLayout>
+
+</LinearLayout>

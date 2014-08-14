@@ -239,7 +239,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private void customizeTagButton() {
         int background = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.drawable.tag_selector_light : R.drawable.tag_selector_dark;
-        int color = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.color.text_color_selector_light : R.color.text_color_selector_dark;
+        int color = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.color.tag_text_color_selector_light : R.color.tag_text_color_selector_dark;
         mButtonAddTaskTag.setBackgroundResource(background);
         mButtonAddTaskTag.setTextColor(getResources().getColorStateList(color));
     }
