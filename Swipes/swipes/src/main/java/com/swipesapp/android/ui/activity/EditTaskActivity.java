@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
-import java.text.ParseException;
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
@@ -63,8 +61,6 @@ public class EditTaskActivity extends AccentActivity {
     SwipesTextView mNotesIcon;
     @InjectView(R.id.edit_task_notes)
     TextView mNotes;
-
-    private static final String LOG_TAG = EditTaskActivity.class.getSimpleName();
 
     private TasksService mTasksService;
 
@@ -149,14 +145,7 @@ public class EditTaskActivity extends AccentActivity {
 
         mPriority.setChecked(mTask.getPriority() == 1);
 
-        String scheduleDate = "";
-        try {
-            scheduleDate = DateUtils.formatToTodayOrTomorrow(mTask.getSchedule(), this);
-        } catch (ParseException e) {
-            Log.e(LOG_TAG, "Error parsing date", e);
-        }
-
-        mSchedule.setText(scheduleDate);
+        mSchedule.setText(DateUtils.formatToRecent(mTask.getSchedule(), this));
 
         mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
 

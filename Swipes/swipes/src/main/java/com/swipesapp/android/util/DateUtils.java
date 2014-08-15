@@ -5,7 +5,6 @@ import android.text.format.DateFormat;
 
 import com.swipesapp.android.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +15,18 @@ import java.util.Date;
  * @author Felipe Bari
  */
 public class DateUtils {
+
+    // Time format 24-hour.
+    public static final String TIME_FORMAT_24 = "HH:mm";
+
+    // Time format AM/PM.
+    public static final String TIME_FORMAT_A = "hh:mm a";
+
+    // Date format 24-hour.
+    public static final String DATE_FORMAT_24 = "MMM d, HH:mm";
+
+    // Date format AM/PM.
+    public static final String DATE_FORMAT_A = "MMM d, hh:mm a";
 
     /**
      * Returns a Calendar object for the given date.
@@ -38,41 +49,68 @@ public class DateUtils {
      * @return Formatted time.
      */
     public static String getTimeAsString(Context context, Date date) {
-        String time = null;
+        String time;
 
         if (DateFormat.is24HourFormat(context)) {
-            time = new SimpleDateFormat("HH:mm").format(date);
+            time = new SimpleDateFormat(TIME_FORMAT_24).format(date);
         } else {
-            time = new SimpleDateFormat("hh:mm a").format(date);
+            time = new SimpleDateFormat(TIME_FORMAT_A).format(date);
         }
 
         return time;
     }
 
     /**
-     * Returns date formatted as "Today", "Tomorrow" or a regular date.
+     * Returns a formatted date. Format will be "MMM d, hh:mm" or "MMM d, hh:mm a",
+     * depending on the device's 24-hour format setting.
+     *
+     * @param date Desired date.
+     * @return Formatted date.
+     */
+    public static String getDateAsString(Context context, Date date) {
+        String time;
+
+        if (DateFormat.is24HourFormat(context)) {
+            time = new SimpleDateFormat(DATE_FORMAT_24).format(date);
+        } else {
+            time = new SimpleDateFormat(DATE_FORMAT_A).format(date);
+        }
+
+        return time;
+    }
+
+    /**
+     * Returns date formatted as "Today", "Tomorrow", "Yesterday" or a regular date.
      *
      * @param rawDate Date to format.
      * @param context Context instance.
      * @return Formatted date.
-     * @throws ParseException When the provided date can't be parsed.
      */
-    public static String formatToTodayOrTomorrow(Date rawDate, Context context) throws ParseException {
-        String date = new SimpleDateFormat("EEE hh:mma MMM d, yyyy").format(rawDate);
-        Date dateTime = new SimpleDateFormat("EEE hh:mma MMM d, yyyy").parse(date);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dateTime);
+    public static String formatToRecent(Date rawDate, Context context) {
+        // Prepare given date.
+        String date = getDateAsString(context, rawDate);
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(rawDate);
+
+        // Calendars for today, tomorrow and yesterday.
         Calendar today = Calendar.getInstance();
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DATE, 1);
-        java.text.DateFormat timeFormatter = new SimpleDateFormat("hh:mma");
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, -1);
 
-        if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) && calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
-            return context.getString(R.string.date_today) + timeFormatter.format(dateTime);
-        } else if (calendar.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) && calendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
-            return context.getString(R.string.date_tomorrow) + timeFormatter.format(dateTime);
+        if (providedDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+            // Date is today.
+            return context.getString(R.string.date_today) + getTimeAsString(context, rawDate);
+        } else if (providedDate.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
+            // Date is tomorrow.
+            return context.getString(R.string.date_tomorrow) + getTimeAsString(context, rawDate);
+        } else if (providedDate.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
+            // Date was yesterday.
+            return context.getString(R.string.date_yesterday) + getTimeAsString(context, rawDate);
         } else {
-            return date;
+            // Date is some other day. Capitalize first letter.
+            return Character.toUpperCase(date.charAt(0)) + date.substring(1);
         }
     }
 
