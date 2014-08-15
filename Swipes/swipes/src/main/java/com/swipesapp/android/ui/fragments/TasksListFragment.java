@@ -189,8 +189,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private boolean isCurrentSection() {
         // Retrieve current section being displayed and compare with this fragment's section.
-        Sections currentSection = ((TasksActivity) getActivity()).getCurrentSection();
-        return mSection == currentSection;
+        return mSection == TasksActivity.getCurrentSection();
     }
 
     private void setupLaterView(View rootView) {

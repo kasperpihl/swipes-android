@@ -113,7 +113,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private Sections mCurrentSection;
+    private static Sections sCurrentSection;
 
     private static Typeface sTypeface;
 
@@ -163,7 +163,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Default to second item, index starts at zero
         mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-        mCurrentSection = Sections.FOCUS;
+        sCurrentSection = Sections.FOCUS;
 
         // HACK: Flip add task confirm button, so the arrow points to the right.
         mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
@@ -208,7 +208,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 mButtonAddTask.setVisibility(View.VISIBLE);
             }
 
-            mCurrentSection = Sections.getSectionByNumber(position);
+            sCurrentSection = Sections.getSectionByNumber(position);
 
             // Notify listeners that current tab has changed.
             TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TAB_CHANGED);
@@ -222,8 +222,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
      *
      * @return Current section.
      */
-    public Sections getCurrentSection() {
-        return mCurrentSection;
+    public static Sections getCurrentSection() {
+        return sCurrentSection;
     }
 
     private void customizeScroller() {
@@ -272,7 +272,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         int textColor = ThemeUtils.getCurrentThemeTextColor(this);
 
         // Reset tab colors.
-        customizeTabColors(textColor, ThemeUtils.getCurrentThemeDividerColor(this), mCurrentSection.getSectionNumber());
+        customizeTabColors(textColor, ThemeUtils.getCurrentThemeDividerColor(this), sCurrentSection.getSectionNumber());
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);
@@ -289,7 +289,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         int white = getResources().getColor(R.color.white);
 
         // Change tab colors, otherwise they look misplaced against the image background.
-        customizeTabColors(white, getResources().getColor(R.color.empty_divider), mCurrentSection.getSectionNumber());
+        customizeTabColors(white, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
 
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(white);
@@ -399,7 +399,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
         // Go to main fragment if needed.
-        if (mCurrentSection != Sections.FOCUS) {
+        if (sCurrentSection != Sections.FOCUS) {
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
@@ -540,7 +540,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onEmpty(Sections section) {
-        if (section == mCurrentSection && section == Sections.FOCUS && !mIsEmptyBackground) {
+        if (section == sCurrentSection && section == Sections.FOCUS && !mIsEmptyBackground) {
             setEmptyBackground();
             mIsEmptyBackground = true;
         }
@@ -549,7 +549,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onNotEmpty(Sections section) {
-        if (section == mCurrentSection && section == Sections.FOCUS && mIsEmptyBackground) {
+        if (section == sCurrentSection && section == Sections.FOCUS && mIsEmptyBackground) {
             clearEmptyBackground();
             mIsEmptyBackground = false;
         }
