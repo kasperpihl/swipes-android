@@ -137,7 +137,7 @@
                 android:layout_toRightOf="@id/button_add_task_priority"
                 android:hint="@string/add_task_hint"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:textCursorDrawable="@null" />
         </RelativeLayout>
 

@@ -34,7 +34,7 @@
             android:background="@color/transparent"
             android:focusableInTouchMode="true"
             android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textCapSentences"
             android:maxHeight="@dimen/edit_task_title_max_height"
             android:scrollHorizontally="false" />
     </RelativeLayout>
