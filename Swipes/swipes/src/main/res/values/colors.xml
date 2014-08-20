@@ -15,5 +15,10 @@
     <item name="empty_divider" type="color">#e8e8e8</item>
     <item name="light_theme_accent_color" type="color">#e8e8e8</item>
     <item name="dark_theme_accent_color" type="color">#4e5156</item>
+    <item name="light_snooze_blur_alpha_color" type="color">#7ff8f8fa</item>
+    <item name="dark_snooze_blur_alpha_color" type="color">#7f313438</item>
+    <item name="snooze_background_color" type="color">#1b1e23</item>
+    <item name="light_text_hint_color" type="color">#747778</item>
+    <item name="dark_text_hint_color" type="color">#a1a3a5</item>
 
 </resources>

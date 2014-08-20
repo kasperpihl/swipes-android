@@ -5,8 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -126,6 +127,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     // Used by animator to store tags container position.
     private float mTagsTranslationY;
+
+    public static BitmapDrawable sBlurDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,26 +279,17 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);
-        mButtonConfirmAddTask.setTextColor(textColor);
-        mEditTextAddNewTask.setTextColor(textColor);
-        mEditTextAddNewTask.setBackgroundResource(ThemeUtils.getCurrentThemeEditTextBackground(this));
     }
 
     private void setEmptyBackground() {
         // Change background.
         mBackgroundTransition.startTransition(Constants.ANIMATION_DURATION);
 
-        // Load white color.
-        int white = getResources().getColor(R.color.white);
-
         // Change tab colors, otherwise they look misplaced against the image background.
-        customizeTabColors(white, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
+        customizeTabColors(Color.WHITE, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
 
         // Change buttons and text colors to improve visibility.
-        mButtonAddTask.setTextColor(white);
-        mButtonConfirmAddTask.setTextColor(white);
-        mEditTextAddNewTask.setTextColor(white);
-        mEditTextAddNewTask.setBackgroundResource(R.drawable.dark_theme_edit_text_background);
+        mButtonAddTask.setTextColor(Color.WHITE);
     }
 
     /**
@@ -404,8 +398,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
 
         // Blur background.
-        Bitmap blurBitmap = BlurBuilder.blur(mActivityMainLayout);
-        mBlurBackground.setImageBitmap(blurBitmap);
+        updateBlurDrawable(0);
+        mBlurBackground.setImageDrawable(sBlurDrawable);
 
         // Fade in the blur background.
         mBlurBackground.setAlpha(0f);
@@ -563,6 +557,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     public void shareOnTwitter(View v) {
         // TODO: Call sharing flow.
         Toast.makeText(this, "Twitter share coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    public void updateBlurDrawable(int alphaColor) {
+        sBlurDrawable = BlurBuilder.blur(this, mActivityMainLayout, alphaColor);
+    }
+
+    public static BitmapDrawable getBlurDrawable() {
+        return sBlurDrawable;
     }
 
 }

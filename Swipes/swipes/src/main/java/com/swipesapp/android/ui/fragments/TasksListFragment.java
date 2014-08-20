@@ -37,7 +37,6 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
-import com.swipesapp.android.values.Themes;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -256,8 +255,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void customizeDoneButtons() {
-        int background = ThemeUtils.getCurrentTheme(getActivity()) == Themes.LIGHT ? R.drawable.transparent_button_selector_light : R.drawable.transparent_button_selector_dark;
-        int color = ThemeUtils.getCurrentTheme(getActivity()) == Themes.LIGHT ? R.color.button_text_color_selector_light : R.color.button_text_color_selector_dark;
+        int background = ThemeUtils.isLightTheme(getActivity()) ? R.drawable.transparent_button_selector_light : R.drawable.transparent_button_selector_dark;
+        int color = ThemeUtils.isLightTheme(getActivity()) ? R.color.button_text_color_selector_light : R.color.button_text_color_selector_dark;
 
         mButtonShowOld.setBackgroundResource(background);
         mButtonShowOld.setTextColor(getResources().getColorStateList(color));
@@ -624,9 +623,16 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void openSnoozeSelector(GsonTask task) {
+        // Call snooze activity.
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_TEMP_ID, task.getTempId());
+        intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_TASKS_LIST);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+
+        // Update blurred background and override animation.
+        int alphaColor = ThemeUtils.getSnoozeBlurAlphaColor(getActivity());
+        ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
+        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     // TODO: Remove this when scheduler service is ready.

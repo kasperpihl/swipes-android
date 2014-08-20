@@ -1,10 +1,14 @@
 package com.swipesapp.android.ui.activity;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +21,8 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
-import com.swipesapp.android.values.Themes;
 
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
 import butterknife.ButterKnife;
@@ -27,6 +31,9 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class SnoozeActivity extends FragmentActivity {
+
+    @InjectView(R.id.snooze_main_layout)
+    LinearLayout mLayout;
 
     @InjectView(R.id.snooze_view)
     LinearLayout mView;
@@ -85,6 +92,9 @@ public class SnoozeActivity extends FragmentActivity {
     @InjectView(R.id.snooze_pick_date_title)
     TextView mPickDateTitle;
 
+    @InjectView(R.id.snooze_adjust_hint)
+    TextView mAdjustHint;
+
     private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
 
     private TasksService mTasksService;
@@ -93,14 +103,18 @@ public class SnoozeActivity extends FragmentActivity {
 
     private GsonTask mTask;
 
+    private WeakReference<Context> mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentDialogThemeResource(this));
+        setTheme(ThemeUtils.getCurrentThemeResource(this));
         setContentView(R.layout.activity_snooze);
         ButterKnife.inject(this);
 
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        getActionBar().hide();
+
+        mContext = new WeakReference<Context>(this);
 
         mTasksService = TasksService.getInstance(this);
 
@@ -109,46 +123,81 @@ public class SnoozeActivity extends FragmentActivity {
         mTask = mTasksService.loadTask(mTempId);
 
         customizeViews();
+
+        blurBackground();
     }
 
     private void customizeViews() {
-        mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+        mView.setBackgroundColor(getResources().getColor(R.color.snooze_background_color));
+
+        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+        mAdjustHint.setTextColor(getResources().getColor(hintColor));
 
         setSelector(mLaterTodayIcon, R.string.schedule_coffee, R.string.schedule_coffee_full);
         mLaterTodayIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mLaterTodayTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mLaterTodayTitle.setTextColor(Color.WHITE);
 
         setSelector(mThisEveningIcon, R.string.schedule_moon, R.string.schedule_moon_full);
         mThisEveningIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisEveningTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mThisEveningTitle.setTextColor(Color.WHITE);
 
         setSelector(mTomorrowIcon, R.string.schedule_sun, R.string.schedule_sun_full);
         mTomorrowIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTomorrowTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTomorrowTitle.setTextColor(Color.WHITE);
 
         setSelector(mTwoDaysIcon, R.string.schedule_logbook, R.string.schedule_logbook_full);
         mTwoDaysIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTwoDaysTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTwoDaysTitle.setTextColor(Color.WHITE);
+        mTwoDaysTitle.setText(getTwoDaysTitle());
 
         setSelector(mThisWeekendIcon, R.string.schedule_glass, R.string.schedule_glass_full);
         mThisWeekendIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisWeekendTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mThisWeekendTitle.setTextColor(Color.WHITE);
 
         setSelector(mNextWeekIcon, R.string.schedule_circle, R.string.schedule_circle_full);
         mNextWeekIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mNextWeekTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mNextWeekTitle.setTextColor(Color.WHITE);
 
 //        setSelector(mUnspecifiedIcon, R.string.schedule_cloud, R.string.schedule_cloud_full);
 //        mUnspecifiedIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-//        mUnspecifiedTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+//        mUnspecifiedTitle.setTextColor(Color.WHITE);
 
         setSelector(mAtLocationIcon, R.string.schedule_location, R.string.schedule_location_full);
         mAtLocationIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mAtLocationTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mAtLocationTitle.setTextColor(Color.WHITE);
 
         setSelector(mPickDateIcon, R.string.schedule_calendar, R.string.schedule_calendar_full);
         mPickDateIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mPickDateTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mPickDateTitle.setTextColor(Color.WHITE);
+    }
+
+    private void blurBackground() {
+        // Make activity window transparent.
+        getWindow().setBackgroundDrawable(new ColorDrawable(0));
+
+        // Wait for main layout to be drawn.
+        ViewTreeObserver observer = mLayout.getViewTreeObserver();
+        if (observer.isAlive()) {
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                    BitmapDrawable blurDrawable = null;
+                    String caller = getIntent().getStringExtra(Constants.EXTRA_CALLER_NAME);
+
+                    // Update blur based on caller.
+                    if (caller.equals(Constants.CALLER_TASKS_LIST)) {
+                        blurDrawable = TasksActivity.getBlurDrawable();
+                    } else if (caller.equals(Constants.CALLER_EDIT_TASKS)) {
+                        blurDrawable = EditTaskActivity.getBlurDrawable();
+                    }
+
+                    // Apply blurred background.
+                    mLayout.setBackgroundDrawable(blurDrawable);
+                }
+            });
+        }
     }
 
     public void setSelector(final SwipesTextView icon, final int resource, final int resourceFull) {
@@ -169,6 +218,16 @@ public class SnoozeActivity extends FragmentActivity {
                 return false;
             }
         });
+    }
+
+    @OnClick(R.id.snooze_main_layout)
+    protected void cancel() {
+        finish();
+    }
+
+    @OnClick(R.id.snooze_view)
+    protected void ignore() {
+        // Do nothing.
     }
 
     @OnClick(R.id.snooze_later_today)

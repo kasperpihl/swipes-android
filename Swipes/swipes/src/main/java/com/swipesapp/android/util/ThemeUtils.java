@@ -29,6 +29,14 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
+     * @return True if the current theme is the light theme.
+     */
+    public static boolean isLightTheme(Context context) {
+        return getCurrentTheme(context) == Themes.LIGHT;
+    }
+
+    /**
+     * @param context Context to use.
      * @return Current theme's resource file.
      */
     public static int getCurrentThemeResource(Context context) {
@@ -177,6 +185,15 @@ public class ThemeUtils {
             default:
                 return R.drawable.background_transition_light;
         }
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's blur alpha color.
+     */
+    public static int getSnoozeBlurAlphaColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_snooze_blur_alpha_color : R.color.dark_snooze_blur_alpha_color;
+        return context.getResources().getColor(color);
     }
 
 }

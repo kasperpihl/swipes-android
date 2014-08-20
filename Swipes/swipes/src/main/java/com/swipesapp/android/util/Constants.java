@@ -40,4 +40,19 @@ public class Constants {
      */
     public static final int EDIT_TASK_REQUEST_CODE = 2;
 
+    /**
+     * Intent extra for caller identifier.
+     */
+    public static final String EXTRA_CALLER_NAME = "CALLER_NAME";
+
+    /**
+     * Caller identifier for tasks list.
+     */
+    public static final String CALLER_TASKS_LIST = "TASKS_LIST";
+
+    /**
+     * Caller identifier for edit tasks.
+     */
+    public static final String CALLER_EDIT_TASKS = "EDIT_TASKS";
+
 }

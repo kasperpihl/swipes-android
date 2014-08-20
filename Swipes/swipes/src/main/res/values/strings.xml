@@ -84,6 +84,17 @@
     <string name="snooze_unspecified">Unspecified</string>
     <string name="snooze_at_location">At Location</string>
     <string name="snooze_pick_date">Pick Date</string>
+    <string name="snooze_done_text">Snooze</string>
+    <string name="snooze_adjust_hint">Hold down to adjust time</string>
+
+    <!-- Calendar -->
+    <string name="sunday_full">Sunday</string>
+    <string name="monday_full">Monday</string>
+    <string name="tuesday_full">Tuesday</string>
+    <string name="wednesday_full">Wednesday</string>
+    <string name="thursday_full">Thursday</string>
+    <string name="friday_full">Friday</string>
+    <string name="saturday_full">Saturday</string>
 
     <!-- Edit task -->
     <string name="edit_task_repeat_default_mode">Never repeat</string>

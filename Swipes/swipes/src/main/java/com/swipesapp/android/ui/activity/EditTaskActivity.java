@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
@@ -67,6 +69,8 @@ public class EditTaskActivity extends AccentActivity {
     private String mTempId;
 
     private GsonTask mTask;
+
+    public static BitmapDrawable sBlurDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,9 +235,23 @@ public class EditTaskActivity extends AccentActivity {
     }
 
     private void openSnoozeSelector() {
+        // Call snooze activity.
         Intent intent = new Intent(this, SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mTask.getTempId());
+        intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_EDIT_TASKS);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+
+        // Update blurred background and override animation.
+        updateBlurDrawable();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    private void updateBlurDrawable() {
+        sBlurDrawable = BlurBuilder.blur(this, getWindow().getDecorView(), ThemeUtils.getSnoozeBlurAlphaColor(this));
+    }
+
+    public static BitmapDrawable getBlurDrawable() {
+        return sBlurDrawable;
     }
 
 }

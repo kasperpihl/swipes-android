@@ -26,8 +26,9 @@
     <!-- Scheduler -->
     <dimen name="schedule_options_icon_size">40sp</dimen>
     <dimen name="schedule_options_margin_vertical">20dp</dimen>
-    <dimen name="schedule_options_margin_middle">15dp</dimen>
+    <dimen name="schedule_options_margin_middle">10dp</dimen>
     <dimen name="schedule_options_margin_sides">10dp</dimen>
+    <dimen name="schedule_adjust_hint_margin_bottom">15dp</dimen>
 
     <!-- Done -->
     <dimen name="done_footer_margin_bottom">65dp</dimen>
