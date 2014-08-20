@@ -19,6 +19,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 
@@ -234,7 +235,7 @@ public class SnoozeActivity extends FragmentActivity {
     protected void laterToday() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        final int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
 
         applyNextDayTreatment(snooze);
@@ -244,7 +245,14 @@ public class SnoozeActivity extends FragmentActivity {
 
     @OnLongClick(R.id.snooze_later_today)
     protected boolean laterTodayAdjust() {
-        fakeSnoozeTask();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+        int currentMinute = snooze.get(Calendar.MINUTE);
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, laterToday, currentMinute);
+
         return true;
     }
 
@@ -262,7 +270,12 @@ public class SnoozeActivity extends FragmentActivity {
 
     @OnLongClick(R.id.snooze_this_evening)
     protected boolean thisEveningAdjust() {
-        fakeSnoozeTask();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, 19, 0);
+
         return true;
     }
 
@@ -279,40 +292,90 @@ public class SnoozeActivity extends FragmentActivity {
 
     @OnLongClick(R.id.snooze_tomorrow)
     protected boolean tomorrowAdjust() {
-        fakeSnoozeTask();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, 9, 0);
+
         return true;
     }
 
     @OnClick(R.id.snooze_two_days)
     protected void twoDays() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
+        snooze.set(Calendar.HOUR_OF_DAY, 9);
+        snooze.set(Calendar.MINUTE, 0);
+
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_two_days)
     protected boolean twoDaysAdjust() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, 9, 0);
+
         return true;
     }
 
     @OnClick(R.id.snooze_this_weekend)
     protected void thisWeekend() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        snooze.set(Calendar.HOUR_OF_DAY, 9);
+        snooze.set(Calendar.MINUTE, 0);
+
+        applyNextWeekTreatment(snooze);
+
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_this_weekend)
     protected boolean thisWeekendAdjust() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        applyNextWeekTreatment(snooze);
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, 9, 0);
+
         return true;
     }
 
     @OnClick(R.id.snooze_next_week)
     protected void nextWeek() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        snooze.set(Calendar.HOUR_OF_DAY, 9);
+        snooze.set(Calendar.MINUTE, 0);
+
+        applyNextWeekTreatment(snooze);
+
+        performChanges(snooze);
     }
 
     @OnLongClick(R.id.snooze_next_week)
     protected boolean nextWeekAdjust() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Set snooze time.
+        Calendar snooze = Calendar.getInstance();
+        snooze.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        applyNextWeekTreatment(snooze);
+
+        // Show time picker.
+        adjustSnoozeTime(snooze, 9, 0);
+
         return true;
     }
 
@@ -349,13 +412,12 @@ public class SnoozeActivity extends FragmentActivity {
         return true;
     }
 
-    private void fakeSnoozeTask() {
+    private void adjustSnoozeTime(final Calendar snooze, int startHour, int startMinute) {
         // Create time picker listener.
         RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(RadialTimePickerDialog dialog, int hourOfDay, int minute) {
-                // Set snooze date.
-                Calendar snooze = Calendar.getInstance();
+                // Set snooze time.
                 snooze.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 snooze.set(Calendar.MINUTE, minute);
 
@@ -365,18 +427,12 @@ public class SnoozeActivity extends FragmentActivity {
             }
         };
 
-        // Get current hour and minutes.
-        Calendar calendar = Calendar.getInstance();
-        final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int currentMinute = calendar.get(Calendar.MINUTE);
-        final int laterToday = currentHour + 3;
-
         // Show time picker dialog.
         RadialTimePickerDialog dialog = new RadialTimePickerDialog();
-        dialog.setStartTime(laterToday, currentMinute);
+        dialog.setStartTime(startHour, startMinute);
         dialog.setOnTimeSetListener(timeSetListener);
-        dialog.setDoneText("Snooze");
-        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
+        dialog.setDoneText(getString(R.string.snooze_done_text));
+        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
         // Mark schedule as not performed.
@@ -401,6 +457,26 @@ public class SnoozeActivity extends FragmentActivity {
             // Add a day to the snooze time.
             snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
         }
+    }
+
+    private void applyNextWeekTreatment(Calendar snooze) {
+        Calendar today = Calendar.getInstance();
+
+        // Check if the selected time should be in the next week.
+        if (snooze.before(today) || snooze.get(Calendar.DAY_OF_WEEK) == today.get(Calendar.DAY_OF_WEEK)) {
+            // Add a week to the snooze time.
+            snooze.setTimeInMillis(snooze.getTimeInMillis() + 604800000L);
+        }
+    }
+
+    private String getTwoDaysTitle() {
+        // Load day of the week two days from now.
+        Calendar now = Calendar.getInstance();
+        int day = now.get(Calendar.DAY_OF_WEEK) + 2;
+        now.set(Calendar.DAY_OF_WEEK, day);
+
+        // Return friendly name for day of the week.
+        return DateUtils.formatDayOfWeek(this, now);
     }
 
 }

@@ -137,4 +137,33 @@ public class DateUtils {
         return providedYear <= currentYear && (providedDay < currentDay || providedYear < currentYear);
     }
 
+    /**
+     * Formats day of the week to a friendly name.
+     *
+     * @param context Context instance.
+     * @param date    Date containing day of the week.
+     * @return Formatted string.
+     */
+    public static String formatDayOfWeek(Context context, Calendar date) {
+        // Load resource string for day of the week.
+        switch (date.get(Calendar.DAY_OF_WEEK)) {
+            case 1:
+                return context.getString(R.string.sunday_full);
+            case 2:
+                return context.getString(R.string.monday_full);
+            case 3:
+                return context.getString(R.string.tuesday_full);
+            case 4:
+                return context.getString(R.string.wednesday_full);
+            case 5:
+                return context.getString(R.string.thursday_full);
+            case 6:
+                return context.getString(R.string.friday_full);
+            case 7:
+                return context.getString(R.string.saturday_full);
+            default:
+                return "";
+        }
+    }
+
 }
