@@ -189,10 +189,19 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's blur alpha color.
+     * @return Current theme's snooze blur alpha color.
      */
     public static int getSnoozeBlurAlphaColor(Context context) {
         int color = isLightTheme(context) ? R.color.light_snooze_blur_alpha_color : R.color.dark_snooze_blur_alpha_color;
+        return context.getResources().getColor(color);
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's tasks blur alpha color.
+     */
+    public static int getTasksBlurAlphaColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_tasks_blur_alpha_color : R.color.dark_tasks_blur_alpha_color;
         return context.getResources().getColor(color);
     }
 

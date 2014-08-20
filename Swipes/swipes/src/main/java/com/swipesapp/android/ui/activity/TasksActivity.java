@@ -184,6 +184,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Set button selectors.
         mButtonAddTask.setSelector(R.string.round_add, R.string.round_add_full);
 
+        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+        mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
+
         // TODO: Remove this when tagging is working. The container is hidden for the first beta.
         mAddTaskTagContainer.setEnabled(false);
         mAddTaskTagContainer.setAlpha(0f);
@@ -398,7 +401,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
 
         // Blur background.
-        updateBlurDrawable(0);
+        updateBlurDrawable(ThemeUtils.getTasksBlurAlphaColor(this));
         mBlurBackground.setImageDrawable(sBlurDrawable);
 
         // Fade in the blur background.

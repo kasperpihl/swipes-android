@@ -20,5 +20,7 @@
     <item name="snooze_background_color" type="color">#1b1e23</item>
     <item name="light_text_hint_color" type="color">#747778</item>
     <item name="dark_text_hint_color" type="color">#a1a3a5</item>
+    <item name="light_tasks_blur_alpha_color" type="color">#b2f8f8fa</item>
+    <item name="dark_tasks_blur_alpha_color" type="color">#b25d5f63</item>
 
 </resources>
