@@ -198,6 +198,16 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        // When adding tasks, get back to the list.
+        if (mAddTaskContainer.getVisibility() == View.VISIBLE) {
+            endAddTaskWorkflow();
+        } else {
+            finish();
+        }
+    }
+
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
