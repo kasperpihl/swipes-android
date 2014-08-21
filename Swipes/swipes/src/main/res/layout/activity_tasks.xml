@@ -129,7 +129,7 @@
                 android:text="@string/left_arrow"
                 android:textSize="25sp" />
 
-            <EditText
+            <com.swipesapp.android.ui.view.ActionEditText
                 android:id="@+id/edit_text_add_task_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

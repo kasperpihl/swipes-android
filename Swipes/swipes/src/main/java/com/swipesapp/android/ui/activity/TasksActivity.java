@@ -21,7 +21,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,7 +34,9 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
+import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
@@ -79,7 +80,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     RelativeLayout mAddTaskContainer;
 
     @InjectView(R.id.edit_text_add_task_content)
-    EditText mEditTextAddNewTask;
+    ActionEditText mEditTextAddNewTask;
 
     @InjectView(R.id.button_confirm_add_task)
     SwipesButton mButtonConfirmAddTask;
@@ -187,6 +188,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
+        mEditTextAddNewTask.setListener(mKeyboardBackListener);
+
         // TODO: Remove this when tagging is working. The container is hidden for the first beta.
         mAddTaskTagContainer.setEnabled(false);
         mAddTaskTagContainer.setAlpha(0f);
@@ -196,16 +199,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     protected void onDestroy() {
         ButterKnife.reset(this);
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        // When adding tasks, get back to the list.
-        if (mAddTaskContainer.getVisibility() == View.VISIBLE) {
-            endAddTaskWorkflow();
-        } else {
-            finish();
-        }
     }
 
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -543,6 +536,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                     return true;
                 }
             };
+
+    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
+        @Override
+        public void onKeyboardBackPressed() {
+            // Back button has been pressed. Get back to the list.
+            endAddTaskWorkflow();
+        }
+    };
 
     // HACK: This is a workaround to change the background entirely.
     @Override
