@@ -113,14 +113,6 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's edit text background resource.
-     */
-    public static int getEditTextBackground(Context context) {
-        return isLightTheme(context) ? R.drawable.light_theme_edit_text_background : R.drawable.dark_theme_edit_text_background;
-    }
-
-    /**
-     * @param context Context to use.
      * @return Current theme's transition background resource.
      */
     public static int getTransitionBackground(Context context) {
