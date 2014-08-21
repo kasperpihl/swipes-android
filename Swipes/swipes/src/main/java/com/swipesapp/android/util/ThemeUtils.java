@@ -39,75 +39,42 @@ public class ThemeUtils {
      * @param context Context to use.
      * @return Current theme's resource file.
      */
-    public static int getCurrentThemeResource(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.style.Light_Theme;
-            case DARK:
-                return R.style.Dark_Theme;
-            default:
-                return R.style.Light_Theme;
-        }
+    public static int getThemeResource(Context context) {
+        return isLightTheme(context) ? R.style.Light_Theme : R.style.Dark_Theme;
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's dialog resource file.
      */
-    public static int getCurrentDialogThemeResource(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.style.Light_Theme_Dialog;
-            case DARK:
-                return R.style.Dark_Theme_Dialog;
-            default:
-                return R.style.Light_Theme_Dialog;
-        }
+    public static int getDialogThemeResource(Context context) {
+        return isLightTheme(context) ? R.style.Light_Theme_Dialog : R.style.Dark_Theme_Dialog;
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's picker resource file.
      */
-    public static int getCurrentPickerThemeResource(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.style.Light_Picker;
-            case DARK:
-                return R.style.Dark_Picker;
-            default:
-                return R.style.Light_Picker;
-        }
+    public static int getPickerThemeResource(Context context) {
+        return isLightTheme(context) ? R.style.Light_Picker : R.style.Dark_Picker;
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's background color.
      */
-    public static int getCurrentThemeBackgroundColor(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return context.getResources().getColor(R.color.light_theme_background);
-            case DARK:
-                return context.getResources().getColor(R.color.dark_theme_background);
-            default:
-                return context.getResources().getColor(R.color.light_theme_background);
-        }
+    public static int getBackgroundColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_theme_background : R.color.dark_theme_background;
+        return context.getResources().getColor(color);
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's text color.
      */
-    public static int getCurrentThemeTextColor(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return context.getResources().getColor(R.color.light_theme_text);
-            case DARK:
-                return context.getResources().getColor(R.color.dark_theme_text);
-            default:
-                return context.getResources().getColor(R.color.light_theme_text);
-        }
+    public static int getTextColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_theme_text : R.color.dark_theme_text;
+        return context.getResources().getColor(color);
     }
 
     /**
@@ -131,60 +98,33 @@ public class ThemeUtils {
      * @param context Context to use.
      * @return Current theme's divider color.
      */
-    public static int getCurrentThemeDividerColor(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return context.getResources().getColor(R.color.light_theme_divider);
-            case DARK:
-                return context.getResources().getColor(R.color.dark_theme_divider);
-            default:
-                return context.getResources().getColor(R.color.light_theme_divider);
-        }
+    public static int getDividerColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_theme_divider : R.color.dark_theme_divider;
+        return context.getResources().getColor(color);
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's tab background resource.
      */
-    public static int getCurrentThemeTabBackground(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.drawable.background_tab_light;
-            case DARK:
-                return R.drawable.background_tab_dark;
-            default:
-                return R.drawable.background_tab_light;
-        }
+    public static int getTabBackground(Context context) {
+        return isLightTheme(context) ? R.drawable.background_tab_light : R.drawable.background_tab_dark;
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's edit text background resource.
      */
-    public static int getCurrentThemeEditTextBackground(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.drawable.light_theme_edit_text_background;
-            case DARK:
-                return R.drawable.dark_theme_edit_text_background;
-            default:
-                return R.drawable.light_theme_edit_text_background;
-        }
+    public static int getEditTextBackground(Context context) {
+        return isLightTheme(context) ? R.drawable.light_theme_edit_text_background : R.drawable.dark_theme_edit_text_background;
     }
 
     /**
      * @param context Context to use.
      * @return Current theme's transition background resource.
      */
-    public static int getCurrentThemeTransitionBackground(Context context) {
-        switch (getCurrentTheme(context)) {
-            case LIGHT:
-                return R.drawable.background_transition_light;
-            case DARK:
-                return R.drawable.background_transition_dark;
-            default:
-                return R.drawable.background_transition_light;
-        }
+    public static int getTransitionBackground(Context context) {
+        return isLightTheme(context) ? R.drawable.background_transition_light : R.drawable.background_transition_dark;
     }
 
     /**

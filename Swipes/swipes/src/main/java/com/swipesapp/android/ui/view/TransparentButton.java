@@ -29,7 +29,7 @@ public class TransparentButton extends Button {
 
     private void init(Context context) {
         mContext = context;
-        this.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext));
+        this.setTextColor(ThemeUtils.getTextColor(mContext));
     }
 
     public void setSelector(final int resource, final int resourceFull) {

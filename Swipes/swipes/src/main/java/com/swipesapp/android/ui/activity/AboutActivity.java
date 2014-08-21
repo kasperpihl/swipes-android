@@ -33,16 +33,16 @@ public class AboutActivity extends AccentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentThemeResource(this));
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_about);
         ButterKnife.inject(this);
 
         getActionBar().setDisplayShowTitleEnabled(false);
 
-        mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
-        mBroughtBy.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mOssLicenses.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mSignatureLine.setBackgroundColor(ThemeUtils.getCurrentThemeDividerColor(this));
+        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+        mBroughtBy.setTextColor(ThemeUtils.getTextColor(this));
+        mOssLicenses.setTextColor(ThemeUtils.getTextColor(this));
+        mSignatureLine.setBackgroundColor(ThemeUtils.getDividerColor(this));
 
         String version = getString(R.string.app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
         mVersion.setText(version);

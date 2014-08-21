@@ -271,9 +271,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mLaterListView.setSwipeListViewListener(mSwipeListener);
 
         // Setup back view.
-        mLaterListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mLaterListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mLaterListView.setLongSwipeEnabled(true);
-        mLaterListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mLaterListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mLaterListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mLaterListView.setBackIconText(R.string.focus_full, R.string.later_full);
         mLaterListView.setLongSwipeBackIconText(R.string.done_full, R.string.later_full);
@@ -301,8 +301,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mFocusListView.setListOrderListener(this);
 
         // Setup back view.
-        mFocusListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
-        mFocusListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mFocusListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
+        mFocusListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mFocusListView.setBackIconText(R.string.done_full, R.string.later_full);
 
         // Setup priority button.
@@ -323,9 +323,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mDoneListView.setSwipeListViewListener(mSwipeListener);
 
         // Setup back view.
-        mDoneListView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mDoneListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mDoneListView.setLongSwipeEnabled(true);
-        mDoneListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getCurrentThemeBackgroundColor(getActivity()));
+        mDoneListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mDoneListView.setLongSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mDoneListView.setBackIconText(0, R.string.focus_full);
         mDoneListView.setLongSwipeBackIconText(0, R.string.later_full);

@@ -12,7 +12,7 @@ public class SnoozeSettingsActivity extends AccentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentThemeResource(this));
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_snooze_settings);
 
         getFragmentManager().beginTransaction().replace(R.id.snooze_settings_content,

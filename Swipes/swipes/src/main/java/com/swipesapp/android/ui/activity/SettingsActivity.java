@@ -29,7 +29,7 @@ public class SettingsActivity extends AccentActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getActivity().setTheme(ThemeUtils.getCurrentThemeResource(getActivity()));
+            getActivity().setTheme(ThemeUtils.getThemeResource(getActivity()));
 
             addPreferencesFromResource(R.xml.settings);
 

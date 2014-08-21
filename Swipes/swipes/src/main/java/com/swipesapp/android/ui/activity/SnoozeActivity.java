@@ -109,7 +109,7 @@ public class SnoozeActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentThemeResource(this));
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_snooze);
         ButterKnife.inject(this);
 

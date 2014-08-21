@@ -197,8 +197,8 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         // Sets colors for cell, matching the current theme.
-        holder.title.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext.get()));
-        holder.frontView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(mContext.get()));
+        holder.title.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+        holder.frontView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {

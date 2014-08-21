@@ -134,7 +134,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentThemeResource(this));
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
         mContext = new WeakReference<Context>(this);
@@ -150,10 +150,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         int dimension = getResources().getDimensionPixelSize(R.dimen.action_bar_icon_size);
         mTabs.setTextSize(dimension);
-        mTabs.setIndicatorColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mTabs.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mTabs.setDividerColor(ThemeUtils.getCurrentThemeDividerColor(this));
-        mTabs.setTabBackground(ThemeUtils.getCurrentThemeTabBackground(this));
+        mTabs.setIndicatorColor(ThemeUtils.getTextColor(this));
+        mTabs.setTextColor(ThemeUtils.getTextColor(this));
+        mTabs.setDividerColor(ThemeUtils.getDividerColor(this));
+        mTabs.setTabBackground(ThemeUtils.getTabBackground(this));
         mTabs.setOnPageChangeListener(mSimpleOnPageChangeListener);
 
         ActionBar actionBar = getActionBar();
@@ -179,7 +179,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         customizeTagButton();
 
         // Setup background.
-        mActivityMainLayout.setBackgroundResource(ThemeUtils.getCurrentThemeTransitionBackground(this));
+        mActivityMainLayout.setBackgroundResource(ThemeUtils.getTransitionBackground(this));
         mBackgroundTransition = (TransitionDrawable) mActivityMainLayout.getBackground();
 
         // Set button selectors.
@@ -209,7 +209,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 mIsEmptyBackground = false;
             }
 
-            customizeTabColors(ThemeUtils.getCurrentThemeTextColor(mContext.get()), ThemeUtils.getCurrentThemeDividerColor(mContext.get()), position);
+            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), ThemeUtils.getDividerColor(mContext.get()), position);
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
@@ -278,10 +278,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mBackgroundTransition.resetTransition();
 
         // Load text color.
-        int textColor = ThemeUtils.getCurrentThemeTextColor(this);
+        int textColor = ThemeUtils.getTextColor(this);
 
         // Reset tab colors.
-        customizeTabColors(textColor, ThemeUtils.getCurrentThemeDividerColor(this), sCurrentSection.getSectionNumber());
+        customizeTabColors(textColor, ThemeUtils.getDividerColor(this), sCurrentSection.getSectionNumber());
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);

@@ -40,7 +40,7 @@ public class SwipesButton extends Button {
             }
         }
         this.setTypeface(sTypeface);
-        this.setTextColor(ThemeUtils.getCurrentThemeTextColor(mContext));
+        this.setTextColor(ThemeUtils.getTextColor(mContext));
     }
 
     public void setSelector(final int resource, final int resourceFull) {

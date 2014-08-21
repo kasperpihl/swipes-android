@@ -75,7 +75,7 @@ public class EditTaskActivity extends AccentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getCurrentThemeResource(this));
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_edit_task);
         ButterKnife.inject(this);
 
@@ -85,23 +85,23 @@ public class EditTaskActivity extends AccentActivity {
 
         mTempId = getIntent().getStringExtra(Constants.EXTRA_TASK_TEMP_ID);
 
-        mView.setBackgroundColor(ThemeUtils.getCurrentThemeBackgroundColor(this));
+        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mView.requestFocus();
 
-        mTitle.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTitle.setTextColor(ThemeUtils.getTextColor(this));
         mTitle.setOnEditorActionListener(mEnterListener);
 
-        mScheduleIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mSchedule.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mScheduleIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mSchedule.setTextColor(ThemeUtils.getTextColor(this));
 
-        mRepeatIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mRepeat.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mRepeatIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mRepeat.setTextColor(ThemeUtils.getTextColor(this));
 
-        mTagsIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mTags.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mTagsIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mTags.setTextColor(ThemeUtils.getTextColor(this));
 
-        mNotesIcon.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
-        mNotes.setTextColor(ThemeUtils.getCurrentThemeTextColor(this));
+        mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setTextColor(ThemeUtils.getTextColor(this));
 
         updateViews();
     }
