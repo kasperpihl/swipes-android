@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -418,6 +419,9 @@ public class SnoozeActivity extends FragmentActivity {
     }
 
     private void adjustSnoozeTime(final Calendar snooze, int startHour, int startMinute) {
+        // Hide snooze view.
+        mView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
         // Create time picker listener.
         RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
             @Override
@@ -432,10 +436,20 @@ public class SnoozeActivity extends FragmentActivity {
             }
         };
 
+        // Create dismiss listener.
+        RadialTimePickerDialog.OnDialogDismissListener dismissListener = new RadialTimePickerDialog.OnDialogDismissListener() {
+            @Override
+            public void onDialogDismiss(DialogInterface dialoginterface) {
+                // Show snooze view.
+                mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+            }
+        };
+
         // Show time picker dialog.
         RadialTimePickerDialog dialog = new RadialTimePickerDialog();
         dialog.setStartTime(startHour, startMinute);
         dialog.setOnTimeSetListener(timeSetListener);
+        dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
         dialog.setThemeDark(true);
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
@@ -450,6 +464,9 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
+        // Hide snooze view.
+        mView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
         // Create date picker listener.
         CalendarDatePickerDialog.OnDateSetListener dateSetListener = new CalendarDatePickerDialog.OnDateSetListener() {
             @Override
@@ -463,9 +480,19 @@ public class SnoozeActivity extends FragmentActivity {
             }
         };
 
+        // Create dismiss listener.
+        CalendarDatePickerDialog.OnDialogDismissListener dismissListener = new CalendarDatePickerDialog.OnDialogDismissListener() {
+            @Override
+            public void onDialogDismiss(DialogInterface dialoginterface) {
+                // Show snooze view.
+                mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+            }
+        };
+
         // Show date picker dialog.
         CalendarDatePickerDialog dialog = new CalendarDatePickerDialog();
         dialog.setOnDateSetListener(dateSetListener);
+        dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
         dialog.setThemeDark(true);
         dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
