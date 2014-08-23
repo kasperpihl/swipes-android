@@ -437,7 +437,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setStartTime(startHour, startMinute);
         dialog.setOnTimeSetListener(timeSetListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
+        dialog.setThemeDark(true);
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
         // Mark schedule as not performed.
@@ -467,7 +467,7 @@ public class SnoozeActivity extends FragmentActivity {
         CalendarDatePickerDialog dialog = new CalendarDatePickerDialog();
         dialog.setOnDateSetListener(dateSetListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
+        dialog.setThemeDark(true);
         dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
 
         // Mark schedule as not performed.
