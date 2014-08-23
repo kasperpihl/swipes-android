@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -97,6 +98,7 @@ public class SnoozeActivity extends FragmentActivity {
     TextView mAdjustHint;
 
     private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
+    private static final String DATE_PICKER_TAG = "SNOOZE_DATE_PICKER";
 
     private TasksService mTasksService;
 
@@ -403,12 +405,15 @@ public class SnoozeActivity extends FragmentActivity {
 
     @OnClick(R.id.snooze_pick_date)
     protected void pickDate() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // Show date picker.
+        pickSnoozeDate();
     }
 
     @OnLongClick(R.id.snooze_pick_date)
-    protected boolean pickDateAdjust() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+    protected boolean longPickDate() {
+        // Show date picker.
+        pickSnoozeDate();
+
         return true;
     }
 
@@ -434,6 +439,36 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setDoneText(getString(R.string.snooze_done_text));
         dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
+
+        // Mark schedule as not performed.
+        setResult(RESULT_CANCELED);
+    }
+
+    private void pickSnoozeDate() {
+        // Set snooze time.
+        final Calendar snooze = Calendar.getInstance();
+        snooze.set(Calendar.HOUR_OF_DAY, 9);
+        snooze.set(Calendar.MINUTE, 0);
+
+        // Create date picker listener.
+        CalendarDatePickerDialog.OnDateSetListener dateSetListener = new CalendarDatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(CalendarDatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+                // Set snooze date.
+                snooze.set(Calendar.YEAR, year);
+                snooze.set(Calendar.MONTH, monthOfYear);
+                snooze.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                performChanges(snooze);
+            }
+        };
+
+        // Show date picker dialog.
+        CalendarDatePickerDialog dialog = new CalendarDatePickerDialog();
+        dialog.setOnDateSetListener(dateSetListener);
+        dialog.setDoneText(getString(R.string.snooze_done_text));
+        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
+        dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
 
         // Mark schedule as not performed.
         setResult(RESULT_CANCELED);
