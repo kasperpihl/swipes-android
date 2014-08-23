@@ -108,6 +108,9 @@ public class DateUtils {
         } else if (providedDate.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
             // Date was yesterday.
             return context.getString(R.string.date_yesterday) + getTimeAsString(context, rawDate);
+        } else if (isWithinWeek(providedDate.getTime())) {
+            // Date is within a week.
+            return formatDayOfWeek(context, providedDate) + ", " + getTimeAsString(context, rawDate);
         } else {
             // Date is some other day. Capitalize first letter.
             return Character.toUpperCase(date.charAt(0)) + date.substring(1);
@@ -135,6 +138,32 @@ public class DateUtils {
         int currentDay = currentDate.get(Calendar.DAY_OF_YEAR);
 
         return providedYear <= currentYear && (providedDay < currentDay || providedYear < currentYear);
+    }
+
+    /**
+     * Checks if the provided date is within a week from today.
+     *
+     * @param date Date to check.
+     * @return True if date is within a week.
+     */
+    public static boolean isWithinWeek(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(date);
+        Calendar currentDate = Calendar.getInstance();
+
+        long providedMillis = providedDate.getTimeInMillis();
+        long currentMillis = currentDate.getTimeInMillis();
+        int providedDayOfWeek = providedDate.get(Calendar.DAY_OF_WEEK);
+        int currentDayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK);
+
+        boolean isWithinWeek = providedMillis <= currentMillis || providedMillis - currentMillis < 604800000L;
+        boolean isSameDayNextWeek = providedMillis > currentMillis && providedDayOfWeek == currentDayOfWeek;
+
+        return isWithinWeek || isSameDayNextWeek;
     }
 
     /**

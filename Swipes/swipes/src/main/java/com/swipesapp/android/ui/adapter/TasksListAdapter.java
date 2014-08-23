@@ -216,7 +216,8 @@ public class TasksListAdapter extends BaseAdapter {
                     holder.locationIcon.setVisibility(View.VISIBLE);
                 } else if (schedule != null) {
                     holder.time.setVisibility(View.VISIBLE);
-                    holder.time.setText(DateUtils.getTimeAsString(mContext.get(), schedule));
+                    // TODO: When dividers are done, change this to show time only.
+                    holder.time.setText(DateUtils.formatToRecent(schedule, mContext.get()));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
                 }
 
