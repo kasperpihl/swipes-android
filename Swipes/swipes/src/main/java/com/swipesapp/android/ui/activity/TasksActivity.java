@@ -237,12 +237,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 hideGradient();
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
-
-                if (position == Sections.DONE.getSectionNumber()) {
-                    hideGradient();
-                } else {
-                    showGradient();
-                }
+                showGradient();
             }
 
             sCurrentSection = Sections.getSectionByNumber(position);
@@ -301,12 +296,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    private void showGradient() {
+    public void showGradient() {
         mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mActionButtonsGradient.setBackgroundDrawable(ThemeUtils.getGradientDrawable(this));
     }
 
-    private void hideGradient() {
+    public void hideGradient() {
         mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
         mActionButtonsGradient.setBackgroundColor(Color.TRANSPARENT);
     }
