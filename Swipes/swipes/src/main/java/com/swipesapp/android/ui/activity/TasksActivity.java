@@ -24,6 +24,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -112,6 +113,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @InjectView(R.id.button_add_task_tag)
     CheckBox mButtonAddTaskTag;
+
+    @InjectView(R.id.action_buttons_container)
+    FrameLayout mActionButtonsContainer;
+
+    @InjectView(R.id.action_buttons_gradient)
+    FrameLayout mActionButtonsGradient;
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
 
@@ -227,8 +234,15 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
+                hideGradient();
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
+
+                if (position == Sections.DONE.getSectionNumber()) {
+                    hideGradient();
+                } else {
+                    showGradient();
+                }
             }
 
             sCurrentSection = Sections.getSectionByNumber(position);
@@ -285,6 +299,16 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             TextView tabTextView = (TextView) view;
             tabTextView.setTextColor(textColors[position]);
         }
+    }
+
+    private void showGradient() {
+        mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+        mActionButtonsGradient.setBackgroundDrawable(ThemeUtils.getGradientDrawable(this));
+    }
+
+    private void hideGradient() {
+        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
+        mActionButtonsGradient.setBackgroundColor(Color.TRANSPARENT);
     }
 
     private void clearEmptyBackground() {

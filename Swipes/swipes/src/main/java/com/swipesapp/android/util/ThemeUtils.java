@@ -2,6 +2,7 @@ package com.swipesapp.android.util;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.values.Sections;
@@ -135,6 +136,15 @@ public class ThemeUtils {
     public static int getTasksBlurAlphaColor(Context context) {
         int color = isLightTheme(context) ? R.color.light_tasks_blur_alpha_color : R.color.dark_tasks_blur_alpha_color;
         return context.getResources().getColor(color);
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's gradient drawable.
+     */
+    public static Drawable getGradientDrawable(Context context) {
+        int drawable = isLightTheme(context) ? R.drawable.light_gradient : R.drawable.dark_gradient;
+        return context.getResources().getDrawable(drawable);
     }
 
 }

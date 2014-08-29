@@ -27,65 +27,79 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:background="@android:color/transparent"
-        android:text="@string/round_add"
-        android:textSize="@dimen/add_task_button_size" />
-
-    <!-- Edit bar -->
-    <LinearLayout
-        android:id="@+id/edit_tasks_bar"
+    <FrameLayout
+        android:id="@+id/action_buttons_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/edit_bar_margin"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="1">
+        android:layout_height="@dimen/button_container_height"
+        android:layout_alignParentBottom="true">
 
+        <!-- Add task button -->
         <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_edit_task"
-            android:layout_width="0dp"
+            android:id="@+id/button_add_task"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:background="@android:color/transparent"
-            android:text="@string/action_edit"
-            android:textSize="@dimen/action_buttons_size" />
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@color/transparent"
+            android:text="@string/round_add"
+            android:textSize="@dimen/add_task_button_size" />
 
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_assign_tags"
-            android:layout_width="0dp"
+        <!-- Edit bar -->
+        <LinearLayout
+            android:id="@+id/edit_tasks_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:background="@android:color/transparent"
-            android:text="@string/action_tag"
-            android:textSize="@dimen/action_buttons_size" />
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/edit_bar_margin"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="1">
 
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_delete_tasks"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:background="@android:color/transparent"
-            android:text="@string/action_delete"
-            android:textSize="@dimen/action_buttons_size" />
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_edit_task"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@android:color/transparent"
+                android:text="@string/action_edit"
+                android:textSize="@dimen/action_buttons_size" />
 
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_share_tasks"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:background="@android:color/transparent"
-            android:text="@string/action_share"
-            android:textSize="@dimen/action_buttons_size" />
-    </LinearLayout>
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_assign_tags"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@android:color/transparent"
+                android:text="@string/action_tag"
+                android:textSize="@dimen/action_buttons_size" />
 
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_delete_tasks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@android:color/transparent"
+                android:text="@string/action_delete"
+                android:textSize="@dimen/action_buttons_size" />
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_share_tasks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@android:color/transparent"
+                android:text="@string/action_share"
+                android:textSize="@dimen/action_buttons_size" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/action_buttons_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gradient_height"
+        android:layout_above="@id/action_buttons_container" />
+
+    <!-- Blurred background -->
     <ImageView
         android:id="@+id/blur_background"
         android:layout_width="match_parent"
