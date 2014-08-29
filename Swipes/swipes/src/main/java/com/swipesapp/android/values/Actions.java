@@ -37,4 +37,19 @@ public class Actions {
      */
     public static final String SHARE_TASKS = "com.swipesapp.android.ACTION_SHARE_TASKS";
 
+    /**
+     * Notifies listeners that the device has booted.
+     */
+    public static final String BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
+
+    /**
+     * Notifies listeners to snooze tasks.
+     */
+    public static final String SNOOZE_TASKS = "com.swipesapp.android.ACTION_SNOOZE_TASKS";
+
+    /**
+     * Notifies listeners to complete tasks.
+     */
+    public static final String COMPLETE_TASKS = "com.swipesapp.android.ACTION_COMPLETE_TASKS";
+
 }

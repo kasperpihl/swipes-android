@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,8 +130,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 setupDoneView(rootView);
                 break;
         }
-
-        mTasksRefresher.run();
 
         return rootView;
     }
@@ -634,14 +631,5 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
-
-    // TODO: Remove this when scheduler service is ready.
-    Runnable mTasksRefresher = new Runnable() {
-        @Override
-        public void run() {
-            refreshTaskList(false);
-            new Handler().postDelayed(mTasksRefresher, 60000);
-        }
-    };
 
 }

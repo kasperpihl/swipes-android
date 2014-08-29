@@ -513,7 +513,7 @@ public class SnoozeActivity extends FragmentActivity {
         finish();
     }
 
-    private void applyNextDayTreatment(Calendar snooze) {
+    public static void applyNextDayTreatment(Calendar snooze) {
         // Check if the selected time should be in the next day.
         if (snooze.before(Calendar.getInstance())) {
             // Add a day to the snooze time.

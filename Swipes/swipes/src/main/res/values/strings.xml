@@ -110,6 +110,18 @@
         <item quantity="one">Are you sure you want to permanently delete this task?</item>
         <item quantity="other">Are you sure you want to permanently delete these tasks?</item>
     </plurals>
+    <plurals name="notification_title">
+        <item quantity="one">%s</item>
+        <item quantity="other">You have %d new tasks</item>
+    </plurals>
+    <plurals name="notification_snooze">
+        <item quantity="one">Snooze +%dh</item>
+        <item quantity="other">Snooze all +%dh</item>
+    </plurals>
+    <plurals name="notification_complete">
+        <item quantity="one">Complete</item>
+        <item quantity="other">Complete all</item>
+    </plurals>
 
     <!-- Section icons -->
     <string name="swipes_logo">&#xe600;</string>

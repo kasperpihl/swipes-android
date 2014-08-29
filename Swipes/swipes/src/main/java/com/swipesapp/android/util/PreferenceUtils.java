@@ -15,6 +15,8 @@ public class PreferenceUtils {
 
     public static final String FIRST_RUN = "app_first_run";
 
+    public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
+
     /**
      * Reads theme setting.
      *
@@ -43,5 +45,15 @@ public class PreferenceUtils {
         return isFirstRun;
     }
 
-}
+    /**
+     * Check if notifications are enabled.
+     *
+     * @param context Context instance.
+     * @return True if they are enabled in the app.
+     */
+    public static boolean areNotificationsEnabled(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(NOTIFICATIONS_KEY, true);
+    }
 
+}
