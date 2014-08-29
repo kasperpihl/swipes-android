@@ -323,6 +323,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);
+
+        showGradient();
     }
 
     private void setEmptyBackground() {
@@ -334,6 +336,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(Color.WHITE);
+
+        hideGradient();
     }
 
     /**
