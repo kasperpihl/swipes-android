@@ -99,11 +99,9 @@ public class TasksListAdapter extends BaseAdapter {
             holder.title = (TextView) row.findViewById(R.id.task_title);
             holder.time = (TextView) row.findViewById(R.id.task_time);
             holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties_container);
-            holder.propertiesDivider = (TextView) row.findViewById(R.id.task_properties_divider);
             holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
             holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
             holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
-            holder.tagsDivider = (TextView) row.findViewById(R.id.task_tags_divider);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
 
             row.setTag(holder);
@@ -168,7 +166,6 @@ public class TasksListAdapter extends BaseAdapter {
             }
 
             // Display formatted tags with divider.
-            holder.tagsDivider.setVisibility(View.VISIBLE);
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
             mDisplayProperties = true;
@@ -176,14 +173,12 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Display notes icon.
         if (notes != null && !notes.isEmpty()) {
-            holder.propertiesDivider.setVisibility(View.VISIBLE);
             holder.notesIcon.setVisibility(View.VISIBLE);
             mDisplayProperties = true;
         }
 
         // Display repeat icon.
         if (repeatDate != null) {
-            holder.propertiesDivider.setVisibility(View.VISIBLE);
             holder.repeatIcon.setVisibility(View.VISIBLE);
             mDisplayProperties = true;
         }
@@ -193,6 +188,7 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Display properties line.
         if (mDisplayProperties) {
+            // TODO: Find out why this breaks the layout.
             holder.propertiesContainer.setVisibility(View.VISIBLE);
         }
 
@@ -212,7 +208,6 @@ public class TasksListAdapter extends BaseAdapter {
                 String location = tasks.get(position).getLocation();
 
                 if (location != null && !location.isEmpty()) {
-                    holder.propertiesDivider.setVisibility(View.GONE);
                     holder.locationIcon.setVisibility(View.VISIBLE);
                 } else if (schedule != null) {
                     holder.time.setVisibility(View.VISIBLE);
@@ -257,6 +252,12 @@ public class TasksListAdapter extends BaseAdapter {
         // Reset visibility.
         holder.frontView.setVisibility(View.VISIBLE);
         holder.containerView.setVisibility(View.VISIBLE);
+
+        // Reset properties.
+        holder.tags.setVisibility(View.GONE);
+        holder.notesIcon.setVisibility(View.GONE);
+        holder.repeatIcon.setVisibility(View.GONE);
+        holder.locationIcon.setVisibility(View.GONE);
 
         // Reset translation.
         if (mAnimateRefresh) {
@@ -390,13 +391,11 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Properties.
         RelativeLayout propertiesContainer;
-        TextView propertiesDivider;
         SwipesTextView locationIcon;
         SwipesTextView notesIcon;
         SwipesTextView repeatIcon;
 
         // Tags.
-        TextView tagsDivider;
         TextView tags;
     }
 

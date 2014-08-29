@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +21,8 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.listener.KeyboardBackListener;
+import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
@@ -42,7 +43,7 @@ public class EditTaskActivity extends AccentActivity {
     @InjectView(R.id.button_edit_task_priority)
     CheckBox mPriority;
     @InjectView(R.id.edit_task_title)
-    EditText mTitle;
+    ActionEditText mTitle;
 
     @InjectView(R.id.edit_task_schedule_icon)
     SwipesTextView mScheduleIcon;
@@ -62,7 +63,7 @@ public class EditTaskActivity extends AccentActivity {
     @InjectView(R.id.edit_task_notes_icon)
     SwipesTextView mNotesIcon;
     @InjectView(R.id.edit_task_notes)
-    TextView mNotes;
+    ActionEditText mNotes;
 
     private TasksService mTasksService;
 
@@ -90,6 +91,7 @@ public class EditTaskActivity extends AccentActivity {
 
         mTitle.setTextColor(ThemeUtils.getTextColor(this));
         mTitle.setOnEditorActionListener(mEnterListener);
+        mTitle.setListener(mKeyboardBackListener);
 
         mScheduleIcon.setTextColor(ThemeUtils.getTextColor(this));
         mSchedule.setTextColor(ThemeUtils.getTextColor(this));
@@ -102,6 +104,9 @@ public class EditTaskActivity extends AccentActivity {
 
         mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setHintTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setOnEditorActionListener(mEnterListener);
+        mNotes.setListener(mKeyboardBackListener);
 
         updateViews();
     }
@@ -155,7 +160,7 @@ public class EditTaskActivity extends AccentActivity {
 
         mTags.setText(getString(R.string.edit_task_tags_default_text));
 
-        mNotes.setText(getString(R.string.edit_task_notes_default_text));
+        mNotes.setText(mTask.getNotes());
     }
 
     private TextView.OnEditorActionListener mEnterListener =
@@ -164,16 +169,18 @@ public class EditTaskActivity extends AccentActivity {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // If the action is a key-up event on the return key, save task changes.
-                        mTask.setTitle(v.getText().toString());
-                        mTasksService.saveTask(mTask);
-
-                        hideKeyboard();
-
-                        updateViews();
+                        performChanges();
                     }
                     return true;
                 }
             };
+
+    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
+        @Override
+        public void onKeyboardBackPressed() {
+            discardChanges();
+        }
+    };
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -207,9 +214,20 @@ public class EditTaskActivity extends AccentActivity {
         Toast.makeText(getApplicationContext(), "Tags coming soon", Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.notes_container)
-    protected void setNotes() {
-        Toast.makeText(getApplicationContext(), "Notes coming soon", Toast.LENGTH_SHORT).show();
+    private void performChanges() {
+        // Save updated properties.
+        mTask.setTitle(mTitle.getText().toString());
+        mTask.setNotes(mNotes.getText().toString());
+        mTasksService.saveTask(mTask);
+
+        hideKeyboard();
+
+        updateViews();
+    }
+
+    private void discardChanges() {
+        hideKeyboard();
+        updateViews();
     }
 
     private void deleteTask() {

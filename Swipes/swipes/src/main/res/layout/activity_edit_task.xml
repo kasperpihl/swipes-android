@@ -144,14 +144,21 @@
             android:text="@string/edit_notes"
             android:textSize="16sp" />
 
-        <TextView
+        <com.swipesapp.android.ui.view.ActionEditText
             android:id="@+id/edit_task_notes"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
-            android:layout_toRightOf="@id/edit_task_notes_icon" />
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/edit_task_notes_icon"
+            android:background="@color/transparent"
+            android:focusableInTouchMode="true"
+            android:hint="@string/edit_task_notes_default_text"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxHeight="@dimen/edit_task_title_max_height"
+            android:scrollHorizontally="false" />
     </RelativeLayout>
 
 </LinearLayout>
