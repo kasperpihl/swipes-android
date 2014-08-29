@@ -153,6 +153,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         filter.addAction(Actions.SHARE_TASKS);
         getActivity().registerReceiver(mTasksReceiver, filter);
 
+        refreshTaskList(false);
+
         super.onResume();
     }
 
