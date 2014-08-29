@@ -39,22 +39,18 @@ public class SnoozeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         sTasksService = TasksService.getInstance(context);
 
-        List<GsonTask> snoozedTasks = new ArrayList<GsonTask>();
+        List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
         sExpiredTasks = new ArrayList<GsonTask>();
-
-        // Tasks might have changed seconds ago, so consider both snoozed and focused.
-        snoozedTasks.addAll(sTasksService.loadScheduledTasks());
-        snoozedTasks.addAll(sTasksService.loadFocusedTasks());
 
         Calendar calendar = Calendar.getInstance();
         long now = calendar.getTimeInMillis();
 
-        // Look for tasks with snooze date within the last minute.
+        // Look for tasks with snooze date within the next minute.
         for (GsonTask task : snoozedTasks) {
             if (task.getSchedule() != null) {
                 calendar.setTime(task.getSchedule());
                 long schedule = calendar.getTimeInMillis();
-                long delta = now - schedule;
+                long delta = schedule - now;
 
                 // Add task to the list of expired.
                 if (delta >= 0 && delta < 60000) sExpiredTasks.add(task);
