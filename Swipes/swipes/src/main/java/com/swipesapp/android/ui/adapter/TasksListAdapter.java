@@ -54,6 +54,9 @@ public class TasksListAdapter extends BaseAdapter {
     // Determines if cells will be animated after refresh.
     private boolean mAnimateRefresh;
 
+    private int mListViewHeight;
+    private int mVisibleAreaHeight;
+
     public TasksListAdapter(Context context, int layoutResourceId, List<GsonTask> data, Sections section) {
         mData = data;
         mContext = new WeakReference<Context>(context);
@@ -280,6 +283,23 @@ public class TasksListAdapter extends BaseAdapter {
             ObjectAnimator animator = ObjectAnimator.ofFloat(holder.containerView, "translationY", fromY, toY);
             animator.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
         }
+
+        // Reset flag when all tasks have been animated.
+        if (isVisibleAreaFull(holder)) {
+            mAnimateOld = false;
+        }
+    }
+
+    private boolean isVisibleAreaFull(TaskHolder holder) {
+        // Calculate max list height.
+        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
+        int maxListHeight = mListViewHeight + layoutParams.height;
+
+        // Update current visible area.
+        mVisibleAreaHeight += layoutParams.height;
+
+        // Determine if visible area is full.
+        return mVisibleAreaHeight >= maxListHeight;
     }
 
     public void setListContentsListener(ListContentsListener listContentsListener) {
@@ -320,7 +340,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    public void showOld(List<GsonTask> data) {
+    public void showOld(List<GsonTask> data, int listViewHeight) {
         // Check for thread safety.
         ThreadUtils.checkOnMainThread();
 
@@ -328,6 +348,8 @@ public class TasksListAdapter extends BaseAdapter {
         mData = data;
         mIsShowingOld = true;
         mAnimateOld = true;
+        mListViewHeight = listViewHeight;
+        mVisibleAreaHeight = 0;
 
         // Refresh adapter.
         notifyDataSetChanged();

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -66,6 +67,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private DynamicListView mLaterListView;
     private DynamicListView mFocusListView;
     private DynamicListView mDoneListView;
+
+    /**
+     * List view height, used for UI calculations.
+     */
+    private int mListViewHeight;
 
     /**
      * Adapters for each section.
@@ -202,9 +208,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mLaterAdapter.setListContentsListener((ListContentsListener) getActivity());
         }
 
-        // Configure list view.
+        // Configure and measure list view.
         mLaterListView = (DynamicListView) rootView.findViewById(android.R.id.list);
         configureLaterListView(mLaterAdapter);
+        measureListView(mLaterListView);
 
         // Setup empty view.
         mViewStub.setLayoutResource(R.layout.tasks_later_empty_view);
@@ -222,9 +229,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mFocusAdapter.setListContentsListener((ListContentsListener) getActivity());
         }
 
-        // Configure list view.
+        // Configure and measure list view.
         mFocusListView = (DynamicListView) rootView.findViewById(android.R.id.list);
         configureFocusListView(mFocusAdapter);
+        measureListView(mFocusListView);
 
         // Setup empty view.
         mViewStub.setLayoutResource(R.layout.tasks_focus_empty_view);
@@ -242,9 +250,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mDoneAdapter.setListContentsListener((ListContentsListener) getActivity());
         }
 
-        // Configure list view.
+        // Configure and measure list view.
         mDoneListView = (DynamicListView) rootView.findViewById(android.R.id.list);
         configureDoneListView(mDoneAdapter);
+        measureListView(mDoneListView);
 
         // Setup empty view.
         mViewStub.setLayoutResource(R.layout.tasks_done_empty_view);
@@ -341,6 +350,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mDoneListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_NONE);
         mDoneListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_DISMISS);
         mDoneListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
+    }
+
+    private void measureListView(final DynamicListView listView) {
+        listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                // Save list view height for later calculations.
+                mListViewHeight = listView.getHeight();
+            }
+        });
     }
 
     private void refreshTaskList(boolean animateRefresh) {
@@ -588,7 +606,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Hide buttons.
                 mFooterView.setVisibility(View.GONE);
                 // Show old tasks.
-                mDoneAdapter.showOld(mTasksService.loadCompletedTasks());
+                mDoneAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
                 // Show bottom gradient.
                 ((TasksActivity) getActivity()).showGradient();
             }
