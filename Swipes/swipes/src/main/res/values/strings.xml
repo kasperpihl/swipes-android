@@ -101,6 +101,10 @@
     <string name="edit_task_tags_default_text">Set tags</string>
     <string name="edit_task_notes_default_text">Add notes</string>
 
+    <!-- Notifications -->
+    <string name="notification_snooze">Snooze +%dh</string>
+    <string name="notification_complete">Complete</string>
+
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
         <item quantity="one">Delete task</item>
@@ -113,14 +117,6 @@
     <plurals name="notification_title">
         <item quantity="one">%s</item>
         <item quantity="other">You have %d new tasks</item>
-    </plurals>
-    <plurals name="notification_snooze">
-        <item quantity="one">Snooze +%dh</item>
-        <item quantity="other">Snooze all +%dh</item>
-    </plurals>
-    <plurals name="notification_complete">
-        <item quantity="one">Complete</item>
-        <item quantity="other">Complete all</item>
     </plurals>
 
     <!-- Section icons -->

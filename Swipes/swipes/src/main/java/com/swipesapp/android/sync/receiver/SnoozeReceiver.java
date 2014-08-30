@@ -93,8 +93,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
             Resources res = context.getResources();
             int size = sExpiredTasks.size();
             String title = res.getQuantityString(R.plurals.notification_title, size, size > 1 ? size : sExpiredTasks.get(0).getTitle());
-            String snoozeTitle = res.getQuantityString(R.plurals.notification_snooze, size, 3);
-            String completeTitle = res.getQuantityString(R.plurals.notification_complete, size);
+            String snoozeTitle = res.getString(R.string.notification_snooze, 3);
+            String completeTitle = res.getString(R.string.notification_complete);
 
             builder.setContentTitle(title);
             builder.addAction(R.drawable.ic_snooze, snoozeTitle, snoozePendingIntent);
