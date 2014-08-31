@@ -191,7 +191,6 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Display properties line.
         if (mDisplayProperties) {
-            // TODO: Find out why this breaks the layout.
             holder.propertiesContainer.setVisibility(View.VISIBLE);
         }
 
