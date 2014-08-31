@@ -129,12 +129,16 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 // Snooze tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
                     task.setSchedule(snooze.getTime());
+
                     sTasksService.saveTask(task);
                 }
             } else if (intent.getAction().equals(Actions.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
-                    task.setCompletionDate(new Date());
+                    Date currentDate = new Date();
+                    task.setCompletionDate(currentDate);
+                    task.setSchedule(currentDate);
+
                     sTasksService.saveTask(task);
                 }
             }
