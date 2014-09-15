@@ -12,6 +12,7 @@
     <dimen name="add_task_button_size">40sp</dimen>
     <dimen name="gradient_height">35dp</dimen>
     <dimen name="button_container_height">60dp</dimen>
+    <dimen name="button_container_expanded_height">120dp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

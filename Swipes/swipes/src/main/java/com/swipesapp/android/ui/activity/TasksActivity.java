@@ -306,6 +306,18 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mActionButtonsGradient.setBackgroundColor(Color.TRANSPARENT);
     }
 
+    public void expandGradient() {
+        // Increase container height and make it transparent, so the gradient is on top of the done buttons.
+        setViewHeight(mActionButtonsContainer, R.dimen.button_container_expanded_height);
+        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
+    }
+
+    public void collapseGradient() {
+        // Restore original container height and background.
+        setViewHeight(mActionButtonsContainer, R.dimen.button_container_height);
+        mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+    }
+
     private void clearEmptyBackground() {
         // Reset background and divider color.
         mBackgroundTransition.resetTransition();
@@ -616,6 +628,12 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     public static BitmapDrawable getBlurDrawable() {
         return sBlurDrawable;
+    }
+
+    private void setViewHeight(View view, int dimen) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.height = getResources().getDimensionPixelSize(dimen);
+        view.setLayoutParams(layoutParams);
     }
 
 }

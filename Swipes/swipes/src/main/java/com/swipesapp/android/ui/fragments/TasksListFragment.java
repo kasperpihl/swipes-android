@@ -517,7 +517,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (mSection == Sections.DONE && !mAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
                 mFooterView.setVisibility(View.VISIBLE);
                 mFooterView.setAlpha(1f);
-                ((TasksActivity) getActivity()).hideGradient();
+                ((TasksActivity) getActivity()).expandGradient();
             } else {
                 mFooterView.setVisibility(View.GONE);
             }
@@ -552,7 +552,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Show old tasks.
                 mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
                 // Show bottom gradient.
-                ((TasksActivity) getActivity()).showGradient();
+                ((TasksActivity) getActivity()).collapseGradient();
             }
         });
     }
@@ -581,7 +581,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mTasksService.deleteTasks(oldTasks);
 
                         // Show bottom gradient.
-                        ((TasksActivity) getActivity()).showGradient();
+                        ((TasksActivity) getActivity()).collapseGradient();
                     }
                 })
                 .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
