@@ -61,7 +61,7 @@ dependencies {
     compile 'com.android.support:support-v13:19.+'
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.android.support:support-v4:19.+'
-    compile 'com.negusoft.holoaccent:library:1.0'
+    compile 'com.negusoft.holoaccent:library:1.0.1'
     compile 'com.google.code.gson:gson:2.2.4'
     compile('de.greenrobot:greendao:1.3.0') {
         exclude module: 'support-v4'
