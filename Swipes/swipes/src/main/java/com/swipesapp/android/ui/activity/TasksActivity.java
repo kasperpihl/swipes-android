@@ -238,6 +238,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
                 showGradient();
+
+                if (position != Sections.DONE.getSectionNumber()) collapseGradient();
             }
 
             sCurrentSection = Sections.getSectionByNumber(position);

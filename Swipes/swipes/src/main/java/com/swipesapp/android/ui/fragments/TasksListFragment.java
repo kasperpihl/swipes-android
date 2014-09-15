@@ -517,7 +517,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (mSection == Sections.DONE && !mAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
                 mFooterView.setVisibility(View.VISIBLE);
                 mFooterView.setAlpha(1f);
+
+                // Expand gradient to cover the buttons and remove list view padding.
                 ((TasksActivity) getActivity()).expandGradient();
+                mListView.setPadding(0, 0, 0, 0);
             } else {
                 mFooterView.setVisibility(View.GONE);
             }
@@ -551,8 +554,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 mFooterView.setVisibility(View.GONE);
                 // Show old tasks.
                 mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
-                // Show bottom gradient.
+                // Collapse gradient and restore list view padding.
                 ((TasksActivity) getActivity()).collapseGradient();
+                mListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.button_container_height));
             }
         });
     }
@@ -580,8 +584,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Proceed with delete.
                         mTasksService.deleteTasks(oldTasks);
 
-                        // Show bottom gradient.
+                        // Collapse gradient and restore list view padding.
                         ((TasksActivity) getActivity()).collapseGradient();
+                        mListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.button_container_height));
                     }
                 })
                 .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
