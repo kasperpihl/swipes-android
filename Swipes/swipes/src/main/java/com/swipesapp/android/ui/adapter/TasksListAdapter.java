@@ -46,6 +46,7 @@ public class TasksListAdapter extends BaseAdapter {
     // Controls the display of properties line below task title.
     private boolean mDisplayProperties;
 
+    private boolean mResetCells;
     private boolean mIsShowingOld;
 
     // Determines if old tasks will be animated into the screen.
@@ -62,6 +63,12 @@ public class TasksListAdapter extends BaseAdapter {
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
         mSection = section;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mResetCells = false;
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -136,7 +143,7 @@ public class TasksListAdapter extends BaseAdapter {
         boolean selected = tasks.get(position).isSelected();
 
         // Reset cell attributes to avoid recycling misbehavior.
-        resetCellState(holder);
+        if (mResetCells) resetCellState(holder);
 
         // Set task title.
         holder.title.setText(title);
@@ -317,12 +324,13 @@ public class TasksListAdapter extends BaseAdapter {
         mData = data;
         mAnimateRefresh = animateRefresh;
         mAnimateOld = false;
+        mResetCells = true;
 
         // Remove old tasks if needed.
         handleOldTasks();
 
         // Refresh adapter.
-        notifyDataSetChanged();
+        super.notifyDataSetChanged();
 
         // Check for empty data.
         checkEmpty();
@@ -347,11 +355,12 @@ public class TasksListAdapter extends BaseAdapter {
         mData = data;
         mIsShowingOld = true;
         mAnimateOld = true;
+        mResetCells = true;
         mListViewHeight = listViewHeight;
         mVisibleAreaHeight = 0;
 
         // Refresh adapter.
-        notifyDataSetChanged();
+        super.notifyDataSetChanged();
     }
 
     public void hideOld() {
