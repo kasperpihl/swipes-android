@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -86,6 +88,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
      */
     private List<GsonTask> mSelectedTasks;
 
+    /**
+     * Filters area.
+     */
+    private LinearLayout mFiltersContainer;
+
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
@@ -138,6 +145,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         measureListView(mListView);
+
+        mListView.setSelection(1);
 
         return rootView;
     }
@@ -209,6 +218,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
+
+        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
+
+        mListView.addHeaderView(mFiltersContainer);
 
         // Setup empty view.
         mViewStub.setLayoutResource(emptyView);
@@ -305,12 +318,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void measureListView(final DynamicListView listView) {
-        listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                // Save list view height for later calculations.
-                mListViewHeight = listView.getHeight();
-            }
-        });
+        if (listView != null) {
+            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                public void onGlobalLayout() {
+                    // Save list view height for later calculations.
+                    mListViewHeight = listView.getHeight();
+                }
+            });
+        }
     }
 
     private void refreshTaskList(boolean animateRefresh) {

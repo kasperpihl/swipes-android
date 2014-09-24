@@ -5,15 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
     <!-- List view area -->
     <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="0dp"

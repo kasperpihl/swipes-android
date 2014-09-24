@@ -225,12 +225,18 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
+            if (position == Sections.FILTERS.getSectionNumber()) {
+                // TODO: Remove this. New UI is better.
+                showFilters();
+                return;
+            }
+
             if (position != Sections.FOCUS.getSectionNumber()) {
                 clearEmptyBackground();
                 mIsEmptyBackground = false;
             }
 
-            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), ThemeUtils.getDividerColor(mContext.get()), position);
+            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), position);
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
@@ -278,8 +284,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mButtonAddTaskTag.setTextColor(getResources().getColorStateList(color));
     }
 
-    private void customizeTabColors(int textColor, int dividerColor, int position) {
+    private void customizeTabColors(int textColor, int position) {
         int[] textColors = {
+                textColor,
                 ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
                 ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
                 ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
@@ -288,7 +295,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         mTabs.setIndicatorColor(textColors[position]);
         mTabs.setTextColor(textColor);
-        mTabs.setDividerColor(dividerColor);
+        mTabs.setDividerColor(0);
 
         View view = mTabs.getTabView(position);
 
@@ -328,7 +335,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         int textColor = ThemeUtils.getTextColor(this);
 
         // Reset tab colors.
-        customizeTabColors(textColor, ThemeUtils.getDividerColor(this), sCurrentSection.getSectionNumber());
+        customizeTabColors(textColor, sCurrentSection.getSectionNumber());
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);
@@ -341,7 +348,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mBackgroundTransition.startTransition(Constants.ANIMATION_DURATION);
 
         // Change tab colors, otherwise they look misplaced against the image background.
-        customizeTabColors(Color.WHITE, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
+        customizeTabColors(Color.WHITE, sCurrentSection.getSectionNumber());
 
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(Color.WHITE);
@@ -528,9 +535,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     protected void assignTags() {
         // Send a broadcast to assign tags to the selected tasks. The fragment should handle it.
         TasksService.getInstance(this).sendBroadcast(Actions.ASSIGN_TAGS);
-
-        // TODO: Remove this when tagging is working.
-        Toast.makeText(this, "Tags coming soon", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button_delete_tasks)
@@ -636,6 +640,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = getResources().getDimensionPixelSize(dimen);
         view.setLayoutParams(layoutParams);
+    }
+
+    private void showFilters() {
+        Toast.makeText(this, "Filters", Toast.LENGTH_SHORT).show();
     }
 
 }

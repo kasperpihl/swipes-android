@@ -15,6 +15,7 @@
     <string name="title_focus">@string/focus_light</string>
     <string name="title_done">@string/done_light</string>
     <string name="title_settings">@string/settings_light</string>
+    <string name="title_filters">@string/schedule_circle</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_snooze_settings">Snoozes</string>
     <string name="title_activity_add_task">Add Task</string>

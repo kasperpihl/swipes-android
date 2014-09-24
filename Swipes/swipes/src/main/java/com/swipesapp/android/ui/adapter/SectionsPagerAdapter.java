@@ -7,6 +7,7 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.ui.activity.SettingsActivity;
+import com.swipesapp.android.ui.fragments.BlankFragment;
 import com.swipesapp.android.ui.fragments.TasksListFragment;
 import com.swipesapp.android.values.Sections;
 
@@ -32,14 +33,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
         Fragment result;
         if (position == Sections.SETTINGS.getSectionNumber()) {
             result = new SettingsActivity.SettingsFragment();
+        } else if (position == Sections.FILTERS.getSectionNumber()) {
+            result = BlankFragment.newInstance();
         } else {
             result = TasksListFragment.newInstance(position);
         }
-
         return result;
     }
 
@@ -56,16 +57,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         if (context != null) {
             switch (position) {
                 case 0:
-                    title = context.getString(R.string.title_later).toUpperCase(l);
+                    title = context.getString(R.string.title_settings).toUpperCase(l);
                     break;
                 case 1:
-                    title = context.getString(R.string.title_focus).toUpperCase(l);
+                    title = context.getString(R.string.title_later).toUpperCase(l);
                     break;
                 case 2:
-                    title = context.getString(R.string.title_done).toUpperCase(l);
+                    title = context.getString(R.string.title_focus).toUpperCase(l);
                     break;
                 case 3:
-                    title = context.getString(R.string.title_settings).toUpperCase(l);
+                    title = context.getString(R.string.title_done).toUpperCase(l);
+                    break;
+                case 4:
+                    title = context.getString(R.string.title_filters).toUpperCase(l);
                     break;
             }
         }
