@@ -71,6 +71,9 @@
     <string name="clear_old_dialog_text">Deleting old completed tasks can\'t be undone</string>
     <string name="clear_old_dialog_yes">Delete them</string>
     <string name="clear_old_dialog_no">Cancel</string>
+    <string name="add_tag_dialog_title">Add new tag</string>
+    <string name="add_tag_dialog_yes">Save</string>
+    <string name="add_tag_dialog_cancel">Cancel</string>
 
     <!-- Scheduler -->
     <string name="date_today">Today,&#160;</string>
@@ -135,6 +138,7 @@
     <string name="round_add">&#xe62a;</string>
     <string name="round_add_full">&#xe62f;</string>
     <string name="left_arrow">&#xe63f;</string>
+    <string name="plus_sign">&#xe626;</string>
 
     <!-- Edit task icons -->
     <string name="edit_location">&#xe60d;</string>

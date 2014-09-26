@@ -1,0 +1,11 @@
+<CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/button_tag"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_margin="12dp"
+    android:background="@drawable/tag_selector_light"
+    android:button="@null"
+    android:padding="9dp"
+    android:text="swipes"
+    android:textColor="@color/tag_text_color_selector_light" />

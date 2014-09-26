@@ -111,9 +111,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @InjectView(R.id.add_task_tag_container)
     FlowLayout mAddTaskTagContainer;
 
-    @InjectView(R.id.button_add_task_tag)
-    CheckBox mButtonAddTaskTag;
-
     @InjectView(R.id.action_buttons_container)
     FrameLayout mActionButtonsContainer;
 
@@ -188,9 +185,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
 
-        // Customize tag button to match current theme.
-        customizeTagButton();
-
         // Setup background.
         mActivityMainLayout.setBackgroundResource(ThemeUtils.getTransitionBackground(this));
         mBackgroundTransition = (TransitionDrawable) mActivityMainLayout.getBackground();
@@ -225,12 +219,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            if (position == Sections.FILTERS.getSectionNumber()) {
-                // TODO: Remove this. New UI is better.
-                showFilters();
-                return;
-            }
-
             if (position != Sections.FOCUS.getSectionNumber()) {
                 clearEmptyBackground();
                 mIsEmptyBackground = false;
@@ -277,16 +265,15 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    private void customizeTagButton() {
+    private void customizeTagButton(CheckBox button) {
         int background = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.drawable.tag_selector_light : R.drawable.tag_selector_dark;
         int color = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.color.tag_text_color_selector_light : R.color.tag_text_color_selector_dark;
-        mButtonAddTaskTag.setBackgroundResource(background);
-        mButtonAddTaskTag.setTextColor(getResources().getColorStateList(color));
+        button.setBackgroundResource(background);
+        button.setTextColor(getResources().getColorStateList(color));
     }
 
     private void customizeTabColors(int textColor, int position) {
         int[] textColors = {
-                textColor,
                 ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
                 ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
                 ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
@@ -645,5 +632,53 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private void showFilters() {
         Toast.makeText(this, "Filters", Toast.LENGTH_SHORT).show();
     }
+
+    public void hideActionButtons() {
+        Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        slideDown.setAnimationListener(mHideButtonsListener);
+        mActionButtonsContainer.startAnimation(slideDown);
+    }
+
+    public void showActionButtons() {
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideUp.setAnimationListener(mShowButtonsListener);
+        mActionButtonsContainer.startAnimation(slideUp);
+    }
+
+    private Animation.AnimationListener mHideButtonsListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mActionButtonsContainer.setVisibility(View.GONE);
+
+            hideGradient();
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    private Animation.AnimationListener mShowButtonsListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mActionButtonsContainer.setVisibility(View.VISIBLE);
+            mButtonAddTask.setVisibility(View.VISIBLE);
+            mEditTasksBar.setVisibility(View.GONE);
+
+            showGradient();
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
 
 }

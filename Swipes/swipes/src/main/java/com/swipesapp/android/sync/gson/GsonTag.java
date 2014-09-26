@@ -11,7 +11,6 @@ import java.util.Date;
  */
 public class GsonTag {
 
-    private Long tagId;
     @Expose
     private String objectId;
     @Expose
@@ -23,17 +22,12 @@ public class GsonTag {
     @Expose
     private String title;
 
-    public GsonTag(Long tagId, String objectId, String tempId, Date createdAt, Date updatedAt, String title) {
-        this.tagId = tagId;
+    public GsonTag(String objectId, String tempId, Date createdAt, Date updatedAt, String title) {
         this.objectId = objectId;
         this.tempId = tempId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.title = title;
-    }
-
-    public Long getTagId() {
-        return tagId;
     }
 
     public String getObjectId() {

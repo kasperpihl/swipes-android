@@ -9,13 +9,12 @@ import android.util.Log;
  */
 public enum Sections {
 
-    SETTINGS(0),
     LATER(1),
     FOCUS(2),
     DONE(3),
-    FILTERS(4);
+    SETTINGS(4);
 
-    private static final int SECTIONS_COUNT = 5;
+    private static final int SECTIONS_COUNT = 4;
 
     private static final String TAG = Sections.class.getSimpleName();
 
@@ -32,15 +31,13 @@ public enum Sections {
     public static Sections getSectionByNumber(int sectionNumber) {
         switch (sectionNumber) {
             case 0:
-                return SETTINGS;
-            case 1:
                 return LATER;
-            case 2:
+            case 1:
                 return FOCUS;
-            case 3:
+            case 2:
                 return DONE;
-            case 4:
-                return FILTERS;
+            case 3:
+                return SETTINGS;
             default:
                 Log.wtf(TAG, "Section does not exist.");
                 return null;

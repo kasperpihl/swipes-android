@@ -1,70 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
     <!-- List view area -->
-    <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
-        android:id="@android:id/list"
+    <LinearLayout
+        android:id="@+id/list_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:paddingBottom="@dimen/button_container_height"
-        swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
-        swipe:swipeBackIconRight="@+id/swipe_back_icon_right"
-        swipe:swipeBackView="@+id/swipe_back"
-        swipe:swipeFrontView="@+id/swipe_front" />
+        android:orientation="vertical"
+        android:weightSum="1"
+        tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-    <ViewStub
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout="@layout/tasks_focus_empty_view" />
+        <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:paddingBottom="@dimen/button_container_height"
+            swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
+            swipe:swipeBackIconRight="@+id/swipe_back_icon_right"
+            swipe:swipeBackView="@+id/swipe_back"
+            swipe:swipeFrontView="@+id/swipe_front" />
 
-    <!-- Buttons area -->
-    <LinearLayout
-        android:id="@+id/footer_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/done_footer_margin_bottom"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        <ViewStub
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout="@layout/tasks_focus_empty_view" />
 
-        <com.swipesapp.android.ui.view.TransparentButton
-            android:id="@+id/button_show_old"
-            style="?android:textAppearanceSmall"
-            android:layout_width="@dimen/done_buttons_width"
-            android:layout_height="@dimen/done_button_height"
-            android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
-            android:layout_marginLeft="@dimen/done_buttons_margin_sides"
-            android:layout_marginRight="@dimen/done_buttons_margin_middle"
-            android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-            android:background="@drawable/transparent_button_selector_light"
-            android:button="@null"
-            android:text="@string/show_old"
-            android:textColor="@color/button_text_color_selector_light" />
+        <!-- Buttons area -->
+        <LinearLayout
+            android:id="@+id/footer_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/done_footer_margin_bottom"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-        <com.swipesapp.android.ui.view.TransparentButton
-            android:id="@+id/button_clear_old"
-            style="?android:textAppearanceSmall"
-            android:layout_width="@dimen/done_buttons_width"
-            android:layout_height="@dimen/done_button_height"
-            android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
-            android:layout_marginLeft="@dimen/done_buttons_margin_middle"
-            android:layout_marginRight="@dimen/done_buttons_margin_sides"
-            android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-            android:background="@drawable/transparent_button_selector_light"
-            android:button="@null"
-            android:text="@string/clear_old"
-            android:textColor="@color/button_text_color_selector_light" />
+            <com.swipesapp.android.ui.view.TransparentButton
+                android:id="@+id/button_show_old"
+                style="?android:textAppearanceSmall"
+                android:layout_width="@dimen/done_buttons_width"
+                android:layout_height="@dimen/done_button_height"
+                android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
+                android:layout_marginLeft="@dimen/done_buttons_margin_sides"
+                android:layout_marginRight="@dimen/done_buttons_margin_middle"
+                android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+                android:background="@drawable/transparent_button_selector_light"
+                android:button="@null"
+                android:text="@string/show_old"
+                android:textColor="@color/button_text_color_selector_light" />
+
+            <com.swipesapp.android.ui.view.TransparentButton
+                android:id="@+id/button_clear_old"
+                style="?android:textAppearanceSmall"
+                android:layout_width="@dimen/done_buttons_width"
+                android:layout_height="@dimen/done_button_height"
+                android:layout_marginBottom="@dimen/done_buttons_margin_vertical"
+                android:layout_marginLeft="@dimen/done_buttons_margin_middle"
+                android:layout_marginRight="@dimen/done_buttons_margin_sides"
+                android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+                android:background="@drawable/transparent_button_selector_light"
+                android:button="@null"
+                android:text="@string/clear_old"
+                android:textColor="@color/button_text_color_selector_light" />
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Tags area -->
+    <LinearLayout
+        android:id="@+id/tags_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.swipesapp.android.ui.view.FlowLayout
+            android:id="@+id/tags_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="17dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- Tag management buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_theme_background"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/tags_back_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/transparent"
+                android:text="@string/left_arrow"
+                android:textColor="@color/light_theme_text"
+                android:textSize="25sp" />
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/tags_add_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="0.5"
+                android:background="@android:color/transparent"
+                android:text="@string/plus_sign"
+                android:textColor="@color/light_theme_text"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

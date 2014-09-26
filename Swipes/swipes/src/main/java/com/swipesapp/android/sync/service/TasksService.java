@@ -18,6 +18,7 @@ import com.swipesapp.android.values.Actions;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -192,6 +193,23 @@ public class TasksService {
     }
 
     /**
+     * Creates a new tag.
+     *
+     * @param title Tag title.
+     */
+    public void createTag(String title) {
+        if (title != null && !title.isEmpty()) {
+            Date currentDate = new Date();
+            String tempId = title + currentDate.getTime();
+
+            Tag tag = new Tag(null, null, tempId, currentDate, currentDate, title);
+
+            // Persist new tag.
+            mExtTagDao.getDao().insert(tag);
+        }
+    }
+
+    /**
      * Loads a single task.
      *
      * @param tempId Temp ID of the task.
@@ -292,7 +310,7 @@ public class TasksService {
         List<GsonTag> gsonTags = new ArrayList<GsonTag>();
 
         for (Tag tag : tags) {
-            gsonTags.add(new GsonTag(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
+            gsonTags.add(new GsonTag(tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
         }
 
         return gsonTags;
@@ -324,7 +342,7 @@ public class TasksService {
         List<Tag> tags = new ArrayList<Tag>();
 
         for (GsonTag gsonTag : gsonTags) {
-            tags.add(new Tag(gsonTag.getTagId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
+            tags.add(new Tag(null, gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
         }
 
         return tags;

@@ -164,20 +164,7 @@
             android:layout_marginBottom="17dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp">
-
-            <CheckBox
-                android:id="@+id/button_add_task_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="12dp"
-                android:background="@drawable/tag_selector_light"
-                android:button="@null"
-                android:padding="9dp"
-                android:text="swipes"
-                android:textColor="@color/tag_text_color_selector_light" />
-        </com.swipesapp.android.ui.view.FlowLayout>
+            android:layout_marginTop="12dp" />
 
     </RelativeLayout>
 

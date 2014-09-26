@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -105,6 +105,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @InjectView(R.id.button_clear_old)
     TransparentButton mButtonClearOld;
 
+    @InjectView(R.id.list_area)
+    LinearLayout mListArea;
+
+    @InjectView(R.id.tags_area)
+    LinearLayout mTagsArea;
+
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
         Bundle args = new Bundle();
@@ -146,7 +152,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         measureListView(mListView);
 
-        mListView.setSelection(1);
+        hideFilters();
 
         return rootView;
     }
@@ -219,8 +225,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
+        // Setup filters area.
         mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
-
         mListView.addHeaderView(mFiltersContainer);
 
         // Setup empty view.
@@ -372,6 +378,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Clear selected tasks and perform refresh.
                     mSelectedTasks.clear();
                     refreshTaskList(false);
+
+                    // Hide search and tags.
+                    hideFilters();
+                    closeTags();
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
@@ -381,7 +391,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Clear selected tasks.
                     mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
-                    // TODO: Display tag selection screen.
+                    // TODO: Apply blur to the tags background.
+                    mListArea.setVisibility(View.GONE);
+                    mTagsArea.setVisibility(View.VISIBLE);
+
+                    ((TasksActivity) getActivity()).hideActionButtons();
+
+                    // TODO: Fill flow layout with tag boxes.
                 } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
                     // Delete tasks.
                     deleteSelectedTasks();
@@ -620,6 +636,51 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         int alphaColor = ThemeUtils.getSnoozeBlurAlphaColor(getActivity());
         ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    private void hideFilters() {
+        // Scroll list to first position, hiding the search.
+        mListView.setSelection(1);
+    }
+
+    @OnClick(R.id.tags_back_button)
+    protected void closeTags() {
+        mListArea.setVisibility(View.VISIBLE);
+        mTagsArea.setVisibility(View.GONE);
+        mSelectedTasks.clear();
+
+        ((TasksActivity) getActivity()).showActionButtons();
+
+        refreshTaskList(false);
+    }
+
+    @OnClick(R.id.tags_add_button)
+    protected void addTag() {
+        // Create tag title input.
+        final EditText input = new EditText(getActivity());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        // Display dialog to save new tag.
+        new AccentAlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.add_tag_dialog_title))
+                .setPositiveButton(getString(R.string.add_tag_dialog_yes), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        String title = input.getText().toString();
+                        if (!title.isEmpty()) {
+                            // Save new tag to database.
+                            mTasksService.createTag(title);
+
+                            // TODO: Refresh flow layout.
+
+                            // TODO: !!! REPRODUCE THIS ON EDIT SCREEN WHEN YOU COME BACK !!!
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.add_tag_dialog_cancel), null)
+                .setView(input)
+                .create()
+                .show();
     }
 
 }
