@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class GsonTask {
 
+    private Long id;
     @Expose
     private String objectId;
     @Expose
@@ -53,7 +54,8 @@ public class GsonTask {
     private long itemId;
     private boolean isSelected;
 
-    public GsonTask(String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+    public GsonTask(Long id, String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+        this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
         this.parentId = parentId;
@@ -73,6 +75,10 @@ public class GsonTask {
         this.originIdentifier = originIdentifier;
         this.tags = tags;
         this.itemId = itemId;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setObjectId(String objectId) {
@@ -119,7 +125,7 @@ public class GsonTask {
         this.deleted = deleted;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

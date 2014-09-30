@@ -52,7 +52,6 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
-import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -121,6 +120,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private WeakReference<Context> mContext;
 
+    private TasksService mTasksService;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private static Sections sCurrentSection;
@@ -131,7 +132,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private boolean mIsEmptyBackground;
 
-    // TODO: Populate list of selected tags.
     private List<GsonTag> mSelectedTags;
 
     // Used by animator to store tags container position.
@@ -146,6 +146,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
         mContext = new WeakReference<Context>(this);
+        mTasksService = TasksService.getInstance(this);
 
         createSnoozeAlarm();
 
@@ -196,16 +197,18 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
-
-        // TODO: Remove this when tagging is working. The container is hidden for the first beta.
-        mAddTaskTagContainer.setEnabled(false);
-        mAddTaskTagContainer.setAlpha(0f);
     }
 
     @Override
     protected void onDestroy() {
         ButterKnife.reset(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Forward call to listeners.
+        mTasksService.sendBroadcast(Actions.BACK_PRESSED);
     }
 
     private void createSnoozeAlarm() {
@@ -224,7 +227,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 mIsEmptyBackground = false;
             }
 
-            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), position);
+            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), ThemeUtils.getDividerColor(mContext.get()), position);
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
@@ -239,7 +242,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             sCurrentSection = Sections.getSectionByNumber(position);
 
             // Notify listeners that current tab has changed.
-            TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TAB_CHANGED);
+            mTasksService.sendBroadcast(Actions.TAB_CHANGED);
 
             hideEditBar();
         }
@@ -265,14 +268,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    private void customizeTagButton(CheckBox button) {
-        int background = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.drawable.tag_selector_light : R.drawable.tag_selector_dark;
-        int color = ThemeUtils.getCurrentTheme(this) == Themes.LIGHT ? R.color.tag_text_color_selector_light : R.color.tag_text_color_selector_dark;
-        button.setBackgroundResource(background);
-        button.setTextColor(getResources().getColorStateList(color));
-    }
-
-    private void customizeTabColors(int textColor, int position) {
+    private void customizeTabColors(int textColor, int dividerColor, int position) {
         int[] textColors = {
                 ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
                 ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
@@ -282,7 +278,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         mTabs.setIndicatorColor(textColors[position]);
         mTabs.setTextColor(textColor);
-        mTabs.setDividerColor(0);
+        mTabs.setDividerColor(dividerColor);
 
         View view = mTabs.getTabView(position);
 
@@ -322,7 +318,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         int textColor = ThemeUtils.getTextColor(this);
 
         // Reset tab colors.
-        customizeTabColors(textColor, sCurrentSection.getSectionNumber());
+        customizeTabColors(textColor, ThemeUtils.getDividerColor(this), sCurrentSection.getSectionNumber());
 
         // Reset buttons and text colors.
         mButtonAddTask.setTextColor(textColor);
@@ -335,7 +331,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mBackgroundTransition.startTransition(Constants.ANIMATION_DURATION);
 
         // Change tab colors, otherwise they look misplaced against the image background.
-        customizeTabColors(Color.WHITE, sCurrentSection.getSectionNumber());
+        customizeTabColors(Color.WHITE, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
 
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(Color.WHITE);
@@ -434,8 +430,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         String tempId = title + currentDate.getTime();
 
         if (!title.isEmpty()) {
-            GsonTask task = new GsonTask(null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
-            TasksService.getInstance(this).saveTask(task);
+            GsonTask task = new GsonTask(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
+            mTasksService.saveTask(task);
         }
 
         endAddTaskWorkflow();
@@ -473,6 +469,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Display tags area.
         animateTags(false);
+        loadTags();
     }
 
     @OnClick(R.id.blur_background)
@@ -484,6 +481,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Reset fields.
         mEditTextAddNewTask.setText("");
         mButtonAddTaskPriority.setChecked(false);
+        mSelectedTags.clear();
 
         // Hide add task area.
         mAddTaskContainer.setVisibility(View.GONE);
@@ -513,7 +511,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @OnClick(R.id.button_edit_task)
     protected void editTask() {
         // Send a broadcast to edit the currently selected task. The fragment should handle it.
-        TasksService.getInstance(this).sendBroadcast(Actions.EDIT_TASK);
+        mTasksService.sendBroadcast(Actions.EDIT_TASK);
         // Close edit bar.
         hideEditBar();
     }
@@ -521,19 +519,19 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @OnClick(R.id.button_assign_tags)
     protected void assignTags() {
         // Send a broadcast to assign tags to the selected tasks. The fragment should handle it.
-        TasksService.getInstance(this).sendBroadcast(Actions.ASSIGN_TAGS);
+        mTasksService.sendBroadcast(Actions.ASSIGN_TAGS);
     }
 
     @OnClick(R.id.button_delete_tasks)
     protected void deleteTasks() {
         // Send a broadcast to delete tasks. The fragment should handle it, since it contains the list.
-        TasksService.getInstance(this).sendBroadcast(Actions.DELETE_TASKS);
+        mTasksService.sendBroadcast(Actions.DELETE_TASKS);
     }
 
     @OnClick(R.id.button_share_tasks)
     protected void shareTasks() {
         // Send a broadcast to share selected tasks. The fragment should handle it.
-        TasksService.getInstance(this).sendBroadcast(Actions.SHARE_TASKS);
+        mTasksService.sendBroadcast(Actions.SHARE_TASKS);
 
         // TODO: Remove this when sharing is working.
         Toast.makeText(this, "Sharing coming soon", Toast.LENGTH_SHORT).show();
@@ -629,10 +627,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         view.setLayoutParams(layoutParams);
     }
 
-    private void showFilters() {
-        Toast.makeText(this, "Filters", Toast.LENGTH_SHORT).show();
-    }
-
     public void hideActionButtons() {
         Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
         slideDown.setAnimationListener(mHideButtonsListener);
@@ -640,9 +634,11 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     public void showActionButtons() {
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        slideUp.setAnimationListener(mShowButtonsListener);
-        mActionButtonsContainer.startAnimation(slideUp);
+        mActionButtonsContainer.setVisibility(View.VISIBLE);
+        mButtonAddTask.setVisibility(View.VISIBLE);
+        mEditTasksBar.setVisibility(View.GONE);
+
+        showGradient();
     }
 
     private Animation.AnimationListener mHideButtonsListener = new Animation.AnimationListener() {
@@ -662,23 +658,57 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     };
 
-    private Animation.AnimationListener mShowButtonsListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-            mActionButtonsContainer.setVisibility(View.VISIBLE);
-            mButtonAddTask.setVisibility(View.VISIBLE);
-            mEditTasksBar.setVisibility(View.GONE);
+    private void loadTags() {
+        List<GsonTag> tags = mTasksService.loadAllTags();
+        mAddTaskTagContainer.removeAllViews();
 
-            showGradient();
+        // For each tag, add a checkbox as child view.
+        for (GsonTag tag : tags) {
+            int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
+            CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
+            tagBox.setText(tag.getTitle());
+            tagBox.setId(tag.getId().intValue());
+
+            // Set listener to assign tag.
+            tagBox.setOnClickListener(mTagClickListener);
+
+            // Add child view.
+            mAddTaskTagContainer.addView(tagBox);
         }
+    }
 
+    private View.OnClickListener mTagClickListener = new View.OnClickListener() {
         @Override
-        public void onAnimationEnd(Animation animation) {
-        }
+        public void onClick(View view) {
+            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
 
-        @Override
-        public void onAnimationRepeat(Animation animation) {
+            // Add or remove from list of selected tags.
+            if (isTagSelected(selectedTag)) {
+                removeSelectedTag(selectedTag);
+            } else {
+                mSelectedTags.add(selectedTag);
+            }
         }
     };
+
+    private boolean isTagSelected(GsonTag selectedTag) {
+        // Check if tag already exists in the list of selected.
+        for (GsonTag tag : mSelectedTags) {
+            if (tag.getId().equals(selectedTag.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeSelectedTag(GsonTag selectedTag) {
+        // Find and remove tag from the list of selected.
+        List<GsonTag> selected = new ArrayList<GsonTag>(mSelectedTags);
+        for (GsonTag tag : selected) {
+            if (tag.getId().equals(selectedTag.getId())) {
+                mSelectedTags.remove(tag);
+            }
+        }
+    }
 
 }

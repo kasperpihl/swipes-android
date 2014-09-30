@@ -1,5 +1,7 @@
 package com.swipesapp.android.db;
 
+import java.util.List;
+
 /**
  * Extended DAO for join of tasks and tags, allowing custom DB operations.
  *
@@ -26,7 +28,15 @@ public class ExtTaskTagDao {
     }
 
     public TaskTag selectAssociation(Long taskId, Long tagId) {
-        return mDao.queryBuilder().where(TaskTagDao.Properties.TaskId.eq(taskId), TaskTagDao.Properties.TagId.eq(tagId)).list().get(0);
+        return mDao.queryBuilder().where(TaskTagDao.Properties.TaskId.eq(taskId), TaskTagDao.Properties.TagId.eq(tagId)).unique();
+    }
+
+    public List<TaskTag> selectAssociationsForTag(Long tagId) {
+        return mDao.queryBuilder().where(TaskTagDao.Properties.TagId.eq(tagId)).list();
+    }
+
+    public List<TaskTag> selectAssociationsForTask(Long taskId) {
+        return mDao.queryBuilder().where(TaskTagDao.Properties.TaskId.eq(taskId)).list();
     }
 
 }

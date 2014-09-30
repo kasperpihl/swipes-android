@@ -71,9 +71,7 @@
     <string name="clear_old_dialog_text">Deleting old completed tasks can\'t be undone</string>
     <string name="clear_old_dialog_yes">Delete them</string>
     <string name="clear_old_dialog_no">Cancel</string>
-    <string name="add_tag_dialog_title">Add new tag</string>
-    <string name="add_tag_dialog_yes">Save</string>
-    <string name="add_tag_dialog_cancel">Cancel</string>
+    <string name="search_hint">Search</string>
 
     <!-- Scheduler -->
     <string name="date_today">Today,&#160;</string>
@@ -109,6 +107,16 @@
     <string name="notification_snooze">Snooze +%dh</string>
     <string name="notification_complete">Complete</string>
 
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">Add new tag</string>
+    <string name="add_tag_dialog_hint">Tag title</string>
+    <string name="add_tag_dialog_yes">Save</string>
+    <string name="add_tag_dialog_cancel">Cancel</string>
+    <string name="delete_tag_dialog_title">Delete tag: %s</string>
+    <string name="delete_tag_dialog_message">This can\'t be undone</string>
+    <string name="delete_tag_dialog_yes">Yes</string>
+    <string name="delete_tag_dialog_cancel">No</string>
+
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
         <item quantity="one">Delete task</item>
@@ -139,12 +147,15 @@
     <string name="round_add_full">&#xe62f;</string>
     <string name="left_arrow">&#xe63f;</string>
     <string name="plus_sign">&#xe626;</string>
+    <string name="round_close">&#xe629;</string>
+    <string name="round_close_full">&#xe62e;</string>
 
     <!-- Edit task icons -->
     <string name="edit_location">&#xe60d;</string>
     <string name="edit_notes">&#xe609;</string>
     <string name="edit_repeat">&#xe60a;</string>
     <string name="action_tag">&#xe60b;</string>
+    <string name="action_tag_full">&#xe63a;</string>
     <string name="action_share">&#xe633;</string>
     <string name="action_delete">&#xe635;</string>
     <string name="action_edit">&#xe636;</string>

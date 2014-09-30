@@ -6,12 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,23 +23,31 @@ import android.widget.Toast;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
+import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class EditTaskActivity extends AccentActivity {
+
+    @InjectView(R.id.edit_task_container)
+    FrameLayout mContainer;
 
     @InjectView(R.id.edit_task_view)
     LinearLayout mView;
@@ -65,11 +77,23 @@ public class EditTaskActivity extends AccentActivity {
     @InjectView(R.id.edit_task_notes)
     ActionEditText mNotes;
 
+    @InjectView(R.id.assign_tags_area)
+    LinearLayout mTagsArea;
+
+    @InjectView(R.id.assign_tags_container)
+    FlowLayout mTaskTagsContainer;
+
+    private static final String TAG_SEPARATOR = ", ";
+
+    private WeakReference<Context> mContext;
+
     private TasksService mTasksService;
 
-    private String mTempId;
+    private Long mId;
 
     private GsonTask mTask;
+
+    private List<GsonTag> mAssignedTags;
 
     public static BitmapDrawable sBlurDrawable;
 
@@ -82,12 +106,14 @@ public class EditTaskActivity extends AccentActivity {
 
         getActionBar().setDisplayShowTitleEnabled(false);
 
+        mContext = new WeakReference<Context>(this);
+
         mTasksService = TasksService.getInstance(this);
 
-        mTempId = getIntent().getStringExtra(Constants.EXTRA_TASK_TEMP_ID);
+        mId = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
-        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-        mView.requestFocus();
+        mContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+        mContainer.requestFocus();
 
         mTitle.setTextColor(ThemeUtils.getTextColor(this));
         mTitle.setOnEditorActionListener(mEnterListener);
@@ -98,9 +124,11 @@ public class EditTaskActivity extends AccentActivity {
 
         mRepeatIcon.setTextColor(ThemeUtils.getTextColor(this));
         mRepeat.setTextColor(ThemeUtils.getTextColor(this));
+        mRepeat.setHintTextColor(ThemeUtils.getTextColor(this));
 
         mTagsIcon.setTextColor(ThemeUtils.getTextColor(this));
         mTags.setTextColor(ThemeUtils.getTextColor(this));
+        mTags.setHintTextColor(ThemeUtils.getTextColor(this));
 
         mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setTextColor(ThemeUtils.getTextColor(this));
@@ -148,7 +176,7 @@ public class EditTaskActivity extends AccentActivity {
     }
 
     private void updateViews() {
-        mTask = mTasksService.loadTask(mTempId);
+        mTask = mTasksService.loadTask(mId);
 
         mTitle.setText(mTask.getTitle());
 
@@ -158,9 +186,23 @@ public class EditTaskActivity extends AccentActivity {
 
         mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
 
-        mTags.setText(getString(R.string.edit_task_tags_default_text));
+        mTags.setText(buildFormattedTags());
 
         mNotes.setText(mTask.getNotes());
+    }
+
+    private String buildFormattedTags() {
+        String tags = null;
+
+        for (GsonTag tag : mTask.getTags()) {
+            if (tags == null) {
+                tags = tag.getTitle();
+            } else {
+                tags += TAG_SEPARATOR + tag.getTitle();
+            }
+        }
+
+        return tags;
     }
 
     private TextView.OnEditorActionListener mEnterListener =
@@ -187,7 +229,7 @@ public class EditTaskActivity extends AccentActivity {
         inputManager.toggleSoftInput(0, 0);
 
         // Remove focus from text views by focusing on main layout.
-        mView.requestFocus();
+        mContainer.requestFocus();
     }
 
     @OnClick(R.id.button_edit_task_priority)
@@ -211,13 +253,22 @@ public class EditTaskActivity extends AccentActivity {
 
     @OnClick(R.id.tags_container)
     protected void setTags() {
-        Toast.makeText(getApplicationContext(), "Tags coming soon", Toast.LENGTH_SHORT).show();
+        // TODO: Apply blur to the tags background.
+        mView.setVisibility(View.GONE);
+
+        // Show tags area with fade animation.
+        mTagsArea.setVisibility(View.VISIBLE);
+        mTagsArea.setAlpha(0f);
+        mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+        loadTags();
     }
 
     private void performChanges() {
         // Save updated properties.
         mTask.setTitle(mTitle.getText().toString());
         mTask.setNotes(mNotes.getText().toString());
+        mTask.setTags(mAssignedTags);
         mTasksService.saveTask(mTask);
 
         hideKeyboard();
@@ -255,7 +306,7 @@ public class EditTaskActivity extends AccentActivity {
     private void openSnoozeSelector() {
         // Call snooze activity.
         Intent intent = new Intent(this, SnoozeActivity.class);
-        intent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mTask.getTempId());
+        intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
         intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_EDIT_TASKS);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
 
@@ -270,6 +321,160 @@ public class EditTaskActivity extends AccentActivity {
 
     public static BitmapDrawable getBlurDrawable() {
         return sBlurDrawable;
+    }
+
+    @OnClick(R.id.tags_back_button)
+    protected void closeTags() {
+        mTagsArea.setVisibility(View.GONE);
+
+        // Show tasks list area with optional fade animation.
+        mView.setVisibility(View.VISIBLE);
+        mView.setAlpha(0f);
+        mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+        updateViews();
+    }
+
+    @OnClick(R.id.tags_add_button)
+    protected void addTag() {
+        // Create tag title input.
+        final EditText input = new EditText(this);
+        input.setHint(getString(R.string.add_tag_dialog_hint));
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        // Display dialog to save new tag.
+        new AccentAlertDialog.Builder(this)
+                .setTitle(getString(R.string.add_tag_dialog_title))
+                .setPositiveButton(getString(R.string.add_tag_dialog_yes), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        String title = input.getText().toString();
+                        if (!title.isEmpty()) {
+                            // Save new tag to database.
+                            mTasksService.createTag(title);
+
+                            // Refresh displayed tags.
+                            loadTags();
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.add_tag_dialog_cancel), null)
+                .setView(customizeAddTagInput(input))
+                .create()
+                .show();
+    }
+
+    private LinearLayout customizeAddTagInput(EditText input) {
+        // Create layout with margins.
+        LinearLayout layout = new LinearLayout(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int margin = getResources().getDimensionPixelSize(R.dimen.add_tag_input_margin);
+        params.setMargins(margin, 0, margin, 0);
+
+        // Wrap input inside layout.
+        layout.addView(input, params);
+        return layout;
+    }
+
+    private void loadTags() {
+        List<GsonTag> tags = mTasksService.loadAllTags();
+        mAssignedTags = new ArrayList<GsonTag>();
+        mTaskTagsContainer.removeAllViews();
+
+        // For each tag, add a checkbox as child view.
+        for (GsonTag tag : tags) {
+            int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
+            CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
+            tagBox.setText(tag.getTitle());
+            tagBox.setId(tag.getId().intValue());
+
+            // Set listeners to assign and delete.
+            tagBox.setOnClickListener(mTagClickListener);
+            tagBox.setOnLongClickListener(mTagLongClickListener);
+
+            // Pre-check tag if it's already assigned.
+            if (isTagAssigned(tag)) {
+                mAssignedTags.add(tag);
+                tagBox.setChecked(true);
+            }
+
+            // Add child view.
+            mTaskTagsContainer.addView(tagBox);
+        }
+    }
+
+    private View.OnClickListener mTagClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Assign or remove tag from selected tasks.
+            if (isTagAssigned(selectedTag)) {
+                unassignTag(selectedTag);
+            } else {
+                assignTag(selectedTag);
+            }
+        }
+    };
+
+    private View.OnLongClickListener mTagLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Display dialog to delete tag.
+            new AccentAlertDialog.Builder(mContext.get())
+                    .setTitle(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
+                    .setMessage(getString(R.string.delete_tag_dialog_message))
+                    .setPositiveButton(getString(R.string.delete_tag_dialog_yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Delete tag and unassign it from all tasks.
+                            mTasksService.deleteTag(selectedTag.getId());
+
+                            // Refresh displayed tags.
+                            loadTags();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.delete_tag_dialog_cancel), null)
+                    .create()
+                    .show();
+
+            return true;
+        }
+    };
+
+    private boolean isTagAssigned(GsonTag selectedTag) {
+        // Check if tag is already assigned to the task.
+        for (GsonTag tag : mTask.getTags()) {
+            if (tag.getId().equals(selectedTag.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void assignTag(GsonTag tag) {
+        // Add to list and perform changes.
+        mAssignedTags.add(tag);
+        mTask.setTags(mAssignedTags);
+        mTasksService.saveTask(mTask);
+    }
+
+    private void unassignTag(GsonTag tag) {
+        // Unassign and update list.
+        mTasksService.unassignTag(tag.getId(), mTask.getId());
+        removeSelectedTag(tag);
+    }
+
+    private void removeSelectedTag(GsonTag selectedTag) {
+        // Find and remove tag from the list of selected.
+        List<GsonTag> selected = new ArrayList<GsonTag>(mAssignedTags);
+        for (GsonTag tag : selected) {
+            if (tag.getId().equals(selectedTag.getId())) {
+                mAssignedTags.remove(tag);
+            }
+        }
     }
 
 }

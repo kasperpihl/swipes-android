@@ -23,12 +23,12 @@ public class Constants {
     /**
      * Medium animation duration.
      */
-    public static final int ANIMATION_DURATION_MEDIUM = 300;
+    public static final int ANIMATION_DURATION_MEDIUM = 350;
 
     /**
-     * Intent extra for task tempId.
+     * Intent extra for task ID.
      */
-    public static final String EXTRA_TASK_TEMP_ID = "TASK_TEMP_ID";
+    public static final String EXTRA_TASK_ID = "TASK_ID";
 
     /**
      * Request code for task snooze.

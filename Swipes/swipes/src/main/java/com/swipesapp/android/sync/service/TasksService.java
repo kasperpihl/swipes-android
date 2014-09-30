@@ -8,12 +8,14 @@ import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.ExtTagDao;
 import com.swipesapp.android.db.ExtTaskDao;
 import com.swipesapp.android.db.ExtTaskTagDao;
+import com.swipesapp.android.db.SwipesHelper;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class TasksService {
     private TasksService(Context context) {
         mContext = new WeakReference<Context>(context);
 
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(mContext.get(), DB_NAME, null);
+        SwipesHelper helper = new SwipesHelper(mContext.get(), DB_NAME, null);
         DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
 
@@ -97,11 +99,12 @@ public class TasksService {
      * @param gsonTask Object holding task data.
      */
     public void saveTask(GsonTask gsonTask) {
-        Task task = mExtTaskDao.selectTask(gsonTask.getTempId());
+        Long id = gsonTask.getId();
 
-        if (task == null) {
+        if (id == null) {
             createTask(gsonTask);
         } else {
+            Task task = mExtTaskDao.selectTask(id);
             updateTask(gsonTask, task);
         }
 
@@ -145,7 +148,7 @@ public class TasksService {
         // Update only mutable attributes.
         task.setTempId(gsonTask.getTempId());
         task.setUpdatedAt(gsonTask.getUpdatedAt());
-        task.setDeleted(gsonTask.getDeleted());
+        task.setDeleted(gsonTask.isDeleted());
         task.setTitle(gsonTask.getTitle());
         task.setNotes(gsonTask.getNotes());
         task.setOrder(gsonTask.getOrder());
@@ -179,14 +182,8 @@ public class TasksService {
 
             // If an association already exists, do nothing.
             if (association == null) {
-                // If tag exists, create only association.
-                if (tagId == null) {
-                    // Create new tag.
-                    tagId = mExtTagDao.getDao().insert(tag);
-                }
-
                 // Create association.
-                association = new TaskTag(taskId, tagId);
+                association = new TaskTag(null, taskId, tagId);
                 mExtTaskTagDao.getDao().insert(association);
             }
         }
@@ -210,13 +207,42 @@ public class TasksService {
     }
 
     /**
+     * Unassigns a tag from a task.
+     *
+     * @param tagId  ID of the tag to unassign.
+     * @param taskId ID of the task to unnasign from.
+     */
+    public void unassignTag(Long tagId, Long taskId) {
+        // Load assignment and delete from database.
+        TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
+        mExtTaskTagDao.getDao().delete(assignment);
+    }
+
+    /**
+     * Deletes a task from the database and unassigns it from all tasks.
+     *
+     * @param tagId ID of the tag to delete.
+     */
+    public void deleteTag(Long tagId) {
+        // Unassign from all tasks.
+        List<TaskTag> assignments = mExtTaskTagDao.selectAssociationsForTag(tagId);
+        for (TaskTag assignment : assignments) {
+            mExtTaskTagDao.getDao().delete(assignment);
+        }
+
+        // Delete from database.
+        Tag tag = mExtTagDao.selectTag(tagId);
+        mExtTagDao.getDao().delete(tag);
+    }
+
+    /**
      * Loads a single task.
      *
-     * @param tempId Temp ID of the task.
+     * @param id ID of the task.
      * @return Selected task.
      */
-    public GsonTask loadTask(String tempId) {
-        return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(tempId))).get(0);
+    public GsonTask loadTask(Long id) {
+        return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(id))).get(0);
     }
 
     /**
@@ -256,6 +282,69 @@ public class TasksService {
     }
 
     /**
+     * Searches tasks for the given query and section.
+     *
+     * @param query   Query to search for.
+     * @param section Section to search from.
+     * @return List of tasks.
+     */
+    public List<GsonTask> searchTasks(String query, Sections section) {
+        List<GsonTask> tasks = new ArrayList<GsonTask>();
+        List<GsonTask> results = new ArrayList<GsonTask>();
+
+        switch (section) {
+            case LATER:
+                tasks = loadScheduledTasks();
+                break;
+            case FOCUS:
+                tasks = loadFocusedTasks();
+                break;
+            case DONE:
+                tasks = loadCompletedTasks();
+                break;
+        }
+
+        for (GsonTask task : tasks) {
+            String title = task.getTitle() != null ? task.getTitle().toLowerCase() : "";
+            String notes = task.getNotes() != null ? task.getNotes().toLowerCase() : "";
+
+            if ((title.contains(query) || notes.contains(query) || tagsContainQuery(query, task) && !task.isDeleted())) {
+                results.add(task);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Check if tags in a given task contain the given query.
+     *
+     * @param query Query to search for.
+     * @param task  Task to search from.
+     * @return True if they contain, false otherwise.
+     */
+    private boolean tagsContainQuery(String query, GsonTask task) {
+        for (GsonTag tag : task.getTags()) {
+            String title = tag.getTitle().toLowerCase();
+
+            if (title.contains(query)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Loads a single tag.
+     *
+     * @param id Database ID of the tag.
+     * @return Selected tag.
+     */
+    public GsonTag loadTag(Long id) {
+        return gsonFromTags(Arrays.asList(mExtTagDao.selectTag(id))).get(0);
+    }
+
+    /**
      * Load all existing tags.
      *
      * @return List of tags.
@@ -265,13 +354,58 @@ public class TasksService {
     }
 
     /**
-     * Loads all tasks associated with a tag, for filtering.
+     * Load all tags assigned to at least one task.
      *
-     * @param tagId ID of the tag.
+     * @return List of tags.
+     */
+    public List<GsonTag> loadAllAssignedTags() {
+        List<GsonTag> tags = loadAllTags();
+        List<GsonTag> assigned = new ArrayList<GsonTag>();
+
+        for (GsonTag tag : tags) {
+            List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTag(tag.getId());
+
+            for (TaskTag association : associations) {
+                Task task = mExtTaskDao.selectTask(association.getTaskId());
+
+                if (!task.getDeleted()) assigned.add(tag);
+            }
+        }
+
+        return assigned;
+    }
+
+    /**
+     * Loads all tasks associated with a tag for the given section.
+     *
+     * @param tagId   ID of the tag.
+     * @param section Section to load tasks from.
      * @return List of tasks.
      */
-    public List<GsonTask> loadTasksForTag(Long tagId) {
-        return gsonFromTasks(mExtTagDao.listTasksForTag(tagId));
+    public List<GsonTask> loadTasksForTag(Long tagId, Sections section) {
+        List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTag(tagId);
+        List<GsonTask> tasks = new ArrayList<GsonTask>();
+
+        for (TaskTag association : associations) {
+            GsonTask task = loadTask(association.getTaskId());
+            boolean isFromSection = false;
+
+            switch (section) {
+                case LATER:
+                    isFromSection = task.getSchedule().after(new Date());
+                    break;
+                case FOCUS:
+                    isFromSection = (task.getSchedule() == null || task.getSchedule().before(new Date())) && task.getCompletionDate() == null;
+                    break;
+                case DONE:
+                    isFromSection = task.getCompletionDate() != null;
+                    break;
+            }
+
+            if (isFromSection && !task.isDeleted()) tasks.add(task);
+        }
+
+        return tasks;
     }
 
     /**
@@ -281,7 +415,14 @@ public class TasksService {
      * @return List of tags.
      */
     private List<GsonTag> loadTagsForTask(Long taskId) {
-        return gsonFromTags(mExtTaskDao.listTagsForTask(taskId));
+        List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTask(taskId);
+        List<GsonTag> tags = new ArrayList<GsonTag>();
+
+        for (TaskTag association : associations) {
+            tags.add(loadTag(association.getTagId()));
+        }
+
+        return tags;
     }
 
     /**
@@ -294,7 +435,7 @@ public class TasksService {
         List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
 
         for (Task task : tasks) {
-            gsonTasks.add(new GsonTask(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), task.getId()));
+            gsonTasks.add(new GsonTask(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), task.getId()));
         }
 
         return gsonTasks;
@@ -310,7 +451,7 @@ public class TasksService {
         List<GsonTag> gsonTags = new ArrayList<GsonTag>();
 
         for (Tag tag : tags) {
-            gsonTags.add(new GsonTag(tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
+            gsonTags.add(new GsonTag(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
         }
 
         return gsonTags;
@@ -326,7 +467,7 @@ public class TasksService {
         List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
-            tasks.add(new Task(null, gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.getDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier(), gsonTask.getRepeatOption()));
+            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier(), gsonTask.getRepeatOption()));
         }
 
         return tasks;
@@ -341,8 +482,10 @@ public class TasksService {
     private List<Tag> tagsFromGson(List<GsonTag> gsonTags) {
         List<Tag> tags = new ArrayList<Tag>();
 
-        for (GsonTag gsonTag : gsonTags) {
-            tags.add(new Tag(null, gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
+        if (gsonTags != null) {
+            for (GsonTag gsonTag : gsonTags) {
+                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
+            }
         }
 
         return tags;

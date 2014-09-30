@@ -52,4 +52,9 @@ public class Actions {
      */
     public static final String COMPLETE_TASKS = "com.swipesapp.android.ACTION_COMPLETE_TASKS";
 
+    /**
+     * Notifies that hardware back button has been pressed.
+     */
+    public static final String BACK_PRESSED = "com.swipesapp.android.ACTION_BACK_PRESSED";
+
 }

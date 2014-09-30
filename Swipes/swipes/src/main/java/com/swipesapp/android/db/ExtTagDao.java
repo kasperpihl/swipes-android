@@ -1,6 +1,5 @@
 package com.swipesapp.android.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,13 +27,12 @@ public class ExtTagDao {
         return mDao;
     }
 
-    public List<Tag> listAllTags() {
-        return mDao.queryBuilder().list();
+    public Tag selectTag(Long id) {
+        return mDao.queryBuilder().where(TaskDao.Properties.Id.eq(id)).unique();
     }
 
-    public List<Task> listTasksForTag(Long tagId) {
-        // TODO: Build a raw query to retrieve all tasks for a specific tag, using the join table.
-        return new ArrayList<Task>();
+    public List<Tag> listAllTags() {
+        return mDao.queryBuilder().list();
     }
 
 }

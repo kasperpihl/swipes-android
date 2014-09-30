@@ -54,10 +54,8 @@
                 android:layout_marginLeft="@dimen/done_buttons_margin_sides"
                 android:layout_marginRight="@dimen/done_buttons_margin_middle"
                 android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-                android:background="@drawable/transparent_button_selector_light"
                 android:button="@null"
-                android:text="@string/show_old"
-                android:textColor="@color/button_text_color_selector_light" />
+                android:text="@string/show_old" />
 
             <com.swipesapp.android.ui.view.TransparentButton
                 android:id="@+id/button_clear_old"
@@ -68,10 +66,8 @@
                 android:layout_marginLeft="@dimen/done_buttons_margin_middle"
                 android:layout_marginRight="@dimen/done_buttons_margin_sides"
                 android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-                android:background="@drawable/transparent_button_selector_light"
                 android:button="@null"
-                android:text="@string/clear_old"
-                android:textColor="@color/button_text_color_selector_light" />
+                android:text="@string/clear_old" />
         </LinearLayout>
 
     </LinearLayout>
@@ -95,37 +91,33 @@
             android:layout_marginTop="12dp" />
 
         <!-- Tag management buttons -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_theme_background"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:orientation="horizontal">
 
             <com.swipesapp.android.ui.view.SwipesButton
                 android:id="@+id/tags_back_button"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="12dp"
-                android:layout_weight="0.5"
                 android:background="@android:color/transparent"
                 android:text="@string/left_arrow"
-                android:textColor="@color/light_theme_text"
                 android:textSize="25sp" />
 
             <com.swipesapp.android.ui.view.SwipesButton
                 android:id="@+id/tags_add_button"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="12dp"
-                android:layout_weight="0.5"
                 android:background="@android:color/transparent"
                 android:text="@string/plus_sign"
-                android:textColor="@color/light_theme_text"
                 android:textSize="25sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

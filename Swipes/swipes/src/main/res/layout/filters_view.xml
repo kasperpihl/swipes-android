@@ -8,43 +8,71 @@
     tools:context="com.swipesapp.android.ui.fragments.TasksListFragment">
 
     <LinearLayout
+        android:id="@+id/filters_search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/filters_search"
+        <com.swipesapp.android.ui.view.ActionEditText
+            android:id="@+id/filters_search_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="12dp"
             android:layout_weight="1"
-            android:hint="Search"
-            android:imeOptions="actionSearch"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionDone"
             android:inputType="text" />
 
         <com.swipesapp.android.ui.view.SwipesButton
             android:id="@+id/filters_tags_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:text="@string/action_tag"
-            android:textColor="@color/light_theme_text"
             android:textSize="@dimen/action_buttons_size" />
+
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/filters_close_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="@android:color/transparent"
+            android:text="@string/round_close"
+            android:textSize="@dimen/action_buttons_size"
+            android:visibility="gone" />
     </LinearLayout>
 
     <!-- Tags area -->
-    <com.swipesapp.android.ui.view.FlowLayout
-        android:id="@+id/filter_tags_area"
+    <LinearLayout
+        android:id="@+id/filters_tags_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp"
-        android:visibility="gone" />
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="1">
+
+        <com.swipesapp.android.ui.view.FlowLayout
+            android:id="@+id/filters_tags_area"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1" />
+
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/filters_close_tags_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:text="@string/round_close"
+            android:textSize="@dimen/action_buttons_size" />
+    </LinearLayout>
 
 </LinearLayout>

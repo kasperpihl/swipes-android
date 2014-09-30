@@ -103,8 +103,6 @@ public class SnoozeActivity extends FragmentActivity {
 
     private TasksService mTasksService;
 
-    private String mTempId;
-
     private GsonTask mTask;
 
     private WeakReference<Context> mContext;
@@ -122,9 +120,9 @@ public class SnoozeActivity extends FragmentActivity {
 
         mTasksService = TasksService.getInstance(this);
 
-        mTempId = getIntent().getStringExtra(Constants.EXTRA_TASK_TEMP_ID);
+        Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
-        mTask = mTasksService.loadTask(mTempId);
+        mTask = mTasksService.loadTask(id);
 
         customizeViews();
 

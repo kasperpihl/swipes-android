@@ -10,29 +10,40 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.ui.adapter.TasksListAdapter;
+import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.ListContentsListener;
+import com.swipesapp.android.ui.view.ActionEditText;
+import com.swipesapp.android.ui.view.FlowLayout;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.TransparentButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
@@ -84,14 +95,26 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private TasksService mTasksService;
 
     /**
-     * List of selected tasks.
+     * Selected tasks, tags and filters.
      */
     private List<GsonTask> mSelectedTasks;
+    private List<GsonTag> mAssignedTags;
+    private List<Long> mSelectedFilterTags;
 
     /**
-     * Filters area.
+     * Filters containers.
      */
     private LinearLayout mFiltersContainer;
+    private LinearLayout mFiltersTagsContainer;
+    private LinearLayout mFiltersSearchContainer;
+    private FlowLayout mFiltersTagsArea;
+
+    /**
+     * Filters views.
+     */
+    private ActionEditText mSearchEditText;
+    private SwipesButton mFiltersTagsButton;
+    private SwipesButton mCloseSearchButton;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -110,6 +133,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(R.id.tags_area)
     LinearLayout mTagsArea;
+
+    @InjectView(R.id.tags_container)
+    FlowLayout mTaskTagsContainer;
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
@@ -174,6 +200,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         filter.addAction(Actions.ASSIGN_TAGS);
         filter.addAction(Actions.DELETE_TASKS);
         filter.addAction(Actions.SHARE_TASKS);
+        filter.addAction(Actions.BACK_PRESSED);
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         refreshTaskList(false);
@@ -225,12 +252,42 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
-        // Setup filters area.
-        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
-        mListView.addHeaderView(mFiltersContainer);
+        // Setup filters.
+        setupFiltersArea();
 
         // Setup empty view.
         mViewStub.setLayoutResource(emptyView);
+    }
+
+    private void setupFiltersArea() {
+        // Add filter views.
+        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
+        mFiltersTagsContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_tags_container);
+        mFiltersSearchContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_search_container);
+        mFiltersTagsArea = (FlowLayout) mFiltersContainer.findViewById(R.id.filters_tags_area);
+        mListView.addHeaderView(mFiltersContainer);
+
+        // Add listeners and customize buttons.
+        mFiltersTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_tags_button);
+        mFiltersTagsButton.setOnClickListener(mShowTagsFilterListener);
+        mFiltersTagsButton.setSelector(R.string.action_tag, R.string.action_tag_full);
+
+        SwipesButton filtersCloseTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_tags_button);
+        filtersCloseTagsButton.setOnClickListener(mCloseTagsFilterListener);
+        filtersCloseTagsButton.setSelector(R.string.round_close, R.string.round_close_full);
+
+        mSearchEditText = (ActionEditText) mFiltersContainer.findViewById(R.id.filters_search_edit_text);
+        mSearchEditText.setOnFocusChangeListener(mSearchFocusListener);
+        mSearchEditText.addTextChangedListener(mSearchTypeListener);
+        mSearchEditText.setOnEditorActionListener(mSearchDoneListener);
+        mSearchEditText.setListener(mKeyboardBackListener);
+
+        mCloseSearchButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_search_button);
+        mCloseSearchButton.setOnClickListener(mSearchCloseListener);
+        mCloseSearchButton.setSelector(R.string.round_close, R.string.round_close_full);
+
+        // Customize colors.
+        mFiltersContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
     }
 
     private void customizeDoneButtons() {
@@ -359,7 +416,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private GsonTask getTask(int position) {
-        return mAdapter.getData().get(position);
+        // Reduce position by -1 to account for the header.
+        return (GsonTask) mAdapter.getItem(position - 1);
     }
 
     private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
@@ -381,28 +439,30 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                     // Hide search and tags.
                     hideFilters();
-                    closeTags();
+                    closeTags(false);
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
-                    editTaskIntent.putExtra(Constants.EXTRA_TASK_TEMP_ID, mSelectedTasks.get(0).getTempId());
+                    editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, mSelectedTasks.get(0).getId());
                     startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
 
                     // Clear selected tasks.
                     mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
-                    // TODO: Apply blur to the tags background.
-                    mListArea.setVisibility(View.GONE);
-                    mTagsArea.setVisibility(View.VISIBLE);
-
-                    ((TasksActivity) getActivity()).hideActionButtons();
-
-                    // TODO: Fill flow layout with tag boxes.
+                    // Hide buttons and show tags view.
+                    showTags();
                 } else if (intent.getAction().equals(Actions.DELETE_TASKS)) {
                     // Delete tasks.
                     deleteSelectedTasks();
                 } else if (intent.getAction().equals(Actions.SHARE_TASKS)) {
                     // TODO: Send intent to share tasks by email.
+                } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
+                    // Don't close the app when assigning tags.
+                    if (mTagsArea.getVisibility() == View.VISIBLE) {
+                        closeTags(true);
+                    } else {
+                        getActivity().finish();
+                    }
                 }
             }
         }
@@ -628,7 +688,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void openSnoozeSelector(GsonTask task) {
         // Call snooze activity.
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
-        intent.putExtra(Constants.EXTRA_TASK_TEMP_ID, task.getTempId());
+        intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
         intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_TASKS_LIST);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
 
@@ -638,26 +698,51 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-    private void hideFilters() {
-        // Scroll list to first position, hiding the search.
-        mListView.setSelection(1);
+    private void showTags() {
+        // TODO: Apply blur to the tags background.
+        mListArea.setVisibility(View.GONE);
+
+        // Show tags area with fade animation.
+        mTagsArea.setVisibility(View.VISIBLE);
+        mTagsArea.setAlpha(0f);
+        mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+        // Hide main activity content.
+        ((TasksActivity) getActivity()).hideActionButtons();
+        ((TasksActivity) getActivity()).hideGradient();
+
+        loadTags();
     }
 
-    @OnClick(R.id.tags_back_button)
-    protected void closeTags() {
-        mListArea.setVisibility(View.VISIBLE);
+    private void closeTags(boolean animate) {
         mTagsArea.setVisibility(View.GONE);
-        mSelectedTasks.clear();
+
+        // Show tasks list area with optional fade animation.
+        mListArea.setVisibility(View.VISIBLE);
+
+        if (animate) {
+            mListArea.setAlpha(0f);
+            mListArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        }
 
         ((TasksActivity) getActivity()).showActionButtons();
 
+        mSelectedTasks.clear();
+
         refreshTaskList(false);
+    }
+
+    @OnClick(R.id.tags_back_button)
+    protected void tagsBack() {
+        // Close tags area with animation.
+        closeTags(true);
     }
 
     @OnClick(R.id.tags_add_button)
     protected void addTag() {
         // Create tag title input.
         final EditText input = new EditText(getActivity());
+        input.setHint(getString(R.string.add_tag_dialog_hint));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         // Display dialog to save new tag.
@@ -671,16 +756,326 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             // Save new tag to database.
                             mTasksService.createTag(title);
 
-                            // TODO: Refresh flow layout.
-
-                            // TODO: !!! REPRODUCE THIS ON EDIT SCREEN WHEN YOU COME BACK !!!
+                            // Refresh displayed tags.
+                            loadTags();
                         }
                     }
                 })
                 .setNegativeButton(getString(R.string.add_tag_dialog_cancel), null)
-                .setView(input)
+                .setView(customizeAddTagInput(input))
                 .create()
                 .show();
+    }
+
+    private LinearLayout customizeAddTagInput(EditText input) {
+        // Create layout with margins.
+        LinearLayout layout = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int margin = getActivity().getResources().getDimensionPixelSize(R.dimen.add_tag_input_margin);
+        params.setMargins(margin, 0, margin, 0);
+
+        // Wrap input inside layout.
+        layout.addView(input, params);
+        return layout;
+    }
+
+    private void loadTags() {
+        List<GsonTag> tags = mTasksService.loadAllTags();
+        mAssignedTags = new ArrayList<GsonTag>();
+        mTaskTagsContainer.removeAllViews();
+
+        // For each tag, add a checkbox as child view.
+        for (GsonTag tag : tags) {
+            int resource = ThemeUtils.isLightTheme(getActivity()) ? R.layout.tag_box_light : R.layout.tag_box_dark;
+            CheckBox tagBox = (CheckBox) getActivity().getLayoutInflater().inflate(resource, null);
+            tagBox.setText(tag.getTitle());
+            tagBox.setId(tag.getId().intValue());
+
+            // Set listeners to assign and delete.
+            tagBox.setOnClickListener(mTagClickListener);
+            tagBox.setOnLongClickListener(mTagLongClickListener);
+
+            // Pre-check tag if it's already assigned.
+            if (isTagAssigned(tag)) {
+                mAssignedTags.add(tag);
+                tagBox.setChecked(true);
+            }
+
+            // Add child view.
+            mTaskTagsContainer.addView(tagBox);
+        }
+    }
+
+    private View.OnClickListener mTagClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Assign or remove tag from selected tasks.
+            if (isTagAssigned(selectedTag)) {
+                unassignTag(selectedTag);
+            } else {
+                assignTag(selectedTag);
+            }
+        }
+    };
+
+    private View.OnLongClickListener mTagLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Display dialog to delete tag.
+            new AccentAlertDialog.Builder(getActivity())
+                    .setTitle(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
+                    .setMessage(getString(R.string.delete_tag_dialog_message))
+                    .setPositiveButton(getString(R.string.delete_tag_dialog_yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Delete tag and unassign it from all tasks.
+                            mTasksService.deleteTag(selectedTag.getId());
+
+                            // Refresh displayed tags.
+                            loadTags();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.delete_tag_dialog_cancel), null)
+                    .create()
+                    .show();
+
+            return true;
+        }
+    };
+
+    private boolean isTagAssigned(GsonTag selectedTag) {
+        int assigns = 0;
+        // Using a counter, check if the tag is assigned to all selected tasks.
+        for (GsonTask task : mSelectedTasks) {
+            // Increase counter if tag is already assigned to the task.
+            for (GsonTag tag : task.getTags()) {
+                if (tag.getId().equals(selectedTag.getId())) {
+                    assigns++;
+                }
+            }
+        }
+        return assigns == mSelectedTasks.size();
+    }
+
+    private void assignTag(GsonTag tag) {
+        // Assign to all selected tasks.
+        for (GsonTask task : mSelectedTasks) {
+            mAssignedTags.add(tag);
+            task.setTags(mAssignedTags);
+            mTasksService.saveTask(task);
+        }
+    }
+
+    private void unassignTag(GsonTag tag) {
+        // Unassign from all selected tasks.
+        for (GsonTask task : mSelectedTasks) {
+            mTasksService.unassignTag(tag.getId(), task.getId());
+        }
+
+        // Remove from selected tags.
+        removeSelectedTag(tag);
+    }
+
+    private void removeSelectedTag(GsonTag selectedTag) {
+        // Find and remove tag from the list of selected.
+        List<GsonTag> selected = new ArrayList<GsonTag>(mAssignedTags);
+        for (GsonTag tag : selected) {
+            if (tag.getId().equals(selectedTag.getId())) {
+                mAssignedTags.remove(tag);
+            }
+        }
+    }
+
+    private void hideFilters() {
+        // Scroll list to first position, hiding the search.
+        mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                mListView.setSelection(1);
+            }
+        });
+
+        // Hide tag filters.
+        mFiltersTagsContainer.setVisibility(View.GONE);
+        mFiltersSearchContainer.setVisibility(View.VISIBLE);
+    }
+
+    private View.OnClickListener mShowTagsFilterListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mFiltersSearchContainer.setVisibility(View.GONE);
+
+            // Show tag filters with fade animation.
+            mFiltersTagsContainer.setVisibility(View.VISIBLE);
+            mFiltersTagsContainer.setAlpha(0f);
+            mFiltersTagsContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+            loadFilterTags();
+        }
+    };
+
+    private View.OnClickListener mCloseTagsFilterListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mFiltersTagsContainer.setVisibility(View.GONE);
+
+            // Show search view with fade animation.
+            mFiltersSearchContainer.setVisibility(View.VISIBLE);
+            mFiltersSearchContainer.setAlpha(0f);
+            mFiltersSearchContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+            refreshTaskList(false);
+        }
+    };
+
+    private void loadFilterTags() {
+        List<GsonTag> tags = mTasksService.loadAllAssignedTags();
+        mSelectedFilterTags = new ArrayList<Long>();
+        mFiltersTagsArea.removeAllViews();
+
+        // For each tag, add a checkbox as child view.
+        for (GsonTag tag : tags) {
+            int resource = ThemeUtils.isLightTheme(getActivity()) ? R.layout.tag_box_light : R.layout.tag_box_dark;
+            CheckBox tagBox = (CheckBox) getActivity().getLayoutInflater().inflate(resource, null);
+            tagBox.setText(tag.getTitle());
+            tagBox.setId(tag.getId().intValue());
+
+            // Set listener to apply filter.
+            tagBox.setOnClickListener(mFilterTagListener);
+
+            // Add child view.
+            mFiltersTagsArea.addView(tagBox);
+        }
+    }
+
+    private View.OnClickListener mFilterTagListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Add or remove tag from selected filters.
+            if (isFilterTagSelected(selectedTag.getId())) {
+                removeSelectedFilterTag(selectedTag.getId());
+            } else {
+                mSelectedFilterTags.add(selectedTag.getId());
+            }
+
+            // Filter by tags or clear results.
+            if (!mSelectedFilterTags.isEmpty()) {
+                filterByTags();
+            } else {
+                refreshTaskList(false);
+            }
+        }
+    };
+
+    private boolean isFilterTagSelected(Long selectedTagId) {
+        // Check if tag is in the selected filters.
+        for (Long tagId : mSelectedFilterTags) {
+            if (tagId.equals(selectedTagId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeSelectedFilterTag(Long selectedTagId) {
+        // Find and remove filter from the list of selected.
+        List<Long> selected = new ArrayList<Long>(mSelectedFilterTags);
+        for (Long tagId : selected) {
+            if (tagId.equals(selectedTagId)) {
+                mSelectedFilterTags.remove(tagId);
+            }
+        }
+    }
+
+    private void filterByTags() {
+        // Load tasks for each selected tag.
+        List<GsonTask> filteredTasks = new ArrayList<GsonTask>();
+        for (Long taskId : mSelectedFilterTags) {
+            filteredTasks.addAll(mTasksService.loadTasksForTag(taskId, mSection));
+        }
+
+        // Refresh list with filtered tasks.
+        mListView.setContentList(filteredTasks);
+        mAdapter.update(filteredTasks, false);
+    }
+
+    private View.OnFocusChangeListener mSearchFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus) {
+            if (hasFocus) {
+                // Show close search button.
+                mCloseSearchButton.setVisibility(View.VISIBLE);
+                mFiltersTagsButton.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    private View.OnClickListener mSearchCloseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Hide close search button and clear search query.
+            mCloseSearchButton.setVisibility(View.GONE);
+            mFiltersTagsButton.setVisibility(View.VISIBLE);
+            mSearchEditText.getText().clear();
+
+            refreshTaskList(false);
+        }
+    };
+
+    private TextWatcher mSearchTypeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String query = mSearchEditText.getText().toString().toLowerCase();
+            List<GsonTask> results = mTasksService.searchTasks(query, mSection);
+
+            // Refresh list with results.
+            if (!results.isEmpty()) {
+                mListView.setContentList(results);
+                mAdapter.update(results, false);
+            }
+        }
+    };
+
+    private TextView.OnEditorActionListener mSearchDoneListener =
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, close keyboard.
+                        hideKeyboard();
+                    }
+                    return true;
+                }
+            };
+
+    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
+        @Override
+        public void onKeyboardBackPressed() {
+            // Back button has been pressed, close keyboard.
+            hideKeyboard();
+        }
+    };
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
+
+        // Remove focus from text views by focusing on list area.
+        mListArea.requestFocus();
     }
 
 }

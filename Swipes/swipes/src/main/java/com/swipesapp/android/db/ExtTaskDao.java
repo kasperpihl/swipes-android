@@ -1,6 +1,5 @@
 package com.swipesapp.android.db;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,8 +28,8 @@ public class ExtTaskDao {
         return mDao;
     }
 
-    public Task selectTask(String tempId) {
-        return mDao.queryBuilder().where(TaskDao.Properties.TempId.eq(tempId)).unique();
+    public Task selectTask(Long id) {
+        return mDao.queryBuilder().where(TaskDao.Properties.Id.eq(id)).unique();
     }
 
     public List<Task> listAllTasks() {
@@ -48,11 +47,6 @@ public class ExtTaskDao {
 
     public List<Task> listCompletedTasks() {
         return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.isNotNull(), TaskDao.Properties.Deleted.eq(false)).orderDesc(TaskDao.Properties.CompletionDate).list();
-    }
-
-    public List<Tag> listTagsForTask(Long taskId) {
-        // TODO: Build a raw query to retrieve all tags for a specific task, using the join table.
-        return new ArrayList<Tag>();
     }
 
 }

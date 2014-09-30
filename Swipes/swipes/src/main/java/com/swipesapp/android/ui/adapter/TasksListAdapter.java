@@ -83,7 +83,7 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        if (position < 0 || position >= mData.size()) {
+        if (position < 0 || position >= getCount()) {
             return -1;
         }
         return ((GsonTask) getItem(position)).getItemId();
@@ -112,6 +112,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
             holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
             holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
+            holder.tagsIcon = (SwipesTextView) row.findViewById(R.id.task_tags_icon);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
 
             row.setTag(holder);
@@ -166,16 +167,17 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         // Build the formatted tags.
-        if (tagList != null && !tagList.isEmpty()) {
-            for (GsonTag tag : tagList) {
-                if (tags == null) {
-                    tags = tag.getTitle();
-                } else {
-                    tags += TAG_SEPARATOR + tag.getTitle();
-                }
+        for (GsonTag tag : tagList) {
+            if (tags == null) {
+                tags = tag.getTitle();
+            } else {
+                tags += TAG_SEPARATOR + tag.getTitle();
             }
+        }
 
-            // Display formatted tags with divider.
+        // Display formatted tags.
+        if (tags != null && !tags.isEmpty()) {
+            holder.tagsIcon.setVisibility(View.VISIBLE);
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
             mDisplayProperties = true;
@@ -263,6 +265,7 @@ public class TasksListAdapter extends BaseAdapter {
         holder.containerView.setVisibility(View.VISIBLE);
 
         // Reset properties.
+        holder.tagsIcon.setVisibility(View.GONE);
         holder.tags.setVisibility(View.GONE);
         holder.notesIcon.setVisibility(View.GONE);
         holder.repeatIcon.setVisibility(View.GONE);
@@ -426,6 +429,7 @@ public class TasksListAdapter extends BaseAdapter {
         SwipesTextView repeatIcon;
 
         // Tags.
+        SwipesTextView tagsIcon;
         TextView tags;
     }
 

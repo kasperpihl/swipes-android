@@ -9,10 +9,10 @@ import android.util.Log;
  */
 public enum Sections {
 
-    LATER(1),
-    FOCUS(2),
-    DONE(3),
-    SETTINGS(4);
+    LATER(0),
+    FOCUS(1),
+    DONE(2),
+    SETTINGS(3);
 
     private static final int SECTIONS_COUNT = 4;
 
