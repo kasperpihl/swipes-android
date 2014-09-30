@@ -4,7 +4,7 @@ import de.greenrobot.daogenerator.*;
 
 /**
  * Generates entities and DAOs for the Swipes project.
- *
+ * <p/>
  * Run it as a Java application (not Android).
  *
  * @author Felipe Bari
@@ -12,7 +12,7 @@ import de.greenrobot.daogenerator.*;
 public class SwipesDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1000, "com.swipesapp.android.db");
+        Schema schema = new Schema(1001, "com.swipesapp.android.db");
         schema.enableKeepSectionsByDefault();
 
         addEntities(schema);
@@ -61,6 +61,7 @@ public class SwipesDaoGenerator {
 
         // Join table for tasks and tags.
         Entity taskTag = schema.addEntity("TaskTag");
+        taskTag.addIdProperty();
         Property taskId = taskTag.addLongProperty("taskId").notNull().getProperty();
         Property tagId = taskTag.addLongProperty("tagId").notNull().getProperty();
 

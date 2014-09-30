@@ -19,7 +19,7 @@ import com.swipesapp.android.db.TaskTag;
 /** 
  * DAO for table TASK_TAG.
 */
-public class TaskTagDao extends AbstractDao<TaskTag, Void> {
+public class TaskTagDao extends AbstractDao<TaskTag, Long> {
 
     public static final String TABLENAME = "TASK_TAG";
 
@@ -28,8 +28,9 @@ public class TaskTagDao extends AbstractDao<TaskTag, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TaskId = new Property(0, long.class, "taskId", false, "TASK_ID");
-        public final static Property TagId = new Property(1, long.class, "tagId", false, "TAG_ID");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TaskId = new Property(1, long.class, "taskId", false, "TASK_ID");
+        public final static Property TagId = new Property(2, long.class, "tagId", false, "TAG_ID");
     };
 
     private DaoSession daoSession;
@@ -50,8 +51,9 @@ public class TaskTagDao extends AbstractDao<TaskTag, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TASK_TAG' (" + //
-                "'TASK_ID' INTEGER NOT NULL ," + // 0: taskId
-                "'TAG_ID' INTEGER NOT NULL );"); // 1: tagId
+                "'_id' INTEGER PRIMARY KEY ," + // 0: id
+                "'TASK_ID' INTEGER NOT NULL ," + // 1: taskId
+                "'TAG_ID' INTEGER NOT NULL );"); // 2: tagId
     }
 
     /** Drops the underlying database table. */
@@ -64,8 +66,13 @@ public class TaskTagDao extends AbstractDao<TaskTag, Void> {
     @Override
     protected void bindValues(SQLiteStatement stmt, TaskTag entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTaskId());
-        stmt.bindLong(2, entity.getTagId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+        stmt.bindLong(2, entity.getTaskId());
+        stmt.bindLong(3, entity.getTagId());
     }
 
     @Override
@@ -76,16 +83,17 @@ public class TaskTagDao extends AbstractDao<TaskTag, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public TaskTag readEntity(Cursor cursor, int offset) {
         TaskTag entity = new TaskTag( //
-            cursor.getLong(offset + 0), // taskId
-            cursor.getLong(offset + 1) // tagId
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.getLong(offset + 1), // taskId
+            cursor.getLong(offset + 2) // tagId
         );
         return entity;
     }
@@ -93,21 +101,26 @@ public class TaskTagDao extends AbstractDao<TaskTag, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, TaskTag entity, int offset) {
-        entity.setTaskId(cursor.getLong(offset + 0));
-        entity.setTagId(cursor.getLong(offset + 1));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTaskId(cursor.getLong(offset + 1));
+        entity.setTagId(cursor.getLong(offset + 2));
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(TaskTag entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected Long updateKeyAfterInsert(TaskTag entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(TaskTag entity) {
-        return null;
+    public Long getKey(TaskTag entity) {
+        if(entity != null) {
+            return entity.getId();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

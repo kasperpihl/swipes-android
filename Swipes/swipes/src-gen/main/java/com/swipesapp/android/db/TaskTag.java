@@ -12,6 +12,7 @@ import de.greenrobot.dao.DaoException;
  */
 public class TaskTag {
 
+    private Long id;
     private long taskId;
     private long tagId;
 
@@ -34,7 +35,12 @@ public class TaskTag {
     public TaskTag() {
     }
 
-    public TaskTag(long taskId, long tagId) {
+    public TaskTag(Long id) {
+        this.id = id;
+    }
+
+    public TaskTag(Long id, long taskId, long tagId) {
+        this.id = id;
         this.taskId = taskId;
         this.tagId = tagId;
     }
@@ -43,6 +49,14 @@ public class TaskTag {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTaskTagDao() : null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public long getTaskId() {
