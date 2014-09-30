@@ -336,6 +336,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Change buttons and text colors to improve visibility.
         mButtonAddTask.setTextColor(Color.WHITE);
 
+        hideEditBar();
+
         hideGradient();
     }
 
