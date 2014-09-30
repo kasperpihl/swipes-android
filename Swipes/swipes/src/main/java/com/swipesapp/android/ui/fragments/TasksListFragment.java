@@ -454,7 +454,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Delete tasks.
                     deleteSelectedTasks();
                 } else if (intent.getAction().equals(Actions.SHARE_TASKS)) {
-                    // TODO: Send intent to share tasks by email.
+                    // Send intent to share selected tasks by email.
+                    shareTasks();
+
+                    // Hide bar and clear selection.
+                    ((TasksActivity) getActivity()).hideEditBar();
+                    mSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
@@ -1086,6 +1091,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Remove focus from text views by focusing on list area.
         mListArea.requestFocus();
+    }
+
+    private void shareTasks() {
+        String content = getString(R.string.share_message_header);
+
+        // Append task titles.
+        for (GsonTask task : mSelectedTasks) {
+            content += getString(R.string.share_message_circle) + task.getTitle() + "\n";
+        }
+
+        content += "\n" + getString(R.string.share_message_footer);
+
+        Intent inviteIntent = new Intent(Intent.ACTION_SEND);
+        inviteIntent.setType("text/html");
+        inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
+        inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+
+        startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
     }
 
 }

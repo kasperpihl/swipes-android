@@ -152,8 +152,7 @@ public class EditTaskActivity extends AccentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
-                // TODO: Change this when share is working.
-                Toast.makeText(getApplicationContext(), "Share coming soon", Toast.LENGTH_SHORT).show();
+                shareTask();
                 break;
             case 1:
                 deleteTask();
@@ -496,6 +495,19 @@ public class EditTaskActivity extends AccentActivity {
                 mAssignedTags.remove(tag);
             }
         }
+    }
+
+    private void shareTask() {
+        String content = getString(R.string.share_message_header);
+        content += getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
+        content += "\n" + getString(R.string.share_message_footer);
+
+        Intent inviteIntent = new Intent(Intent.ACTION_SEND);
+        inviteIntent.setType("text/html");
+        inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
+        inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+
+        startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
     }
 
 }

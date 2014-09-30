@@ -534,9 +534,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     protected void shareTasks() {
         // Send a broadcast to share selected tasks. The fragment should handle it.
         mTasksService.sendBroadcast(Actions.SHARE_TASKS);
-
-        // TODO: Remove this when sharing is working.
-        Toast.makeText(this, "Sharing coming soon", Toast.LENGTH_SHORT).show();
     }
 
     private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {
