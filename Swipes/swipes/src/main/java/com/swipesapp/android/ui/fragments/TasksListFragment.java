@@ -439,7 +439,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                     // Hide search and tags.
                     hideFilters();
-                    closeTags(false);
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
@@ -459,7 +458,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
-                        closeTags(true);
+                        closeTags();
                     } else {
                         getActivity().finish();
                     }
@@ -699,7 +698,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void showTags() {
-        // TODO: Apply blur to the tags background.
+        // Apply blur to the tags background.
+        int alphaColor = ThemeUtils.getTasksBlurAlphaColor(getActivity());
+        ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
+        mTagsArea.setBackgroundDrawable(TasksActivity.getBlurDrawable());
+
         mListArea.setVisibility(View.GONE);
 
         // Show tags area with fade animation.
@@ -708,24 +711,25 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Hide main activity content.
+        ((TasksActivity) getActivity()).setTabsVisibility(View.GONE);
         ((TasksActivity) getActivity()).hideActionButtons();
         ((TasksActivity) getActivity()).hideGradient();
 
         loadTags();
     }
 
-    private void closeTags(boolean animate) {
+    private void closeTags() {
         mTagsArea.setVisibility(View.GONE);
 
-        // Show tasks list area with optional fade animation.
+        // Show tasks list area with fade animation.
         mListArea.setVisibility(View.VISIBLE);
+        mListArea.setAlpha(0f);
+        mListArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
-        if (animate) {
-            mListArea.setAlpha(0f);
-            mListArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
-        }
-
+        // Show main activity content.
+        ((TasksActivity) getActivity()).setTabsVisibility(View.VISIBLE);
         ((TasksActivity) getActivity()).showActionButtons();
+        ((TasksActivity) getActivity()).showGradient();
 
         mSelectedTasks.clear();
 
@@ -735,7 +739,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @OnClick(R.id.tags_back_button)
     protected void tagsBack() {
         // Close tags area with animation.
-        closeTags(true);
+        closeTags();
+    }
+
+    @OnClick(R.id.tags_area)
+    protected void tagsAreaClick() {
+        // Close tags area with animation.
+        closeTags();
     }
 
     @OnClick(R.id.tags_add_button)

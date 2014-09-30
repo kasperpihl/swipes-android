@@ -253,13 +253,20 @@ public class EditTaskActivity extends AccentActivity {
 
     @OnClick(R.id.tags_container)
     protected void setTags() {
-        // TODO: Apply blur to the tags background.
+        // Apply blur to the tags background.
+        int alphaColor = ThemeUtils.getTasksBlurAlphaColor(this);
+        updateBlurDrawable(alphaColor);
+        mTagsArea.setBackgroundDrawable(getBlurDrawable());
+
         mView.setVisibility(View.GONE);
 
         // Show tags area with fade animation.
         mTagsArea.setVisibility(View.VISIBLE);
         mTagsArea.setAlpha(0f);
         mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+        // Hide action bar.
+        getActionBar().hide();
 
         loadTags();
     }
@@ -311,28 +318,42 @@ public class EditTaskActivity extends AccentActivity {
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
 
         // Update blurred background and override animation.
-        updateBlurDrawable();
+        updateBlurDrawable(ThemeUtils.getSnoozeBlurAlphaColor(this));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-    private void updateBlurDrawable() {
-        sBlurDrawable = BlurBuilder.blur(this, getWindow().getDecorView(), ThemeUtils.getSnoozeBlurAlphaColor(this));
+    private void updateBlurDrawable(int alphaColor) {
+        sBlurDrawable = BlurBuilder.blur(this, getWindow().getDecorView(), alphaColor);
     }
 
     public static BitmapDrawable getBlurDrawable() {
         return sBlurDrawable;
     }
 
-    @OnClick(R.id.tags_back_button)
-    protected void closeTags() {
+    private void closeTags() {
         mTagsArea.setVisibility(View.GONE);
 
-        // Show tasks list area with optional fade animation.
+        // Show edit task area with fade animation.
         mView.setVisibility(View.VISIBLE);
         mView.setAlpha(0f);
         mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
+        // Hide action bar.
+        getActionBar().show();
+
         updateViews();
+    }
+
+    @OnClick(R.id.tags_back_button)
+    protected void tagsBack() {
+        // Close tags area with animation.
+        closeTags();
+    }
+
+    @OnClick(R.id.assign_tags_area)
+    protected void tagsAreaClick() {
+        // Close tags area with animation.
+        closeTags();
     }
 
     @OnClick(R.id.tags_add_button)

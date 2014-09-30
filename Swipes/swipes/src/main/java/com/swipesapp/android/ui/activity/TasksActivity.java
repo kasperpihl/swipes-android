@@ -711,4 +711,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
+    public void setTabsVisibility(int visibility) {
+        mTabs.setVisibility(visibility);
+    }
+
 }
