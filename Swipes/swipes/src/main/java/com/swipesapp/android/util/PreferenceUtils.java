@@ -17,6 +17,20 @@ public class PreferenceUtils {
 
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
+    public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
+
+    /**
+     * Saves a boolean preference.
+     *
+     * @param preference Preference to save.
+     * @param value      Value to apply.
+     * @param context    Context instance.
+     */
+    public static void saveBooleanPreference(String preference, boolean value, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putBoolean(preference, value).apply();
+    }
+
     /**
      * Reads theme setting.
      *
@@ -54,6 +68,26 @@ public class PreferenceUtils {
     public static boolean areNotificationsEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(NOTIFICATIONS_KEY, true);
+    }
+
+    /**
+     * Determines if the app has been upgraded to a given version.
+     *
+     * @param version Version to check for upgrade.
+     * @param context Context instance.
+     * @return True if it has been upgraded.
+     */
+    public static boolean hasUpgradedToVersion(int version, Context context) {
+        boolean hasUpgraded = false;
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+        switch (version) {
+            case 7:
+                hasUpgraded = settings.getBoolean(V7_UPGRADE_KEY, false);
+                break;
+        }
+
+        return hasUpgraded;
     }
 
 }

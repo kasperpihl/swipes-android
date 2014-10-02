@@ -7,6 +7,7 @@ import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.MigrationAssistant;
 
 /**
  * Dummy activity for when the app needs to be launched without the splash screen.
@@ -26,6 +27,8 @@ public class BlankActivityLight extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_blank);
+
+        MigrationAssistant.performUpgrades(this);
 
         Intent i = new Intent(BlankActivityLight.this, TasksActivity.class);
         startActivity(i);

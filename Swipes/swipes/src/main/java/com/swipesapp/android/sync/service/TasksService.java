@@ -250,7 +250,7 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    private List<GsonTask> loadAllTasks() {
+    public List<GsonTask> loadAllTasks() {
         return gsonFromTasks(mExtTaskDao.listAllTasks());
     }
 
@@ -467,7 +467,7 @@ public class TasksService {
         List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
-            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier(), gsonTask.getRepeatOption()));
+            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
         }
 
         return tasks;

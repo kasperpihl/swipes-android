@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,18 +9,22 @@ import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.MigrationAssistant;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class SplashActivity extends Activity {
 
     private static final int SPLASH_TIMEOUT = 500;
+
+    private WeakReference<Context> mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +35,16 @@ public class SplashActivity extends Activity {
 
         setContentView(R.layout.activity_splash);
 
-        final boolean isFirstRun = PreferenceUtils.isFirstRun(this);
+        mContext = new WeakReference<Context>(this);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                // Perform migrations when needed.
+                MigrationAssistant.performUpgrades(mContext.get());
+
                 // Save welcome tasks if the app is launching for the first time.
-                if (isFirstRun) {
+                if (PreferenceUtils.isFirstRun(mContext.get())) {
                     addWelcomeTasks();
                 }
 
