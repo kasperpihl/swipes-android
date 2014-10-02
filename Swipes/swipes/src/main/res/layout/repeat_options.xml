@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/repeat_options"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/repeat_options_margin"
+    android:layout_marginRight="@dimen/repeat_options_margin"
+    android:layout_marginTop="@dimen/repeat_options_margin_top"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    android:weightSum="6">
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_never"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_never" />
+
+    <include layout="@layout/repeat_options_separator" />
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_day"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_day" />
+
+    <include layout="@layout/repeat_options_separator" />
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_mon_fri"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_mon_fri" />
+
+    <include layout="@layout/repeat_options_separator" />
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_week"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_week" />
+
+    <include layout="@layout/repeat_options_separator" />
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_month"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_month" />
+
+    <include layout="@layout/repeat_options_separator" />
+
+    <com.swipesapp.android.ui.view.RepeatOption
+        android:id="@+id/repeat_option_year"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/repeat_option_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/repeat_option_year" />
+
+</LinearLayout>

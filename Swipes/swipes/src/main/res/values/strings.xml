@@ -106,8 +106,15 @@
 
     <!-- Edit task -->
     <string name="edit_task_repeat_default_mode">Never repeat</string>
+    <string name="edit_task_repeat_choice_mode">Repeat every&#8230;</string>
     <string name="edit_task_tags_default_text">Set tags</string>
     <string name="edit_task_notes_default_text">Add notes</string>
+    <string name="repeat_option_never">never</string>
+    <string name="repeat_option_day">day</string>
+    <string name="repeat_option_mon_fri">mon-fri</string>
+    <string name="repeat_option_week">week</string>
+    <string name="repeat_option_month">month</string>
+    <string name="repeat_option_year">year</string>
 
     <!-- Notifications -->
     <string name="notification_snooze">Snooze +%dh</string>

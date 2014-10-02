@@ -102,6 +102,8 @@
                 android:layout_toRightOf="@id/edit_task_repeat_icon" />
         </RelativeLayout>
 
+        <include layout="@layout/repeat_options" />
+
         <!-- Assigned Tags -->
         <RelativeLayout
             android:id="@+id/tags_container"

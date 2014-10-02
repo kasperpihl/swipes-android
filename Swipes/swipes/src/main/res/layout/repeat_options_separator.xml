@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.swipesapp.android.ui.view.ThemedView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/repeat_options_separator_width"
+    android:layout_height="@dimen/repeat_option_height" />

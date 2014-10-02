@@ -1,5 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +20,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
@@ -30,10 +31,12 @@ import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FlowLayout;
+import com.swipesapp.android.ui.view.RepeatOption;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.RepeatOptions;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -66,6 +69,21 @@ public class EditTaskActivity extends AccentActivity {
     SwipesTextView mRepeatIcon;
     @InjectView(R.id.edit_task_repeat)
     TextView mRepeat;
+    @InjectView(R.id.repeat_options)
+    LinearLayout mRepeatOptions;
+
+    @InjectView(R.id.repeat_option_never)
+    RepeatOption mRepeatNever;
+    @InjectView(R.id.repeat_option_day)
+    RepeatOption mRepeatDay;
+    @InjectView(R.id.repeat_option_mon_fri)
+    RepeatOption mRepeatMonFri;
+    @InjectView(R.id.repeat_option_week)
+    RepeatOption mRepeatWeek;
+    @InjectView(R.id.repeat_option_month)
+    RepeatOption mRepeatMonth;
+    @InjectView(R.id.repeat_option_year)
+    RepeatOption mRepeatYear;
 
     @InjectView(R.id.edit_task_tags_icon)
     SwipesTextView mTagsIcon;
@@ -183,6 +201,9 @@ public class EditTaskActivity extends AccentActivity {
 
         mSchedule.setText(DateUtils.formatToRecent(mTask.getSchedule(), this));
 
+        setSelectedRepeatOption();
+
+        // TODO: Load selected option.
         mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
 
         mTags.setText(buildFormattedTags());
@@ -210,7 +231,7 @@ public class EditTaskActivity extends AccentActivity {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // If the action is a key-up event on the return key, save task changes.
-                        performChanges();
+                        performChanges(true);
                     }
                     return true;
                 }
@@ -247,7 +268,25 @@ public class EditTaskActivity extends AccentActivity {
 
     @OnClick(R.id.repeat_container)
     protected void setRepeat() {
-        Toast.makeText(getApplicationContext(), "Repeat coming soon", Toast.LENGTH_SHORT).show();
+        if (mRepeatOptions.getVisibility() == View.GONE) {
+            // Animate display of repeat options.
+            mRepeatOptions.setVisibility(View.VISIBLE);
+            mRepeatOptions.setAlpha(0f);
+            mRepeatOptions.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(null);
+
+            mRepeat.setText(getString(R.string.edit_task_repeat_choice_mode));
+        } else {
+            // Animate hide of repeat options.
+            mRepeatOptions.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mRepeatOptions.setVisibility(View.GONE);
+                }
+            });
+
+            // TODO: Load selected option.
+            mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
+        }
     }
 
     @OnClick(R.id.tags_container)
@@ -270,14 +309,14 @@ public class EditTaskActivity extends AccentActivity {
         loadTags();
     }
 
-    private void performChanges() {
+    private void performChanges(boolean hideKeyboard) {
         // Save updated properties.
         mTask.setTitle(mTitle.getText().toString());
         mTask.setNotes(mNotes.getText().toString());
         mTask.setTags(mAssignedTags);
         mTasksService.saveTask(mTask);
 
-        hideKeyboard();
+        if (hideKeyboard) hideKeyboard();
 
         updateViews();
     }
@@ -477,8 +516,7 @@ public class EditTaskActivity extends AccentActivity {
     private void assignTag(GsonTag tag) {
         // Add to list and perform changes.
         mAssignedTags.add(tag);
-        mTask.setTags(mAssignedTags);
-        mTasksService.saveTask(mTask);
+        performChanges(false);
     }
 
     private void unassignTag(GsonTag tag) {
@@ -508,6 +546,94 @@ public class EditTaskActivity extends AccentActivity {
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
+    }
+
+    @OnClick(R.id.repeat_option_never)
+    protected void repeatNever() {
+        clearRepeatSelections();
+        mRepeatNever.select();
+
+        mTask.setRepeatOption(RepeatOptions.NEVER.getValue());
+
+        performChanges(false);
+    }
+
+    @OnClick(R.id.repeat_option_day)
+    protected void repeatDay() {
+        clearRepeatSelections();
+        mRepeatDay.select();
+
+        mTask.setRepeatOption(RepeatOptions.EVERY_DAY.getValue());
+
+        performChanges(false);
+    }
+
+    @OnClick(R.id.repeat_option_mon_fri)
+    protected void repeatMonFri() {
+        clearRepeatSelections();
+        mRepeatMonFri.select();
+
+        mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY.getValue());
+
+        performChanges(false);
+    }
+
+    @OnClick(R.id.repeat_option_week)
+    protected void repeatWeek() {
+        clearRepeatSelections();
+        mRepeatWeek.select();
+
+        mTask.setRepeatOption(RepeatOptions.EVERY_WEEK.getValue());
+
+        performChanges(false);
+    }
+
+    @OnClick(R.id.repeat_option_month)
+    protected void repeatMonth() {
+        clearRepeatSelections();
+        mRepeatMonth.select();
+
+        mTask.setRepeatOption(RepeatOptions.EVERY_MONTH.getValue());
+
+        performChanges(false);
+    }
+
+    @OnClick(R.id.repeat_option_year)
+    protected void repeatYear() {
+        clearRepeatSelections();
+        mRepeatYear.select();
+
+        mTask.setRepeatOption(RepeatOptions.EVERY_YEAR.getValue());
+
+        performChanges(false);
+    }
+
+    private void clearRepeatSelections() {
+        for (int i = 0; i < mRepeatOptions.getChildCount(); i++) {
+            View view = mRepeatOptions.getChildAt(i);
+
+            if (view instanceof RepeatOption) {
+                ((RepeatOption) view).clearSelection();
+            }
+        }
+    }
+
+    private void setSelectedRepeatOption() {
+        String selected = mTask.getRepeatOption();
+
+        if (selected.equals(RepeatOptions.NEVER.getValue())) {
+            mRepeatNever.select();
+        } else if (selected.equals(RepeatOptions.EVERY_DAY.getValue())) {
+            mRepeatDay.select();
+        } else if (selected.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
+            mRepeatMonFri.select();
+        } else if (selected.equals(RepeatOptions.EVERY_WEEK.getValue())) {
+            mRepeatWeek.select();
+        } else if (selected.equals(RepeatOptions.EVERY_MONTH.getValue())) {
+            mRepeatMonth.select();
+        } else if (selected.equals(RepeatOptions.EVERY_YEAR.getValue())) {
+            mRepeatYear.select();
+        }
     }
 
 }
