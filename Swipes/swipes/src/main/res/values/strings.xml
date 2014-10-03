@@ -95,7 +95,7 @@
     <string name="snooze_done_text">Snooze</string>
     <string name="snooze_adjust_hint">Hold down to adjust time</string>
 
-    <!-- Calendar -->
+    <!-- Week days -->
     <string name="sunday_full">Sunday</string>
     <string name="monday_full">Monday</string>
     <string name="tuesday_full">Tuesday</string>
@@ -104,11 +104,38 @@
     <string name="friday_full">Friday</string>
     <string name="saturday_full">Saturday</string>
 
+    <!-- Months -->
+    <string name="january_full">January</string>
+    <string name="february_full">February</string>
+    <string name="march_full">March</string>
+    <string name="april_full">April</string>
+    <string name="may_full">May</string>
+    <string name="june_full">June</string>
+    <string name="july_full">July</string>
+    <string name="august_full">August</string>
+    <string name="september_full">September</string>
+    <string name="october_full">October</string>
+    <string name="november_full">November</string>
+    <string name="december_full">December</string>
+
+    <!-- Numerals -->
+    <string name="month_first_suffix">1st</string>
+    <string name="month_second_suffix">2nd</string>
+    <string name="month_third_suffix">3rd</string>
+    <string name="month_default_suffix">%sth</string>
+
     <!-- Edit task -->
-    <string name="edit_task_repeat_default_mode">Never repeat</string>
     <string name="edit_task_repeat_choice_mode">Repeat every&#8230;</string>
+    <string name="repeat_never_description">Never repeat</string>
+    <string name="repeat_day_description">Every day at %s</string>
+    <string name="repeat_mon_fri_description">Every Monday to Friday at %s</string>
+    <string name="repeat_week_description">Every %1$s at %2$s</string>
+    <string name="repeat_month_description">Every month the %1$s at %2$s</string>
+    <string name="repeat_year_description">Every year %1$s %2$s at %3$s</string>
     <string name="edit_task_tags_default_text">Set tags</string>
     <string name="edit_task_notes_default_text">Add notes</string>
+
+    <!-- Repeating -->
     <string name="repeat_option_never">never</string>
     <string name="repeat_option_day">day</string>
     <string name="repeat_option_mon_fri">mon-fri</string>

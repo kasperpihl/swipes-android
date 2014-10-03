@@ -41,6 +41,7 @@ import com.swipesapp.android.values.RepeatOptions;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -203,8 +204,7 @@ public class EditTaskActivity extends AccentActivity {
 
         setSelectedRepeatOption();
 
-        // TODO: Load selected option.
-        mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
+        setRepeatDescription();
 
         mTags.setText(buildFormattedTags());
 
@@ -269,23 +269,10 @@ public class EditTaskActivity extends AccentActivity {
     @OnClick(R.id.repeat_container)
     protected void setRepeat() {
         if (mRepeatOptions.getVisibility() == View.GONE) {
-            // Animate display of repeat options.
-            mRepeatOptions.setVisibility(View.VISIBLE);
-            mRepeatOptions.setAlpha(0f);
-            mRepeatOptions.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(null);
-
-            mRepeat.setText(getString(R.string.edit_task_repeat_choice_mode));
+            showRepeatOptions();
         } else {
-            // Animate hide of repeat options.
-            mRepeatOptions.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mRepeatOptions.setVisibility(View.GONE);
-                }
-            });
-
-            // TODO: Load selected option.
-            mRepeat.setText(getString(R.string.edit_task_repeat_default_mode));
+            hideRepeatOptions();
+            setRepeatDescription();
         }
     }
 
@@ -548,12 +535,34 @@ public class EditTaskActivity extends AccentActivity {
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
     }
 
+    private void showRepeatOptions() {
+        // Animate display of repeat options.
+        mRepeatOptions.setVisibility(View.VISIBLE);
+        mRepeatOptions.setAlpha(0f);
+        mRepeatOptions.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(null);
+
+        mRepeat.setText(getString(R.string.edit_task_repeat_choice_mode));
+    }
+
+    private void hideRepeatOptions() {
+        // Animate hide of repeat options.
+        mRepeatOptions.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mRepeatOptions.setVisibility(View.GONE);
+            }
+        });
+    }
+
     @OnClick(R.id.repeat_option_never)
     protected void repeatNever() {
         clearRepeatSelections();
         mRepeatNever.select();
 
         mTask.setRepeatOption(RepeatOptions.NEVER.getValue());
+        mTask.setRepeatDate(null);
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -564,6 +573,9 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatDay.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_DAY.getValue());
+        mTask.setRepeatDate(mTask.getSchedule());
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -574,6 +586,9 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatMonFri.select();
 
         mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY.getValue());
+        mTask.setRepeatDate(mTask.getSchedule());
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -584,6 +599,9 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatWeek.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_WEEK.getValue());
+        mTask.setRepeatDate(mTask.getSchedule());
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -594,6 +612,9 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatMonth.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_MONTH.getValue());
+        mTask.setRepeatDate(mTask.getSchedule());
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -604,6 +625,9 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatYear.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_YEAR.getValue());
+        mTask.setRepeatDate(mTask.getSchedule());
+
+        hideRepeatOptions();
 
         performChanges(false);
     }
@@ -619,20 +643,56 @@ public class EditTaskActivity extends AccentActivity {
     }
 
     private void setSelectedRepeatOption() {
-        String selected = mTask.getRepeatOption();
+        String repeatOption = mTask.getRepeatOption();
 
-        if (selected.equals(RepeatOptions.NEVER.getValue())) {
+        // Set selected option.
+        if (repeatOption.equals(RepeatOptions.NEVER.getValue())) {
             mRepeatNever.select();
-        } else if (selected.equals(RepeatOptions.EVERY_DAY.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
             mRepeatDay.select();
-        } else if (selected.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
             mRepeatMonFri.select();
-        } else if (selected.equals(RepeatOptions.EVERY_WEEK.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK.getValue())) {
             mRepeatWeek.select();
-        } else if (selected.equals(RepeatOptions.EVERY_MONTH.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH.getValue())) {
             mRepeatMonth.select();
-        } else if (selected.equals(RepeatOptions.EVERY_YEAR.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR.getValue())) {
             mRepeatYear.select();
+        }
+    }
+
+    private void setRepeatDescription() {
+        String repeatOption = mTask.getRepeatOption();
+
+        // Set friendly description.
+        if (repeatOption.equals(RepeatOptions.NEVER.getValue())) {
+            // Option is set to never.
+            mRepeat.setText(getString(R.string.repeat_never_description));
+        } else {
+            Calendar repeatDate = Calendar.getInstance();
+            repeatDate.setTime(mTask.getRepeatDate());
+
+            String time = DateUtils.getTimeAsString(this, mTask.getRepeatDate());
+            String dayOfWeek = DateUtils.formatDayOfWeek(this, repeatDate);
+            String dayOfMonth = DateUtils.formatDayOfMonth(this, repeatDate);
+            String month = DateUtils.formatMonth(this, repeatDate);
+
+            if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
+                // Option is set to every day.
+                mRepeat.setText(getString(R.string.repeat_day_description, time));
+            } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
+                // Option is set to monday to friday.
+                mRepeat.setText(getString(R.string.repeat_mon_fri_description, time));
+            } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK.getValue())) {
+                // Option is set to every week.
+                mRepeat.setText(getString(R.string.repeat_week_description, dayOfWeek, time));
+            } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH.getValue())) {
+                // Option is set to every month.
+                mRepeat.setText(getString(R.string.repeat_month_description, dayOfMonth, time));
+            } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR.getValue())) {
+                // Option is set to every year.
+                mRepeat.setText(getString(R.string.repeat_year_description, month, dayOfMonth, time));
+            }
         }
     }
 

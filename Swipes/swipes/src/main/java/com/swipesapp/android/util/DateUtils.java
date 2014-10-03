@@ -195,4 +195,66 @@ public class DateUtils {
         }
     }
 
+    /**
+     * Formats month to a friendly name.
+     *
+     * @param context Context instance.
+     * @param date    Date containing month.
+     * @return Formatted string.
+     */
+    public static String formatMonth(Context context, Calendar date) {
+        // Load resource string for month.
+        switch (date.get(Calendar.MONTH)) {
+            case 0:
+                return context.getString(R.string.january_full);
+            case 1:
+                return context.getString(R.string.february_full);
+            case 2:
+                return context.getString(R.string.march_full);
+            case 3:
+                return context.getString(R.string.april_full);
+            case 4:
+                return context.getString(R.string.may_full);
+            case 5:
+                return context.getString(R.string.june_full);
+            case 6:
+                return context.getString(R.string.july_full);
+            case 7:
+                return context.getString(R.string.august_full);
+            case 8:
+                return context.getString(R.string.september_full);
+            case 9:
+                return context.getString(R.string.october_full);
+            case 10:
+                return context.getString(R.string.november_full);
+            case 11:
+                return context.getString(R.string.december_full);
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Formats day of the month to a friendly name, with suffix (st, nd, rd, th).
+     *
+     * @param context Context instance.
+     * @param date    Date containing day of the month.
+     * @return Formatted string.
+     */
+    public static String formatDayOfMonth(Context context, Calendar date) {
+        int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
+
+        // Load resource string for day of month with suffix.
+        switch (dayOfMonth) {
+            case 1:
+                return context.getString(R.string.month_first_suffix);
+            case 2:
+                return context.getString(R.string.month_second_suffix);
+            case 3:
+                return context.getString(R.string.month_third_suffix);
+            default:
+                return context.getString(R.string.month_default_suffix, dayOfMonth);
+        }
+    }
+
 }
