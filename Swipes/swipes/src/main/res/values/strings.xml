@@ -156,6 +156,7 @@
     <string name="delete_tag_dialog_message">This can\'t be undone</string>
     <string name="delete_tag_dialog_yes">Yes</string>
     <string name="delete_tag_dialog_cancel">No</string>
+    <string name="empty_tags_hint">No tags assigned</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

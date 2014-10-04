@@ -120,6 +120,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
      */
     private ActionEditText mSearchEditText;
     private SwipesButton mFiltersTagsButton;
+    private TextView mFiltersEmptyTags;
     private SwipesButton mCloseSearchButton;
 
     @InjectView(android.R.id.empty)
@@ -273,6 +274,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mFiltersTagsContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_tags_container);
         mFiltersSearchContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_search_container);
         mFiltersTagsArea = (FlowLayout) mFiltersContainer.findViewById(R.id.filters_tags_area);
+        mFiltersEmptyTags = (TextView) mFiltersContainer.findViewById(R.id.filter_empty_tags);
         mListView.addHeaderView(mFiltersContainer);
 
         // Add listeners and customize buttons.
@@ -962,7 +964,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void loadFilterTags() {
         List<GsonTag> tags = mTasksService.loadAllAssignedTags();
         mSelectedFilterTags = new ArrayList<Long>();
+
         mFiltersTagsArea.removeAllViews();
+        mFiltersTagsArea.setVisibility(View.VISIBLE);
+        mFiltersEmptyTags.setVisibility(View.GONE);
 
         // For each tag, add a checkbox as child view.
         for (GsonTag tag : tags) {
@@ -976,6 +981,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Add child view.
             mFiltersTagsArea.addView(tagBox);
+        }
+
+        // If the list is empty, show empty view.
+        if (tags.isEmpty()) {
+            mFiltersTagsArea.setVisibility(View.GONE);
+            mFiltersEmptyTags.setVisibility(View.VISIBLE);
+
+            int hintColor = ThemeUtils.isLightTheme(getActivity()) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+            mFiltersEmptyTags.setTextColor(getResources().getColor(hintColor));
         }
     }
 
