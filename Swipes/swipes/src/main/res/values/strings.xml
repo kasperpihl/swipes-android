@@ -119,9 +119,9 @@
     <string name="december_full">December</string>
 
     <!-- Numerals -->
-    <string name="month_first_suffix">1st</string>
-    <string name="month_second_suffix">2nd</string>
-    <string name="month_third_suffix">3rd</string>
+    <string name="month_first_suffix">%sst</string>
+    <string name="month_second_suffix">%snd</string>
+    <string name="month_third_suffix">%srd</string>
     <string name="month_default_suffix">%sth</string>
 
     <!-- Edit task -->

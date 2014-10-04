@@ -270,11 +270,19 @@ public class DateUtils {
         // Load resource string for day of month with suffix.
         switch (dayOfMonth) {
             case 1:
-                return context.getString(R.string.month_first_suffix);
+                return context.getString(R.string.month_first_suffix, dayOfMonth);
             case 2:
-                return context.getString(R.string.month_second_suffix);
+                return context.getString(R.string.month_second_suffix, dayOfMonth);
             case 3:
-                return context.getString(R.string.month_third_suffix);
+                return context.getString(R.string.month_third_suffix, dayOfMonth);
+            case 21:
+                return context.getString(R.string.month_first_suffix, dayOfMonth);
+            case 22:
+                return context.getString(R.string.month_second_suffix, dayOfMonth);
+            case 23:
+                return context.getString(R.string.month_third_suffix, dayOfMonth);
+            case 31:
+                return context.getString(R.string.month_first_suffix, dayOfMonth);
             default:
                 return context.getString(R.string.month_default_suffix, dayOfMonth);
         }
