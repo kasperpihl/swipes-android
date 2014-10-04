@@ -141,6 +141,29 @@ public class DateUtils {
     }
 
     /**
+     * Checks if the provided date is newer than today.
+     *
+     * @param date Date to check.
+     * @return True if date is newer than today.
+     */
+    public static boolean isNewerThanToday(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(date);
+        Calendar currentDate = Calendar.getInstance();
+
+        int providedYear = providedDate.get(Calendar.YEAR);
+        int currentYear = currentDate.get(Calendar.YEAR);
+        int providedDay = providedDate.get(Calendar.DAY_OF_YEAR);
+        int currentDay = currentDate.get(Calendar.DAY_OF_YEAR);
+
+        return providedYear >= currentYear && (providedDay > currentDay || providedYear > currentYear);
+    }
+
+    /**
      * Checks if the provided date is within a week from today.
      *
      * @param date Date to check.

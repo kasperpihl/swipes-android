@@ -32,6 +32,7 @@ import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
+import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -95,6 +96,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private TasksService mTasksService;
 
     /**
+     * Handler for repeated tasks.
+     */
+    private RepeatHandler mRepeatHandler;
+
+    /**
      * Selected tasks, tags and filters.
      */
     private List<GsonTask> mSelectedTasks;
@@ -150,6 +156,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Bundle args = getArguments();
 
         mTasksService = TasksService.getInstance(getActivity());
+
+        mRepeatHandler = new RepeatHandler(getActivity());
 
         mSelectedTasks = new ArrayList<GsonTask>();
 
@@ -485,6 +493,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Move task from Focus to Done.
                     getTask(position).setCompletionDate(new Date());
                     mTasksService.saveTask(getTask(position));
+                    // Handle repeat.
+                    mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
             }
         }
@@ -517,6 +527,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     getTask(position).setCompletionDate(currentDate);
                     getTask(position).setSchedule(currentDate);
                     mTasksService.saveTask(getTask(position));
+                    // Handle repeat.
+                    mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
             }
         }
