@@ -371,7 +371,7 @@ public class TasksService {
             for (TaskTag association : associations) {
                 Task task = mExtTaskDao.selectTask(association.getTaskId());
 
-                if (!task.getDeleted()) assigned.add(tag);
+                if (!task.getDeleted() && !assigned.contains(tag)) assigned.add(tag);
             }
         }
 
