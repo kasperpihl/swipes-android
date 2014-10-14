@@ -435,7 +435,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             mTasksService.saveTask(task);
         }
 
-        endAddTaskWorkflow();
+        endAddTaskWorkflow(true);
     }
 
     @OnClick(R.id.button_add_task)
@@ -474,15 +474,21 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     @OnClick(R.id.blur_background)
-    protected void endAddTaskWorkflow() {
+    protected void blurBackgroundClick() {
+        endAddTaskWorkflow(false);
+    }
+
+    private void endAddTaskWorkflow(boolean resetFields) {
         // Remove focus and hide text view.
         mEditTextAddNewTask.clearFocus();
         mEditTextAddNewTask.setVisibility(View.GONE);
 
         // Reset fields.
-        mEditTextAddNewTask.setText("");
-        mButtonAddTaskPriority.setChecked(false);
-        mSelectedTags.clear();
+        if (resetFields) {
+            mEditTextAddNewTask.setText("");
+            mButtonAddTaskPriority.setChecked(false);
+            mSelectedTags.clear();
+        }
 
         // Hide add task area.
         mAddTaskContainer.setVisibility(View.GONE);
@@ -579,7 +585,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         @Override
         public void onKeyboardBackPressed() {
             // Back button has been pressed. Get back to the list.
-            endAddTaskWorkflow();
+            endAddTaskWorkflow(false);
         }
     };
 

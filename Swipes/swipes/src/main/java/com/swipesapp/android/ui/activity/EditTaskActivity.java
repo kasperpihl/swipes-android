@@ -385,7 +385,7 @@ public class EditTaskActivity extends AccentActivity {
     private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
         @Override
         public void onKeyboardBackPressed() {
-            discardChanges();
+            hideKeyboard();
         }
     };
 
@@ -450,11 +450,6 @@ public class EditTaskActivity extends AccentActivity {
 
         if (hideKeyboard) hideKeyboard();
 
-        updateViews();
-    }
-
-    private void discardChanges() {
-        hideKeyboard();
         updateViews();
     }
 
