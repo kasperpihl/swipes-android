@@ -19,6 +19,8 @@ public class PreferenceUtils {
 
     public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
 
+    public static final String V8_UPGRADE_KEY = "v8_upgrade_performed";
+
     /**
      * Saves a boolean preference.
      *
@@ -84,6 +86,9 @@ public class PreferenceUtils {
         switch (version) {
             case 7:
                 hasUpgraded = settings.getBoolean(V7_UPGRADE_KEY, false);
+                break;
+            case 8:
+                hasUpgraded = settings.getBoolean(V8_UPGRADE_KEY, false);
                 break;
         }
 

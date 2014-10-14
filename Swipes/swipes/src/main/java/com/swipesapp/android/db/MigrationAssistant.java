@@ -7,6 +7,8 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
+import java.util.List;
+
 /**
  * Assistant to apply fixes between versions of the app.
  *
@@ -25,6 +27,8 @@ public class MigrationAssistant {
         sTasksService = TasksService.getInstance(context);
 
         upgradeToV7(context);
+
+        upgradeToV8(context);
     }
 
     /**
@@ -44,6 +48,28 @@ public class MigrationAssistant {
 
             // Mark as upgraded.
             PreferenceUtils.saveBooleanPreference(PreferenceUtils.V7_UPGRADE_KEY, true, context);
+        }
+    }
+
+    /**
+     * Updates temp ID for all tasks.
+     *
+     * @param context Context instance.
+     */
+    private static void upgradeToV8(Context context) {
+        if (!PreferenceUtils.hasUpgradedToVersion(8, context)) {
+            List<GsonTask> tasks = sTasksService.loadAllTasks();
+
+            // Update all tasks.
+            for (int i = 0; i < tasks.size(); i++) {
+                GsonTask task = tasks.get(i);
+                task.setTempId(task.getTempId() + i);
+
+                sTasksService.saveTask(task);
+            }
+
+            // Mark as upgraded.
+            PreferenceUtils.saveBooleanPreference(PreferenceUtils.V8_UPGRADE_KEY, true, context);
         }
     }
 
