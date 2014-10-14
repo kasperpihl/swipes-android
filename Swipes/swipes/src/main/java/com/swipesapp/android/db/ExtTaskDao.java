@@ -37,16 +37,20 @@ public class ExtTaskDao {
     }
 
     public List<Task> listScheduledTasks() {
-        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.gt(new Date()), TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Schedule).list();
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.gt(new Date()), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).orderAsc(TaskDao.Properties.Schedule).list();
     }
 
     public List<Task> listFocusedTasks() {
         return mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.lt(new Date()), TaskDao.Properties.Schedule.isNull()),
-                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order).orderDesc(TaskDao.Properties.CreatedAt).list();
+                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).orderAsc(TaskDao.Properties.Order).orderDesc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listCompletedTasks() {
-        return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.isNotNull(), TaskDao.Properties.Deleted.eq(false)).orderDesc(TaskDao.Properties.CompletionDate).list();
+        return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.isNotNull(), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).orderDesc(TaskDao.Properties.CompletionDate).list();
+    }
+
+    public List<Task> listSubtasksForTask(String objectId) {
+        return mDao.queryBuilder().where(TaskDao.Properties.ParentLocalId.eq(objectId), TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order).orderAsc(TaskDao.Properties.CreatedAt).list();
     }
 
 }

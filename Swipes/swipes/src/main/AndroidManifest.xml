@@ -63,7 +63,7 @@
             android:label="@string/title_activity_edit_task"
             android:parentActivityName="com.swipesapp.android.ui.activity.TasksActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden|adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.TasksActivity" />

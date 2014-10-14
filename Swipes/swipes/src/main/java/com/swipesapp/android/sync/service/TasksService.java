@@ -121,6 +121,9 @@ public class TasksService {
             // Mark task as deleted and persist change.
             task.setDeleted(true);
             saveTask(task);
+
+            // Delete subtasks.
+            deleteSubtasksForTask(task.getTempId());
         }
     }
 
@@ -423,6 +426,26 @@ public class TasksService {
         }
 
         return tags;
+    }
+
+    /**
+     * Loads all subtasks for a given task.
+     *
+     * @param objectId Parent object ID.
+     * @return List of subtasks.
+     */
+    public List<GsonTask> loadSubtasksForTask(String objectId) {
+        return gsonFromTasks(mExtTaskDao.listSubtasksForTask(objectId));
+    }
+
+    private void deleteSubtasksForTask(String objectId) {
+        List<GsonTask> subtasks = loadSubtasksForTask(objectId);
+
+        // Mark subtasks as deleted and persist changes.
+        for (GsonTask subtask : subtasks) {
+            subtask.setDeleted(true);
+            saveTask(subtask);
+        }
     }
 
     /**

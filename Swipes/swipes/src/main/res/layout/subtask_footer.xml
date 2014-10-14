@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subtask_footer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.swipesapp.android.ui.activity.EditTaskActivity">
+
+    <include layout="@layout/subtask_add" />
+
+    <!-- Show/hide subtasks button -->
+    <LinearLayout
+        android:id="@+id/subtask_visibility_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.swipesapp.android.ui.view.SwipesTextView
+            android:id="@+id/subtask_visibility_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/transparent"
+            android:text="@string/round_back"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/subtask_visibility_caption"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2" />
+
+    </LinearLayout>
+
+</LinearLayout>

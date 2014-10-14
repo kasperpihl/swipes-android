@@ -2,11 +2,13 @@ package com.swipesapp.android.handler;
 
 import android.content.Context;
 
+import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +27,8 @@ public class RepeatHandler {
 
     public void handleRepeatedTask(GsonTask task) {
         // Create a copy of the original task.
-        GsonTask copy = new GsonTask(null, task.getObjectId(), task.getTempId(), task.getParentId(), task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
+        String tempId = task.getTitle() + new Date();
+        GsonTask copy = new GsonTask(null, null, tempId, task.getParentId(), task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
 
         // Determine next repeat date.
         if (task.getRepeatOption().equals(RepeatOptions.NEVER.getValue())) {
@@ -53,6 +56,22 @@ public class RepeatHandler {
         // Save changes to the database.
         mTasksService.saveTask(task);
         mTasksService.saveTask(copy);
+
+        // Handle subtasks.
+        handleRepeatedSubtasks(task.getTempId(), copy.getTempId());
+    }
+
+    private void handleRepeatedSubtasks(String taskId, String copyId) {
+        for (GsonTask subtask : mTasksService.loadSubtasksForTask(taskId)) {
+            String tempId = subtask.getTitle() + new Date();
+
+            // Associate subtask copies with task copy, and uncomplete the originals.
+            GsonTask copy = new GsonTask(null, null, tempId, copyId, subtask.getCreatedAt(), subtask.getUpdatedAt(), false, subtask.getTitle(), null, 0, 0, subtask.getCompletionDate(), subtask.getSchedule(), null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
+            subtask.setCompletionDate(null);
+
+            mTasksService.saveTask(copy);
+            mTasksService.saveTask(subtask);
+        }
     }
 
     private void setInterval(GsonTask task, long interval) {

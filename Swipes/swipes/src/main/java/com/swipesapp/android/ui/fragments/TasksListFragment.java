@@ -1125,6 +1125,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Append task titles.
         for (GsonTask task : mSelectedTasks) {
             content += getString(R.string.share_message_circle) + task.getTitle() + "\n";
+
+            for (GsonTask subtask : mTasksService.loadSubtasksForTask(task.getTempId())) {
+                content += "\t\t" + getString(R.string.share_message_circle) + subtask.getTitle() + "\n";
+            }
         }
 
         content += "\n" + getString(R.string.share_message_footer);
@@ -1134,7 +1138,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
-        startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
+        startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
     }
 
 }

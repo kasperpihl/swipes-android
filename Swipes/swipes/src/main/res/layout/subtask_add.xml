@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/subtask_add_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/subtask_cell_height"
+    android:orientation="horizontal">
+
+    <!-- Circle container -->
+    <FrameLayout
+        android:id="@+id/subtask_add_circle_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/subtask_circle_margin_left"
+        android:layout_marginRight="@dimen/subtask_circle_margin_right"
+        android:padding="10dp">
+
+        <View
+            android:id="@+id/subtask_add_circle"
+            android:layout_width="@dimen/subtask_circle_size"
+            android:layout_height="@dimen/subtask_circle_size" />
+    </FrameLayout>
+
+    <!-- Add subtask view -->
+    <com.swipesapp.android.ui.view.ActionEditText
+        android:id="@+id/subtask_add_title"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/subtask_add_circle_container"
+        android:background="@color/transparent"
+        android:ellipsize="end"
+        android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
+        android:hint="@string/edit_task_add_subtask_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"
+        android:scrollHorizontally="false" />
+
+</RelativeLayout>

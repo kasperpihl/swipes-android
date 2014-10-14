@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/subtask_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/subtask_cell_height"
+    android:orientation="horizontal">
+
+    <!-- Buttons container -->
+    <FrameLayout
+        android:id="@+id/subtask_buttons_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/subtask_margin_left">
+
+        <com.swipesapp.android.ui.view.SwipesTextView
+            android:id="@+id/subtask_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:text="@string/done_light"
+            android:textSize="17sp" />
+    </FrameLayout>
+
+    <!-- Circle container -->
+    <FrameLayout
+        android:id="@+id/subtask_circle_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/subtask_circle_margin_left"
+        android:layout_marginRight="@dimen/subtask_circle_margin_right"
+        android:layout_toRightOf="@id/subtask_buttons_container"
+        android:padding="10dp">
+
+        <View
+            android:id="@+id/subtask_circle"
+            android:layout_width="@dimen/subtask_circle_size"
+            android:layout_height="@dimen/subtask_circle_size"
+            android:background="@drawable/yellow_circle" />
+    </FrameLayout>
+
+    <!-- Task title -->
+    <TextView
+        android:id="@+id/subtask_title"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/subtask_circle_container"
+        android:ellipsize="end"
+        android:maxLines="2" />
+
+</RelativeLayout>

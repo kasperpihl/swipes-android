@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/edit_task_container"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.EditTaskActivity">
 
     <LinearLayout
-        android:id="@+id/edit_task_view"
+        android:id="@+id/edit_task_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <!-- Title and priority -->
@@ -18,6 +19,7 @@
             android:id="@+id/title_priority_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:layout_marginTop="20dp">
 
             <CheckBox
@@ -45,130 +47,156 @@
                 android:scrollHorizontally="false" />
         </RelativeLayout>
 
-        <!-- Scheduled time -->
-        <RelativeLayout
-            android:id="@+id/schedule_container"
+        <!-- Subtasks area -->
+        <ListView
+            android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:listSelector="@drawable/list_view_selector"
+            android:visibility="gone" />
 
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/edit_task_schedule_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="17dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/edit_schedule"
-                android:textSize="17sp" />
+        <!-- Properties area -->
+        <LinearLayout
+            android:id="@+id/properties_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/edit_task_schedule"
-                style="?android:textAppearanceSmall"
+            <include layout="@layout/subtask_first_item" />
+
+            <include layout="@layout/subtask_footer" />
+
+            <!-- Scheduled time -->
+            <RelativeLayout
+                android:id="@+id/schedule_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/edit_task_schedule_icon" />
-        </RelativeLayout>
+                android:layout_marginTop="15dp">
 
-        <!-- Repeat mode -->
-        <RelativeLayout
-            android:id="@+id/repeat_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/edit_task_schedule_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/edit_schedule"
+                    android:textSize="17sp" />
 
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/edit_task_repeat_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/edit_repeat"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/edit_task_schedule"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/edit_task_schedule_icon" />
+            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/edit_task_repeat"
-                style="?android:textAppearanceSmall"
+            <!-- Repeat mode -->
+            <RelativeLayout
+                android:id="@+id/repeat_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="1dp"
-                android:layout_toRightOf="@id/edit_task_repeat_icon" />
-        </RelativeLayout>
+                android:layout_marginTop="15dp">
 
-        <include layout="@layout/repeat_options" />
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/edit_task_repeat_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/edit_repeat"
+                    android:textSize="16sp" />
 
-        <!-- Assigned Tags -->
-        <RelativeLayout
-            android:id="@+id/tags_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
+                <TextView
+                    android:id="@+id/edit_task_repeat"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="1dp"
+                    android:layout_toRightOf="@id/edit_task_repeat_icon" />
+            </RelativeLayout>
 
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/edit_task_tags_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="19dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/action_tag"
-                android:textSize="20sp" />
+            <include layout="@layout/repeat_options" />
 
-            <TextView
-                android:id="@+id/edit_task_tags"
-                style="?android:textAppearanceSmall"
+            <!-- Assigned Tags -->
+            <RelativeLayout
+                android:id="@+id/tags_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@id/edit_task_tags_icon"
-                android:hint="@string/edit_task_tags_default_text" />
-        </RelativeLayout>
+                android:layout_marginTop="15dp">
 
-        <!-- Notes -->
-        <RelativeLayout
-            android:id="@+id/notes_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/edit_task_tags_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/action_tag"
+                    android:textSize="20sp" />
 
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/edit_task_notes_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="19dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/edit_notes"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/edit_task_tags"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@id/edit_task_tags_icon"
+                    android:hint="@string/edit_task_tags_default_text" />
+            </RelativeLayout>
 
-            <com.swipesapp.android.ui.view.ActionEditText
-                android:id="@+id/edit_task_notes"
-                style="?android:textAppearanceSmall"
+            <!-- Notes -->
+            <RelativeLayout
+                android:id="@+id/notes_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginTop="8dp"
-                android:layout_toRightOf="@id/edit_task_notes_icon"
-                android:background="@color/transparent"
-                android:focusableInTouchMode="true"
-                android:hint="@string/edit_task_notes_default_text"
-                android:imeOptions="actionDone"
-                android:inputType="textMultiLine|textCapSentences"
-                android:maxHeight="@dimen/edit_task_title_max_height"
-                android:scrollHorizontally="false" />
-        </RelativeLayout>
+                android:layout_marginTop="15dp">
+
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/edit_task_notes_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/edit_notes"
+                    android:textSize="16sp" />
+
+                <com.swipesapp.android.ui.view.ActionEditText
+                    android:id="@+id/edit_task_notes"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@id/edit_task_notes_icon"
+                    android:background="@color/transparent"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/edit_task_notes_default_text"
+                    android:imeOptions="actionDone"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxHeight="@dimen/edit_task_title_max_height"
+                    android:scrollHorizontally="false" />
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -223,4 +251,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

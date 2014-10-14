@@ -428,7 +428,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         Date currentDate = new Date();
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
-        // TODO: What should the temp ID be?
         String tempId = title + currentDate.getTime();
 
         if (!title.isEmpty()) {

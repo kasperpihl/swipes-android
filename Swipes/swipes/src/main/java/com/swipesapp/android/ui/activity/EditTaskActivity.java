@@ -19,6 +19,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
@@ -27,6 +29,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
@@ -42,19 +45,24 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 public class EditTaskActivity extends AccentActivity {
 
-    @InjectView(R.id.edit_task_container)
-    FrameLayout mContainer;
+    @InjectView(R.id.main_layout)
+    LinearLayout mLayout;
 
-    @InjectView(R.id.edit_task_view)
-    LinearLayout mView;
+    @InjectView(R.id.edit_task_container)
+    LinearLayout mContainer;
+
+    @InjectView(R.id.properties_view)
+    LinearLayout mPropertiesView;
 
     @InjectView(R.id.button_edit_task_priority)
     CheckBox mPriority;
@@ -102,6 +110,30 @@ public class EditTaskActivity extends AccentActivity {
     @InjectView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
+    @InjectView(R.id.subtask_footer)
+    LinearLayout mSubtaskFooter;
+
+    @InjectView(R.id.subtask_add_circle_container)
+    FrameLayout mSubtaskAddCircleContainer;
+    @InjectView(R.id.subtask_add_circle)
+    View mSubtaskAddCircle;
+    @InjectView(R.id.subtask_add_title)
+    ActionEditText mSubtaskAddTitle;
+
+    @InjectView(R.id.subtask_visibility_container)
+    LinearLayout mSubtaskVisibilityContainer;
+    @InjectView(R.id.subtask_visibility_icon)
+    SwipesTextView mSubtaskVisibilityIcon;
+    @InjectView(R.id.subtask_visibility_caption)
+    TextView mSubtaskVisibilityCaption;
+
+    @InjectView(R.id.subtask_first_buttons_container)
+    FrameLayout mSubtaskFirstButtonsContainer;
+    @InjectView(R.id.subtask_first_item)
+    RelativeLayout mSubtaskFirstItem;
+    @InjectView(R.id.subtask_first_item_title)
+    TextView mSubtaskFirstTitle;
+
     private static final String TAG_SEPARATOR = ", ";
 
     private WeakReference<Context> mContext;
@@ -115,6 +147,10 @@ public class EditTaskActivity extends AccentActivity {
     private List<GsonTag> mAssignedTags;
 
     public static BitmapDrawable sBlurDrawable;
+
+    private SubtasksAdapter mAdapter;
+    private ListView mListView;
+    private List<GsonTask> mSubtasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,29 +167,11 @@ public class EditTaskActivity extends AccentActivity {
 
         mId = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
-        mContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-        mContainer.requestFocus();
+        mTask = mTasksService.loadTask(mId);
 
-        mTitle.setTextColor(ThemeUtils.getTextColor(this));
-        mTitle.setOnEditorActionListener(mEnterListener);
-        mTitle.setListener(mKeyboardBackListener);
+        setupViews();
 
-        mScheduleIcon.setTextColor(ThemeUtils.getTextColor(this));
-        mSchedule.setTextColor(ThemeUtils.getTextColor(this));
-
-        mRepeatIcon.setTextColor(ThemeUtils.getTextColor(this));
-        mRepeat.setTextColor(ThemeUtils.getTextColor(this));
-        mRepeat.setHintTextColor(ThemeUtils.getTextColor(this));
-
-        mTagsIcon.setTextColor(ThemeUtils.getTextColor(this));
-        mTags.setTextColor(ThemeUtils.getTextColor(this));
-        mTags.setHintTextColor(ThemeUtils.getTextColor(this));
-
-        mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
-        mNotes.setTextColor(ThemeUtils.getTextColor(this));
-        mNotes.setHintTextColor(ThemeUtils.getTextColor(this));
-        mNotes.setOnEditorActionListener(mEnterListener);
-        mNotes.setListener(mKeyboardBackListener);
+        setupListView();
 
         updateViews();
     }
@@ -161,8 +179,8 @@ public class EditTaskActivity extends AccentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // TODO: Set icons for current theme.
-        menu.add(Menu.NONE, 0, Menu.NONE, "Share").setIcon(android.R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, 1, Menu.NONE, "Delete").setIcon(android.R.drawable.ic_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, 0, Menu.NONE, getResources().getString(R.string.edit_task_share_action)).setIcon(android.R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, 1, Menu.NONE, getResources().getString(R.string.edit_task_delete_action)).setIcon(android.R.drawable.ic_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -193,6 +211,99 @@ public class EditTaskActivity extends AccentActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        // Only close activity when subtasks are collapsed and tags are closed.
+        if (mListView.getVisibility() == View.VISIBLE) {
+            hideSubtasks();
+        } else if (mTagsArea.getVisibility() == View.VISIBLE) {
+            closeTags();
+        } else {
+            performChanges(false);
+            super.onBackPressed();
+        }
+    }
+
+    private void setupViews() {
+        mLayout.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+        mLayout.requestFocus();
+
+        mTitle.setTextColor(ThemeUtils.getTextColor(this));
+        mTitle.setOnEditorActionListener(mEnterListener);
+        mTitle.setListener(mKeyboardBackListener);
+
+        mScheduleIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mSchedule.setTextColor(ThemeUtils.getTextColor(this));
+
+        mRepeatIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mRepeat.setTextColor(ThemeUtils.getTextColor(this));
+        mRepeat.setHintTextColor(ThemeUtils.getTextColor(this));
+
+        mTagsIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mTags.setTextColor(ThemeUtils.getTextColor(this));
+        mTags.setHintTextColor(ThemeUtils.getTextColor(this));
+
+        mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setHintTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setOnEditorActionListener(mEnterListener);
+        mNotes.setListener(mKeyboardBackListener);
+
+        int circle = ThemeUtils.isLightTheme(this) ? R.drawable.black_circle : R.drawable.white_circle;
+        mSubtaskAddCircle.setBackgroundResource(circle);
+
+        mSubtaskAddTitle.setTextColor(ThemeUtils.getTextColor(this));
+        mSubtaskAddTitle.setHintTextColor(ThemeUtils.getTextColor(this));
+        mSubtaskAddTitle.setOnEditorActionListener(mSubtaskEnterListener);
+        mSubtaskAddTitle.setListener(mKeyboardBackListener);
+
+        mSubtaskVisibilityIcon.setRotation(270f);
+        mSubtaskVisibilityIcon.setTextColor(ThemeUtils.getTextColor(this));
+
+        mSubtaskVisibilityCaption.setTextColor(ThemeUtils.getTextColor(this));
+    }
+
+    private void setupListView() {
+        // Initialize list view.
+        mListView = (ListView) findViewById(android.R.id.list);
+
+        // Setup footer.
+        LinearLayout footer = (LinearLayout) getLayoutInflater().inflate(R.layout.subtask_footer, null);
+        mListView.addFooterView(footer);
+
+        customizeFooter(footer);
+
+        // Setup adapter.
+        mSubtasks = mTasksService.loadSubtasksForTask(mTask.getTempId());
+        mAdapter = new SubtasksAdapter(this, mSubtasks, mSubtaskListener);
+        mListView.setAdapter(mAdapter);
+    }
+
+    private void customizeFooter(LinearLayout footer) {
+        LinearLayout container = (LinearLayout) footer.findViewById(R.id.subtask_visibility_container);
+        container.setOnClickListener(mHideSubtasksClick);
+
+        FrameLayout circleContainer = (FrameLayout) footer.findViewById(R.id.subtask_add_circle_container);
+        changeFooterCircleMargin(circleContainer, true);
+
+        View addCircle = footer.findViewById(R.id.subtask_add_circle);
+        int circle = ThemeUtils.isLightTheme(this) ? R.drawable.black_circle : R.drawable.white_circle;
+        addCircle.setBackgroundResource(circle);
+
+        ActionEditText addTitle = (ActionEditText) footer.findViewById(R.id.subtask_add_title);
+        addTitle.setTextColor(ThemeUtils.getTextColor(this));
+        addTitle.setHintTextColor(ThemeUtils.getTextColor(this));
+        addTitle.setOnEditorActionListener(mSubtaskEnterListener);
+        addTitle.setListener(mKeyboardBackListener);
+
+        SwipesTextView visibilityIcon = (SwipesTextView) footer.findViewById(R.id.subtask_visibility_icon);
+        visibilityIcon.setRotation(90f);
+        visibilityIcon.setTextColor(ThemeUtils.getTextColor(this));
+
+        TextView visibilityCaption = (TextView) footer.findViewById(R.id.subtask_visibility_caption);
+        visibilityCaption.setVisibility(View.GONE);
+    }
+
     private void updateViews() {
         mTask = mTasksService.loadTask(mId);
 
@@ -209,6 +320,40 @@ public class EditTaskActivity extends AccentActivity {
         mTags.setText(buildFormattedTags());
 
         mNotes.setText(mTask.getNotes());
+
+        mSubtaskVisibilityCaption.setText(getResources().getQuantityString(R.plurals.subtask_show_caption, mSubtasks.size(), mSubtasks.size()));
+
+        mSubtaskVisibilityContainer.setVisibility(mSubtasks.isEmpty() ? View.GONE : View.VISIBLE);
+
+        mSubtaskFirstItem.setAlpha(1f);
+
+        loadFirstSubtask();
+    }
+
+    private void loadFirstSubtask() {
+        boolean allCompleted = true;
+
+        for (GsonTask subtask : mSubtasks) {
+            // Display for first uncompleted task.
+            if (subtask.getCompletionDate() == null) {
+                mSubtaskFirstTitle.setText(subtask.getTitle());
+
+                int gray = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+                mSubtaskFirstTitle.setTextColor(ThemeUtils.getTextColor(this));
+
+                // Change add subtask view margin when needed.
+                changeFooterCircleMargin(mSubtaskAddCircleContainer, mSubtasks.size() == 1);
+
+                // Change visibility of buttons.
+                mSubtaskFirstButtonsContainer.setVisibility(mSubtasks.size() > 1 ? View.GONE : View.VISIBLE);
+                mSubtaskVisibilityContainer.setVisibility(mSubtasks.size() == 1 ? View.GONE : View.VISIBLE);
+
+                allCompleted = false;
+                break;
+            }
+        }
+
+        mSubtaskFirstItem.setVisibility(allCompleted ? View.GONE : View.VISIBLE);
     }
 
     private String buildFormattedTags() {
@@ -249,7 +394,7 @@ public class EditTaskActivity extends AccentActivity {
         inputManager.toggleSoftInput(0, 0);
 
         // Remove focus from text views by focusing on main layout.
-        mContainer.requestFocus();
+        mLayout.requestFocus();
     }
 
     @OnClick(R.id.button_edit_task_priority)
@@ -283,7 +428,7 @@ public class EditTaskActivity extends AccentActivity {
         updateBlurDrawable(alphaColor);
         mTagsArea.setBackgroundDrawable(getBlurDrawable());
 
-        mView.setVisibility(View.GONE);
+        mContainer.setVisibility(View.GONE);
 
         // Show tags area with fade animation.
         mTagsArea.setVisibility(View.VISIBLE);
@@ -359,9 +504,9 @@ public class EditTaskActivity extends AccentActivity {
         mTagsArea.setVisibility(View.GONE);
 
         // Show edit task area with fade animation.
-        mView.setVisibility(View.VISIBLE);
-        mView.setAlpha(0f);
-        mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        mContainer.setVisibility(View.VISIBLE);
+        mContainer.setAlpha(0f);
+        mContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Hide action bar.
         getActionBar().show();
@@ -525,6 +670,11 @@ public class EditTaskActivity extends AccentActivity {
     private void shareTask() {
         String content = getString(R.string.share_message_header);
         content += getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
+
+        for (GsonTask subtask : mTasksService.loadSubtasksForTask(mTask.getTempId())) {
+            content += "\t\t" + getString(R.string.share_message_circle) + subtask.getTitle() + "\n";
+        }
+
         content += "\n" + getString(R.string.share_message_footer);
 
         Intent inviteIntent = new Intent(Intent.ACTION_SEND);
@@ -532,7 +682,7 @@ public class EditTaskActivity extends AccentActivity {
         inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
-        startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
+        startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
     }
 
     private void showRepeatOptions() {
@@ -694,6 +844,174 @@ public class EditTaskActivity extends AccentActivity {
                 mRepeat.setText(getString(R.string.repeat_year_description, month, dayOfMonth, time));
             }
         }
+    }
+
+    private SubtasksAdapter.SubtaskListener mSubtaskListener = new SubtasksAdapter.SubtaskListener() {
+        @Override
+        public void completeSubtask(GsonTask task) {
+            task.setCompletionDate(new Date());
+            saveSubtask(task);
+        }
+
+        @Override
+        public void uncompleteSubtask(GsonTask task) {
+            task.setCompletionDate(null);
+            saveSubtask(task);
+        }
+
+        @Override
+        public void deleteSubtask(final GsonTask task) {
+            // Display dialog to delete subtask.
+            new AccentAlertDialog.Builder(mContext.get())
+                    .setTitle(getString(R.string.delete_subtask_dialog_title))
+                    .setMessage(getString(R.string.delete_subtask_dialog_message))
+                    .setPositiveButton(getString(R.string.delete_subtask_dialog_yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Delete subtask.
+                            task.setDeleted(true);
+                            saveSubtask(task);
+
+                            if (mSubtasks.isEmpty() && mListView.getVisibility() == View.VISIBLE)
+                                hideSubtasks();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.delete_subtask_dialog_cancel), null)
+                    .create()
+                    .show();
+        }
+    };
+
+    private void refreshSubtasks() {
+        mSubtasks = mTasksService.loadSubtasksForTask(mTask.getTempId());
+        mAdapter.update(mSubtasks);
+    }
+
+    private TextView.OnEditorActionListener mSubtaskEnterListener =
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, save subtask.
+                        createSubtask(view.getText().toString());
+
+                        // Clear text view.
+                        view.setText("");
+                    }
+                    return true;
+                }
+            };
+
+    private void saveSubtask(GsonTask task) {
+        mTasksService.saveTask(task);
+        refreshSubtasks();
+        updateViews();
+    }
+
+    private void createSubtask(String title) {
+        Date currentDate = new Date();
+        String tempId = title + currentDate.getTime();
+
+        if (!title.isEmpty()) {
+            GsonTask task = new GsonTask(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
+            mTasksService.saveTask(task);
+
+            refreshSubtasks();
+
+            updateViews();
+
+            hideKeyboard();
+
+            if (mListView.getVisibility() == View.GONE) showSubtasks();
+        }
+    }
+
+    @OnClick(R.id.subtask_visibility_container)
+    protected void showSubtasksClick() {
+        showSubtasks();
+    }
+
+    View.OnClickListener mHideSubtasksClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            hideSubtasks();
+        }
+    };
+
+    @OnClick(R.id.subtask_first_item)
+    protected void firstSubtaskClick() {
+        if (mSubtasks.size() > 1) showSubtasks();
+    }
+
+    @OnLongClick(R.id.subtask_first_item)
+    protected boolean firstSubtaskLongClick() {
+        mSubtaskListener.deleteSubtask(getFirstUncompletedSubtask());
+        return true;
+    }
+
+    @OnClick(R.id.subtask_first_button)
+    protected void firstSubtaskButtonClick() {
+        mSubtaskFirstItem.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                GsonTask task = getFirstUncompletedSubtask();
+
+                if (task != null) {
+                    task.setCompletionDate(new Date());
+                    saveSubtask(task);
+                }
+
+                mSubtaskFooter.setAlpha(0f);
+                mSubtaskFooter.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
+
+                changeFooterCircleMargin(mSubtaskAddCircleContainer, false);
+            }
+        });
+    }
+
+    private void showSubtasks() {
+        mPropertiesView.setVisibility(View.GONE);
+
+        // Show list view with fade animation.
+        mListView.setVisibility(View.VISIBLE);
+        mListView.setAlpha(0f);
+        mListView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(null);
+
+        mListView.setSelection(0);
+    }
+
+    private void hideSubtasks() {
+        // Hide list view with fade animation.
+        mListView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mListView.setVisibility(View.GONE);
+
+                // Show edit area with fade animation.
+                mPropertiesView.setVisibility(View.VISIBLE);
+                mPropertiesView.setAlpha(0f);
+                mPropertiesView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
+            }
+        });
+
+        updateViews();
+    }
+
+    private GsonTask getFirstUncompletedSubtask() {
+        for (GsonTask subtask : mSubtasks) {
+            if (subtask.getCompletionDate() == null) return subtask;
+        }
+        return null;
+    }
+
+    private void changeFooterCircleMargin(FrameLayout container, boolean isLarge) {
+        int left = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_left);
+        int leftLarge = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_left_large);
+        int right = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_right);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+        params.setMargins(isLarge ? leftLarge : left, 0, right, 0);
+        container.setLayoutParams(params);
     }
 
 }

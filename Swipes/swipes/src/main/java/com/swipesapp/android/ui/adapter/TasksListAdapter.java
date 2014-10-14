@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
@@ -112,6 +113,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
             holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
             holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
+            holder.subtasksCount = (TextView) row.findViewById(R.id.task_subtask_count);
             holder.tagsIcon = (SwipesTextView) row.findViewById(R.id.task_tags_icon);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
 
@@ -142,6 +144,8 @@ public class TasksListAdapter extends BaseAdapter {
         Date repeatDate = tasks.get(position).getRepeatDate();
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
+        String taskId = tasks.get(position).getTempId();
+        List<GsonTask> subtasks = TasksService.getInstance(mContext.get()).loadSubtasksForTask(taskId);
 
         // Reset cell attributes to avoid recycling misbehavior.
         if (mResetCells) resetCellState(holder);
@@ -203,8 +207,15 @@ public class TasksListAdapter extends BaseAdapter {
             holder.propertiesContainer.setVisibility(View.VISIBLE);
         }
 
+        // Display subtasks count.
+        if (subtasks != null && !subtasks.isEmpty()) {
+            holder.subtasksCount.setText(String.valueOf(subtasks.size()));
+            holder.subtasksCount.setVisibility(View.VISIBLE);
+        }
+
         // Sets colors for cell, matching the current theme.
         holder.title.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+        holder.subtasksCount.setTextColor(ThemeUtils.getTextColor(mContext.get()));
         holder.frontView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
     }
 
@@ -270,6 +281,7 @@ public class TasksListAdapter extends BaseAdapter {
         holder.notesIcon.setVisibility(View.GONE);
         holder.repeatIcon.setVisibility(View.GONE);
         holder.locationIcon.setVisibility(View.GONE);
+        holder.subtasksCount.setVisibility(View.GONE);
 
         // Reset translation.
         if (mAnimateRefresh) {
@@ -427,6 +439,7 @@ public class TasksListAdapter extends BaseAdapter {
         SwipesTextView locationIcon;
         SwipesTextView notesIcon;
         SwipesTextView repeatIcon;
+        TextView subtasksCount;
 
         // Tags.
         SwipesTextView tagsIcon;

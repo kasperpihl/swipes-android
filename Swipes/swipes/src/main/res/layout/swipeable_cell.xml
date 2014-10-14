@@ -164,6 +164,29 @@
 
         </LinearLayout>
 
+        <!-- Priority container -->
+        <FrameLayout
+            android:id="@+id/task_subtask_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/subtask_counter_margin"
+            android:layout_marginRight="@dimen/subtask_counter_margin">
+
+            <TextView
+                android:id="@+id/task_subtask_count"
+                android:layout_width="@dimen/subtask_counter_width"
+                android:layout_height="@dimen/subtask_counter_height"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/task_properties_margin"
+                android:layout_marginRight="@dimen/task_properties_margin"
+                android:background="@drawable/rounded_rectangle"
+                android:gravity="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </FrameLayout>
+
     </RelativeLayout>
 
 </FrameLayout>
