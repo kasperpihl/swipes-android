@@ -18,7 +18,7 @@ public class GsonTask {
     @Expose
     private String tempId;
     @Expose
-    private String parentId;
+    private String parentLocalId;
     @Expose
     private Date createdAt;
     @Expose
@@ -54,11 +54,11 @@ public class GsonTask {
     private long itemId;
     private boolean isSelected;
 
-    public GsonTask(Long id, String objectId, String tempId, String parentId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+    public GsonTask(Long id, String objectId, String tempId, String parentLocalId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
-        this.parentId = parentId;
+        this.parentLocalId = parentLocalId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
@@ -97,12 +97,12 @@ public class GsonTask {
         return tempId;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParentLocalId(String parentLocalId) {
+        this.parentLocalId = parentLocalId;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getParentLocalId() {
+        return parentLocalId;
     }
 
     public void setCreatedAt(Date createdAt) {

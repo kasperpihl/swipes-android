@@ -490,7 +490,7 @@ public class TasksService {
         List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
-            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
+            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
         }
 
         return tasks;

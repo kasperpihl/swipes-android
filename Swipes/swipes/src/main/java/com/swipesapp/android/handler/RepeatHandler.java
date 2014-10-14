@@ -28,7 +28,7 @@ public class RepeatHandler {
     public void handleRepeatedTask(GsonTask task) {
         // Create a copy of the original task.
         String tempId = task.getTitle() + new Date();
-        GsonTask copy = new GsonTask(null, null, tempId, task.getParentId(), task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
+        GsonTask copy = new GsonTask(null, null, tempId, null, task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
 
         // Determine next repeat date.
         if (task.getRepeatOption().equals(RepeatOptions.NEVER.getValue())) {
