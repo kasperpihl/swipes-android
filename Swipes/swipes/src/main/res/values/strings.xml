@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- API keys -->
+    <string name="application_id">0qD3LLZIOwLOPRwbwLia9GJXTEUnEsSlBCufqDvr</string>
+    <string name="client_key">zkaCbiWV0ieyDq5pinRuzclnaeLZG9G6GFJkmXMB</string>
+    <string name="facebook_app_id">531435630236702</string>
+
     <!-- Welcome -->
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>

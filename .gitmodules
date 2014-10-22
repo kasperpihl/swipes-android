@@ -7,3 +7,6 @@
 [submodule "Swipes/libraries/android-betterpickers"]
 	path = Swipes/libraries/android-betterpickers
 	url = https://bitbucket.org/felipebari/android-betterpickers
+[submodule "Swipes/libraries/ParseUI-Android"]
+	path = Swipes/libraries/ParseUI-Android
+	url = https://bitbucket.org/felipebari/parseui-android.git
