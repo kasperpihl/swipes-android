@@ -13,6 +13,7 @@ import com.swipesapp.android.db.MigrationAssistant;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
@@ -43,17 +44,44 @@ public class SplashActivity extends Activity {
                 // Perform migrations when needed.
                 MigrationAssistant.performUpgrades(mContext.get());
 
-                // Save welcome tasks if the app is launching for the first time.
-                if (PreferenceUtils.isFirstRun(mContext.get())) {
-                    addWelcomeTasks();
+                // Show welcome screen only once.
+                if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
+                    // Show welcome screen.
+                    Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
+                    startActivityForResult(intent, Constants.WELCOME_REQUEST_CODE);
+                } else {
+                    // Show tasks activity.
+                    Intent intent = new Intent(SplashActivity.this, TasksActivity.class);
+                    startActivity(intent);
+
+                    finish();
                 }
-
-                Intent i = new Intent(SplashActivity.this, TasksActivity.class);
-                startActivity(i);
-
-                finish();
             }
         }, SPLASH_TIMEOUT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.WELCOME_REQUEST_CODE) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    // Save welcome tasks if the app is used for the first time.
+                    if (PreferenceUtils.isFirstRun(mContext.get())) {
+                        addWelcomeTasks();
+                    }
+
+                    // Set welcome screen as shown.
+                    PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_SCREEN, "YES", this);
+
+                    // Show tasks activity.
+                    Intent intent = new Intent(SplashActivity.this, TasksActivity.class);
+                    startActivity(intent);
+
+                    break;
+            }
+        }
+
+        finish();
     }
 
     private void addWelcomeTasks() {

@@ -15,6 +15,8 @@ public class PreferenceUtils {
 
     public static final String FIRST_RUN = "app_first_run";
 
+    public static final String WELCOME_SCREEN = "shown_welcome_screen";
+
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
     public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
@@ -34,6 +36,18 @@ public class PreferenceUtils {
     }
 
     /**
+     * Saves a string preference.
+     *
+     * @param preference Preference to save.
+     * @param value      Value to apply.
+     * @param context    Context instance.
+     */
+    public static void saveStringPreference(String preference, String value, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putString(preference, value).apply();
+    }
+
+    /**
      * Reads theme setting.
      *
      * @param context Context instance.
@@ -48,7 +62,7 @@ public class PreferenceUtils {
      * Determines if it is the app's first run.
      *
      * @param context Context instance.
-     * @return True it is the app's first run.
+     * @return True if it's the app's first run.
      */
     public static boolean isFirstRun(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -59,6 +73,17 @@ public class PreferenceUtils {
         }
 
         return isFirstRun;
+    }
+
+    /**
+     * Determines if the welcome screen has been shown.
+     *
+     * @param context Context instance.
+     * @return True if it has been shown.
+     */
+    public static boolean hasShownWelcomeScreen(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return !settings.getString(WELCOME_SCREEN, "").isEmpty();
     }
 
     /**

@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <Preference
         android:key="invite"
         android:title="@string/settings_invite" />
+
+    <Preference
+        android:key="login"
+        android:title="@string/settings_login" />
+
+    <Preference
+        android:key="logout"
+        android:title="@string/settings_logout" />
 
     <com.negusoft.holoaccent.preference.SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_notifications"
         android:title="@string/notifications" />
+
     <com.negusoft.holoaccent.preference.SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_location"
         android:title="@string/location" />
+
     <com.negusoft.holoaccent.preference.ListPreference
         android:defaultValue="light"
         android:dialogTitle="@string/settings_theme_chooser_dialog_title"
@@ -38,4 +49,5 @@
             android:targetClass="com.swipesapp.android.ui.activity.AboutActivity"
             android:targetPackage="com.swipesapp.android" />
     </PreferenceScreen>
+
 </PreferenceScreen>

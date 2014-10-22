@@ -27,6 +27,10 @@ public class ExtTaskTagDao {
         return mDao;
     }
 
+    public List<TaskTag> listAllAssociations() {
+        return mDao.queryBuilder().list();
+    }
+
     public TaskTag selectAssociation(Long taskId, Long tagId) {
         return mDao.queryBuilder().where(TaskTagDao.Properties.TaskId.eq(taskId), TaskTagDao.Properties.TagId.eq(tagId)).unique();
     }

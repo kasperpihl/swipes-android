@@ -465,6 +465,29 @@ public class TasksService {
     }
 
     /**
+     * Clears all user data from the database.
+     */
+    public void clearAllData() {
+        // Delete all task-tag associations.
+        List<TaskTag> joins = mExtTaskTagDao.listAllAssociations();
+        for (TaskTag join : joins) {
+            join.delete();
+        }
+
+        // Delete all tasks.
+        List<Task> tasks = mExtTaskDao.listAllTasks();
+        for (Task task : tasks) {
+            task.delete();
+        }
+
+        // Delete all tags.
+        List<Tag> tags = mExtTagDao.listAllTags();
+        for (Tag tag : tags) {
+            tag.delete();
+        }
+    }
+
+    /**
      * Converts a list of Tag objects to GsonTag.
      *
      * @param tags List of tags.
