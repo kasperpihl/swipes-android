@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
@@ -149,14 +150,6 @@ public class SubtasksAdapter extends BaseAdapter {
         View circle;
         TextView title;
         SwipesTextView button;
-    }
-
-    public interface SubtaskListener {
-        void completeSubtask(GsonTask task);
-
-        void uncompleteSubtask(GsonTask task);
-
-        void deleteSubtask(GsonTask task);
     }
 
 }

@@ -31,6 +31,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
+import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FlowLayout;
@@ -841,7 +842,7 @@ public class EditTaskActivity extends AccentActivity {
         }
     }
 
-    private SubtasksAdapter.SubtaskListener mSubtaskListener = new SubtasksAdapter.SubtaskListener() {
+    private SubtaskListener mSubtaskListener = new SubtaskListener() {
         @Override
         public void completeSubtask(GsonTask task) {
             task.setCompletionDate(new Date());
