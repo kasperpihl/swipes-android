@@ -27,6 +27,7 @@ public class TaskSync {
     private String repeatOption;
     private String origin;
     private String originIdentifier;
+    private String tags;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -38,7 +39,7 @@ public class TaskSync {
         this.id = id;
     }
 
-    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, java.util.Date createdAt, java.util.Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, java.util.Date completionDate, java.util.Date schedule, String location, java.util.Date repeatDate, String repeatOption, String origin, String originIdentifier) {
+    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, java.util.Date createdAt, java.util.Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, java.util.Date completionDate, java.util.Date schedule, String location, java.util.Date repeatDate, String repeatOption, String origin, String originIdentifier, String tags) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
@@ -57,6 +58,7 @@ public class TaskSync {
         this.repeatOption = repeatOption;
         this.origin = origin;
         this.originIdentifier = originIdentifier;
+        this.tags = tags;
     }
 
     public Long getId() {
@@ -201,6 +203,14 @@ public class TaskSync {
 
     public void setOriginIdentifier(String originIdentifier) {
         this.originIdentifier = originIdentifier;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     // KEEP METHODS - put your custom methods here

@@ -41,6 +41,7 @@ public class TaskSyncDao extends AbstractDao<TaskSync, Long> {
         public final static Property RepeatOption = new Property(15, String.class, "repeatOption", false, "REPEAT_OPTION");
         public final static Property Origin = new Property(16, String.class, "origin", false, "ORIGIN");
         public final static Property OriginIdentifier = new Property(17, String.class, "originIdentifier", false, "ORIGIN_IDENTIFIER");
+        public final static Property Tags = new Property(18, String.class, "tags", false, "TAGS");
     };
 
 
@@ -73,7 +74,8 @@ public class TaskSyncDao extends AbstractDao<TaskSync, Long> {
                 "'REPEAT_DATE' INTEGER," + // 14: repeatDate
                 "'REPEAT_OPTION' TEXT," + // 15: repeatOption
                 "'ORIGIN' TEXT," + // 16: origin
-                "'ORIGIN_IDENTIFIER' TEXT);"); // 17: originIdentifier
+                "'ORIGIN_IDENTIFIER' TEXT," + // 17: originIdentifier
+                "'TAGS' TEXT);"); // 18: tags
     }
 
     /** Drops the underlying database table. */
@@ -176,6 +178,11 @@ public class TaskSyncDao extends AbstractDao<TaskSync, Long> {
         if (originIdentifier != null) {
             stmt.bindString(18, originIdentifier);
         }
+ 
+        String tags = entity.getTags();
+        if (tags != null) {
+            stmt.bindString(19, tags);
+        }
     }
 
     /** @inheritdoc */
@@ -205,7 +212,8 @@ public class TaskSyncDao extends AbstractDao<TaskSync, Long> {
             cursor.isNull(offset + 14) ? null : new java.util.Date(cursor.getLong(offset + 14)), // repeatDate
             cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // repeatOption
             cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // origin
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // originIdentifier
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // originIdentifier
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // tags
         );
         return entity;
     }
@@ -231,6 +239,7 @@ public class TaskSyncDao extends AbstractDao<TaskSync, Long> {
         entity.setRepeatOption(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
         entity.setOrigin(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
         entity.setOriginIdentifier(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setTags(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
      }
     
     /** @inheritdoc */

@@ -63,7 +63,8 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'REPEAT_DATE' INTEGER," +
                         "'REPEAT_OPTION' TEXT," +
                         "'ORIGIN' TEXT," +
-                        "'ORIGIN_IDENTIFIER' TEXT);");
+                        "'ORIGIN_IDENTIFIER' TEXT," +
+                        "'TAGS' TEXT);");
 
                 // Create tag sync table.
                 db.execSQL("CREATE TABLE 'TAG_SYNC' (" +

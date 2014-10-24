@@ -103,6 +103,7 @@ public class SwipesDaoGenerator {
         taskSync.addStringProperty("repeatOption");
         taskSync.addStringProperty("origin");
         taskSync.addStringProperty("originIdentifier");
+        taskSync.addStringProperty("tags");
 
         // Tag sync table.
         Entity tagSync = schema.addEntity("TagSync");
