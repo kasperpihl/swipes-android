@@ -3,15 +3,14 @@ package com.swipesapp.android.sync.service;
 import android.content.Context;
 import android.content.Intent;
 
-import com.swipesapp.android.db.DaoMaster;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.DaoSession;
-import com.swipesapp.android.db.dao.ExtTagDao;
-import com.swipesapp.android.db.dao.ExtTaskDao;
-import com.swipesapp.android.db.dao.ExtTaskTagDao;
-import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;
+import com.swipesapp.android.db.dao.ExtTagDao;
+import com.swipesapp.android.db.dao.ExtTaskDao;
+import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.values.Actions;
@@ -38,8 +37,6 @@ public class TasksService {
 
     private WeakReference<Context> mContext;
 
-    private static final String DB_NAME = "swipes-db";
-
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
      *
@@ -48,9 +45,7 @@ public class TasksService {
     private TasksService(Context context) {
         mContext = new WeakReference<Context>(context);
 
-        SwipesHelper helper = new SwipesHelper(mContext.get(), DB_NAME, null);
-        DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
-        DaoSession daoSession = daoMaster.newSession();
+        DaoSession daoSession = SwipesApplication.getDaoSession();
 
         mExtTaskDao = ExtTaskDao.getInstance(daoSession);
         mExtTagDao = ExtTagDao.getInstance(daoSession);

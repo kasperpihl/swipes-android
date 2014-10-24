@@ -5,6 +5,11 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.db.DaoSession;
+import com.swipesapp.android.db.dao.ExtDeletedDao;
+import com.swipesapp.android.db.dao.ExtTagSyncDao;
+import com.swipesapp.android.db.dao.ExtTaskSyncDao;
 import com.swipesapp.android.sync.listener.SyncListener;
 
 import java.lang.ref.WeakReference;
@@ -16,12 +21,18 @@ import java.lang.ref.WeakReference;
  */
 public class SyncService {
 
+    private static SyncService sInstance;
+
+    private ExtTaskSyncDao mExtTaskSyncDao;
+    private ExtTagSyncDao mExtTagSyncDao;
+    private ExtDeletedDao mExtDeletedDao;
+
     private WeakReference<Context> mContext;
     private SyncListener mListener;
     private TasksService mTasksService;
 
     /**
-     * Custom constructor.
+     * Internal constructor. Handles loading of extended DAOs for custom DB operations.
      *
      * @param context  Context instance.
      * @param listener Sync listener instance.
@@ -30,6 +41,39 @@ public class SyncService {
         mContext = new WeakReference<Context>(context);
         mListener = listener;
         mTasksService = TasksService.getInstance(context);
+
+        DaoSession daoSession = SwipesApplication.getDaoSession();
+
+        mExtTaskSyncDao = ExtTaskSyncDao.getInstance(daoSession);
+        mExtTagSyncDao = ExtTagSyncDao.getInstance(daoSession);
+        mExtDeletedDao = ExtDeletedDao.getInstance(daoSession);
+    }
+
+    /**
+     * Returns an existing instance of the service, or loads a new one if needed.
+     * This ensures only one DAO session is active at any given time.
+     *
+     * @param context Context reference.
+     * @return Service instance.
+     */
+    public static SyncService getInstance(Context context, SyncListener listener) {
+        if (sInstance == null) {
+            sInstance = new SyncService(context, listener);
+        } else {
+            sInstance.updateReferences(context, listener);
+        }
+        return sInstance;
+    }
+
+    /**
+     * Updates the context reference and listener.
+     *
+     * @param context  Context reference.
+     * @param listener Sync listener instance.
+     */
+    private void updateReferences(Context context, SyncListener listener) {
+        mContext = new WeakReference<Context>(context);
+        mListener = listener;
     }
 
     /**
