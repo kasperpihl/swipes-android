@@ -42,7 +42,7 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'TAG_ID' INTEGER NOT NULL );");
                 break;
             case 1002:
-                // Create new task sync table.
+                // Create task sync table.
                 db.execSQL("CREATE TABLE 'TASK_SYNC' (" +
                         "'_id' INTEGER PRIMARY KEY ," +
                         "'OBJECT_ID' TEXT," +
@@ -63,7 +63,7 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'ORIGIN' TEXT," +
                         "'ORIGIN_IDENTIFIER' TEXT);");
 
-                // Create new tag sync table.
+                // Create tag sync table.
                 db.execSQL("CREATE TABLE 'TAG_SYNC' (" +
                         "'_id' INTEGER PRIMARY KEY ," +
                         "'OBJECT_ID' TEXT," +
@@ -71,6 +71,13 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'CREATED_AT' INTEGER," +
                         "'UPDATED_AT' INTEGER," +
                         "'TITLE' TEXT);");
+
+                // Create deleted objects table.
+                db.execSQL("CREATE TABLE 'DELETED' (" +
+                        "'_id' INTEGER PRIMARY KEY ," +
+                        "'CLASS_NAME' TEXT," +
+                        "'OBJECT_ID' TEXT," +
+                        "'DELETED' INTEGER);");
                 break;
         }
     }

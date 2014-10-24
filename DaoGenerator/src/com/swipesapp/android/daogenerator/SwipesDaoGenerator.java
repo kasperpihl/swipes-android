@@ -112,6 +112,13 @@ public class SwipesDaoGenerator {
         tagSync.addDateProperty("createdAt");
         tagSync.addDateProperty("updatedAt");
         tagSync.addStringProperty("title");
+
+        // Deleted objects table.
+        Entity deleted = schema.addEntity("Deleted");
+        deleted.addIdProperty();
+        deleted.addStringProperty("className");
+        deleted.addStringProperty("objectId");
+        deleted.addBooleanProperty("deleted");
     }
 
 }
