@@ -9,7 +9,7 @@ import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
-import com.swipesapp.android.db.MigrationAssistant;
+import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;

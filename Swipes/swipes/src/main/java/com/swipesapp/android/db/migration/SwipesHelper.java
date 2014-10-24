@@ -1,8 +1,10 @@
-package com.swipesapp.android.db;
+package com.swipesapp.android.db.migration;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.swipesapp.android.db.DaoMaster;
 
 /**
  * Extended database helper to deal with migrations.

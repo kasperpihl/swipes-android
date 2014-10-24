@@ -5,10 +5,10 @@ import android.content.Intent;
 
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
-import com.swipesapp.android.db.ExtTagDao;
-import com.swipesapp.android.db.ExtTaskDao;
-import com.swipesapp.android.db.ExtTaskTagDao;
-import com.swipesapp.android.db.SwipesHelper;
+import com.swipesapp.android.db.dao.ExtTagDao;
+import com.swipesapp.android.db.dao.ExtTaskDao;
+import com.swipesapp.android.db.dao.ExtTaskTagDao;
+import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;

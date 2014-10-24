@@ -1,4 +1,8 @@
-package com.swipesapp.android.db;
+package com.swipesapp.android.db.dao;
+
+import com.swipesapp.android.db.DaoSession;
+import com.swipesapp.android.db.TaskTag;
+import com.swipesapp.android.db.TaskTagDao;
 
 import java.util.List;
 

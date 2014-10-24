@@ -1,4 +1,4 @@
-package com.swipesapp.android.db;
+package com.swipesapp.android.db.migration;
 
 import android.content.Context;
 
