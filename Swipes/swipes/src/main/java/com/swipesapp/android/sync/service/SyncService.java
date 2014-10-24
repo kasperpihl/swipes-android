@@ -7,12 +7,19 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.DaoSession;
+import com.swipesapp.android.db.Deleted;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.TagSync;
+import com.swipesapp.android.db.TaskSync;
 import com.swipesapp.android.db.dao.ExtDeletedDao;
 import com.swipesapp.android.db.dao.ExtTagSyncDao;
 import com.swipesapp.android.db.dao.ExtTaskSyncDao;
+import com.swipesapp.android.sync.gson.GsonTag;
+import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Service for syncing operations.
@@ -28,19 +35,16 @@ public class SyncService {
     private ExtDeletedDao mExtDeletedDao;
 
     private WeakReference<Context> mContext;
-    private SyncListener mListener;
-    private TasksService mTasksService;
+
+    private static final String API_URL = "http://api.swipesapp.com/sync";
 
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
      *
-     * @param context  Context instance.
-     * @param listener Sync listener instance.
+     * @param context Context instance.
      */
-    public SyncService(Context context, SyncListener listener) {
+    public SyncService(Context context) {
         mContext = new WeakReference<Context>(context);
-        mListener = listener;
-        mTasksService = TasksService.getInstance(context);
 
         DaoSession daoSession = SwipesApplication.getDaoSession();
 
@@ -54,39 +58,31 @@ public class SyncService {
      * This ensures only one DAO session is active at any given time.
      *
      * @param context Context reference.
-     * @return Service instance.
      */
-    public static SyncService getInstance(Context context, SyncListener listener) {
+    public static SyncService getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new SyncService(context, listener);
+            sInstance = new SyncService(context);
         } else {
-            sInstance.updateReferences(context, listener);
+            sInstance.updateContext(context);
         }
         return sInstance;
     }
 
     /**
-     * Updates the context reference and listener.
+     * Updates the context reference.
      *
-     * @param context  Context reference.
-     * @param listener Sync listener instance.
+     * @param context Context reference.
      */
-    private void updateReferences(Context context, SyncListener listener) {
+    private void updateContext(Context context) {
         mContext = new WeakReference<Context>(context);
-        mListener = listener;
     }
 
     /**
      * Performs a sync operation.
+     *
+     * @param listener Sync listener instance.
      */
-    public void performSync() {
-        // TODO: Implement sync.
-    }
-
-    /**
-     * Sends local changes to the API.
-     */
-    private void sendChanges() {
+    public void performSync(SyncListener listener) {
         JsonObject json = new JsonObject();
         json.addProperty("foo", "bar");
 
@@ -98,25 +94,68 @@ public class SyncService {
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        // Do stuff with the result or error.
+                        // TODO: Get API response and save changes.
                     }
                 });
     }
 
-    /**
-     * Retrieves remote changes from the API.
-     */
-    private void retrieveChanges() {
-        // TODO: Get API response and save changes.
-        Ion.with(mContext.get())
-                .load("http://example.com/thing.json")
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        // Do stuff with the result or error.
-                    }
-                });
+    public void saveTaskChangesForSync(GsonTask task) {
+        TaskSync taskSync = new TaskSync();
+
+        if (task.getId() == null) {
+            // Save entire task for sync.
+            taskSync = taskSyncFromGson(task);
+            mExtTaskSyncDao.getDao().insert(taskSync);
+        } else if (task.isDeleted()) {
+            // Save task to deleted objects.
+            Deleted deleted = new Deleted(null, "ToDo", task.getTempId(), true);
+            mExtDeletedDao.getDao().insert(deleted);
+        } else {
+            GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getId());
+
+            // Save only changed attributes.
+            taskSync.setObjectId(task.getObjectId());
+            taskSync.setUpdatedAt(task.getUpdatedAt());
+            taskSync.setTitle(task.getTitle().equals(old.getTitle()) ? null : task.getTitle());
+            taskSync.setNotes(task.getNotes().equals(old.getNotes()) ? null : task.getNotes());
+            taskSync.setOrder(task.getOrder().equals(old.getOrder()) ? null : task.getOrder());
+            taskSync.setPriority(task.getPriority().equals(old.getPriority()) ? null : task.getPriority());
+            taskSync.setCompletionDate(task.getCompletionDate().equals(old.getCompletionDate()) ? null : task.getCompletionDate());
+            taskSync.setSchedule(task.getSchedule().equals(old.getSchedule()) ? null : task.getSchedule());
+            taskSync.setLocation(task.getLocation().equals(old.getLocation()) ? null : task.getLocation());
+            taskSync.setRepeatDate(task.getRepeatDate().equals(old.getRepeatDate()) ? null : task.getRepeatDate());
+            taskSync.setRepeatOption(task.getRepeatOption().equals(old.getRepeatOption()) ? null : task.getRepeatOption());
+            taskSync.setTags(task.getTags().equals(old.getTags()) ? null : tagsToString(task.getTags()));
+
+            mExtTaskSyncDao.getDao().insert(taskSync);
+        }
+    }
+
+    public void saveTagForSync(Tag tag) {
+        TagSync tagSync = new TagSync(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle());
+        mExtTagSyncDao.getDao().insert(tagSync);
+    }
+
+    public void saveDeletedTagForSync(Tag tag) {
+        Deleted deleted = new Deleted(null, "Tag", tag.getTempId(), true);
+        mExtDeletedDao.getDao().insert(deleted);
+    }
+
+    private TaskSync taskSyncFromGson(GsonTask task) {
+        return new TaskSync(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tagsToString(task.getTags()));
+    }
+
+    private String tagsToString(List<GsonTag> tags) {
+        String stringTags = "";
+
+        // Convert tags to comma-separated string.
+        if (tags != null) {
+            for (GsonTag tag : tags) {
+                stringTags += tag.getTempId() + ",";
+            }
+        }
+
+        return stringTags;
     }
 
 }

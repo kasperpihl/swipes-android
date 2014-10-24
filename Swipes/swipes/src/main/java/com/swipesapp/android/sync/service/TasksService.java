@@ -96,6 +96,8 @@ public class TasksService {
     public void saveTask(GsonTask gsonTask) {
         Long id = gsonTask.getId();
 
+        SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonTask);
+
         if (id == null) {
             createTask(gsonTask);
         } else {
@@ -164,7 +166,7 @@ public class TasksService {
     }
 
     /**
-     * Creates new tags, or associates existing ones with a task.
+     * Associates existing tags with a task.
      *
      * @param taskId   ID of the task.
      * @param gsonTags List of objects holding tag data.
@@ -201,6 +203,8 @@ public class TasksService {
 
             // Persist new tag.
             mExtTagDao.getDao().insert(tag);
+
+            SyncService.getInstance(mContext.get()).saveTagForSync(tag);
         }
     }
 
@@ -231,6 +235,8 @@ public class TasksService {
         // Delete from database.
         Tag tag = mExtTagDao.selectTag(tagId);
         mExtTagDao.getDao().delete(tag);
+
+        SyncService.getInstance(mContext.get()).saveDeletedTagForSync(tag);
     }
 
     /**
