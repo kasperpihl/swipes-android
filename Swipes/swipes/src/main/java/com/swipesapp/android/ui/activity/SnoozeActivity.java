@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -450,6 +451,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
         dialog.setThemeDark(true);
+        dialog.set24HourMode(DateFormat.is24HourFormat(this));
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
         // Mark schedule as not performed.
