@@ -13,17 +13,17 @@ public class TaskSync {
     private String objectId;
     private String tempId;
     private String parentLocalId;
-    private java.util.Date createdAt;
-    private java.util.Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
     private Boolean deleted;
     private String title;
     private String notes;
     private Integer order;
     private Integer priority;
-    private java.util.Date completionDate;
-    private java.util.Date schedule;
+    private String completionDate;
+    private String schedule;
     private String location;
-    private java.util.Date repeatDate;
+    private String repeatDate;
     private String repeatOption;
     private String origin;
     private String originIdentifier;
@@ -39,7 +39,7 @@ public class TaskSync {
         this.id = id;
     }
 
-    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, java.util.Date createdAt, java.util.Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, java.util.Date completionDate, java.util.Date schedule, String location, java.util.Date repeatDate, String repeatOption, String origin, String originIdentifier, String tags) {
+    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, String tags) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
@@ -93,19 +93,19 @@ public class TaskSync {
         this.parentLocalId = parentLocalId;
     }
 
-    public java.util.Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(java.util.Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public java.util.Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(java.util.Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -149,19 +149,19 @@ public class TaskSync {
         this.priority = priority;
     }
 
-    public java.util.Date getCompletionDate() {
+    public String getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(java.util.Date completionDate) {
+    public void setCompletionDate(String completionDate) {
         this.completionDate = completionDate;
     }
 
-    public java.util.Date getSchedule() {
+    public String getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(java.util.Date schedule) {
+    public void setSchedule(String schedule) {
         this.schedule = schedule;
     }
 
@@ -173,11 +173,11 @@ public class TaskSync {
         this.location = location;
     }
 
-    public java.util.Date getRepeatDate() {
+    public String getRepeatDate() {
         return repeatDate;
     }
 
-    public void setRepeatDate(java.util.Date repeatDate) {
+    public void setRepeatDate(String repeatDate) {
         this.repeatDate = repeatDate;
     }
 

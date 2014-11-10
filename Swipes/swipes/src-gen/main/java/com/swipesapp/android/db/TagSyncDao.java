@@ -26,8 +26,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property ObjectId = new Property(1, String.class, "objectId", false, "OBJECT_ID");
         public final static Property TempId = new Property(2, String.class, "tempId", false, "TEMP_ID");
-        public final static Property CreatedAt = new Property(3, java.util.Date.class, "createdAt", false, "CREATED_AT");
-        public final static Property UpdatedAt = new Property(4, java.util.Date.class, "updatedAt", false, "UPDATED_AT");
+        public final static Property CreatedAt = new Property(3, String.class, "createdAt", false, "CREATED_AT");
+        public final static Property UpdatedAt = new Property(4, String.class, "updatedAt", false, "UPDATED_AT");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
     };
 
@@ -47,8 +47,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'OBJECT_ID' TEXT," + // 1: objectId
                 "'TEMP_ID' TEXT," + // 2: tempId
-                "'CREATED_AT' INTEGER," + // 3: createdAt
-                "'UPDATED_AT' INTEGER," + // 4: updatedAt
+                "'CREATED_AT' TEXT," + // 3: createdAt
+                "'UPDATED_AT' TEXT," + // 4: updatedAt
                 "'TITLE' TEXT);"); // 5: title
     }
 
@@ -78,14 +78,14 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
             stmt.bindString(3, tempId);
         }
  
-        java.util.Date createdAt = entity.getCreatedAt();
+        String createdAt = entity.getCreatedAt();
         if (createdAt != null) {
-            stmt.bindLong(4, createdAt.getTime());
+            stmt.bindString(4, createdAt);
         }
  
-        java.util.Date updatedAt = entity.getUpdatedAt();
+        String updatedAt = entity.getUpdatedAt();
         if (updatedAt != null) {
-            stmt.bindLong(5, updatedAt.getTime());
+            stmt.bindString(5, updatedAt);
         }
  
         String title = entity.getTitle();
@@ -107,8 +107,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // objectId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tempId
-            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // createdAt
-            cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)), // updatedAt
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // createdAt
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // updatedAt
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // title
         );
         return entity;
@@ -120,8 +120,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setObjectId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setTempId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setCreatedAt(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
-        entity.setUpdatedAt(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
+        entity.setCreatedAt(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setUpdatedAt(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     

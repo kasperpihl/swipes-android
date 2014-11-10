@@ -89,17 +89,17 @@ public class SwipesDaoGenerator {
         taskSync.addStringProperty("objectId");
         taskSync.addStringProperty("tempId");
         taskSync.addStringProperty("parentLocalId");
-        taskSync.addDateProperty("createdAt");
-        taskSync.addDateProperty("updatedAt");
+        taskSync.addStringProperty("createdAt");
+        taskSync.addStringProperty("updatedAt");
         taskSync.addBooleanProperty("deleted");
         taskSync.addStringProperty("title");
         taskSync.addStringProperty("notes");
         taskSync.addIntProperty("order");
         taskSync.addIntProperty("priority");
-        taskSync.addDateProperty("completionDate");
-        taskSync.addDateProperty("schedule");
+        taskSync.addStringProperty("completionDate");
+        taskSync.addStringProperty("schedule");
         taskSync.addStringProperty("location");
-        taskSync.addDateProperty("repeatDate");
+        taskSync.addStringProperty("repeatDate");
         taskSync.addStringProperty("repeatOption");
         taskSync.addStringProperty("origin");
         taskSync.addStringProperty("originIdentifier");
@@ -110,8 +110,8 @@ public class SwipesDaoGenerator {
         tagSync.addIdProperty();
         tagSync.addStringProperty("objectId");
         tagSync.addStringProperty("tempId");
-        tagSync.addDateProperty("createdAt");
-        tagSync.addDateProperty("updatedAt");
+        tagSync.addStringProperty("createdAt");
+        tagSync.addStringProperty("updatedAt");
         tagSync.addStringProperty("title");
 
         // Deleted objects table.

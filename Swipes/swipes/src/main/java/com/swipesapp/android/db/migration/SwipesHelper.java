@@ -50,17 +50,17 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'OBJECT_ID' TEXT," +
                         "'TEMP_ID' TEXT," +
                         "'PARENT_LOCAL_ID' TEXT," +
-                        "'CREATED_AT' INTEGER," +
-                        "'UPDATED_AT' INTEGER," +
+                        "'CREATED_AT' TEXT," +
+                        "'UPDATED_AT' TEXT," +
                         "'DELETED' INTEGER," +
                         "'TITLE' TEXT," +
                         "'NOTES' TEXT," +
                         "'ORDER' INTEGER," +
                         "'PRIORITY' INTEGER," +
-                        "'COMPLETION_DATE' INTEGER," +
-                        "'SCHEDULE' INTEGER," +
+                        "'COMPLETION_DATE' TEXT," +
+                        "'SCHEDULE' TEXT," +
                         "'LOCATION' TEXT," +
-                        "'REPEAT_DATE' INTEGER," +
+                        "'REPEAT_DATE' TEXT," +
                         "'REPEAT_OPTION' TEXT," +
                         "'ORIGIN' TEXT," +
                         "'ORIGIN_IDENTIFIER' TEXT," +
@@ -71,8 +71,8 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'_id' INTEGER PRIMARY KEY ," +
                         "'OBJECT_ID' TEXT," +
                         "'TEMP_ID' TEXT," +
-                        "'CREATED_AT' INTEGER," +
-                        "'UPDATED_AT' INTEGER," +
+                        "'CREATED_AT' TEXT," +
+                        "'UPDATED_AT' TEXT," +
                         "'TITLE' TEXT);");
 
                 // Create deleted objects table.

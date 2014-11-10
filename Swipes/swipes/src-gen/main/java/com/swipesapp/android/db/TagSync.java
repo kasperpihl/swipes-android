@@ -12,8 +12,8 @@ public class TagSync {
     private Long id;
     private String objectId;
     private String tempId;
-    private java.util.Date createdAt;
-    private java.util.Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
     private String title;
 
     // KEEP FIELDS - put your custom fields here
@@ -26,7 +26,7 @@ public class TagSync {
         this.id = id;
     }
 
-    public TagSync(Long id, String objectId, String tempId, java.util.Date createdAt, java.util.Date updatedAt, String title) {
+    public TagSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
@@ -59,19 +59,19 @@ public class TagSync {
         this.tempId = tempId;
     }
 
-    public java.util.Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(java.util.Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public java.util.Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(java.util.Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
