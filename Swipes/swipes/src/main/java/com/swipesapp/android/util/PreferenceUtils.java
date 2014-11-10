@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.swipesapp.android.db.migration.MigrationAssistant;
+
 /**
  * Utilitary class for shared preferences operations.
  *
@@ -19,9 +21,6 @@ public class PreferenceUtils {
 
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
-    public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
-
-    public static final String V8_UPGRADE_KEY = "v8_upgrade_performed";
 
     /**
      * Saves a boolean preference.
@@ -110,10 +109,13 @@ public class PreferenceUtils {
 
         switch (version) {
             case 7:
-                hasUpgraded = settings.getBoolean(V7_UPGRADE_KEY, false);
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V7_UPGRADE_KEY, false);
                 break;
             case 8:
-                hasUpgraded = settings.getBoolean(V8_UPGRADE_KEY, false);
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V8_UPGRADE_KEY, false);
+                break;
+            case 9:
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V9_UPGRADE_KEY, false);
                 break;
         }
 
