@@ -10,6 +10,7 @@ import com.crashlytics.android.Crashlytics;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
 
@@ -45,6 +46,9 @@ public class WelcomeActivity extends Activity {
                     // Login successful. Ask to keep user data.
                     if (!mTasksService.loadAllTasks().isEmpty()) {
                         askToKeepData();
+
+                        // Perform sync with changesOnly = false.
+                        SyncService.getInstance(this).performSync(false);
                     } else {
                         showTasks();
                     }

@@ -50,4 +50,9 @@
             android:targetPackage="com.swipesapp.android" />
     </PreferenceScreen>
 
+    <!-- Sync button used for debug only. -->
+    <Preference
+        android:key="sync"
+        android:title="Sync" />
+
 </PreferenceScreen>

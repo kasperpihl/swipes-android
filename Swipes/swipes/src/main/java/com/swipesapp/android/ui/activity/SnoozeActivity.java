@@ -501,8 +501,8 @@ public class SnoozeActivity extends FragmentActivity {
 
     private void performChanges(Calendar snooze) {
         // Perform task changes.
-        mTask.setSchedule(snooze.getTime());
-        mTask.setCompletionDate(null);
+        mTask.setLocalSchedule(snooze.getTime());
+        mTask.setLocalCompletionDate(null);
         mTasksService.saveTask(mTask);
 
         // Mark schedule as performed.

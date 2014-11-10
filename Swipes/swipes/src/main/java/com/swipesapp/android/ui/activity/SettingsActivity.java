@@ -16,6 +16,7 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -75,6 +76,8 @@ public class SettingsActivity extends AccentActivity {
                 // Hide login preference.
                 getPreferenceScreen().removePreference(preferenceLogin);
             }
+
+            syncDebug();
         }
 
         @Override
@@ -104,6 +107,9 @@ public class SettingsActivity extends AccentActivity {
                     case Activity.RESULT_OK:
                         // Login successful. Ask to keep user data.
                         askToKeepData();
+
+                        // Perform sync with changesOnly = false.
+                        SyncService.getInstance(getActivity()).performSync(false);
                         break;
                 }
             } else if (requestCode == Constants.WELCOME_REQUEST_CODE) {
@@ -198,6 +204,20 @@ public class SettingsActivity extends AccentActivity {
                     })
                     .create()
                     .show();
+        }
+
+        private void syncDebug() {
+            Preference preferenceLogout = findPreference("sync");
+            preferenceLogout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    // Force sync for debug.
+                    SyncService.getInstance(getActivity()).performSync(false);
+                    return true;
+                }
+            });
+
+            // For debugging sync, comment the line below.
+            getPreferenceScreen().removePreference(preferenceLogout);
         }
 
     }

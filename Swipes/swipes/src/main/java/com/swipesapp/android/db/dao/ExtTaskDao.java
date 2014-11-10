@@ -36,6 +36,10 @@ public class ExtTaskDao {
         return mDao.queryBuilder().where(TaskDao.Properties.Id.eq(id)).unique();
     }
 
+    public Task selectTask(String tempId) {
+        return mDao.queryBuilder().where(TaskDao.Properties.TempId.eq(tempId)).unique();
+    }
+
     public List<Task> listAllTasks() {
         return mDao.queryBuilder().list();
     }

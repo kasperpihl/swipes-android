@@ -431,7 +431,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         String tempId = title + currentDate.getTime();
 
         if (!title.isEmpty()) {
-            GsonTask task = new GsonTask(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
             mTasksService.saveTask(task);
         }
 

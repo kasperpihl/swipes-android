@@ -67,7 +67,7 @@ public class SubtasksAdapter extends BaseAdapter {
         LayoutInflater inflater = ((Activity) mContext.get()).getLayoutInflater();
 
         // Inflate layout according to completion.
-        if (task.getCompletionDate() != null) {
+        if (task.getLocalCompletionDate() != null) {
             row = inflater.inflate(R.layout.subtask_completed, parent, false);
         } else {
             row = inflater.inflate(R.layout.subtask_default, parent, false);
@@ -93,7 +93,7 @@ public class SubtasksAdapter extends BaseAdapter {
     private void customizeView(final SubtaskHolder holder, final GsonTask task) {
         // Setup properties.
         holder.title.setText(task.getTitle());
-        final boolean isCompleted = task.getCompletionDate() != null;
+        final boolean isCompleted = task.getLocalCompletionDate() != null;
 
         // Setup action.
         holder.button.setOnClickListener(new View.OnClickListener() {

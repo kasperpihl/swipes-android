@@ -21,6 +21,7 @@ public class PreferenceUtils {
 
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
+    public static final String SYNC_LAST_UPDATE = "sync_last_update";
 
     /**
      * Saves a boolean preference.
@@ -120,6 +121,17 @@ public class PreferenceUtils {
         }
 
         return hasUpgraded;
+    }
+
+    /**
+     * Reads sync last update.
+     *
+     * @param context Context instance.
+     * @return Last update.
+     */
+    public static String getSyncLastUpdate(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(SYNC_LAST_UPDATE, null);
     }
 
 }

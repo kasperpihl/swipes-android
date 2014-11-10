@@ -2,12 +2,15 @@ package com.swipesapp.android.util;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.swipesapp.android.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Utilitary class for date operations.
@@ -15,6 +18,9 @@ import java.util.Date;
  * @author Felipe Bari
  */
 public class DateUtils {
+
+    // Log tag.
+    private static final String LOG_TAG = DateUtils.class.getSimpleName();
 
     // Time format 24-hour.
     public static final String TIME_FORMAT_24 = "HH:mm";
@@ -27,6 +33,12 @@ public class DateUtils {
 
     // Date format AM/PM.
     public static final String DATE_FORMAT_A = "MMM d, hh:mm a";
+
+    // Date format for syncing.
+    public static final String DATE_FORMAT_SYNC = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+    // Timezone for syncing.
+    public static final String TIMEZONE_SYNC = "UTC";
 
     /**
      * Returns a Calendar object for the given date.
@@ -286,6 +298,38 @@ public class DateUtils {
             default:
                 return context.getString(R.string.month_default_suffix, dayOfMonth);
         }
+    }
+
+    /**
+     * Returns a date string formatted for syncing.
+     *
+     * @param date Date to format.
+     * @return Formatted string.
+     */
+    public static String dateToSync(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_SYNC);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE_SYNC));
+
+        return date != null ? dateFormat.format(date) : "null";
+    }
+
+    /**
+     * Returns a date from a sync date string.
+     *
+     * @param date Sync date to format.
+     * @return Date to use locally.
+     */
+    public static Date dateFromSync(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_SYNC);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE_SYNC));
+
+        try {
+            return !date.equals("null") ? dateFormat.parse(date) : null;
+        } catch (ParseException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
+
+        return null;
     }
 
 }

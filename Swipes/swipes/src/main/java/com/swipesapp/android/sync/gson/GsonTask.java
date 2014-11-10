@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class GsonTask {
 
-    private Long id;
     @Expose
     private String objectId;
     @Expose
@@ -20,9 +19,9 @@ public class GsonTask {
     @Expose
     private String parentLocalId;
     @Expose
-    private Date createdAt;
+    private String createdAt;
     @Expose
-    private Date updatedAt;
+    private String updatedAt;
     @Expose
     private Boolean deleted;
     @Expose
@@ -34,13 +33,13 @@ public class GsonTask {
     @Expose
     private Integer priority;
     @Expose
-    private Date completionDate;
+    private GsonDate completionDate;
     @Expose
-    private Date schedule;
+    private GsonDate schedule;
     @Expose
     private String location;
     @Expose
-    private Date repeatDate;
+    private GsonDate repeatDate;
     @Expose
     private String repeatOption;
     @Expose
@@ -51,30 +50,79 @@ public class GsonTask {
     private List<GsonTag> tags;
 
     // Local properties.
+    private Long id;
     private long itemId;
     private boolean isSelected;
 
-    public GsonTask(Long id, String objectId, String tempId, String parentLocalId, Date createdAt, Date updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date completionDate, Date schedule, String location, Date repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+    // Local dates.
+    private Date localCreatedAt;
+    private Date localUpdatedAt;
+    private Date localCompletionDate;
+    private Date localSchedule;
+    private Date localRepeatDate;
+
+    /**
+     * Returns a GsonTask object for use with the local database.
+     *
+     * @return GsonTask object.
+     */
+    public static GsonTask gsonForLocal(Long id, String objectId, String tempId, String parentLocalId, Date localCreatedAt, Date localUpdatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date localCompletionDate, Date localSchedule, String location, Date localRepeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+        GsonTask task = new GsonTask();
+        task.id = id;
+        task.objectId = objectId;
+        task.tempId = tempId;
+        task.parentLocalId = parentLocalId;
+        task.localCreatedAt = localCreatedAt;
+        task.localUpdatedAt = localUpdatedAt;
+        task.deleted = deleted;
+        task.title = title;
+        task.notes = notes;
+        task.order = order;
+        task.priority = priority;
+        task.localCompletionDate = localCompletionDate;
+        task.localSchedule = localSchedule;
+        task.location = location;
+        task.localRepeatDate = localRepeatDate;
+        task.repeatOption = repeatOption;
+        task.origin = origin;
+        task.originIdentifier = originIdentifier;
+        task.tags = tags;
+        task.itemId = itemId;
+
+        return task;
+    }
+
+    /**
+     * Returns a GsonTask object for use with syncing.
+     *
+     * @return GsonTask object.
+     */
+    public static GsonTask gsonForSync(String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags) {
+        GsonTask task = new GsonTask();
+        task.objectId = objectId;
+        task.tempId = tempId;
+        task.parentLocalId = parentLocalId;
+        task.createdAt = createdAt;
+        task.updatedAt = updatedAt;
+        task.deleted = deleted;
+        task.title = title;
+        task.notes = notes;
+        task.order = order;
+        task.priority = priority;
+        task.completionDate = GsonDate.dateForSync(completionDate);
+        task.schedule = GsonDate.dateForSync(schedule);
+        task.location = location;
+        task.repeatDate = GsonDate.dateForSync(repeatDate);
+        task.repeatOption = repeatOption;
+        task.origin = origin;
+        task.originIdentifier = originIdentifier;
+        task.tags = tags;
+
+        return task;
+    }
+
+    public void setId(Long id) {
         this.id = id;
-        this.objectId = objectId;
-        this.tempId = tempId;
-        this.parentLocalId = parentLocalId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deleted = deleted;
-        this.title = title;
-        this.notes = notes;
-        this.order = order;
-        this.priority = priority;
-        this.completionDate = completionDate;
-        this.schedule = schedule;
-        this.location = location;
-        this.repeatDate = repeatDate;
-        this.repeatOption = repeatOption;
-        this.origin = origin;
-        this.originIdentifier = originIdentifier;
-        this.tags = tags;
-        this.itemId = itemId;
     }
 
     public Long getId() {
@@ -105,20 +153,20 @@ public class GsonTask {
         return parentLocalId;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setLocalCreatedAt(Date localCreatedAt) {
+        this.localCreatedAt = localCreatedAt;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getLocalCreatedAt() {
+        return localCreatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setLocalUpdatedAt(Date localUpdatedAt) {
+        this.localUpdatedAt = localUpdatedAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getLocalUpdatedAt() {
+        return localUpdatedAt;
     }
 
     public void setDeleted(Boolean deleted) {
@@ -161,20 +209,20 @@ public class GsonTask {
         return priority;
     }
 
-    public void setCompletionDate(Date completionDate) {
-        this.completionDate = completionDate;
+    public void setLocalCompletionDate(Date localCompletionDate) {
+        this.localCompletionDate = localCompletionDate;
     }
 
-    public Date getCompletionDate() {
-        return completionDate;
+    public Date getLocalCompletionDate() {
+        return localCompletionDate;
     }
 
-    public void setSchedule(Date schedule) {
-        this.schedule = schedule;
+    public void setLocalSchedule(Date localSchedule) {
+        this.localSchedule = localSchedule;
     }
 
-    public Date getSchedule() {
-        return schedule;
+    public Date getLocalSchedule() {
+        return localSchedule;
     }
 
     public void setLocation(String location) {
@@ -185,12 +233,12 @@ public class GsonTask {
         return location;
     }
 
-    public void setRepeatDate(Date repeatDate) {
-        this.repeatDate = repeatDate;
+    public void setLocalRepeatDate(Date localRepeatDate) {
+        this.localRepeatDate = localRepeatDate;
     }
 
-    public Date getRepeatDate() {
-        return repeatDate;
+    public Date getLocalRepeatDate() {
+        return localRepeatDate;
     }
 
     public void setRepeatOption(String repeatOption) {
@@ -239,6 +287,50 @@ public class GsonTask {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public String getCompletionDate() {
+        return completionDate != null ? completionDate.getDate() : null;
+    }
+
+    public void setCompletionDate(String completionDate) {
+        this.completionDate = GsonDate.dateForSync(completionDate);
+    }
+
+    public String getSchedule() {
+        return schedule != null ? schedule.getDate() : null;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = GsonDate.dateForSync(schedule);
+    }
+
+    public String getRepeatDate() {
+        return repeatDate != null ? repeatDate.getDate() : null;
+    }
+
+    public void setRepeatDate(String repeatDate) {
+        this.repeatDate = GsonDate.dateForSync(repeatDate);
     }
 
 }

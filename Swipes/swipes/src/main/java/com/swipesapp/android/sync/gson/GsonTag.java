@@ -11,25 +11,57 @@ import java.util.Date;
  */
 public class GsonTag {
 
-    private Long id;
     @Expose
     private String objectId;
     @Expose
     private String tempId;
     @Expose
-    private Date createdAt;
-    @Expose
-    private Date updatedAt;
-    @Expose
     private String title;
 
-    public GsonTag(Long id, String objectId, String tempId, Date createdAt, Date updatedAt, String title) {
-        this.id = id;
-        this.objectId = objectId;
-        this.tempId = tempId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.title = title;
+    // Sync dates.
+    @Expose(serialize = false)
+    private String createdAt;
+    @Expose(serialize = false)
+    private String updatedAt;
+
+    // Local dates.
+    private Long id;
+    private Date localCreatedAt;
+    private Date localUpdatedAt;
+
+    /**
+     * Returns a GsonTag object for use with the local database.
+     *
+     * @return GsonTag object.
+     */
+    public static GsonTag gsonForLocal(Long id, String objectId, String tempId, Date localCreatedAt, Date localUpdatedAt, String title) {
+        GsonTag tag = new GsonTag();
+        tag.id = id;
+        tag.objectId = objectId;
+        tag.tempId = tempId;
+        tag.localCreatedAt = localCreatedAt;
+        tag.localUpdatedAt = localUpdatedAt;
+        tag.title = title;
+
+        return tag;
+    }
+
+    /**
+     * Returns a GsonTag object for use with syncing.
+     *
+     * @return GsonTag object.
+     */
+    public static GsonTag gsonForSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title) {
+        GsonTag tag = new GsonTag();
+        tag.id = id;
+        tag.objectId = objectId;
+        tag.tempId = tempId;
+        tag.createdAt = createdAt;
+        tag.updatedAt = updatedAt;
+        tag.title = title;
+
+        return tag;
+
     }
 
     public Long getId() {
@@ -44,16 +76,32 @@ public class GsonTag {
         return tempId;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public void setLocalCreatedAt(Date localCreatedAt) {
+        this.localCreatedAt = localCreatedAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getLocalCreatedAt() {
+        return localCreatedAt;
+    }
+
+    public void setLocalUpdatedAt(Date localUpdatedAt) {
+        this.localUpdatedAt = localUpdatedAt;
+    }
+
+    public Date getLocalUpdatedAt() {
+        return localUpdatedAt;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
 }

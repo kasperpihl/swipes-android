@@ -106,6 +106,8 @@ public class TasksService {
         }
 
         sendBroadcast(Actions.TASKS_CHANGED);
+
+        SyncService.getInstance(mContext.get()).performSync(true);
     }
 
     /**
@@ -147,16 +149,16 @@ public class TasksService {
     private void updateTask(GsonTask gsonTask, Task task) {
         // Update only mutable attributes.
         task.setTempId(gsonTask.getTempId());
-        task.setUpdatedAt(gsonTask.getUpdatedAt());
+        task.setUpdatedAt(gsonTask.getLocalUpdatedAt());
         task.setDeleted(gsonTask.isDeleted());
         task.setTitle(gsonTask.getTitle());
         task.setNotes(gsonTask.getNotes());
         task.setOrder(gsonTask.getOrder());
         task.setPriority(gsonTask.getPriority());
-        task.setCompletionDate(gsonTask.getCompletionDate());
-        task.setSchedule(gsonTask.getSchedule());
+        task.setCompletionDate(gsonTask.getLocalCompletionDate());
+        task.setSchedule(gsonTask.getLocalSchedule());
         task.setLocation(gsonTask.getLocation());
-        task.setRepeatDate(gsonTask.getRepeatDate());
+        task.setRepeatDate(gsonTask.getLocalRepeatDate());
         task.setRepeatOption(gsonTask.getRepeatOption());
 
         synchronized (this) {
@@ -204,7 +206,24 @@ public class TasksService {
             // Persist new tag.
             mExtTagDao.getDao().insert(tag);
 
-            SyncService.getInstance(mContext.get()).saveTagForSync(tag);
+            SyncService.getInstance(mContext.get()).saveTagForSync(loadTag(tempId));
+
+            SyncService.getInstance(mContext.get()).performSync(true);
+        }
+    }
+
+    /**
+     * Saves an existing tag.
+     *
+     * @param tag Tag to save.
+     */
+    public void saveTag(GsonTag tag) {
+        if (tag.getTitle() != null && !tag.getTitle().isEmpty()) {
+            // Create local tag.
+            Tag localTag = new Tag(null, tag.getObjectId(), tag.getTempId(), tag.getLocalCreatedAt(), tag.getLocalUpdatedAt(), tag.getTitle());
+
+            // Persist local tag.
+            mExtTagDao.getDao().insert(localTag);
         }
     }
 
@@ -237,6 +256,8 @@ public class TasksService {
         mExtTagDao.getDao().delete(tag);
 
         SyncService.getInstance(mContext.get()).saveDeletedTagForSync(tag);
+
+        SyncService.getInstance(mContext.get()).performSync(true);
     }
 
     /**
@@ -247,6 +268,16 @@ public class TasksService {
      */
     public GsonTask loadTask(Long id) {
         return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(id))).get(0);
+    }
+
+    /**
+     * Loads a single task.
+     *
+     * @param tempId Temp ID of the task.
+     * @return Selected task.
+     */
+    public GsonTask loadTask(String tempId) {
+        return gsonFromTasks(Arrays.asList(mExtTaskDao.selectTask(tempId))).get(0);
     }
 
     /**
@@ -349,6 +380,16 @@ public class TasksService {
     }
 
     /**
+     * Loads a single tag.
+     *
+     * @param tempId Temp ID of the tag.
+     * @return Selected tag.
+     */
+    public GsonTag loadTag(String tempId) {
+        return gsonFromTags(Arrays.asList(mExtTagDao.selectTag(tempId))).get(0);
+    }
+
+    /**
      * Load all existing tags.
      *
      * @return List of tags.
@@ -396,13 +437,13 @@ public class TasksService {
 
             switch (section) {
                 case LATER:
-                    isFromSection = task.getSchedule().after(new Date());
+                    isFromSection = task.getLocalSchedule().after(new Date());
                     break;
                 case FOCUS:
-                    isFromSection = (task.getSchedule() == null || task.getSchedule().before(new Date())) && task.getCompletionDate() == null;
+                    isFromSection = (task.getLocalSchedule() == null || task.getLocalSchedule().before(new Date())) && task.getLocalCompletionDate() == null;
                     break;
                 case DONE:
-                    isFromSection = task.getCompletionDate() != null;
+                    isFromSection = task.getLocalCompletionDate() != null;
                     break;
             }
 
@@ -459,7 +500,7 @@ public class TasksService {
         List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
 
         for (Task task : tasks) {
-            gsonTasks.add(new GsonTask(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), task.getId()));
+            gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), task.getId()));
         }
 
         return gsonTasks;
@@ -498,7 +539,7 @@ public class TasksService {
         List<GsonTag> gsonTags = new ArrayList<GsonTag>();
 
         for (Tag tag : tags) {
-            gsonTags.add(new GsonTag(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
+            gsonTags.add(GsonTag.gsonForLocal(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
         }
 
         return gsonTags;
@@ -514,7 +555,7 @@ public class TasksService {
         List<Task> tasks = new ArrayList<Task>();
 
         for (GsonTask gsonTask : gsonTasks) {
-            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(), gsonTask.getCreatedAt(), gsonTask.getUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getCompletionDate(), gsonTask.getSchedule(), gsonTask.getLocation(), gsonTask.getRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
+            tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(), gsonTask.getLocalCreatedAt(), gsonTask.getLocalUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getLocalCompletionDate(), gsonTask.getLocalSchedule(), gsonTask.getLocation(), gsonTask.getLocalRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
         }
 
         return tasks;
@@ -531,7 +572,7 @@ public class TasksService {
 
         if (gsonTags != null) {
             for (GsonTag gsonTag : gsonTags) {
-                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getCreatedAt(), gsonTag.getUpdatedAt(), gsonTag.getTitle()));
+                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getLocalCreatedAt(), gsonTag.getLocalUpdatedAt(), gsonTag.getTitle()));
             }
         }
 
