@@ -1,6 +1,7 @@
 package com.swipesapp.android.sync.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,6 +55,8 @@ public class SyncService {
     private static final String PLATFORM = "android";
 
     private static final int MAX_OBJECTS = 200;
+
+    private static final String LOG_TAG = SyncService.class.getSimpleName();
 
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
@@ -142,8 +145,8 @@ public class SyncService {
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            // Skip processing if there's no data.
-                            if (result.isEmpty()) return;
+                            // Skip processing if response is invalid.
+                            if (!isResponseValid(result)) return;
 
                             // Delete synced objects from tracking.
                             deleteTrackedTags(mSyncedTags);
@@ -360,6 +363,17 @@ public class SyncService {
     private void deleteTrackedDeletions(List<Deleted> deletions) {
         for (Deleted deleted : deletions) {
             mExtDeletedDao.getDao().delete(deleted);
+        }
+    }
+
+    private boolean isResponseValid(String response) {
+        // Validates response by attempting to convert it to a Gson object.
+        try {
+            new Gson().fromJson(response, GsonSync.class);
+            return !response.isEmpty();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Invalid request, couldn't convert to Gson. Aborting sync.", e);
+            return false;
         }
     }
 
