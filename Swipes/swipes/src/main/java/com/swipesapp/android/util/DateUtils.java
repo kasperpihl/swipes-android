@@ -324,7 +324,7 @@ public class DateUtils {
         dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE_SYNC));
 
         try {
-            return !date.equals("null") ? dateFormat.parse(date) : null;
+            return date != null && !date.equals("null") ? dateFormat.parse(date) : null;
         } catch (ParseException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
         }

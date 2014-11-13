@@ -99,9 +99,14 @@ public class SyncService {
      *
      * @param changesOnly True to sync only changes.
      */
-    public void performSync(boolean changesOnly) {
-        // Forward call to internal sync method.
-        performSync(changesOnly, false);
+    public void performSync(final boolean changesOnly) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Forward call to internal sync method.
+                performSync(changesOnly, false);
+            }
+        }).start();
     }
 
     /**
@@ -110,7 +115,7 @@ public class SyncService {
      * @param changesOnly True to sync only changes.
      * @param isRecursion True when called as recursive function.
      */
-    private void performSync(final boolean changesOnly, boolean isRecursion) {
+    private synchronized void performSync(final boolean changesOnly, boolean isRecursion) {
         // Skip sync when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
@@ -137,6 +142,9 @@ public class SyncService {
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
+                            // Skip processing if there's no data.
+                            if (result.isEmpty()) return;
+
                             // Delete synced objects from tracking.
                             deleteTrackedTags(mSyncedTags);
                             deleteTrackedTasks(mSyncedTasks);
@@ -216,32 +224,36 @@ public class SyncService {
 
     private void handleResponse(GsonSync response) {
         // Process new tags.
-        for (GsonTag tag : response.getTags()) {
-            // Check if tag already exists locally.
-            if (TasksService.getInstance(mContext.get()).loadTag(tag.getTempId()) == null) {
-                // Set dates to local format.
-                tag.setLocalCreatedAt(DateUtils.dateFromSync(tag.getCreatedAt()));
-                tag.setLocalUpdatedAt(DateUtils.dateFromSync(tag.getUpdatedAt()));
+        if (response.getTags() != null) {
+            for (GsonTag tag : response.getTags()) {
+                // Check if tag already exists locally.
+                if (TasksService.getInstance(mContext.get()).loadTag(tag.getTempId()) == null) {
+                    // Set dates to local format.
+                    tag.setLocalCreatedAt(DateUtils.dateFromSync(tag.getCreatedAt()));
+                    tag.setLocalUpdatedAt(DateUtils.dateFromSync(tag.getUpdatedAt()));
 
-                // Save tag locally.
-                TasksService.getInstance(mContext.get()).saveTag(tag);
+                    // Save tag locally.
+                    TasksService.getInstance(mContext.get()).saveTag(tag);
+                }
             }
         }
 
         // Process new tasks and changes.
-        for (GsonTask task : response.getTasks()) {
-            GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
-            task.setId(old != null ? old.getId() : null);
+        if (response.getTasks() != null) {
+            for (GsonTask task : response.getTasks()) {
+                GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
+                task.setId(old != null ? old.getId() : null);
 
-            // Set dates to local format.
-            task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
-            task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
-            task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
-            task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
-            task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+                // Set dates to local format.
+                task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
+                task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
+                task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
+                task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
+                task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
 
-            // Save or update task locally.
-            TasksService.getInstance(mContext.get()).saveTask(task);
+                // Save or update task locally.
+                TasksService.getInstance(mContext.get()).saveTask(task, false);
+            }
         }
 
         // Save last update time.

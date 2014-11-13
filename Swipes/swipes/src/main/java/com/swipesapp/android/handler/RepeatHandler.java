@@ -54,8 +54,8 @@ public class RepeatHandler {
         }
 
         // Save changes to the database.
-        mTasksService.saveTask(task);
-        mTasksService.saveTask(copy);
+        mTasksService.saveTask(task, true);
+        mTasksService.saveTask(copy, true);
 
         // Handle subtasks.
         handleRepeatedSubtasks(task.getTempId(), copy.getTempId());
@@ -69,8 +69,8 @@ public class RepeatHandler {
             GsonTask copy = GsonTask.gsonForLocal(null, null, tempId, copyId, subtask.getLocalCreatedAt(), subtask.getLocalUpdatedAt(), false, subtask.getTitle(), null, 0, 0, subtask.getLocalCompletionDate(), subtask.getLocalSchedule(), null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
             subtask.setLocalCompletionDate(null);
 
-            mTasksService.saveTask(copy);
-            mTasksService.saveTask(subtask);
+            mTasksService.saveTask(copy, true);
+            mTasksService.saveTask(subtask, true);
         }
     }
 

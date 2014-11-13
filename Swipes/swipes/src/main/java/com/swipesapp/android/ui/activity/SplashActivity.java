@@ -96,7 +96,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task);
+        service.saveTask(task, true);
 
         // Save second task.
         title = getString(R.string.welcome_task_two);
@@ -104,7 +104,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task);
+        service.saveTask(task, true);
 
         // Save third task.
         title = getString(R.string.welcome_task_three);
@@ -112,7 +112,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task);
+        service.saveTask(task, true);
     }
 
 }

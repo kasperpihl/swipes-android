@@ -489,12 +489,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 case LATER:
                     // Move task from Later to Focus.
                     getTask(position).setLocalSchedule(new Date());
-                    mTasksService.saveTask(getTask(position));
+                    mTasksService.saveTask(getTask(position), true);
                     break;
                 case FOCUS:
                     // Move task from Focus to Done.
                     getTask(position).setLocalCompletionDate(new Date());
-                    mTasksService.saveTask(getTask(position));
+                    mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
@@ -515,7 +515,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 case DONE:
                     // Move task from Done to Focus.
                     getTask(position).setLocalCompletionDate(null);
-                    mTasksService.saveTask(getTask(position));
+                    mTasksService.saveTask(getTask(position), true);
                     break;
             }
         }
@@ -528,7 +528,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     Date currentDate = new Date();
                     getTask(position).setLocalCompletionDate(currentDate);
                     getTask(position).setLocalSchedule(currentDate);
-                    mTasksService.saveTask(getTask(position));
+                    mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
@@ -579,7 +579,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             GsonTask task = getTask(position);
             task.setPriority(priority);
 
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     };
 
@@ -601,7 +601,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         for (int i = 0; i < tasks.size(); i++) {
             GsonTask task = tasks.get(i);
             task.setOrder(i);
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     }
 
@@ -895,7 +895,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         for (GsonTask task : mSelectedTasks) {
             mAssignedTags.add(tag);
             task.setTags(mAssignedTags);
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     }
 

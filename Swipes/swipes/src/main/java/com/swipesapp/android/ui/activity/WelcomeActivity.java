@@ -46,9 +46,6 @@ public class WelcomeActivity extends Activity {
                     // Login successful. Ask to keep user data.
                     if (!mTasksService.loadAllTasks().isEmpty()) {
                         askToKeepData();
-
-                        // Perform sync with changesOnly = false.
-                        SyncService.getInstance(this).performSync(false);
                     } else {
                         showTasks();
                     }
@@ -74,6 +71,9 @@ public class WelcomeActivity extends Activity {
     @OnClick(R.id.welcome_try_button)
     protected void showTasks() {
         setResult(RESULT_OK);
+
+        // Perform sync with changesOnly = false.
+        SyncService.getInstance(this).performSync(false);
 
         finish();
     }

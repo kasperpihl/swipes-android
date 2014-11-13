@@ -53,7 +53,7 @@ public class MigrationAssistant {
                 task.setRepeatOption(RepeatOptions.NEVER.getValue());
                 task.setOriginIdentifier(null);
 
-                sTasksService.saveTask(task);
+                sTasksService.saveTask(task, false);
             }
 
             // Mark as upgraded.
@@ -75,7 +75,7 @@ public class MigrationAssistant {
                 GsonTask task = tasks.get(i);
                 task.setTempId(task.getTempId() + i);
 
-                sTasksService.saveTask(task);
+                sTasksService.saveTask(task, false);
             }
 
             // Mark as upgraded.

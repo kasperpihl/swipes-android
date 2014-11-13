@@ -402,7 +402,7 @@ public class EditTaskActivity extends AccentActivity {
     protected void setPriority() {
         Integer priority = mPriority.isChecked() ? 1 : 0;
         mTask.setPriority(priority);
-        mTasksService.saveTask(mTask);
+        mTasksService.saveTask(mTask, true);
 
         updateViews();
     }
@@ -447,7 +447,7 @@ public class EditTaskActivity extends AccentActivity {
         mTask.setTitle(mTitle.getText().toString());
         mTask.setNotes(mNotes.getText().toString());
         mTask.setTags(mAssignedTags);
-        mTasksService.saveTask(mTask);
+        mTasksService.saveTask(mTask, true);
 
         if (hideKeyboard) hideKeyboard();
 
@@ -899,7 +899,7 @@ public class EditTaskActivity extends AccentActivity {
             };
 
     private void saveSubtask(GsonTask task) {
-        mTasksService.saveTask(task);
+        mTasksService.saveTask(task, true);
         refreshSubtasks();
         updateViews();
     }
@@ -910,7 +910,7 @@ public class EditTaskActivity extends AccentActivity {
 
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
 
             refreshSubtasks();
 

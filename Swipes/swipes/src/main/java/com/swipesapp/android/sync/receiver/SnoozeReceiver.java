@@ -130,7 +130,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 for (GsonTask task : sExpiredTasks) {
                     task.setLocalSchedule(snooze.getTime());
 
-                    sTasksService.saveTask(task);
+                    sTasksService.saveTask(task, true);
                 }
             } else if (intent.getAction().equals(Actions.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
@@ -139,7 +139,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
                     task.setLocalCompletionDate(currentDate);
                     task.setLocalSchedule(currentDate);
 
-                    sTasksService.saveTask(task);
+                    sTasksService.saveTask(task, true);
                 }
             }
 
