@@ -69,4 +69,5 @@ dependencies {
     }
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.koushikdutta.ion:ion:1.+'
+    compile 'org.apache.commons:commons-collections4:4.0'
 }

@@ -99,6 +99,9 @@ public class DateUtils {
      * @return Formatted date.
      */
     public static String formatToRecent(Date rawDate, Context context) {
+        // Check if date is unspecified.
+        if (rawDate == null) return context.getString(R.string.date_unspecified);
+
         // Prepare given date.
         String date = getDateAsString(context, rawDate);
         Calendar providedDate = Calendar.getInstance();

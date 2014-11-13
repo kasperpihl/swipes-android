@@ -373,7 +373,7 @@ public class SyncService {
             new Gson().fromJson(response, GsonSync.class);
             return !response.isEmpty();
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Invalid request, couldn't convert to Gson. Aborting sync.", e);
+            Log.w(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" + e.getMessage());
             return false;
         }
     }
