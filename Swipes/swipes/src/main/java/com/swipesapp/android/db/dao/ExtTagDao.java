@@ -3,7 +3,6 @@ package com.swipesapp.android.db.dao;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.TagDao;
-import com.swipesapp.android.db.TaskDao;
 
 import java.util.List;
 
@@ -33,11 +32,12 @@ public class ExtTagDao {
     }
 
     public Tag selectTag(Long id) {
-        return mDao.queryBuilder().where(TaskDao.Properties.Id.eq(id)).unique();
+        return mDao.queryBuilder().where(TagDao.Properties.Id.eq(id)).unique();
     }
 
     public Tag selectTag(String tempId) {
-        return mDao.queryBuilder().where(TaskDao.Properties.TempId.eq(tempId)).unique();
+        return mDao.queryBuilder().where(mDao.queryBuilder().or(TagDao.Properties.TempId.eq(tempId),
+                TagDao.Properties.ObjectId.eq(tempId))).unique();
     }
 
     public List<Tag> listAllTags() {

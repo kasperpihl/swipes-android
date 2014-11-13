@@ -313,7 +313,8 @@ public class SyncService {
     }
 
     private GsonTask gsonFromTaskSync(TaskSync task) {
-        List<GsonTag> tags = TasksService.getInstance(mContext.get()).loadTask(task.getTempId()).getTags();
+        String tempId = task.getTempId() != null ? task.getTempId() : task.getObjectId();
+        List<GsonTag> tags = TasksService.getInstance(mContext.get()).loadTask(tempId).getTags();
 
         return GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
                 task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tags);
