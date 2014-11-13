@@ -10,6 +10,8 @@ import com.crashlytics.android.Crashlytics;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonTag;
+import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
@@ -86,6 +88,9 @@ public class WelcomeActivity extends Activity {
                 .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
+                        // Save data from test period for sync.
+                        saveDataForSync();
+
                         showTasks();
                     }
                 })
@@ -100,6 +105,21 @@ public class WelcomeActivity extends Activity {
                 })
                 .create()
                 .show();
+    }
+
+    private void saveDataForSync() {
+        // Save all tags for syncing.
+        for (GsonTag tag : TasksService.getInstance(this).loadAllTags()) {
+            SyncService.getInstance(this).saveTagForSync(tag);
+        }
+
+        // Save all tasks for syncing.
+        for (GsonTask task : TasksService.getInstance(this).loadAllTasks()) {
+            if (!task.getDeleted()) {
+                task.setId(null);
+                SyncService.getInstance(this).saveTaskChangesForSync(task);
+            }
+        }
     }
 
 }

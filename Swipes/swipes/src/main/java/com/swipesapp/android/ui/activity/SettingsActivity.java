@@ -16,6 +16,8 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonTag;
+import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
@@ -107,9 +109,6 @@ public class SettingsActivity extends AccentActivity {
                     case Activity.RESULT_OK:
                         // Login successful. Ask to keep user data.
                         askToKeepData();
-
-                        // Perform sync with changesOnly = false.
-                        SyncService.getInstance(getActivity()).performSync(false);
                         break;
                 }
             } else if (requestCode == Constants.WELCOME_REQUEST_CODE) {
@@ -190,7 +189,10 @@ public class SettingsActivity extends AccentActivity {
                     .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
-                            getActivity().recreate();
+                            // Save data from test period for sync.
+                            saveDataForSync();
+
+                            finishLogin();
                         }
                     })
                     .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
@@ -199,11 +201,33 @@ public class SettingsActivity extends AccentActivity {
                             // Clear data from test period.
                             TasksService.getInstance(getActivity()).clearAllData();
 
-                            getActivity().recreate();
+                            finishLogin();
                         }
                     })
                     .create()
                     .show();
+        }
+
+        private void finishLogin() {
+            // Perform sync with changesOnly = false.
+            SyncService.getInstance(getActivity()).performSync(false);
+
+            getActivity().recreate();
+        }
+
+        private void saveDataForSync() {
+            // Save all tags for syncing.
+            for (GsonTag tag : TasksService.getInstance(getActivity()).loadAllTags()) {
+                SyncService.getInstance(getActivity()).saveTagForSync(tag);
+            }
+
+            // Save all tasks for syncing.
+            for (GsonTask task : TasksService.getInstance(getActivity()).loadAllTasks()) {
+                if (!task.getDeleted()) {
+                    task.setId(null);
+                    SyncService.getInstance(getActivity()).saveTaskChangesForSync(task);
+                }
+            }
         }
 
         private void syncDebug() {
