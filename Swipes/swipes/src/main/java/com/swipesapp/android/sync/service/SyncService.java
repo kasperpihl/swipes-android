@@ -264,6 +264,9 @@ public class SyncService {
     }
 
     public void saveTaskChangesForSync(GsonTask task) {
+        // Skip saving when the user isn't logged in.
+        if (ParseUser.getCurrentUser() == null) return;
+
         TaskSync taskSync = new TaskSync();
 
         if (task.getId() == null) {
@@ -297,11 +300,17 @@ public class SyncService {
     }
 
     public void saveTagForSync(GsonTag tag) {
+        // Skip saving when the user isn't logged in.
+        if (ParseUser.getCurrentUser() == null) return;
+
         TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), DateUtils.dateToSync(tag.getLocalCreatedAt()), DateUtils.dateToSync(tag.getLocalUpdatedAt()), tag.getTitle());
         mExtTagSyncDao.getDao().insert(tagSync);
     }
 
     public void saveDeletedTagForSync(Tag tag) {
+        // Skip saving when the user isn't logged in.
+        if (ParseUser.getCurrentUser() == null) return;
+
         Deleted deleted = new Deleted(null, "Tag", tag.getTempId(), true);
         mExtDeletedDao.getDao().insert(deleted);
     }

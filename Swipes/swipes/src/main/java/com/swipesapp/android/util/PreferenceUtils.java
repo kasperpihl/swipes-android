@@ -115,9 +115,6 @@ public class PreferenceUtils {
             case 8:
                 hasUpgraded = settings.getBoolean(MigrationAssistant.V8_UPGRADE_KEY, false);
                 break;
-            case 9:
-                hasUpgraded = settings.getBoolean(MigrationAssistant.V9_UPGRADE_KEY, false);
-                break;
         }
 
         return hasUpgraded;
