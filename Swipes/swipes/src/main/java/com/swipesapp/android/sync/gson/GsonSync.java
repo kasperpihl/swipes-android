@@ -3,7 +3,6 @@ package com.swipesapp.android.sync.gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,17 +26,20 @@ public class GsonSync {
     private Boolean changesOnly;
 
     @Expose(deserialize = false)
-    private Date lastUpdate;
+    private String lastUpdate;
 
     @Expose(deserialize = false)
     private GsonObjects objects;
 
+    @Expose
+    private List<GsonDeleted> deletedObjects;
+
     // Response fields.
     @Expose(serialize = false)
-    private Date serverTime;
+    private String serverTime;
 
     @Expose(serialize = false)
-    private Date updateTime;
+    private String updateTime;
 
     @SerializedName("ToDo")
     @Expose(serialize = false)
@@ -47,20 +49,21 @@ public class GsonSync {
     @Expose(serialize = false)
     private List<GsonTag> tags;
 
-    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, Date lastUpdate, GsonObjects objects) {
+    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, GsonObjects objects, List<GsonDeleted> deletedObjects) {
         this.sessionToken = sessionToken;
         this.platform = platform;
         this.version = version;
         this.changesOnly = changesOnly;
         this.lastUpdate = lastUpdate;
         this.objects = objects;
+        this.deletedObjects = deletedObjects;
     }
 
-    public Date getServerTime() {
+    public String getServerTime() {
         return serverTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
@@ -70,6 +73,10 @@ public class GsonSync {
 
     public List<GsonTag> getTags() {
         return tags;
+    }
+
+    public List<GsonDeleted> getDeletedObjects() {
+        return deletedObjects;
     }
 
 }

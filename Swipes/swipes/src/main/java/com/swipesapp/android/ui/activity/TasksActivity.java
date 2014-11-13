@@ -37,6 +37,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.receiver.SnoozeReceiver;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
@@ -209,6 +210,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     public void onBackPressed() {
         // Forward call to listeners.
         mTasksService.sendBroadcast(Actions.BACK_PRESSED);
+    }
+
+    @Override
+    public void onResume() {
+        // Perform sync with changesOnly = true.
+        SyncService.getInstance(this).performSync(true);
+
+        super.onResume();
     }
 
     private void createSnoozeAlarm() {
@@ -431,8 +440,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         String tempId = title + currentDate.getTime();
 
         if (!title.isEmpty()) {
-            GsonTask task = new GsonTask(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
-            mTasksService.saveTask(task);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, 0);
+            mTasksService.saveTask(task, true);
         }
 
         endAddTaskWorkflow(true);

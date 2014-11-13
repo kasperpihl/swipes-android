@@ -47,8 +47,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
         // Look for tasks with snooze date within the next minute.
         for (GsonTask task : snoozedTasks) {
-            if (task.getSchedule() != null) {
-                calendar.setTime(task.getSchedule());
+            if (task.getLocalSchedule() != null) {
+                calendar.setTime(task.getLocalSchedule());
                 long schedule = calendar.getTimeInMillis();
                 long delta = schedule - now;
 
@@ -128,18 +128,18 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                 // Snooze tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
-                    task.setSchedule(snooze.getTime());
+                    task.setLocalSchedule(snooze.getTime());
 
-                    sTasksService.saveTask(task);
+                    sTasksService.saveTask(task, true);
                 }
             } else if (intent.getAction().equals(Actions.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
                     Date currentDate = new Date();
-                    task.setCompletionDate(currentDate);
-                    task.setSchedule(currentDate);
+                    task.setLocalCompletionDate(currentDate);
+                    task.setLocalSchedule(currentDate);
 
-                    sTasksService.saveTask(task);
+                    sTasksService.saveTask(task, true);
                 }
             }
 

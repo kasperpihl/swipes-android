@@ -41,6 +41,16 @@ public class Constants {
     public static final int EDIT_TASK_REQUEST_CODE = 2;
 
     /**
+     * Request code for login.
+     */
+    public static final int LOGIN_REQUEST_CODE = 3;
+
+    /**
+     * Request code for welcome screen.
+     */
+    public static final int WELCOME_REQUEST_CODE = 4;
+
+    /**
      * Intent extra for caller identifier.
      */
     public static final String EXTRA_CALLER_NAME = "CALLER_NAME";

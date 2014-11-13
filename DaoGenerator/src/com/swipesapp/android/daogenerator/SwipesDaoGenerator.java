@@ -12,7 +12,7 @@ import de.greenrobot.daogenerator.*;
 public class SwipesDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1001, "com.swipesapp.android.db");
+        Schema schema = new Schema(1002, "com.swipesapp.android.db");
         schema.enableKeepSectionsByDefault();
 
         addEntities(schema);
@@ -82,6 +82,44 @@ public class SwipesDaoGenerator {
         Property attTaskId = attachment.addLongProperty("taskId").notNull().getProperty();
         ToMany taskToAttachment = task.addToMany(attachment, attTaskId);
         taskToAttachment.setName("attachments");
+
+        // Task sync table.
+        Entity taskSync = schema.addEntity("TaskSync");
+        taskSync.addIdProperty();
+        taskSync.addStringProperty("objectId");
+        taskSync.addStringProperty("tempId");
+        taskSync.addStringProperty("parentLocalId");
+        taskSync.addStringProperty("createdAt");
+        taskSync.addStringProperty("updatedAt");
+        taskSync.addBooleanProperty("deleted");
+        taskSync.addStringProperty("title");
+        taskSync.addStringProperty("notes");
+        taskSync.addIntProperty("order");
+        taskSync.addIntProperty("priority");
+        taskSync.addStringProperty("completionDate");
+        taskSync.addStringProperty("schedule");
+        taskSync.addStringProperty("location");
+        taskSync.addStringProperty("repeatDate");
+        taskSync.addStringProperty("repeatOption");
+        taskSync.addStringProperty("origin");
+        taskSync.addStringProperty("originIdentifier");
+        taskSync.addStringProperty("tags");
+
+        // Tag sync table.
+        Entity tagSync = schema.addEntity("TagSync");
+        tagSync.addIdProperty();
+        tagSync.addStringProperty("objectId");
+        tagSync.addStringProperty("tempId");
+        tagSync.addStringProperty("createdAt");
+        tagSync.addStringProperty("updatedAt");
+        tagSync.addStringProperty("title");
+
+        // Deleted objects table.
+        Entity deleted = schema.addEntity("Deleted");
+        deleted.addIdProperty();
+        deleted.addStringProperty("className");
+        deleted.addStringProperty("objectId");
+        deleted.addBooleanProperty("deleted");
     }
 
 }

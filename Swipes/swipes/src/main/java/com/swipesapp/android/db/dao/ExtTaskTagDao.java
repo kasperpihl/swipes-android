@@ -1,4 +1,8 @@
-package com.swipesapp.android.db;
+package com.swipesapp.android.db.dao;
+
+import com.swipesapp.android.db.DaoSession;
+import com.swipesapp.android.db.TaskTag;
+import com.swipesapp.android.db.TaskTagDao;
 
 import java.util.List;
 
@@ -25,6 +29,10 @@ public class ExtTaskTagDao {
 
     public TaskTagDao getDao() {
         return mDao;
+    }
+
+    public List<TaskTag> listAllAssociations() {
+        return mDao.queryBuilder().list();
     }
 
     public TaskTag selectAssociation(Long taskId, Long tagId) {

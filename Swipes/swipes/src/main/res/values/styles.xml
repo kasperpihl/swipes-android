@@ -101,4 +101,12 @@
         <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 
+    <!-- Login screen theme. -->
+    <style name="Login_Theme" parent="Theme.HoloAccent.Light">
+        <item name="android:textColor">@color/light_theme_text</item>
+        <item name="accentColor">@color/light_theme_accent_color</item>
+        <item name="android:editTextBackground">@drawable/light_theme_edit_text_background</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+    </style>
+
 </resources>

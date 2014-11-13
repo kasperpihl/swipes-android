@@ -1,8 +1,10 @@
-package com.swipesapp.android.db;
+package com.swipesapp.android.db.migration;
 
 import android.content.Context;
 
+import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
@@ -18,6 +20,12 @@ public class MigrationAssistant {
 
     private static TasksService sTasksService;
 
+    public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
+
+    public static final String V8_UPGRADE_KEY = "v8_upgrade_performed";
+
+    public static final String V9_UPGRADE_KEY = "v9_upgrade_performed";
+
     /**
      * Applies fixes for each app version.
      *
@@ -29,6 +37,8 @@ public class MigrationAssistant {
         upgradeToV7(context);
 
         upgradeToV8(context);
+
+        upgradeToV9(context);
     }
 
     /**
@@ -43,11 +53,11 @@ public class MigrationAssistant {
                 task.setRepeatOption(RepeatOptions.NEVER.getValue());
                 task.setOriginIdentifier(null);
 
-                sTasksService.saveTask(task);
+                sTasksService.saveTask(task, false);
             }
 
             // Mark as upgraded.
-            PreferenceUtils.saveBooleanPreference(PreferenceUtils.V7_UPGRADE_KEY, true, context);
+            PreferenceUtils.saveBooleanPreference(V7_UPGRADE_KEY, true, context);
         }
     }
 
@@ -65,11 +75,34 @@ public class MigrationAssistant {
                 GsonTask task = tasks.get(i);
                 task.setTempId(task.getTempId() + i);
 
-                sTasksService.saveTask(task);
+                sTasksService.saveTask(task, false);
             }
 
             // Mark as upgraded.
-            PreferenceUtils.saveBooleanPreference(PreferenceUtils.V8_UPGRADE_KEY, true, context);
+            PreferenceUtils.saveBooleanPreference(V8_UPGRADE_KEY, true, context);
+        }
+    }
+
+    /**
+     * Save all local objects for syncing.
+     *
+     * @param context Context instance.
+     */
+    private static void upgradeToV9(Context context) {
+        if (!PreferenceUtils.hasUpgradedToVersion(9, context)) {
+            // Save all tags for syncing.
+            for (GsonTag tag : sTasksService.loadAllTags()) {
+                SyncService.getInstance(context).saveTagForSync(tag);
+            }
+
+            // Save all tasks for syncing.
+            for (GsonTask task : sTasksService.loadAllTasks()) {
+                task.setId(null);
+                SyncService.getInstance(context).saveTaskChangesForSync(task);
+            }
+
+            // Mark as upgraded.
+            PreferenceUtils.saveBooleanPreference(V9_UPGRADE_KEY, true, context);
         }
     }
 

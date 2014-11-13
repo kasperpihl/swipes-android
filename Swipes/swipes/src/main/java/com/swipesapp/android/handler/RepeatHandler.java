@@ -28,7 +28,7 @@ public class RepeatHandler {
     public void handleRepeatedTask(GsonTask task) {
         // Create a copy of the original task.
         String tempId = task.getTitle() + new Date();
-        GsonTask copy = new GsonTask(null, null, tempId, null, task.getCreatedAt(), task.getUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
+        GsonTask copy = GsonTask.gsonForLocal(null, null, tempId, null, task.getLocalCreatedAt(), task.getLocalUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getLocalCompletionDate(), task.getLocalSchedule(), task.getLocation(), task.getLocalRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
 
         // Determine next repeat date.
         if (task.getRepeatOption().equals(RepeatOptions.NEVER.getValue())) {
@@ -54,8 +54,8 @@ public class RepeatHandler {
         }
 
         // Save changes to the database.
-        mTasksService.saveTask(task);
-        mTasksService.saveTask(copy);
+        mTasksService.saveTask(task, true);
+        mTasksService.saveTask(copy, true);
 
         // Handle subtasks.
         handleRepeatedSubtasks(task.getTempId(), copy.getTempId());
@@ -66,17 +66,17 @@ public class RepeatHandler {
             String tempId = subtask.getTitle() + new Date();
 
             // Associate subtask copies with task copy, and uncomplete the originals.
-            GsonTask copy = new GsonTask(null, null, tempId, copyId, subtask.getCreatedAt(), subtask.getUpdatedAt(), false, subtask.getTitle(), null, 0, 0, subtask.getCompletionDate(), subtask.getSchedule(), null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
-            subtask.setCompletionDate(null);
+            GsonTask copy = GsonTask.gsonForLocal(null, null, tempId, copyId, subtask.getLocalCreatedAt(), subtask.getLocalUpdatedAt(), false, subtask.getTitle(), null, 0, 0, subtask.getLocalCompletionDate(), subtask.getLocalSchedule(), null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
+            subtask.setLocalCompletionDate(null);
 
-            mTasksService.saveTask(copy);
-            mTasksService.saveTask(subtask);
+            mTasksService.saveTask(copy, true);
+            mTasksService.saveTask(subtask, true);
         }
     }
 
     private void setInterval(GsonTask task, long interval) {
         Calendar nextDate = Calendar.getInstance();
-        nextDate.setTime(task.getRepeatDate());
+        nextDate.setTime(task.getLocalRepeatDate());
 
         // Add interval until the time set is in the future.
         while (!DateUtils.isNewerThanToday(nextDate.getTime())) {
@@ -89,7 +89,7 @@ public class RepeatHandler {
 
     private void setMonthlyInterval(GsonTask task) {
         Calendar nextDate = Calendar.getInstance();
-        nextDate.setTime(task.getRepeatDate());
+        nextDate.setTime(task.getLocalRepeatDate());
 
         // Add a month until the time set is in the future.
         while (!DateUtils.isNewerThanToday(nextDate.getTime())) {
@@ -101,7 +101,7 @@ public class RepeatHandler {
 
     private void setYearlyInterval(GsonTask task) {
         Calendar nextDate = Calendar.getInstance();
-        nextDate.setTime(task.getRepeatDate());
+        nextDate.setTime(task.getLocalRepeatDate());
 
         // Add a year until the time set is in the future.
         while (!DateUtils.isNewerThanToday(nextDate.getTime())) {
@@ -113,7 +113,7 @@ public class RepeatHandler {
 
     private void handleWeekend(GsonTask task) {
         Calendar date = Calendar.getInstance();
-        date.setTime(task.getRepeatDate());
+        date.setTime(task.getLocalRepeatDate());
 
         long timeInMillis = date.getTimeInMillis();
 
@@ -131,9 +131,9 @@ public class RepeatHandler {
     }
 
     private void modifyTask(GsonTask task, Date date) {
-        task.setRepeatDate(date);
-        task.setSchedule(date);
-        task.setCompletionDate(null);
+        task.setLocalRepeatDate(date);
+        task.setLocalSchedule(date);
+        task.setLocalCompletionDate(null);
     }
 
 }

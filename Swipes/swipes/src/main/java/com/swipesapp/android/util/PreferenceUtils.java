@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.swipesapp.android.db.migration.MigrationAssistant;
+
 /**
  * Utilitary class for shared preferences operations.
  *
@@ -15,11 +17,11 @@ public class PreferenceUtils {
 
     public static final String FIRST_RUN = "app_first_run";
 
+    public static final String WELCOME_SCREEN = "shown_welcome_screen";
+
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
-    public static final String V7_UPGRADE_KEY = "v7_upgrade_performed";
-
-    public static final String V8_UPGRADE_KEY = "v8_upgrade_performed";
+    public static final String SYNC_LAST_UPDATE = "sync_last_update";
 
     /**
      * Saves a boolean preference.
@@ -31,6 +33,18 @@ public class PreferenceUtils {
     public static void saveBooleanPreference(String preference, boolean value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putBoolean(preference, value).apply();
+    }
+
+    /**
+     * Saves a string preference.
+     *
+     * @param preference Preference to save.
+     * @param value      Value to apply.
+     * @param context    Context instance.
+     */
+    public static void saveStringPreference(String preference, String value, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putString(preference, value).apply();
     }
 
     /**
@@ -48,7 +62,7 @@ public class PreferenceUtils {
      * Determines if it is the app's first run.
      *
      * @param context Context instance.
-     * @return True it is the app's first run.
+     * @return True if it's the app's first run.
      */
     public static boolean isFirstRun(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -59,6 +73,17 @@ public class PreferenceUtils {
         }
 
         return isFirstRun;
+    }
+
+    /**
+     * Determines if the welcome screen has been shown.
+     *
+     * @param context Context instance.
+     * @return True if it has been shown.
+     */
+    public static boolean hasShownWelcomeScreen(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return !settings.getString(WELCOME_SCREEN, "").isEmpty();
     }
 
     /**
@@ -85,14 +110,28 @@ public class PreferenceUtils {
 
         switch (version) {
             case 7:
-                hasUpgraded = settings.getBoolean(V7_UPGRADE_KEY, false);
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V7_UPGRADE_KEY, false);
                 break;
             case 8:
-                hasUpgraded = settings.getBoolean(V8_UPGRADE_KEY, false);
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V8_UPGRADE_KEY, false);
+                break;
+            case 9:
+                hasUpgraded = settings.getBoolean(MigrationAssistant.V9_UPGRADE_KEY, false);
                 break;
         }
 
         return hasUpgraded;
+    }
+
+    /**
+     * Reads sync last update.
+     *
+     * @param context Context instance.
+     * @return Last update.
+     */
+    public static String getSyncLastUpdate(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(SYNC_LAST_UPDATE, null);
     }
 
 }

@@ -488,13 +488,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             switch (mSection) {
                 case LATER:
                     // Move task from Later to Focus.
-                    getTask(position).setSchedule(new Date());
-                    mTasksService.saveTask(getTask(position));
+                    getTask(position).setLocalSchedule(new Date());
+                    mTasksService.saveTask(getTask(position), true);
                     break;
                 case FOCUS:
                     // Move task from Focus to Done.
-                    getTask(position).setCompletionDate(new Date());
-                    mTasksService.saveTask(getTask(position));
+                    getTask(position).setLocalCompletionDate(new Date());
+                    mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
@@ -514,8 +514,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     break;
                 case DONE:
                     // Move task from Done to Focus.
-                    getTask(position).setCompletionDate(null);
-                    mTasksService.saveTask(getTask(position));
+                    getTask(position).setLocalCompletionDate(null);
+                    mTasksService.saveTask(getTask(position), true);
                     break;
             }
         }
@@ -526,9 +526,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 case LATER:
                     // Move task from Later to Done.
                     Date currentDate = new Date();
-                    getTask(position).setCompletionDate(currentDate);
-                    getTask(position).setSchedule(currentDate);
-                    mTasksService.saveTask(getTask(position));
+                    getTask(position).setLocalCompletionDate(currentDate);
+                    getTask(position).setLocalSchedule(currentDate);
+                    mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
                     break;
@@ -579,7 +579,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             GsonTask task = getTask(position);
             task.setPriority(priority);
 
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     };
 
@@ -601,7 +601,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         for (int i = 0; i < tasks.size(); i++) {
             GsonTask task = tasks.get(i);
             task.setOrder(i);
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     }
 
@@ -620,7 +620,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Load date of the oldest completed task.
             List<GsonTask> completedTasks = mTasksService.loadCompletedTasks();
             GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
-            Date completionDate = oldestTask != null ? oldestTask.getCompletionDate() : null;
+            Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
 
             // Only display buttons in the done section and when the oldest completed task is older than today.
             if (mSection == Sections.DONE && !mAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
@@ -684,7 +684,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                         for (GsonTask task : mTasksService.loadCompletedTasks()) {
                             // Check if it's an old task.
-                            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+                            if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
                                 // Add to the removal list.
                                 oldTasks.add(task);
                             }
@@ -895,7 +895,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         for (GsonTask task : mSelectedTasks) {
             mAssignedTags.add(tag);
             task.setTags(mAssignedTags);
-            mTasksService.saveTask(task);
+            mTasksService.saveTask(task, true);
         }
     }
 

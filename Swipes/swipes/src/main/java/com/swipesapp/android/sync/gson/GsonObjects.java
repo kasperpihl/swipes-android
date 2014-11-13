@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class GsonObjects {
 
-    @SerializedName("ToDo")
-    @Expose(deserialize = false)
-    private List<GsonTask> tasks;
-
     @SerializedName("Tag")
     @Expose(deserialize = false)
     private List<GsonTag> tags;
 
-    public GsonObjects(List<GsonTask> tasks, List<GsonTag> tags) {
-        this.tasks = tasks;
+    @SerializedName("ToDo")
+    @Expose(deserialize = false)
+    private List<GsonTask> tasks;
+
+    public GsonObjects(List<GsonTag> tags, List<GsonTask> tasks) {
         this.tags = tags;
+        this.tasks = tasks;
     }
 
 }

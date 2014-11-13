@@ -31,6 +31,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
+import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FlowLayout;
@@ -311,7 +312,7 @@ public class EditTaskActivity extends AccentActivity {
 
         mPriority.setChecked(mTask.getPriority() == 1);
 
-        mSchedule.setText(DateUtils.formatToRecent(mTask.getSchedule(), this));
+        mSchedule.setText(DateUtils.formatToRecent(mTask.getLocalSchedule(), this));
 
         setSelectedRepeatOption();
 
@@ -335,7 +336,7 @@ public class EditTaskActivity extends AccentActivity {
 
         for (GsonTask subtask : mSubtasks) {
             // Display for first uncompleted task.
-            if (subtask.getCompletionDate() == null) {
+            if (subtask.getLocalCompletionDate() == null) {
                 mSubtaskFirstTitle.setText(subtask.getTitle());
 
                 int gray = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
@@ -401,7 +402,7 @@ public class EditTaskActivity extends AccentActivity {
     protected void setPriority() {
         Integer priority = mPriority.isChecked() ? 1 : 0;
         mTask.setPriority(priority);
-        mTasksService.saveTask(mTask);
+        mTasksService.saveTask(mTask, true);
 
         updateViews();
     }
@@ -446,7 +447,7 @@ public class EditTaskActivity extends AccentActivity {
         mTask.setTitle(mTitle.getText().toString());
         mTask.setNotes(mNotes.getText().toString());
         mTask.setTags(mAssignedTags);
-        mTasksService.saveTask(mTask);
+        mTasksService.saveTask(mTask, true);
 
         if (hideKeyboard) hideKeyboard();
 
@@ -705,7 +706,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatNever.select();
 
         mTask.setRepeatOption(RepeatOptions.NEVER.getValue());
-        mTask.setRepeatDate(null);
+        mTask.setLocalRepeatDate(null);
 
         hideRepeatOptions();
 
@@ -718,7 +719,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatDay.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_DAY.getValue());
-        mTask.setRepeatDate(mTask.getSchedule());
+        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
 
@@ -731,7 +732,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatMonFri.select();
 
         mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY.getValue());
-        mTask.setRepeatDate(mTask.getSchedule());
+        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
 
@@ -744,7 +745,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatWeek.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_WEEK.getValue());
-        mTask.setRepeatDate(mTask.getSchedule());
+        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
 
@@ -757,7 +758,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatMonth.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_MONTH.getValue());
-        mTask.setRepeatDate(mTask.getSchedule());
+        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
 
@@ -770,7 +771,7 @@ public class EditTaskActivity extends AccentActivity {
         mRepeatYear.select();
 
         mTask.setRepeatOption(RepeatOptions.EVERY_YEAR.getValue());
-        mTask.setRepeatDate(mTask.getSchedule());
+        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
 
@@ -815,9 +816,9 @@ public class EditTaskActivity extends AccentActivity {
             mRepeat.setText(getString(R.string.repeat_never_description));
         } else {
             Calendar repeatDate = Calendar.getInstance();
-            repeatDate.setTime(mTask.getRepeatDate());
+            repeatDate.setTime(mTask.getLocalRepeatDate());
 
-            String time = DateUtils.getTimeAsString(this, mTask.getRepeatDate());
+            String time = DateUtils.getTimeAsString(this, mTask.getLocalRepeatDate());
             String dayOfWeek = DateUtils.formatDayOfWeek(this, repeatDate);
             String dayOfMonth = DateUtils.formatDayOfMonth(this, repeatDate);
             String month = DateUtils.formatMonth(this, repeatDate);
@@ -841,16 +842,16 @@ public class EditTaskActivity extends AccentActivity {
         }
     }
 
-    private SubtasksAdapter.SubtaskListener mSubtaskListener = new SubtasksAdapter.SubtaskListener() {
+    private SubtaskListener mSubtaskListener = new SubtaskListener() {
         @Override
         public void completeSubtask(GsonTask task) {
-            task.setCompletionDate(new Date());
+            task.setLocalCompletionDate(new Date());
             saveSubtask(task);
         }
 
         @Override
         public void uncompleteSubtask(GsonTask task) {
-            task.setCompletionDate(null);
+            task.setLocalCompletionDate(null);
             saveSubtask(task);
         }
 
@@ -898,7 +899,7 @@ public class EditTaskActivity extends AccentActivity {
             };
 
     private void saveSubtask(GsonTask task) {
-        mTasksService.saveTask(task);
+        mTasksService.saveTask(task, true);
         refreshSubtasks();
         updateViews();
     }
@@ -908,8 +909,8 @@ public class EditTaskActivity extends AccentActivity {
         String tempId = title + currentDate.getTime();
 
         if (!title.isEmpty()) {
-            GsonTask task = new GsonTask(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
-            mTasksService.saveTask(task);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
+            mTasksService.saveTask(task, true);
 
             refreshSubtasks();
 
@@ -952,7 +953,7 @@ public class EditTaskActivity extends AccentActivity {
                 GsonTask task = getFirstUncompletedSubtask();
 
                 if (task != null) {
-                    task.setCompletionDate(new Date());
+                    task.setLocalCompletionDate(new Date());
                     saveSubtask(task);
                 }
 
@@ -994,7 +995,7 @@ public class EditTaskActivity extends AccentActivity {
 
     private GsonTask getFirstUncompletedSubtask() {
         for (GsonTask subtask : mSubtasks) {
-            if (subtask.getCompletionDate() == null) return subtask;
+            if (subtask.getLocalCompletionDate() == null) return subtask;
         }
         return null;
     }

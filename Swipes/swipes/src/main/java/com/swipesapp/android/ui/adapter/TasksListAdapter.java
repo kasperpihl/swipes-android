@@ -141,7 +141,7 @@ public class TasksListAdapter extends BaseAdapter {
         List<GsonTag> tagList = tasks.get(position).getTags();
         String tags = null;
         String notes = tasks.get(position).getNotes();
-        Date repeatDate = tasks.get(position).getRepeatDate();
+        Date repeatDate = tasks.get(position).getLocalRepeatDate();
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
@@ -226,12 +226,12 @@ public class TasksListAdapter extends BaseAdapter {
                 holder.priorityButton.setBackgroundResource(R.drawable.later_circle_selector);
 
                 // Display scheduled time or location icon (never both).
-                Date schedule = tasks.get(position).getSchedule();
+                Date schedule = tasks.get(position).getLocalSchedule();
                 String location = tasks.get(position).getLocation();
 
                 if (location != null && !location.isEmpty()) {
                     holder.locationIcon.setVisibility(View.VISIBLE);
-                } else if (schedule != null) {
+                } else {
                     holder.time.setVisibility(View.VISIBLE);
                     // TODO: When dividers are done, change this to show time only.
                     holder.time.setText(DateUtils.formatToRecent(schedule, mContext.get()));
@@ -249,7 +249,7 @@ public class TasksListAdapter extends BaseAdapter {
                 holder.priorityButton.setBackgroundResource(R.drawable.done_circle_selector);
 
                 // Display completion time and hide repeat icon.
-                Date completionDate = tasks.get(position).getCompletionDate();
+                Date completionDate = tasks.get(position).getLocalCompletionDate();
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
@@ -394,7 +394,7 @@ public class TasksListAdapter extends BaseAdapter {
 
             for (GsonTask task : (List<GsonTask>) mData) {
                 // Check if it's an old task.
-                if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+                if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
                     // Add it to the removal list.
                     oldTasks.add(task);
                 }
@@ -410,7 +410,7 @@ public class TasksListAdapter extends BaseAdapter {
         for (position = 0; position < mData.size(); position++) {
             GsonTask task = ((List<GsonTask>) mData).get(position);
             // Check if completion date is older than today.
-            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
+            if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
                 // First old task position found.
                 break;
             }

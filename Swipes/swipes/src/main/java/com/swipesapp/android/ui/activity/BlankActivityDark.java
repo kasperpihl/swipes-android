@@ -7,7 +7,7 @@ import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
-import com.swipesapp.android.db.MigrationAssistant;
+import com.swipesapp.android.db.migration.MigrationAssistant;
 
 /**
  * Dummy activity for when the app needs to be launched without the splash screen.

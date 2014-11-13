@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- API keys -->
+    <string name="application_id">nf9lMphPOh3jZivxqQaMAg6YLtzlfvRjExUEKST3</string>
+    <string name="client_key">SrkvKzFm51nbKZ3hzuwnFxPPz24I9erkjvkf0XzS</string>
+    <string name="facebook_app_id">531435630236702</string>
+
+    <!-- Test API keys -->
+    <string name="test_application_id">0qD3LLZIOwLOPRwbwLia9GJXTEUnEsSlBCufqDvr</string>
+    <string name="test_client_key">zkaCbiWV0ieyDq5pinRuzclnaeLZG9G6GFJkmXMB</string>
+
     <!-- Welcome -->
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>
     <string name="welcome_task_three">Tap to show more actions</string>
+    <string name="welcome_login_button">LOGIN OR SIGN UP</string>
+    <string name="welcome_try_button"><u>Keep trying Swipes</u></string>
+    <string name="welcome_first_branding">Focus. Swipe. Achieve.</string>
+    <string name="welcome_second_branding">Task list made for High Achievers</string>
 
     <!-- Sections -->
     <string name="app_name">Swipes</string>
@@ -46,6 +59,8 @@
     <string name="day_start">Day start</string>
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
+    <string name="settings_login">Login</string>
+    <string name="settings_logout">Logout</string>
 
     <!-- About -->
     <string name="about">About</string>
@@ -79,11 +94,16 @@
     <string name="clear_old_dialog_yes">Delete them</string>
     <string name="clear_old_dialog_no">Cancel</string>
     <string name="search_hint">Search</string>
+    <string name="logout_dialog_title">Log out</string>
+    <string name="logout_dialog_message">Are you sure you want to log out of your account?</string>
+    <string name="keep_data_dialog_title">Keep data</string>
+    <string name="keep_data_dialog_message">Do you want to keep the data from the test period?</string>
 
     <!-- Scheduler -->
     <string name="date_today">Today,&#160;</string>
     <string name="date_tomorrow">Tomorrow,&#160;</string>
     <string name="date_yesterday">Yesterday,&#160;</string>
+    <string name="date_unspecified">Unspecified</string>
     <string name="snooze_later_today">Later Today</string>
     <string name="snooze_this_evening">This Evening</string>
     <string name="snooze_tomorrow">Tomorrow</string>
