@@ -10,3 +10,6 @@
 [submodule "Swipes/libraries/ParseUI-Android"]
 	path = Swipes/libraries/ParseUI-Android
 	url = https://bitbucket.org/felipebari/parseui-android.git
+[submodule "Swipes/libraries/evernote-sdk-android"]
+	path = Swipes/libraries/evernote-sdk-android
+	url = https://bitbucket.org/felipebari/evernote-sdk-android.git
