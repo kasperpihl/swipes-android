@@ -13,7 +13,6 @@ import com.swipesapp.android.db.dao.ExtTaskDao;
 import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
-import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
@@ -105,8 +104,6 @@ public class TasksService {
             Task task = mExtTaskDao.selectTask(id);
             updateTask(gsonTask, task);
         }
-
-        sendBroadcast(Actions.TASKS_CHANGED);
 
         if (sync) SyncService.getInstance(mContext.get()).performSync(true);
     }
@@ -487,6 +484,11 @@ public class TasksService {
         return gsonFromTasks(mExtTaskDao.listSubtasksForTask(objectId));
     }
 
+    /**
+     * Deletes all subtasks for a given task.
+     *
+     * @param objectId Parent object ID.
+     */
     private void deleteSubtasksForTask(String objectId) {
         List<GsonTask> subtasks = loadSubtasksForTask(objectId);
 

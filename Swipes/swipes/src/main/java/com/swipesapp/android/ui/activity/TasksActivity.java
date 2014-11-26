@@ -37,7 +37,6 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.receiver.SnoozeReceiver;
-import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
@@ -210,14 +209,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     public void onBackPressed() {
         // Forward call to listeners.
         mTasksService.sendBroadcast(Actions.BACK_PRESSED);
-    }
-
-    @Override
-    public void onResume() {
-        // Perform sync with changesOnly = true.
-        SyncService.getInstance(this).performSync(true);
-
-        super.onResume();
     }
 
     private void createSnoozeAlarm() {
@@ -511,6 +502,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         // Fade out the blur background.
         mBlurBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeOutListener);
+
+        // Broadcast changes.
+        mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
     }
 
     private void animateTags(boolean isHiding) {

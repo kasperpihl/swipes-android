@@ -1,6 +1,7 @@
 package com.swipesapp.android.sync.service;
 
 import android.content.Context;
+import android.os.Process;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -103,9 +104,13 @@ public class SyncService {
      * @param changesOnly True to sync only changes.
      */
     public void performSync(final boolean changesOnly) {
+        // Create new thread for responsiveness.
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // Start thread with low priority.
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+
                 // Forward call to internal sync method.
                 performSync(changesOnly, false);
             }
@@ -155,9 +160,6 @@ public class SyncService {
 
                             // Read API response and save changes locally.
                             handleResponse(new Gson().fromJson(result, GsonSync.class));
-
-                            // Refresh local content.
-                            TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
 
                             // Call recursion to sync remaining objects.
                             performSync(changesOnly, true);
@@ -225,7 +227,7 @@ public class SyncService {
         return request;
     }
 
-    private void handleResponse(GsonSync response) {
+    private void handleResponse(final GsonSync response) {
         // Process new tags.
         if (response.getTags() != null) {
             for (GsonTag tag : response.getTags()) {
@@ -241,23 +243,35 @@ public class SyncService {
             }
         }
 
-        // Process new tasks and changes.
-        if (response.getTasks() != null) {
-            for (GsonTask task : response.getTasks()) {
-                GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
-                task.setId(old != null ? old.getId() : null);
+        // Create another thread for processing tasks.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Start thread with low priority.
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-                // Set dates to local format.
-                task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
-                task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
-                task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
-                task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
-                task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+                // Process new tasks and changes.
+                if (response.getTasks() != null) {
+                    for (GsonTask task : response.getTasks()) {
+                        GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
+                        task.setId(old != null ? old.getId() : null);
 
-                // Save or update task locally.
-                TasksService.getInstance(mContext.get()).saveTask(task, false);
+                        // Set dates to local format.
+                        task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
+                        task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
+                        task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
+                        task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
+                        task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+
+                        // Save or update task locally.
+                        TasksService.getInstance(mContext.get()).saveTask(task, false);
+                    }
+                }
+
+                // Refresh local content.
+                TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
             }
-        }
+        }).start();
 
         // Save last update time.
         PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
