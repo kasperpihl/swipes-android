@@ -11,6 +11,7 @@ import com.swipesapp.android.values.RepeatOptions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Handler to deal with repeating tasks.
@@ -27,7 +28,7 @@ public class RepeatHandler {
 
     public void handleRepeatedTask(GsonTask task) {
         // Create a copy of the original task.
-        String tempId = task.getTitle() + new Date();
+        String tempId = UUID.randomUUID().toString();
         GsonTask copy = GsonTask.gsonForLocal(null, null, tempId, null, task.getLocalCreatedAt(), task.getLocalUpdatedAt(), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getLocalCompletionDate(), task.getLocalSchedule(), task.getLocation(), task.getLocalRepeatDate(), RepeatOptions.NEVER.getValue(), task.getOrigin(), task.getOriginIdentifier(), task.getTags(), task.getItemId());
 
         // Determine next repeat date.
@@ -63,7 +64,7 @@ public class RepeatHandler {
 
     private void handleRepeatedSubtasks(String taskId, String copyId) {
         for (GsonTask subtask : mTasksService.loadSubtasksForTask(taskId)) {
-            String tempId = subtask.getTitle() + new Date();
+            String tempId = UUID.randomUUID().toString();
 
             // Associate subtask copies with task copy, and uncomplete the originals.
             GsonTask copy = GsonTask.gsonForLocal(null, null, tempId, copyId, subtask.getLocalCreatedAt(), subtask.getLocalUpdatedAt(), false, subtask.getTitle(), null, 0, 0, subtask.getLocalCompletionDate(), subtask.getLocalSchedule(), null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
