@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class SplashActivity extends Activity {
 
-    private static final int SPLASH_TIMEOUT = 500;
+    private static final int SPLASH_TIMEOUT = 100;
 
     private WeakReference<Context> mContext;
 
