@@ -1,6 +1,7 @@
 package com.swipesapp.android.sync.service;
 
 import android.content.Context;
+import android.os.Process;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -11,14 +12,11 @@ import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.DaoSession;
-import com.swipesapp.android.db.Deleted;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.TagSync;
 import com.swipesapp.android.db.TaskSync;
-import com.swipesapp.android.db.dao.ExtDeletedDao;
 import com.swipesapp.android.db.dao.ExtTagSyncDao;
 import com.swipesapp.android.db.dao.ExtTaskSyncDao;
-import com.swipesapp.android.sync.gson.GsonDeleted;
 import com.swipesapp.android.sync.gson.GsonObjects;
 import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -42,13 +40,11 @@ public class SyncService {
 
     private ExtTaskSyncDao mExtTaskSyncDao;
     private ExtTagSyncDao mExtTagSyncDao;
-    private ExtDeletedDao mExtDeletedDao;
 
     private WeakReference<Context> mContext;
 
     private List<TagSync> mSyncedTags;
     private List<TaskSync> mSyncedTasks;
-    private List<Deleted> mSyncedDeleted;
 
     private static final String API_URL = "http://api.swipesapp.com/v1/sync";
 
@@ -70,7 +66,6 @@ public class SyncService {
 
         mExtTaskSyncDao = ExtTaskSyncDao.getInstance(daoSession);
         mExtTagSyncDao = ExtTagSyncDao.getInstance(daoSession);
-        mExtDeletedDao = ExtDeletedDao.getInstance(daoSession);
     }
 
     /**
@@ -103,9 +98,13 @@ public class SyncService {
      * @param changesOnly True to sync only changes.
      */
     public void performSync(final boolean changesOnly) {
+        // Create new thread for responsiveness.
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // Start thread with low priority.
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+
                 // Forward call to internal sync method.
                 performSync(changesOnly, false);
             }
@@ -125,12 +124,11 @@ public class SyncService {
         // Objects holding all local changes.
         List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
         List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
-        List<Deleted> deletedObjects = mExtDeletedDao.listDeletedObjectsForSync();
 
         // Only sync when called out of recursion or when there still are local changes.
-        if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty() || !deletedObjects.isEmpty()) {
+        if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) {
             // Prepare Gson request.
-            GsonSync request = prepareRequest(tagsChanged, tasksChanged, deletedObjects, changesOnly);
+            GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
 
             // Create JSON string.
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -151,13 +149,9 @@ public class SyncService {
                             // Delete synced objects from tracking.
                             deleteTrackedTags(mSyncedTags);
                             deleteTrackedTasks(mSyncedTasks);
-                            deleteTrackedDeletions(mSyncedDeleted);
 
                             // Read API response and save changes locally.
                             handleResponse(new Gson().fromJson(result, GsonSync.class));
-
-                            // Refresh local content.
-                            TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
 
                             // Call recursion to sync remaining objects.
                             performSync(changesOnly, true);
@@ -166,24 +160,22 @@ public class SyncService {
         }
     }
 
-    private GsonSync prepareRequest(List<TagSync> tags, List<TaskSync> tasks, List<Deleted> deletions, boolean changesOnly) {
+    private GsonSync prepareRequest(List<TagSync> tags, List<TaskSync> tasks, boolean changesOnly) {
         // Amount of objects in the current batch.
         int objectCount = 0;
 
         // Sync objects included in the current batch.
         mSyncedTags = new ArrayList<TagSync>();
         mSyncedTasks = new ArrayList<TaskSync>();
-        mSyncedDeleted = new ArrayList<Deleted>();
 
         // Gson objects to append to the API request.
         List<GsonTag> gsonTags = new ArrayList<GsonTag>();
         List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
-        List<GsonDeleted> gsonDeleted = new ArrayList<GsonDeleted>();
 
         // Prepare tag objects.
         for (TagSync tag : tags) {
             if (objectCount <= MAX_OBJECTS) {
-                GsonTag gson = GsonTag.gsonForSync(null, tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle());
+                GsonTag gson = GsonTag.gsonForSync(null, tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle(), tag.getDeleted());
                 gsonTags.add(gson);
 
                 mSyncedTags.add(tag);
@@ -202,17 +194,6 @@ public class SyncService {
             } else break;
         }
 
-        // Prepare deleted objects.
-        for (Deleted deleted : deletions) {
-            if (objectCount <= MAX_OBJECTS) {
-                GsonDeleted gson = new GsonDeleted(null, deleted.getClassName(), deleted.getObjectId(), deleted.getDeleted());
-                gsonDeleted.add(gson);
-
-                mSyncedDeleted.add(deleted);
-                objectCount++;
-            } else break;
-        }
-
         // Default request parameters.
         String sessionToken = ParseUser.getCurrentUser().getSessionToken();
         String version = String.valueOf(BuildConfig.VERSION_CODE);
@@ -220,44 +201,65 @@ public class SyncService {
 
         // Append objects in the current batch.
         GsonObjects objects = new GsonObjects(gsonTags, gsonTasks);
-        GsonSync request = new GsonSync(sessionToken, PLATFORM, version, changesOnly, lastUpdate, objects, gsonDeleted);
+        GsonSync request = new GsonSync(sessionToken, PLATFORM, version, changesOnly, lastUpdate, objects);
 
         return request;
     }
 
-    private void handleResponse(GsonSync response) {
+    private void handleResponse(final GsonSync response) {
         // Process new tags.
         if (response.getTags() != null) {
             for (GsonTag tag : response.getTags()) {
+                GsonTag localTag = TasksService.getInstance(mContext.get()).loadTag(tag.getTempId());
+
                 // Check if tag already exists locally.
-                if (TasksService.getInstance(mContext.get()).loadTag(tag.getTempId()) == null) {
+                if (localTag == null) {
                     // Set dates to local format.
                     tag.setLocalCreatedAt(DateUtils.dateFromSync(tag.getCreatedAt()));
                     tag.setLocalUpdatedAt(DateUtils.dateFromSync(tag.getUpdatedAt()));
 
                     // Save tag locally.
-                    TasksService.getInstance(mContext.get()).saveTag(tag);
+                    if (!tag.getDeleted()) {
+                        TasksService.getInstance(mContext.get()).saveTag(tag);
+                    }
+                } else {
+                    // Delete tag locally.
+                    if (tag.getDeleted()) {
+                        TasksService.getInstance(mContext.get()).deleteTag(localTag.getId());
+                    }
                 }
             }
         }
 
-        // Process new tasks and changes.
-        if (response.getTasks() != null) {
-            for (GsonTask task : response.getTasks()) {
-                GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
-                task.setId(old != null ? old.getId() : null);
+        // Create another thread for processing tasks.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Start thread with low priority.
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-                // Set dates to local format.
-                task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
-                task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
-                task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
-                task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
-                task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+                // Process new tasks and changes.
+                if (response.getTasks() != null) {
+                    for (GsonTask task : response.getTasks()) {
+                        GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
+                        task.setId(old != null ? old.getId() : null);
 
-                // Save or update task locally.
-                TasksService.getInstance(mContext.get()).saveTask(task, false);
+                        // Set dates to local format.
+                        task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
+                        task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
+                        task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
+                        task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
+                        task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+
+                        // Save or update task locally.
+                        TasksService.getInstance(mContext.get()).saveTask(task, false);
+                    }
+                }
+
+                // Refresh local content.
+                TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
             }
-        }
+        }).start();
 
         // Save last update time.
         PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
@@ -273,10 +275,6 @@ public class SyncService {
             // Save entire task for sync.
             taskSync = taskSyncFromGson(task);
             mExtTaskSyncDao.getDao().insert(taskSync);
-        } else if (task.isDeleted()) {
-            // Save task to deleted objects.
-            Deleted deleted = new Deleted(null, "ToDo", task.getTempId(), true);
-            mExtDeletedDao.getDao().insert(deleted);
         } else {
             GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getId());
 
@@ -284,6 +282,7 @@ public class SyncService {
             taskSync.setObjectId(task.getObjectId());
             taskSync.setTempId(task.getTempId());
             taskSync.setUpdatedAt(DateUtils.dateToSync(task.getLocalUpdatedAt()));
+            taskSync.setDeleted(hasObjectChanged(old.getDeleted(), task.getDeleted()) ? task.getDeleted() : null);
             taskSync.setTitle(hasObjectChanged(old.getTitle(), task.getTitle()) ? task.getTitle() : null);
             taskSync.setNotes(hasObjectChanged(old.getNotes(), task.getNotes()) ? task.getNotes() : null);
             taskSync.setOrder(hasObjectChanged(old.getOrder(), task.getOrder()) ? task.getOrder() : null);
@@ -303,7 +302,7 @@ public class SyncService {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
-        TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), DateUtils.dateToSync(tag.getLocalCreatedAt()), DateUtils.dateToSync(tag.getLocalUpdatedAt()), tag.getTitle());
+        TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), DateUtils.dateToSync(tag.getLocalCreatedAt()), DateUtils.dateToSync(tag.getLocalUpdatedAt()), tag.getTitle(), false);
         mExtTagSyncDao.getDao().insert(tagSync);
     }
 
@@ -311,8 +310,8 @@ public class SyncService {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
-        Deleted deleted = new Deleted(null, "Tag", tag.getTempId(), true);
-        mExtDeletedDao.getDao().insert(deleted);
+        TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), null, null, null, true);
+        mExtTagSyncDao.getDao().insert(tagSync);
     }
 
     private TaskSync taskSyncFromGson(GsonTask task) {
@@ -367,12 +366,6 @@ public class SyncService {
     private void deleteTrackedTasks(List<TaskSync> tasks) {
         for (TaskSync task : tasks) {
             mExtTaskSyncDao.getDao().delete(task);
-        }
-    }
-
-    private void deleteTrackedDeletions(List<Deleted> deletions) {
-        for (Deleted deleted : deletions) {
-            mExtDeletedDao.getDao().delete(deleted);
         }
     }
 

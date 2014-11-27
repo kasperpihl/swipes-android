@@ -31,9 +31,6 @@ public class GsonSync {
     @Expose(deserialize = false)
     private GsonObjects objects;
 
-    @Expose
-    private List<GsonDeleted> deletedObjects;
-
     // Response fields.
     @Expose(serialize = false)
     private String serverTime;
@@ -49,14 +46,13 @@ public class GsonSync {
     @Expose(serialize = false)
     private List<GsonTag> tags;
 
-    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, GsonObjects objects, List<GsonDeleted> deletedObjects) {
+    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, GsonObjects objects) {
         this.sessionToken = sessionToken;
         this.platform = platform;
         this.version = version;
         this.changesOnly = changesOnly;
         this.lastUpdate = lastUpdate;
         this.objects = objects;
-        this.deletedObjects = deletedObjects;
     }
 
     public String getServerTime() {
@@ -73,10 +69,6 @@ public class GsonSync {
 
     public List<GsonTag> getTags() {
         return tags;
-    }
-
-    public List<GsonDeleted> getDeletedObjects() {
-        return deletedObjects;
     }
 
 }

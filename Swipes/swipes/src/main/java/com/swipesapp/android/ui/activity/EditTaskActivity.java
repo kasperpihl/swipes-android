@@ -28,6 +28,7 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
@@ -48,6 +49,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -508,6 +510,8 @@ public class EditTaskActivity extends AccentActivity {
         getActionBar().show();
 
         updateViews();
+
+        SyncService.getInstance(this).performSync(true);
     }
 
     @OnClick(R.id.tags_back_button)
@@ -906,7 +910,7 @@ public class EditTaskActivity extends AccentActivity {
 
     private void createSubtask(String title) {
         Date currentDate = new Date();
-        String tempId = title + currentDate.getTime();
+        String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);

@@ -35,6 +35,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
@@ -213,6 +214,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         refreshTaskList(false);
+
+        SyncService.getInstance(getActivity()).performSync(true);
 
         super.onResume();
     }
@@ -490,6 +493,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Move task from Later to Focus.
                     getTask(position).setLocalSchedule(new Date());
                     mTasksService.saveTask(getTask(position), true);
+                    refreshTaskList(false);
                     break;
                 case FOCUS:
                     // Move task from Focus to Done.
@@ -497,6 +501,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
+                    refreshTaskList(false);
                     break;
             }
         }
@@ -516,6 +521,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Move task from Done to Focus.
                     getTask(position).setLocalCompletionDate(null);
                     mTasksService.saveTask(getTask(position), true);
+                    refreshTaskList(false);
                     break;
             }
         }
@@ -531,6 +537,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
+                    refreshTaskList(false);
                     break;
             }
         }
@@ -580,6 +587,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             task.setPriority(priority);
 
             mTasksService.saveTask(task, true);
+            refreshTaskList(false);
         }
     };
 
@@ -646,6 +654,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     public void onClick(DialogInterface dialog, int which) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(mSelectedTasks);
+                        refreshTaskList(false);
                     }
                 })
                 .setNegativeButton(getString(R.string.dialog_no), null)
@@ -692,6 +701,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                         // Proceed with delete.
                         mTasksService.deleteTasks(oldTasks);
+                        refreshTaskList(false);
 
                         // Collapse gradient and restore list view padding.
                         ((TasksActivity) getActivity()).collapseGradient();
@@ -753,6 +763,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mSelectedTasks.clear();
 
         refreshTaskList(false);
+
+        SyncService.getInstance(getActivity()).performSync(true);
     }
 
     @OnClick(R.id.tags_back_button)

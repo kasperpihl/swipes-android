@@ -2,7 +2,6 @@ package com.swipesapp.android.ui.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
@@ -131,47 +131,47 @@ public class SnoozeActivity extends FragmentActivity {
     }
 
     private void customizeViews() {
-        mView.setBackgroundColor(getResources().getColor(R.color.snooze_background_color));
+        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mAdjustHint.setTextColor(getResources().getColor(hintColor));
 
         setSelector(mLaterTodayIcon, R.string.schedule_coffee, R.string.schedule_coffee_full);
         mLaterTodayIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mLaterTodayTitle.setTextColor(Color.WHITE);
+        mLaterTodayTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mThisEveningIcon, R.string.schedule_moon, R.string.schedule_moon_full);
         mThisEveningIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisEveningTitle.setTextColor(Color.WHITE);
+        mThisEveningTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mTomorrowIcon, R.string.schedule_sun, R.string.schedule_sun_full);
         mTomorrowIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTomorrowTitle.setTextColor(Color.WHITE);
+        mTomorrowTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mTwoDaysIcon, R.string.schedule_logbook, R.string.schedule_logbook_full);
         mTwoDaysIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTwoDaysTitle.setTextColor(Color.WHITE);
+        mTwoDaysTitle.setTextColor(ThemeUtils.getTextColor(this));
         mTwoDaysTitle.setText(getTwoDaysTitle());
 
         setSelector(mThisWeekendIcon, R.string.schedule_glass, R.string.schedule_glass_full);
         mThisWeekendIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisWeekendTitle.setTextColor(Color.WHITE);
+        mThisWeekendTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mNextWeekIcon, R.string.schedule_circle, R.string.schedule_circle_full);
         mNextWeekIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mNextWeekTitle.setTextColor(Color.WHITE);
+        mNextWeekTitle.setTextColor(ThemeUtils.getTextColor(this));
 
 //        setSelector(mUnspecifiedIcon, R.string.schedule_cloud, R.string.schedule_cloud_full);
 //        mUnspecifiedIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-//        mUnspecifiedTitle.setTextColor(Color.WHITE);
+//        mUnspecifiedTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mAtLocationIcon, R.string.schedule_location, R.string.schedule_location_full);
         mAtLocationIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mAtLocationTitle.setTextColor(Color.WHITE);
+        mAtLocationTitle.setTextColor(ThemeUtils.getTextColor(this));
 
         setSelector(mPickDateIcon, R.string.schedule_calendar, R.string.schedule_calendar_full);
         mPickDateIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mPickDateTitle.setTextColor(Color.WHITE);
+        mPickDateTitle.setTextColor(ThemeUtils.getTextColor(this));
     }
 
     private void blurBackground() {
@@ -450,7 +450,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnTimeSetListener(timeSetListener);
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(true);
+        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
         dialog.set24HourMode(DateFormat.is24HourFormat(this));
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
@@ -494,7 +494,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnDateSetListener(dateSetListener);
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(true);
+        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
         dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
 
         // Mark schedule as not performed.

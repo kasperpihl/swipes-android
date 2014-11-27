@@ -20,10 +20,11 @@ import com.swipesapp.android.values.RepeatOptions;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class SplashActivity extends Activity {
 
-    private static final int SPLASH_TIMEOUT = 500;
+    private static final int SPLASH_TIMEOUT = 100;
 
     private WeakReference<Context> mContext;
 
@@ -92,7 +93,7 @@ public class SplashActivity extends Activity {
 
         // Save first task.
         String title = getString(R.string.welcome_task_one);
-        String tempId = title + currentDate.getTime();
+        String tempId = UUID.randomUUID().toString();
         task.setTitle(title);
         task.setTempId(tempId);
 
@@ -100,7 +101,7 @@ public class SplashActivity extends Activity {
 
         // Save second task.
         title = getString(R.string.welcome_task_two);
-        tempId = title + currentDate.getTime();
+        tempId = UUID.randomUUID().toString();
         task.setTitle(title);
         task.setTempId(tempId);
 
@@ -108,7 +109,7 @@ public class SplashActivity extends Activity {
 
         // Save third task.
         title = getString(R.string.welcome_task_three);
-        tempId = title + currentDate.getTime();
+        tempId = UUID.randomUUID().toString();
         task.setTitle(title);
         task.setTempId(tempId);
 
