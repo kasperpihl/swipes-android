@@ -15,6 +15,7 @@ public class TagSync {
     private String createdAt;
     private String updatedAt;
     private String title;
+    private Boolean deleted;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -26,13 +27,14 @@ public class TagSync {
         this.id = id;
     }
 
-    public TagSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title) {
+    public TagSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title, Boolean deleted) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.title = title;
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -81,6 +83,14 @@ public class TagSync {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     // KEEP METHODS - put your custom methods here

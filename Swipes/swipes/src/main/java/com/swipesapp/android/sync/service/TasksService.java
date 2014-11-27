@@ -121,6 +121,8 @@ public class TasksService {
 
             // Delete subtasks.
             deleteSubtasksForTask(task.getTempId());
+
+            SyncService.getInstance(mContext.get()).performSync(true);
         }
     }
 
@@ -174,18 +176,21 @@ public class TasksService {
     private void saveTags(Long taskId, List<GsonTag> gsonTags) {
         if (gsonTags != null) {
             for (GsonTag tag : gsonTags) {
-                // Load ID based on temp ID or object ID.
+                // Load tag based on temp ID or object ID.
                 String tempId = tag.getTempId() != null ? tag.getTempId() : tag.getObjectId();
-                Long tagId = loadTag(tempId).getId();
+                GsonTag localTag = loadTag(tempId);
 
-                // Search for association between task and tag.
-                TaskTag association = mExtTaskTagDao.selectAssociation(taskId, tagId);
+                // Make sure tag already exists locally.
+                if (localTag != null) {
+                    // Search for association between task and tag.
+                    TaskTag association = mExtTaskTagDao.selectAssociation(taskId, localTag.getId());
 
-                // If an association already exists, do nothing.
-                if (association == null) {
-                    // Create association.
-                    association = new TaskTag(null, taskId, tagId);
-                    mExtTaskTagDao.getDao().insert(association);
+                    // If an association already exists, do nothing.
+                    if (association == null) {
+                        // Create association.
+                        association = new TaskTag(null, taskId, localTag.getId());
+                        mExtTaskTagDao.getDao().insert(association);
+                    }
                 }
             }
         }
@@ -207,8 +212,6 @@ public class TasksService {
             mExtTagDao.getDao().insert(tag);
 
             SyncService.getInstance(mContext.get()).saveTagForSync(loadTag(tempId));
-
-            SyncService.getInstance(mContext.get()).performSync(true);
         }
     }
 
@@ -237,10 +240,12 @@ public class TasksService {
         // Load assignment and delete from database.
         TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
         mExtTaskTagDao.getDao().delete(assignment);
+
+        SyncService.getInstance(mContext.get()).saveTaskChangesForSync(loadTask(taskId));
     }
 
     /**
-     * Deletes a task from the database and unassigns it from all tasks.
+     * Deletes a tag from the database and unassigns it from all tasks.
      *
      * @param tagId ID of the tag to delete.
      */
@@ -256,8 +261,6 @@ public class TasksService {
         mExtTagDao.getDao().delete(tag);
 
         SyncService.getInstance(mContext.get()).saveDeletedTagForSync(tag);
-
-        SyncService.getInstance(mContext.get()).performSync(true);
     }
 
     /**

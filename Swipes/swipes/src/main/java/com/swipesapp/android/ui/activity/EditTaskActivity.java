@@ -28,6 +28,7 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
@@ -509,6 +510,8 @@ public class EditTaskActivity extends AccentActivity {
         getActionBar().show();
 
         updateViews();
+
+        SyncService.getInstance(this).performSync(true);
     }
 
     @OnClick(R.id.tags_back_button)

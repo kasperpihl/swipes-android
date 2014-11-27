@@ -29,6 +29,7 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
         public final static Property CreatedAt = new Property(3, String.class, "createdAt", false, "CREATED_AT");
         public final static Property UpdatedAt = new Property(4, String.class, "updatedAt", false, "UPDATED_AT");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
+        public final static Property Deleted = new Property(6, Boolean.class, "deleted", false, "DELETED");
     };
 
 
@@ -49,7 +50,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
                 "'TEMP_ID' TEXT," + // 2: tempId
                 "'CREATED_AT' TEXT," + // 3: createdAt
                 "'UPDATED_AT' TEXT," + // 4: updatedAt
-                "'TITLE' TEXT);"); // 5: title
+                "'TITLE' TEXT," + // 5: title
+                "'DELETED' INTEGER);"); // 6: deleted
     }
 
     /** Drops the underlying database table. */
@@ -92,6 +94,11 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
         if (title != null) {
             stmt.bindString(6, title);
         }
+ 
+        Boolean deleted = entity.getDeleted();
+        if (deleted != null) {
+            stmt.bindLong(7, deleted ? 1l: 0l);
+        }
     }
 
     /** @inheritdoc */
@@ -109,7 +116,8 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tempId
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // createdAt
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // updatedAt
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // title
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // deleted
         );
         return entity;
     }
@@ -123,6 +131,7 @@ public class TagSyncDao extends AbstractDao<TagSync, Long> {
         entity.setCreatedAt(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUpdatedAt(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDeleted(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */

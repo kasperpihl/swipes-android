@@ -25,9 +25,14 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
             case 1000:
                 migrateToVersion(1001, db);
                 migrateToVersion(1002, db);
+                migrateToVersion(1003, db);
                 break;
             case 1001:
                 migrateToVersion(1002, db);
+                migrateToVersion(1003, db);
+                break;
+            case 1002:
+                migrateToVersion(1003, db);
                 break;
         }
     }
@@ -36,7 +41,8 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
         switch (version) {
             case 1001:
                 // Drop old join table.
-                db.execSQL("DROP TABLE TASK_TAG");
+                db.execSQL("DROP TABLE 'TASK_TAG'");
+
                 // Create it again with the correct primary key.
                 db.execSQL("CREATE TABLE 'TASK_TAG' (" +
                         "'_id' INTEGER PRIMARY KEY ," +
@@ -81,6 +87,13 @@ public class SwipesHelper extends DaoMaster.OpenHelper {
                         "'CLASS_NAME' TEXT," +
                         "'OBJECT_ID' TEXT," +
                         "'DELETED' INTEGER);");
+                break;
+            case 1003:
+                // Change tag sync table.
+                db.execSQL("ALTER TABLE 'TAG_SYNC' ADD COLUMN 'DELETED' INTEGER");
+
+                // Drop deleted objects table.
+                db.execSQL("DROP TABLE 'DELETED'");
                 break;
         }
     }

@@ -12,7 +12,7 @@ import de.greenrobot.daogenerator.*;
 public class SwipesDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1002, "com.swipesapp.android.db");
+        Schema schema = new Schema(1003, "com.swipesapp.android.db");
         schema.enableKeepSectionsByDefault();
 
         addEntities(schema);
@@ -113,13 +113,7 @@ public class SwipesDaoGenerator {
         tagSync.addStringProperty("createdAt");
         tagSync.addStringProperty("updatedAt");
         tagSync.addStringProperty("title");
-
-        // Deleted objects table.
-        Entity deleted = schema.addEntity("Deleted");
-        deleted.addIdProperty();
-        deleted.addStringProperty("className");
-        deleted.addStringProperty("objectId");
-        deleted.addBooleanProperty("deleted");
+        tagSync.addBooleanProperty("deleted");
     }
 
 }

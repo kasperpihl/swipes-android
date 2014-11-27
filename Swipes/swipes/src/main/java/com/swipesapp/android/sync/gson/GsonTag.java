@@ -17,6 +17,8 @@ public class GsonTag {
     private String tempId;
     @Expose
     private String title;
+    @Expose
+    private Boolean deleted;
 
     // Sync dates.
     @Expose(serialize = false)
@@ -51,7 +53,7 @@ public class GsonTag {
      *
      * @return GsonTag object.
      */
-    public static GsonTag gsonForSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title) {
+    public static GsonTag gsonForSync(Long id, String objectId, String tempId, String createdAt, String updatedAt, String title, Boolean deleted) {
         GsonTag tag = new GsonTag();
         tag.id = id;
         tag.objectId = objectId;
@@ -59,9 +61,9 @@ public class GsonTag {
         tag.createdAt = createdAt;
         tag.updatedAt = updatedAt;
         tag.title = title;
+        tag.deleted = deleted;
 
         return tag;
-
     }
 
     public Long getId() {
@@ -94,6 +96,10 @@ public class GsonTag {
 
     public String getTitle() {
         return title;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
     }
 
     public String getCreatedAt() {

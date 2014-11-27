@@ -763,6 +763,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mSelectedTasks.clear();
 
         refreshTaskList(false);
+
+        SyncService.getInstance(getActivity()).performSync(true);
     }
 
     @OnClick(R.id.tags_back_button)
