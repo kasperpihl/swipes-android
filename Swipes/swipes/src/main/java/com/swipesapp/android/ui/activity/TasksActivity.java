@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
+import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.receiver.SnoozeReceiver;
@@ -148,6 +149,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         ButterKnife.inject(this);
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
+
+        // provide some initial context for Evernote integration
+        EvernoteIntegration.getInstance().setContext(this.getApplicationContext());
 
         createSnoozeAlarm();
 

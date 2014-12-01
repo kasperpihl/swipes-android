@@ -61,6 +61,13 @@
     <string name="evening_start">Evening start</string>
     <string name="settings_login">Login</string>
     <string name="settings_logout">Logout</string>
+    <string name="evernote_integrate">Evernote integration</string>
+    <string name="evernote_integrate_yes">Evernote logged in</string>
+    <string name="evernote_integrate_no">Evernote logged out</string>
+    <string name="evernote">Evernote</string>
+    <string name="evernote_dialog_msg">You are logged in Evernote.\nWould you like to logout? </string>
+    <string name="evernote_dialog_dialog_yes">Logout</string>
+    <string name="evernote_dialog_cancel">Cancel</string>
 
     <!-- About -->
     <string name="about">About</string>

@@ -16,6 +16,7 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
@@ -78,6 +79,18 @@ public class SettingsActivity extends AccentActivity {
                 // Hide login preference.
                 getPreferenceScreen().removePreference(preferenceLogin);
             }
+
+            final Preference preferenceEvernote = findPreference("evernote");
+            final EvernoteIntegration evernoteIntegration = EvernoteIntegration.getInstance();
+            evernoteIntegration.setContext(getActivity().getApplicationContext());
+            preferenceEvernote.setSummary(evernoteIntegration.isAuthenticated() ? R.string.evernote_integrate_yes : R.string.evernote_integrate_no);
+            preferenceEvernote.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    // Start login activity.
+                    handleEvernote();
+                    return true;
+                }
+            });
 
             syncDebug();
         }
@@ -242,6 +255,28 @@ public class SettingsActivity extends AccentActivity {
 
             // For debugging sync, comment the line below.
             getPreferenceScreen().removePreference(preferenceLogout);
+        }
+
+        private void handleEvernote() {
+            final EvernoteIntegration evernoteIntegration = EvernoteIntegration.getInstance();
+            if (!evernoteIntegration.isAuthenticated()) {
+                evernoteIntegration.authenticateInContext(getActivity());
+            }
+            else {
+                // Display dialog to save new tag.
+                new AccentAlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.evernote))
+                        .setMessage(R.string.evernote_dialog_msg)
+                        .setPositiveButton(getString(R.string.evernote_dialog_dialog_yes), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                evernoteIntegration.logoutInContext(SettingsFragment.this.getActivity());
+                                SettingsFragment.this.findPreference("evernote").setSummary(R.string.evernote_integrate_no);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.evernote_dialog_cancel), null)
+                        .create()
+                        .show();
+            }
         }
 
     }

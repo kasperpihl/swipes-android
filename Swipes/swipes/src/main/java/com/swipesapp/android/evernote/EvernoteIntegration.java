@@ -17,6 +17,7 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import com.evernote.edam.type.Tag;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class EvernoteIntegration {
@@ -56,8 +57,11 @@ public class EvernoteIntegration {
     protected EvernoteIntegration()
     {
         //Set up the Evernote Singleton Session
-        // WARNING 'null' should be a Context instance!
-        //evernoteSession = EvernoteSession.getInstance(null, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+    }
+
+    public void setContext(Context context)
+    {
+        evernoteSession = EvernoteSession.getInstance(context, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
     }
 
     public boolean isAuthenticated()
@@ -114,11 +118,10 @@ public class EvernoteIntegration {
         }
     }
 
-    public void logout()
+    public void logoutInContext(Context ctx)
     {
         try {
-            // WARNING 'null' should be a Context instance!
-            evernoteSession.logOut(null);
+            evernoteSession.logOut(ctx);
         } catch (InvalidAuthenticationException e) {
             // TODO log exception
         }

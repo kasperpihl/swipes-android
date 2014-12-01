@@ -44,6 +44,10 @@
             android:data="http://swipesapp.com/policies.pdf" />
     </PreferenceScreen>
 
+    <Preference
+        android:key="evernote"
+        android:title="@string/evernote_integrate" />
+
     <PreferenceScreen android:title="@string/about">
         <intent
             android:targetClass="com.swipesapp.android.ui.activity.AboutActivity"
