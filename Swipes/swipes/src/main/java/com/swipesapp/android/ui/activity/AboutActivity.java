@@ -1,5 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ScrollView;
@@ -30,6 +32,9 @@ public class AboutActivity extends AccentActivity {
     @InjectView(R.id.about_version)
     TextView mVersion;
 
+    @InjectView(R.id.about_policies)
+    TextView mPolicies;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,5 +51,13 @@ public class AboutActivity extends AccentActivity {
 
         String version = getString(R.string.app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
         mVersion.setText(version);
+
+        mPolicies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://swipesapp.com/policies.pdf"));
+                startActivity(intent);
+            }
+        });
     }
 }

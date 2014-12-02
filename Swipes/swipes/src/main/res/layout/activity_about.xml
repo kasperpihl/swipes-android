@@ -48,6 +48,14 @@
             android:layout_marginBottom="15dp" />
 
         <TextView
+            android:id="@+id/about_policies"
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/about_policies" />
+
+        <TextView
             android:id="@+id/about_oss_licenses"
             style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"

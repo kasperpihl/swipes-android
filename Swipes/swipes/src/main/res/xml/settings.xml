@@ -14,14 +14,24 @@
         android:key="logout"
         android:title="@string/settings_logout" />
 
+    <PreferenceScreen android:title="@string/settings_integrations">
+        <intent
+            android:targetClass="com.swipesapp.android.ui.activity.IntegrationsActivity"
+            android:targetPackage="com.swipesapp.android" />
+    </PreferenceScreen>
+
     <com.negusoft.holoaccent.preference.SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_notifications"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on"
         android:title="@string/notifications" />
 
     <com.negusoft.holoaccent.preference.SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_location"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on"
         android:title="@string/location" />
 
     <com.negusoft.holoaccent.preference.ListPreference
@@ -36,12 +46,6 @@
         <intent
             android:targetClass="com.swipesapp.android.ui.activity.SnoozeSettingsActivity"
             android:targetPackage="com.swipesapp.android" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="@string/policies">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="http://swipesapp.com/policies.pdf" />
     </PreferenceScreen>
 
     <PreferenceScreen android:title="@string/about">

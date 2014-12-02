@@ -24,5 +24,7 @@
     <item name="dark_tasks_blur_alpha_color" type="color">#b25d5f63</item>
     <item name="red_button_color" type="color">#CCfd4534</item>
     <item name="red_button_color_push" type="color">#80fd4534</item>
+    <item name="evernote_brand_color" type="color">#2DBE60</item>
+    <item name="evernote_gray_background" type="color">#E1E1E1</item>
 
 </resources>

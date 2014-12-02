@@ -41,6 +41,16 @@
         </activity>
 
         <activity
+            android:name="com.swipesapp.android.ui.activity.IntegrationsActivity"
+            android:label="@string/title_activity_integrations"
+            android:parentActivityName="com.swipesapp.android.ui.activity.SettingsActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
+        </activity>
+
+        <activity
             android:name="com.swipesapp.android.ui.activity.SnoozeSettingsActivity"
             android:label="@string/title_activity_snooze_settings"
             android:parentActivityName="com.swipesapp.android.ui.activity.SettingsActivity"
@@ -129,6 +139,16 @@
         <activity
             android:name="com.evernote.client.android.EvernoteOAuthActivity"
             android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name="com.swipesapp.android.ui.activity.EvernoteLearnActivity"
+            android:label="@string/title_activity_evernote_learn"
+            android:parentActivityName="com.swipesapp.android.ui.activity.IntegrationsActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.swipesapp.android.ui.activity.IntegrationsActivity" />
+        </activity>
 
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver" />
 

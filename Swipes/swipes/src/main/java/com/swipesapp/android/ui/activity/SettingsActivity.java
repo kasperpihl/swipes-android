@@ -80,6 +80,10 @@ public class SettingsActivity extends AccentActivity {
             }
 
             syncDebug();
+
+            // Location is not available yet, so hide the setting.
+            Preference preferenceLocation = findPreference("settings_enable_location");
+            getPreferenceScreen().removePreference(preferenceLocation);
         }
 
         @Override

@@ -30,10 +30,12 @@
     <string name="title_settings">@string/settings_light</string>
     <string name="title_filters">@string/schedule_circle</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_integrations">Integrations</string>
     <string name="title_activity_snooze_settings">Snoozes</string>
     <string name="title_activity_add_task">Add Task</string>
     <string name="title_activity_edit_task">Edit task</string>
     <string name="title_activity_about">About</string>
+    <string name="title_activity_evernote_learn">Evernote Integration</string>
     <string name="double_slash_divider">//</string>
 
     <!-- Empty view -->
@@ -61,12 +63,35 @@
     <string name="evening_start">Evening start</string>
     <string name="settings_login">Login</string>
     <string name="settings_logout">Logout</string>
+    <string name="settings_integrations">Integrations</string>
+    <string name="switch_on">YES</string>
+    <string name="switch_off">NO</string>
+
+    <!-- Evernote -->
+    <string name="evernote_link_account">Evernote</string>
+    <string name="evernote_link_account_detail">Tap to link account</string>
+    <string name="evernote_unlink_account">Evernote (connected)</string>
+    <string name="evernote_unlink_account_detail">Tap to unlink</string>
+    <string name="evernote_sync_device">Sync with Evernote on this device</string>
+    <string name="evernote_auto_import">Auto import notes with \"swipes\" tag</string>
+    <string name="evernote_sync_personal">Sync with personal linked notebooks</string>
+    <string name="evernote_sync_business">Sync with Evernote Business</string>
+    <string name="evernote_open_importer">Open Evernote Importer</string>
+    <string name="evernote_learn_more">Learn More</string>
+    <string name="evernote_learn_more_title_left">EVERNOTE</string>
+    <string name="evernote_learn_more_title_right">INTEGRATION</string>
+    <string name="evernote_what_it_is">WHAT IT IS</string>
+    <string name="evernote_what_it_is_description">This integration lets you sync notes with checkmarks from Evernote into Swipes.</string>
+    <string name="evernote_how_it_works">HOW IT WORKS</string>
+    <string name="evernote_how_it_works_detail">Assign the \"swipes\" tag to a note in Evernote. We\'ll add it as a task in Swipes and sync all its checkmarks.</string>
+    <string name="evernote_get_started">GET STARTED</string>
 
     <!-- About -->
     <string name="about">About</string>
     <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">This app is brought to you by</string>
     <string name="about_app_version">App version</string>
+    <string name="about_policies"><u>Policies</u></string>
     <string name="about_oss_licenses">Open source licenses</string>
     <string name="about_oss_license_1">TimePreference based on CommonsWare code. Licensed under Apache.</string>
 
