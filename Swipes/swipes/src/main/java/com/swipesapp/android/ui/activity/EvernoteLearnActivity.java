@@ -34,8 +34,12 @@ public class EvernoteLearnActivity extends Activity {
         mButtonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Link Evernote account.
-                EvernoteIntegration.getInstance().authenticateInContext(mContext.get());
+                if (!EvernoteIntegration.getInstance().isAuthenticated()) {
+                    // Link Evernote account.
+                    EvernoteIntegration.getInstance().authenticateInContext(mContext.get());
+                } else {
+                    finish();
+                }
             }
         });
     }

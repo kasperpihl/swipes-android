@@ -39,6 +39,7 @@ public class IntegrationsActivity extends AccentActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     // Link Evernote account.
                     EvernoteIntegration.getInstance().authenticateInContext(getActivity());
+                    // TODO: Find out if linking is done and reload screen.
                     return true;
                 }
             });
@@ -54,6 +55,8 @@ public class IntegrationsActivity extends AccentActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Unlink Evernote account.
                                     EvernoteIntegration.getInstance().logoutInContext(getActivity());
+                                    // Reload activity.
+                                    getActivity().recreate();
                                 }
                             })
                             .setNegativeButton(getString(R.string.dialog_no), null)
