@@ -1,0 +1,195 @@
+package com.swipesapp.android.evernote;
+
+/**
+ * TODO:
+ *  - request and update counters
+ *  - caching
+ */
+
+import android.content.Context;
+
+import com.evernote.client.android.EvernoteSession;
+import com.evernote.client.android.InvalidAuthenticationException;
+import com.evernote.client.android.OnClientCallback;
+import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.notestore.NoteList;
+import com.evernote.edam.type.Note;
+import com.evernote.edam.type.NoteSortOrder;
+import com.evernote.edam.type.Tag;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
+
+public class EvernoteIntegration {
+
+    // Your Evernote API key. See http://dev.evernote.com/documentation/cloud/
+    // Please obfuscate your code to help keep these values secret.
+    // taken from iOS (for now?)
+    private static final String CONSUMER_KEY = "swipes";
+    private static final String CONSUMER_SECRET = "e862f0d879e2c2b6";
+
+    // Initial development is done on Evernote's testing service, the sandbox.
+    // Change to HOST_PRODUCTION to use the Evernote production service
+    // once your code is complete, or HOST_CHINA to use the Yinxiang Biji
+    // (Evernote China) production service.
+    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.PRODUCTION;
+
+    // Set this to true if you want to allow linked notebooks for accounts that can only access a single
+    // notebook.
+    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
+
+    // Maximum number of notes to search
+    private static final int MAX_NOTES = 100;
+
+    private static final String SWIPES_TAG_NAME = "swipes";
+
+    protected final static EvernoteIntegration INSTANCE = new EvernoteIntegration();
+
+    protected EvernoteSession evernoteSession;
+
+    protected String swipesTagGuid;
+
+    public static EvernoteIntegration getInstance()
+    {
+        return INSTANCE;
+    }
+
+    protected EvernoteIntegration()
+    {
+        //Set up the Evernote Singleton Session
+    }
+
+    public void setContext(Context context)
+    {
+        evernoteSession = EvernoteSession.getInstance(context, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+    }
+
+    public boolean isAuthenticated()
+    {
+        return evernoteSession.isLoggedIn();
+    }
+
+    public void authenticateInContext(Context ctx)
+    {
+        evernoteSession.authenticate(ctx);
+    }
+
+    public void getSwipesTagGuid(final OnEvernoteCallback<String> callback)
+    {
+        try {
+            evernoteSession.getClientFactory().createNoteStoreClient().listTags(new OnClientCallback<List<Tag>>() {
+                @Override
+                public void onSuccess(List<Tag> data) {
+                    for (Tag tag : data) {
+                        if (tag.getName().equalsIgnoreCase(SWIPES_TAG_NAME)) {
+                            swipesTagGuid = tag.getGuid();
+                            break;
+                        }
+                    }
+
+                    if (null == swipesTagGuid) {
+                        Tag tag = new Tag();
+                        tag.setName(SWIPES_TAG_NAME);
+                        try {
+                            evernoteSession.getClientFactory().createNoteStoreClient().createTag(tag, new OnClientCallback<Tag>() {
+                                @Override
+                                public void onSuccess(Tag data) {
+                                    swipesTagGuid = data.getGuid();
+                                }
+
+                                @Override
+                                public void onException(Exception exception) {
+                                    // cannot create tag but this is not fatal
+                                }
+                            });
+                        } catch (Exception e) {
+                            // cannot create tag but this is not fatal
+                        }
+                    }
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    callback.onException(exception);
+                }
+            });
+        } catch (Exception e) {
+            callback.onException(e);
+        }
+    }
+
+    public void logoutInContext(Context ctx)
+    {
+        try {
+            evernoteSession.logOut(ctx);
+        } catch (InvalidAuthenticationException e) {
+            // TODO log exception
+        }
+    }
+
+    public void findNotes(String query, final OnEvernoteCallback<List<Note>> callback)
+    {
+        final NoteFilter filter = new NoteFilter();
+        filter.setOrder(NoteSortOrder.UPDATED.getValue());
+        filter.setWords(query);
+
+        try {
+            evernoteSession.getClientFactory().createNoteStoreClient().findNotes(filter, 0, MAX_NOTES, new OnClientCallback<NoteList>() {
+                @Override
+                public void onSuccess(NoteList data) {
+                    callback.onSuccess(data.getNotes());
+                    // TODO use update count and so on
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    callback.onException(e);
+                }
+            });
+        } catch (Exception e) {
+            callback.onException(e);
+        }
+    }
+
+    public void downloadNote(String noteRefString, final OnEvernoteCallback<Note>callback)
+    {
+        try {
+            evernoteSession.getClientFactory().createNoteStoreClient().getNote(noteRefString, true, false, false, false, new OnClientCallback<Note>() {
+                @Override
+                public void onSuccess(Note data) {
+                    callback.onSuccess(data);
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    callback.onException(e);
+                }
+            });
+        } catch (Exception e) {
+            callback.onException(e);
+        }
+//        Note note = new Note();
+//        note.setContent("<en-note><div>There are checks in there:</div><div><br clear=\"none\"/></div><div><en-todo/>Check again!\r\n</div><div><en-todo checked=\"false\"/>Second check</div><div><en-todo checked=\"true\"/>Third check</div><div><en-todo/>Another check<br/></div><div><en-todo/>I'm adding a task<br/></div><div><br clear=\"none\"/></div><div><br clear=\"none\"/><en-media style=\"height: auto;\" type=\"image/jpeg\" hash=\"ab7d9b70e606544a421a0a44daacdf40\"/></div><div><br clear=\"none\"/><en-media border=\"0\" style=\"cursor:pointer;\" type=\"application/xml\" height=\"43\" hash=\"e2ecf58b6a1b62910d76c3aa98c5092a\"/><br clear=\"none\"/><br clear=\"none\"/><br clear=\"none\"/><br clear=\"none\"/></div></en-note>");
+//
+//        callback.onSuccess(note);
+    }
+
+    public void updateNote(Note note, final OnEvernoteCallback<Note>callback)
+    {
+        try {
+            evernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
+                @Override
+                public void onSuccess(Note data) {
+                    callback.onSuccess(data);
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    callback.onException(e);
+                }
+            });
+        } catch (Exception e) {
+            callback.onException(e);
+        }
+    }
+}

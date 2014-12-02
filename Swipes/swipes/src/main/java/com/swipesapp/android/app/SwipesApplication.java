@@ -8,6 +8,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
+import com.swipesapp.android.evernote.EvernoteIntegration;
 
 /**
  * Swipes custom application class.
@@ -31,6 +32,9 @@ public class SwipesApplication extends Application {
         SwipesHelper helper = new SwipesHelper(getApplicationContext(), DB_NAME, null);
         DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
         sDaoSession = daoMaster.newSession();
+
+        // Provide initial context for Evernote integration.
+        EvernoteIntegration.getInstance().setContext(getApplicationContext());
     }
 
     public static DaoSession getDaoSession() {

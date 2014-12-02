@@ -85,6 +85,8 @@
     <string name="evernote_how_it_works">HOW IT WORKS</string>
     <string name="evernote_how_it_works_detail">Assign the \"swipes\" tag to a note in Evernote. We\'ll add it as a task in Swipes and sync all its checkmarks.</string>
     <string name="evernote_get_started">GET STARTED</string>
+    <string name="evernote_unlink_dialog_title">Unlink Evernote</string>
+    <string name="evernote_unlink_dialog_message">All tasks will be unlinked, are you sure?</string>
 
     <!-- About -->
     <string name="about">About</string>

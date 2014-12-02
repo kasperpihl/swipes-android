@@ -23,8 +23,6 @@ public class PreferenceUtils {
 
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
 
-    public static final String EVERNOTE_LINKED = "evernote_account_linked";
-
     /**
      * Saves a boolean preference.
      *
@@ -131,11 +129,6 @@ public class PreferenceUtils {
     public static String getSyncLastUpdate(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(SYNC_LAST_UPDATE, null);
-    }
-
-    public static boolean isEvernoteLinked(Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(EVERNOTE_LINKED, false);
     }
 
 }

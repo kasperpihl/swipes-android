@@ -1,13 +1,15 @@
 package com.swipesapp.android.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
+import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
-import com.swipesapp.android.util.PreferenceUtils;
+import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.util.ThemeUtils;
 
 public class IntegrationsActivity extends AccentActivity {
@@ -35,7 +37,8 @@ public class IntegrationsActivity extends AccentActivity {
             Preference evernoteLink = findPreference("evernote_link");
             evernoteLink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // TODO: Link Evernote account.
+                    // Link Evernote account.
+                    EvernoteIntegration.getInstance().authenticateInContext(getActivity());
                     return true;
                 }
             });
@@ -43,7 +46,20 @@ public class IntegrationsActivity extends AccentActivity {
             Preference evernoteUnlink = findPreference("evernote_unlink");
             evernoteUnlink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // TODO: Unlink Evernote account.
+                    // Show confirmation dialog.
+                    new AccentAlertDialog.Builder(getActivity())
+                            .setTitle(getString(R.string.evernote_unlink_dialog_title))
+                            .setMessage(R.string.evernote_unlink_dialog_message)
+                            .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Unlink Evernote account.
+                                    EvernoteIntegration.getInstance().logoutInContext(getActivity());
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.dialog_no), null)
+                            .create()
+                            .show();
+
                     return true;
                 }
             });
@@ -73,7 +89,7 @@ public class IntegrationsActivity extends AccentActivity {
             Preference evernoteSyncPersonal = findPreference("evernote_sync_personal");
             Preference evernoteSyncBusiness = findPreference("evernote_sync_business");
 
-            if (PreferenceUtils.isEvernoteLinked(getActivity())) {
+            if (EvernoteIntegration.getInstance().isAuthenticated()) {
                 // Hide Evernote link button.
                 getPreferenceScreen().removePreference(evernoteLink);
             } else {
