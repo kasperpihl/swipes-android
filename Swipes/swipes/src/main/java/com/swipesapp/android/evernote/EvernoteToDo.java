@@ -20,7 +20,7 @@ public class EvernoteToDo {
         return this.title;
     }
 
-    public boolean getChecked()
+    public boolean isChecked()
     {
         return this.checked;
     }

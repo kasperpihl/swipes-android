@@ -17,41 +17,41 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import com.evernote.edam.type.Tag;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class EvernoteIntegration {
 
+    public static final String SWIPES_TAG_NAME = "swipes";
+    public static final String EVERNOTE_SERVICE = "evernote";
+
     // Your Evernote API key. See http://dev.evernote.com/documentation/cloud/
     // Please obfuscate your code to help keep these values secret.
     // taken from iOS (for now?)
-    private static final String CONSUMER_KEY = "swipes";
-    private static final String CONSUMER_SECRET = "e862f0d879e2c2b6";
+    private static final String sConsumerKey = "swipes";
+    private static final String sConsumerSecret = "e862f0d879e2c2b6";
 
     // Initial development is done on Evernote's testing service, the sandbox.
     // Change to HOST_PRODUCTION to use the Evernote production service
     // once your code is complete, or HOST_CHINA to use the Yinxiang Biji
     // (Evernote China) production service.
-    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.PRODUCTION;
+    private static final EvernoteSession.EvernoteService sEvernoteService = EvernoteSession.EvernoteService.PRODUCTION;
 
     // Set this to true if you want to allow linked notebooks for accounts that can only access a single
     // notebook.
-    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
+    private static final boolean sSupportAppLinkedNotebooks = true;
 
     // Maximum number of notes to search
-    private static final int MAX_NOTES = 100;
+    private static final int sMaxNotes = 100;
 
-    private static final String SWIPES_TAG_NAME = "swipes";
+    protected final static EvernoteIntegration sInstance = new EvernoteIntegration();
 
-    protected final static EvernoteIntegration INSTANCE = new EvernoteIntegration();
+    protected EvernoteSession mEvernoteSession;
 
-    protected EvernoteSession evernoteSession;
-
-    protected String swipesTagGuid;
+    protected String mSwipesTagGuid;
 
     public static EvernoteIntegration getInstance()
     {
-        return INSTANCE;
+        return sInstance;
     }
 
     protected EvernoteIntegration()
@@ -61,40 +61,40 @@ public class EvernoteIntegration {
 
     public void setContext(Context context)
     {
-        evernoteSession = EvernoteSession.getInstance(context, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+        mEvernoteSession = EvernoteSession.getInstance(context, sConsumerKey, sConsumerSecret, sEvernoteService, sSupportAppLinkedNotebooks);
     }
 
     public boolean isAuthenticated()
     {
-        return evernoteSession.isLoggedIn();
+        return mEvernoteSession.isLoggedIn();
     }
 
     public void authenticateInContext(Context ctx)
     {
-        evernoteSession.authenticate(ctx);
+        mEvernoteSession.authenticate(ctx);
     }
 
     public void getSwipesTagGuid(final OnEvernoteCallback<String> callback)
     {
         try {
-            evernoteSession.getClientFactory().createNoteStoreClient().listTags(new OnClientCallback<List<Tag>>() {
+            mEvernoteSession.getClientFactory().createNoteStoreClient().listTags(new OnClientCallback<List<Tag>>() {
                 @Override
                 public void onSuccess(List<Tag> data) {
                     for (Tag tag : data) {
                         if (tag.getName().equalsIgnoreCase(SWIPES_TAG_NAME)) {
-                            swipesTagGuid = tag.getGuid();
+                            mSwipesTagGuid = tag.getGuid();
                             break;
                         }
                     }
 
-                    if (null == swipesTagGuid) {
+                    if (null == mSwipesTagGuid) {
                         Tag tag = new Tag();
                         tag.setName(SWIPES_TAG_NAME);
                         try {
-                            evernoteSession.getClientFactory().createNoteStoreClient().createTag(tag, new OnClientCallback<Tag>() {
+                            mEvernoteSession.getClientFactory().createNoteStoreClient().createTag(tag, new OnClientCallback<Tag>() {
                                 @Override
                                 public void onSuccess(Tag data) {
-                                    swipesTagGuid = data.getGuid();
+                                    mSwipesTagGuid = data.getGuid();
                                 }
 
                                 @Override
@@ -121,7 +121,7 @@ public class EvernoteIntegration {
     public void logoutInContext(Context ctx)
     {
         try {
-            evernoteSession.logOut(ctx);
+            mEvernoteSession.logOut(ctx);
         } catch (InvalidAuthenticationException e) {
             // TODO log exception
         }
@@ -134,7 +134,7 @@ public class EvernoteIntegration {
         filter.setWords(query);
 
         try {
-            evernoteSession.getClientFactory().createNoteStoreClient().findNotes(filter, 0, MAX_NOTES, new OnClientCallback<NoteList>() {
+            mEvernoteSession.getClientFactory().createNoteStoreClient().findNotes(filter, 0, sMaxNotes, new OnClientCallback<NoteList>() {
                 @Override
                 public void onSuccess(NoteList data) {
                     callback.onSuccess(data.getNotes());
@@ -154,7 +154,7 @@ public class EvernoteIntegration {
     public void downloadNote(String noteRefString, final OnEvernoteCallback<Note>callback)
     {
         try {
-            evernoteSession.getClientFactory().createNoteStoreClient().getNote(noteRefString, true, false, false, false, new OnClientCallback<Note>() {
+            mEvernoteSession.getClientFactory().createNoteStoreClient().getNote(noteRefString, true, false, false, false, new OnClientCallback<Note>() {
                 @Override
                 public void onSuccess(Note data) {
                     callback.onSuccess(data);
@@ -177,7 +177,7 @@ public class EvernoteIntegration {
     public void updateNote(Note note, final OnEvernoteCallback<Note>callback)
     {
         try {
-            evernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
+            mEvernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
                 @Override
                 public void onSuccess(Note data) {
                     callback.onSuccess(data);

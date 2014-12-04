@@ -214,7 +214,7 @@ public class EvernoteToDoProcessor {
     ////////////////////////////////////////
     public boolean updateToDo(EvernoteToDo updatedToDo, boolean checked)
     {
-        if ((null != updatedToDo) && (updatedToDo.getChecked() != checked)) {
+        if ((null != updatedToDo) && (updatedToDo.isChecked() != checked)) {
             if (null == updatedContent)
                 updatedContent = note.getContent();
 
