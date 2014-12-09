@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attachments_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity">
+
+    <!-- Pop-up area -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/attachments_view"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+        android:layout_marginRight="@dimen/schedule_options_margin_sides"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <!-- Search row -->
+        <RelativeLayout
+            android:id="@+id/search_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+            <!-- TODO: Fix the icons. -->
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/search_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/edit_notes"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/evernote_logo"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/evernote_logo_white" />
+
+            <com.swipesapp.android.ui.view.ActionEditText
+                android:id="@+id/search_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/evernote_logo"
+                android:layout_toRightOf="@id/search_icon"
+                android:hint="@string/evernote_search_hint"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences"
+                android:textCursorDrawable="@null" />
+        </RelativeLayout>
+
+        <include
+            layout="@layout/horizontal_line_white"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/search_area" />
+
+        <!-- TODO: Include list view. -->
+
+        <!-- Footer with checkbox -->
+        <RelativeLayout
+            android:id="@+id/footer_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp">
+
+            <FrameLayout
+                android:id="@+id/filter_checkbox_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <!-- TODO: Checkbox rounded square w/ selector -->
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/filter_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:text="@string/done_light"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/filter_checkbox_description"
+                style="?android:textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/filter_checkbox_area"
+                android:ellipsize="end"
+                android:text="@string/evernote_filter_description"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

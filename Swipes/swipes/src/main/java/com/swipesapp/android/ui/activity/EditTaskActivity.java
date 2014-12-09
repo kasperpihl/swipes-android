@@ -184,6 +184,7 @@ public class EditTaskActivity extends AccentActivity {
         // TODO: Set icons for current theme.
         menu.add(Menu.NONE, 0, Menu.NONE, getResources().getString(R.string.edit_task_share_action)).setIcon(android.R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         menu.add(Menu.NONE, 1, Menu.NONE, getResources().getString(R.string.edit_task_delete_action)).setIcon(android.R.drawable.ic_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, 2, Menu.NONE, getResources().getString(R.string.edit_task_evernote_action)).setIcon(R.drawable.evernote_logo).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -196,6 +197,9 @@ public class EditTaskActivity extends AccentActivity {
                 break;
             case 1:
                 deleteTask();
+                break;
+            case 2:
+                attachEvernote();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -476,6 +480,17 @@ public class EditTaskActivity extends AccentActivity {
                 })
                 .create()
                 .show();
+    }
+
+    private void attachEvernote() {
+        // Call attachments activity.
+        Intent intent = new Intent(this, EvernoteAttachmentsActivity.class);
+        intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
+        startActivity(intent);
+
+        // Update blurred background and override animation.
+        updateBlurDrawable(ThemeUtils.getSnoozeBlurAlphaColor(this));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void openSnoozeSelector() {

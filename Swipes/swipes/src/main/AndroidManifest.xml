@@ -150,6 +150,13 @@
                 android:value="com.swipesapp.android.ui.activity.IntegrationsActivity" />
         </activity>
 
+        <activity
+            android:name="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity"
+            android:label="@string/title_activity_evernote_attachments"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" />
+
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver" />
 
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver$ActionsReceiver" />
