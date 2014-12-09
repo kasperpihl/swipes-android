@@ -270,7 +270,7 @@ public class EvernoteSyncHandler {
                     String tempId = UUID.randomUUID().toString();
                     matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getObjectId(), currentDate, currentDate, false,
                             evernoteToDo.getTitle(), null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
-                            EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, 0);
+                            EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
                     tasksService.saveTask(matchingSubtask, true);
                     updated = true;
                     isNew = true;

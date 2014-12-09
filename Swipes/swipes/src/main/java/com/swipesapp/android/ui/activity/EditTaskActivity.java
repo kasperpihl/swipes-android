@@ -928,7 +928,7 @@ public class EditTaskActivity extends AccentActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), 0);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), null, 0);
             mTasksService.saveTask(task, true);
 
             refreshSubtasks();

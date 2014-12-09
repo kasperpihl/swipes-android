@@ -49,6 +49,9 @@ public class GsonTask {
     @Expose
     private List<GsonTag> tags;
 
+    // TODO: Expose this when attachments sync is done.
+    private List<GsonAttachment> attachments;
+
     // Local properties.
     private Long id;
     private long itemId;
@@ -66,7 +69,7 @@ public class GsonTask {
      *
      * @return GsonTask object.
      */
-    public static GsonTask gsonForLocal(Long id, String objectId, String tempId, String parentLocalId, Date localCreatedAt, Date localUpdatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date localCompletionDate, Date localSchedule, String location, Date localRepeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, long itemId) {
+    public static GsonTask gsonForLocal(Long id, String objectId, String tempId, String parentLocalId, Date localCreatedAt, Date localUpdatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, Date localCompletionDate, Date localSchedule, String location, Date localRepeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, List<GsonAttachment> attachments, long itemId) {
         GsonTask task = new GsonTask();
         task.id = id;
         task.objectId = objectId;
@@ -88,6 +91,7 @@ public class GsonTask {
         task.originIdentifier = originIdentifier;
         task.tags = tags;
         task.itemId = itemId;
+        task.attachments = attachments;
 
         return task;
     }
@@ -117,6 +121,8 @@ public class GsonTask {
         task.origin = origin;
         task.originIdentifier = originIdentifier;
         task.tags = tags;
+
+        // TODO: Include attachments when their sync is done.
 
         return task;
     }
@@ -331,6 +337,35 @@ public class GsonTask {
 
     public void setRepeatDate(String repeatDate) {
         this.repeatDate = GsonDate.dateForSync(repeatDate);
+    }
+
+    public List<GsonAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<GsonAttachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public void addAttachment(GsonAttachment attachment) {
+        attachments.add(attachment);
+    }
+
+    public void removeAttachment(GsonAttachment attachment) {
+        if (attachments != null) {
+            GsonAttachment match = null;
+
+            for (GsonAttachment gsonAttachment : attachments) {
+                Long id = gsonAttachment.getId();
+                String identifier = gsonAttachment.getIdentifier();
+
+                if (id.equals(attachment.getId()) || identifier.equals(attachment.getIdentifier())) {
+                    match = gsonAttachment;
+                }
+            }
+
+            attachments.remove(match);
+        }
     }
 
 }

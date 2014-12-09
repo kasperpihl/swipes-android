@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.db.Attachment;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Tag;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskTag;
+import com.swipesapp.android.db.dao.ExtAttachmentDao;
 import com.swipesapp.android.db.dao.ExtTagDao;
 import com.swipesapp.android.db.dao.ExtTaskDao;
 import com.swipesapp.android.db.dao.ExtTaskTagDao;
+import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.values.Sections;
@@ -33,6 +36,7 @@ public class TasksService {
     private ExtTaskDao mExtTaskDao;
     private ExtTagDao mExtTagDao;
     private ExtTaskTagDao mExtTaskTagDao;
+    private ExtAttachmentDao mExtAttachmentDao;
 
     private WeakReference<Context> mContext;
 
@@ -49,6 +53,7 @@ public class TasksService {
         mExtTaskDao = ExtTaskDao.getInstance(daoSession);
         mExtTagDao = ExtTagDao.getInstance(daoSession);
         mExtTaskTagDao = ExtTaskTagDao.getInstance(daoSession);
+        mExtAttachmentDao = ExtAttachmentDao.getInstance(daoSession);
     }
 
     /**
@@ -137,6 +142,7 @@ public class TasksService {
         synchronized (this) {
             Long taskId = mExtTaskDao.getDao().insert(task);
             saveTags(taskId, gsonTask.getTags());
+            saveAttachments(taskId, gsonTask.getAttachments());
         }
     }
 
@@ -164,6 +170,7 @@ public class TasksService {
         synchronized (this) {
             mExtTaskDao.getDao().update(task);
             saveTags(task.getId(), gsonTask.getTags());
+            saveAttachments(task.getId(), gsonTask.getAttachments());
         }
     }
 
@@ -192,6 +199,63 @@ public class TasksService {
                         mExtTaskTagDao.getDao().insert(association);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Saves or updates attachments to a task.
+     *
+     * @param taskId             Task to associate with.
+     * @param currentAttachments List of attachments.
+     */
+    private void saveAttachments(Long taskId, List<GsonAttachment> currentAttachments) {
+        // Load existing attachments.
+        List<GsonAttachment> previousAttachments = loadTask(taskId).getAttachments();
+        // List to keep track of updated objects.
+        List<GsonAttachment> updatedAttachments = new ArrayList<GsonAttachment>();
+
+        if (previousAttachments != null) {
+            for (GsonAttachment previous : previousAttachments) {
+                Long id = previous.getId();
+                String identifier = previous.getIdentifier();
+                boolean hasMatch = false;
+
+                // Match existing with updated.
+                if (currentAttachments != null) {
+                    for (GsonAttachment current : currentAttachments) {
+                        if (id.equals(current.getId()) || identifier.equals(current.getIdentifier())) {
+                            // Update attachment.
+                            previous.setIdentifier(current.getIdentifier());
+                            previous.setService(current.getService());
+                            previous.setTitle(current.getTitle());
+                            previous.setSync(current.getSync());
+
+                            // Mark as matched.
+                            hasMatch = true;
+
+                            // Add to the list of updated.
+                            updatedAttachments.add(current);
+                        }
+                    }
+                }
+
+                // Check if match was found and persist changes.
+                if (hasMatch) {
+                    saveAttachment(previous, taskId);
+                } else {
+                    // No matches, so the attachment was removed.
+                    deleteAttachment(previous.getId());
+                }
+            }
+        }
+
+        // Persist new attachments.
+        if (currentAttachments != null) {
+            currentAttachments.removeAll(updatedAttachments);
+
+            for (GsonAttachment newAttachment : currentAttachments) {
+                saveAttachment(newAttachment, taskId);
             }
         }
     }
@@ -261,6 +325,68 @@ public class TasksService {
         mExtTagDao.getDao().delete(tag);
 
         SyncService.getInstance(mContext.get()).saveDeletedTagForSync(tag);
+    }
+
+    /**
+     * Creates a new attachment, or updates an existing one.
+     *
+     * @param gsonAttachment Object holding attachment data.
+     */
+    public void saveAttachment(GsonAttachment gsonAttachment, long taskId) {
+        Long id = gsonAttachment.getId();
+
+        if (id == null) {
+            createAttachment(gsonAttachment, taskId);
+        } else {
+            Attachment attachment = mExtAttachmentDao.selectAttachment(id);
+            updateAttachment(gsonAttachment, attachment, taskId);
+        }
+
+        // TODO: Save attachment for sync.
+    }
+
+    /**
+     * Deletes an attachment from the database.
+     *
+     * @param id ID of the attachment to delete.
+     */
+    public void deleteAttachment(long id) {
+        // Delete from database.
+        Attachment attachment = mExtAttachmentDao.selectAttachment(id);
+        mExtAttachmentDao.getDao().delete(attachment);
+    }
+
+    /**
+     * Creates a new attachment.
+     *
+     * @param gsonAttachment Object holding new attachment data.
+     * @param taskId         Database ID of the task to associate with.
+     */
+    private void createAttachment(GsonAttachment gsonAttachment, long taskId) {
+        Attachment attachment = attachmentsFromGson(Arrays.asList(gsonAttachment), taskId).get(0);
+
+        synchronized (this) {
+            mExtAttachmentDao.getDao().insert(attachment);
+        }
+    }
+
+    /**
+     * Updates an existing attachment.
+     *
+     * @param gsonAttachment Object holding updated data.
+     * @param attachment     Attachment to update.
+     */
+    private void updateAttachment(GsonAttachment gsonAttachment, Attachment attachment, long taskId) {
+        // Update only mutable attributes.
+        attachment.setIdentifier(gsonAttachment.getIdentifier());
+        attachment.setService(gsonAttachment.getService());
+        attachment.setTitle(gsonAttachment.getTitle());
+        attachment.setSync(gsonAttachment.getSync());
+        attachment.setTaskId(taskId);
+
+        synchronized (this) {
+            mExtAttachmentDao.getDao().update(attachment);
+        }
     }
 
     /**
@@ -503,6 +629,37 @@ public class TasksService {
     }
 
     /**
+     * Loads a single attachment.
+     *
+     * @param id Database ID of the attachment.
+     * @return Selected attachment.
+     */
+    public GsonAttachment loadAttachment(Long id) {
+        Attachment attachment = mExtAttachmentDao.selectAttachment(id);
+        return attachment != null ? gsonFromAttachments(Arrays.asList(attachment)).get(0) : null;
+    }
+
+    /**
+     * Loads a single attachment.
+     *
+     * @param identifier Identifier of the attachment.
+     * @return Selected attachment.
+     */
+    public GsonAttachment loadAttachment(String identifier) {
+        Attachment attachment = mExtAttachmentDao.selectAttachment(identifier);
+        return attachment != null ? gsonFromAttachments(Arrays.asList(attachment)).get(0) : null;
+    }
+
+    /**
+     * Loads all existing attachments.
+     *
+     * @return List of attachments.
+     */
+    public List<GsonAttachment> loadAllAttachments() {
+        return gsonFromAttachments(mExtAttachmentDao.listAllAttachments());
+    }
+
+    /**
      * Clears all user data from the database.
      */
     public void clearAllData() {
@@ -536,7 +693,7 @@ public class TasksService {
 
         if (tasks != null) {
             for (Task task : tasks) {
-                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), task.getId()));
+                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), gsonFromAttachments(task.getAttachments()), task.getId()));
             }
         }
 
@@ -559,6 +716,24 @@ public class TasksService {
         }
 
         return gsonTags;
+    }
+
+    /**
+     * Converts a list of Attachment objects to GsonAttachment.
+     *
+     * @param attachments List of attachments.
+     * @return Converted list.
+     */
+    private List<GsonAttachment> gsonFromAttachments(List<Attachment> attachments) {
+        List<GsonAttachment> gsonAttachments = new ArrayList<GsonAttachment>();
+
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                gsonAttachments.add(new GsonAttachment(attachment.getId(), attachment.getIdentifier(), attachment.getService(), attachment.getTitle(), attachment.getSync()));
+            }
+        }
+
+        return gsonAttachments;
     }
 
     /**
@@ -595,6 +770,24 @@ public class TasksService {
         }
 
         return tags;
+    }
+
+    /**
+     * Converts a list of GsonAttachment to Attachment objects.
+     *
+     * @param gsonAttachments List of GsonAttachment.
+     * @return Converted list.
+     */
+    private List<Attachment> attachmentsFromGson(List<GsonAttachment> gsonAttachments, long taskId) {
+        List<Attachment> attachments = new ArrayList<Attachment>();
+
+        if (gsonAttachments != null) {
+            for (GsonAttachment gsonAttachment : gsonAttachments) {
+                attachments.add(new Attachment(gsonAttachment.getId(), gsonAttachment.getIdentifier(), gsonAttachment.getService(), gsonAttachment.getTitle(), gsonAttachment.getSync(), taskId));
+            }
+        }
+
+        return attachments;
     }
 
 }
