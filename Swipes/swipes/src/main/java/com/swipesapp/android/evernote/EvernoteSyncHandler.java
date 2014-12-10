@@ -109,7 +109,7 @@ public class EvernoteSyncHandler {
         });
     }
 
-    protected List<Object> getObjectsSyncedWithEvernote() {
+    protected List<GsonTask> getObjectsSyncedWithEvernote() {
         // TODO implement
         return null;
     }
@@ -317,7 +317,10 @@ public class EvernoteSyncHandler {
     }
 
     protected void syncEvernote(OnEvernoteCallback<Void> callback)  {
-        List<Object> objectsWithEvernote = getObjectsSyncedWithEvernote();
+        List<GsonTask> objectsWithEvernote = getObjectsSyncedWithEvernote();
 
+        boolean syncedAnything = false;
+        for (GsonTask todoWithEvernote : objectsWithEvernote) {
+        }
     }
 }
