@@ -368,4 +368,17 @@ public class GsonTask {
         }
     }
 
+    public GsonAttachment getFirstAttachmentForService(String service) {
+        GsonAttachment match = null;
+        if (attachments != null) {
+            for (GsonAttachment attachment : attachments) {
+                if (service.equals(attachment.getService())) {
+                    match = attachment;
+                    break;
+                }
+            }
+        }
+        return match;
+    }
+
 }
