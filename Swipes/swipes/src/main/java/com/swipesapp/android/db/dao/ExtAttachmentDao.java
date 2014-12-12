@@ -43,4 +43,8 @@ public class ExtAttachmentDao {
         return mDao.queryBuilder().list();
     }
 
+    public List<Attachment> listAttachmentsForService(String service) {
+        return mDao.queryBuilder().where(AttachmentDao.Properties.Service.eq(service)).list();
+    }
+
 }

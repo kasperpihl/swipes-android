@@ -17,6 +17,7 @@ import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -346,17 +347,6 @@ public class TasksService {
     }
 
     /**
-     * Deletes an attachment from the database.
-     *
-     * @param id ID of the attachment to delete.
-     */
-    public void deleteAttachment(long id) {
-        // Delete from database.
-        Attachment attachment = mExtAttachmentDao.selectAttachment(id);
-        mExtAttachmentDao.getDao().delete(attachment);
-    }
-
-    /**
      * Creates a new attachment.
      *
      * @param gsonAttachment Object holding new attachment data.
@@ -386,6 +376,34 @@ public class TasksService {
 
         synchronized (this) {
             mExtAttachmentDao.getDao().update(attachment);
+        }
+    }
+
+    /**
+     * Deletes an attachment from the database.
+     *
+     * @param id ID of the attachment to delete.
+     */
+    public void deleteAttachment(long id) {
+        // Delete from database.
+        Attachment attachment = mExtAttachmentDao.selectAttachment(id);
+        mExtAttachmentDao.getDao().delete(attachment);
+    }
+
+    /**
+     * Deletes all attachments for a given service.
+     *
+     * @param service Service to search for (e.g. Services.EVERNOTE).
+     */
+    public void deleteAttachmentsForService(Services service) {
+        // Load attachments.
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(service.getValue());
+
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                // Delete from database.
+                mExtAttachmentDao.getDao().delete(attachment);
+            }
         }
     }
 
@@ -587,6 +605,33 @@ public class TasksService {
     }
 
     /**
+     * Loads all tasks with attachment from the Evernote service.
+     *
+     * @param attachmentSync Attachments are filtered by this value for their "sync" property.
+     * @return List of tasks.
+     */
+    public List<GsonTask> loadTasksWithEvernote(boolean attachmentSync) {
+        // Load Evernote attachments.
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE.getValue());
+
+        // Holds matching tasks.
+        List<GsonTask> matches = new ArrayList<GsonTask>();
+
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                // Check for sync property.
+                if (attachment.getSync() == attachmentSync) {
+                    // Add associated task to the list of matches.
+                    GsonTask match = loadTask(attachment.getTaskId());
+                    matches.add(match);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    /**
      * Loads all tags associated with a task, for displaying.
      *
      * @param taskId ID of the task.
@@ -660,6 +705,16 @@ public class TasksService {
     }
 
     /**
+     * Loads all attachments for a given service.
+     *
+     * @param service Service to search for (e.g. Services.EVERNOTE).
+     * @return List of attachments.
+     */
+    public List<GsonAttachment> loadAttachmentsForService(Services service) {
+        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForService(service.getValue()));
+    }
+
+    /**
      * Clears all user data from the database.
      */
     public void clearAllData() {
@@ -679,6 +734,12 @@ public class TasksService {
         List<Tag> tags = mExtTagDao.listAllTags();
         for (Tag tag : tags) {
             tag.delete();
+        }
+
+        // Delete all attachments.
+        List<Attachment> attachments = mExtAttachmentDao.listAllAttachments();
+        for (Attachment attachment : attachments) {
+            mExtAttachmentDao.getDao().delete(attachment);
         }
     }
 
