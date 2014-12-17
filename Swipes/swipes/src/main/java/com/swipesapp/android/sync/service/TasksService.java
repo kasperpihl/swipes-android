@@ -632,6 +632,32 @@ public class TasksService {
     }
 
     /**
+     * Loads all attachment identifiers for the Evernote service.
+     *
+     * @param attachmentSync Attachments are filtered by this value for their "sync" property.
+     * @return List of identifiers for all evernote attachments.
+     */
+    public List<String> loadIdentifiersWithEvernote(boolean attachmentSync) {
+        // Load Evernote attachments.
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE.getValue());
+
+        // Holds matching tasks.
+        List<String> matches = new ArrayList<String>();
+
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                // Check for sync property.
+                if (attachment.getSync() == attachmentSync) {
+                    // Add associated task to the list of matches.
+                    matches.add(attachment.getIdentifier());
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    /**
      * Loads all tags associated with a task, for displaying.
      *
      * @param taskId ID of the task.

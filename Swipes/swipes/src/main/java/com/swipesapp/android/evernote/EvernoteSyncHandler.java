@@ -2,6 +2,7 @@ package com.swipesapp.android.evernote;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.evernote.edam.type.Note;
@@ -28,10 +29,12 @@ public class EvernoteSyncHandler {
     protected final static String sKeyLastUpdated = "lastUpdated";
     protected final static EvernoteSyncHandler sInstance = new EvernoteSyncHandler();
     protected final static int sTitleMaxLength = 255;
+    protected final static long sFetchChangesTimeout = 30 * 1000; // 30 seconds
 
     protected List<Note> mChangedNotes;
     protected Date mLastUpdated;
     protected WeakReference<Context> mContext;
+    protected List<Note> mKnownNotes;
 
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
@@ -43,6 +46,7 @@ public class EvernoteSyncHandler {
     }
 
     public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback)  {
+        mKnownNotes = null;
         mChangedNotes.clear();
         mContext = new WeakReference<Context>(context);
         // retrieve last update time
@@ -59,9 +63,35 @@ public class EvernoteSyncHandler {
             callback.onException(new Exception("Evernote not authenticated"));
         }
 
-        // TODO find local changes since last sync
+        // TODO work with needToClearCache
+        boolean hasLocalChanges = checkForLocalChanges();
+        if (!hasLocalChanges) {
+            // no local changes
+            if ((null != mLastUpdated) && (new Date().getTime() - mLastUpdated.getTime() < sFetchChangesTimeout)) {
+                // checking too soon
+                callback.onSuccess(null);
+            }
+        }
 
-        findUpdatedNotesWithTag(EvernoteIntegration.SWIPES_TAG_NAME, callback);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean("evernote_auto_import", false)) {
+            findUpdatedNotesWithTag(EvernoteIntegration.SWIPES_TAG_NAME, callback);
+        }
+        else {
+            syncEvernote(callback);
+        }
+    }
+
+    protected boolean checkForLocalChanges() {
+        boolean result = false;
+        List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
+        for (GsonTask todoWithEvernote : objectsWithEvernote) {
+            if (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     protected void addAndSyncNewTasksFromNotes(List<Note> notes) {
@@ -91,6 +121,32 @@ public class EvernoteSyncHandler {
         return dateFormat.format(new Date());
     }
 
+    protected List<Note> extractKnownNotes()  {
+        List<String> evernoteIdentifiers = TasksService.getInstance(mContext.get()).loadIdentifiersWithEvernote(true);
+        List<Note> knownNotes = new ArrayList<Note>(evernoteIdentifiers.size());
+        for (String s : evernoteIdentifiers) {
+            Note note = EvernoteIntegration.noteFromJson(s);
+            if (null != note) {
+                knownNotes.add(note);
+            }
+        }
+        return knownNotes;
+    }
+
+    protected boolean isNoteNew(Note note, List<Note> knownNotes) {
+        boolean result = true;
+        for (Note n : knownNotes) {
+            if (n.getGuid().equalsIgnoreCase(note.getGuid())) {
+                if ((n.getNotebookGuid() == null && note.getNotebookGuid() == null) ||
+                        (n.getNotebookGuid() != null && n.getNotebookGuid().equalsIgnoreCase(note.getNotebookGuid()))) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     protected void findUpdatedNotesWithTag(String tag, final OnEvernoteCallback<Void> callback) {
         final StringBuilder query = new StringBuilder("tag:" + tag);
         if (null != mLastUpdated) {
@@ -101,10 +157,14 @@ public class EvernoteSyncHandler {
         EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> data) {
+                if (null == mKnownNotes) {
+                    mKnownNotes = extractKnownNotes();
+                }
                 ArrayList<Note> newNotes = new ArrayList<Note>();
                 for (Note note : data) {
-                    // TODO find existing tasks by guid?
-
+                    if (isNoteNew(note, mKnownNotes)) {
+                       newNotes.add(note);
+                    }
                     mChangedNotes.add(note);
                 }
                 addAndSyncNewTasksFromNotes(newNotes);
@@ -117,11 +177,6 @@ public class EvernoteSyncHandler {
                 callback.onException(e);
             }
         });
-    }
-
-    protected List<GsonTask> getObjectsSyncedWithEvernote() {
-        // TODO implement
-        return null;
     }
 
     protected void setUpdatedAt(Date date) {
@@ -142,9 +197,12 @@ public class EvernoteSyncHandler {
         EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> data) {
+                if (null == mKnownNotes) {
+                    mKnownNotes = extractKnownNotes();
+                }
                 for (Note note : data) {
-                    // TODO add to changed only those with matching attachments
-                    mChangedNotes.add(note);
+                    if (!isNoteNew(note, mKnownNotes))
+                        mChangedNotes.add(note);
                 }
                 syncEvernote(callback);
             }
@@ -195,7 +253,7 @@ public class EvernoteSyncHandler {
             // If not, override in Swipes
             else{
                 Log.i(sTag, "completing subtask");
-                subtask.setLocalCompletionDate(new Date()); // TODO does this complete a task?
+                subtask.setLocalCompletionDate(new Date());
                 tasksService.saveTask(subtask, true);
                 updated = true;
             }
@@ -214,9 +272,30 @@ public class EvernoteSyncHandler {
         return updated;
     }
 
+    protected List<GsonTask> filterSubtasksWithEvernote(final List<GsonTask> subtasks) {
+        final List<GsonTask> evernoteSubtasks = new ArrayList<GsonTask>();
+        for (GsonTask subtask : subtasks) {
+            // TODO we will add additional checks when we handle updated or deleted
+            if (/*(null == subtask.getOrigin()) || */EvernoteIntegration.EVERNOTE_SERVICE.equals(subtask.getOrigin())) {
+                evernoteSubtasks.add(subtask);
+            }
+        }
+        return evernoteSubtasks;
+    }
+
+    protected List<GsonTask> filterSubtasksWithoutOrigin(final List<GsonTask> subtasks) {
+        final List<GsonTask> noOriginSubtasks = new ArrayList<GsonTask>();
+        for (GsonTask subtask : subtasks) {
+            if ((null == subtask.getOrigin())) {
+                noOriginSubtasks.add(subtask);
+            }
+        }
+        return noOriginSubtasks;
+    }
+
     protected void findAndHandleMatches(final GsonTask parentToDo, final EvernoteToDoProcessor processor) {
         final TasksService tasksService = TasksService.getInstance(mContext.get());
-        List<GsonTask> subtasks = tasksService.loadSubtasksForTask(parentToDo.getObjectId()); // TODO get only evernote related
+        List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(parentToDo.getObjectId()));
         List<EvernoteToDo> evernoteToDos = new ArrayList<EvernoteToDo>(processor.getToDos());
 
         // Creating helper arrays for determining which ones has already been matched
@@ -310,7 +389,7 @@ public class EvernoteSyncHandler {
         }
 
         // add newly added tasks to evernote
-        subtasks = tasksService.loadSubtasksForTask(parentToDo.getObjectId()); // TODO get only NON Evernote
+        subtasks = filterSubtasksWithoutOrigin(tasksService.loadSubtasksForTask(parentToDo.getObjectId()));
         for (GsonTask subtask : subtasks) {
             if (processor.addToDo(subtask.getTitle())) {
                 subtask.setOriginIdentifier(subtask.getTitle());
@@ -354,7 +433,7 @@ public class EvernoteSyncHandler {
     }
 
     protected void syncEvernote(final OnEvernoteCallback<Void> callback)  {
-        List<GsonTask> objectsWithEvernote = getObjectsSyncedWithEvernote();
+        List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
 
         final Date date = new Date();
         final Integer returnCount = new Integer(0);
