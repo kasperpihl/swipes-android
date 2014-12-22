@@ -1,5 +1,7 @@
 package com.swipesapp.android.db.dao;
 
+import android.util.Log;
+
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskDao;
@@ -25,6 +27,8 @@ public class ExtTaskDao {
         mDao = daoSession.getTaskDao();
     }
 
+    private static final String LOG_TAG = ExtTaskDao.class.getSimpleName();
+
     public static ExtTaskDao getInstance(DaoSession daoSession) {
         if (sInstance == null) {
             sInstance = new ExtTaskDao(daoSession);
@@ -41,8 +45,15 @@ public class ExtTaskDao {
     }
 
     public Task selectTask(String tempId) {
-        return mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.TempId.eq(tempId),
-                TaskDao.Properties.ObjectId.eq(tempId))).unique();
+        List<Task> tasks = mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.TempId.eq(tempId),
+                TaskDao.Properties.ObjectId.eq(tempId))).list();
+
+        if (tasks != null && tasks.size() > 1) {
+            // TODO: Log analytics event so we know when duplicates are being created.
+            Log.w(LOG_TAG, "Duplicate found with tempId" + tempId);
+        }
+
+        return tasks != null ? tasks.get(0) : null;
     }
 
     public List<Task> listAllTasks() {
