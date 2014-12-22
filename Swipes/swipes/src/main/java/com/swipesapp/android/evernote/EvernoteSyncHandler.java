@@ -18,8 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -31,10 +33,11 @@ public class EvernoteSyncHandler {
     protected final static int sTitleMaxLength = 255;
     protected final static long sFetchChangesTimeout = 30 * 1000; // 30 seconds
 
-    protected List<Note> mChangedNotes;
+    protected Set<Note> mChangedNotes;
     protected Date mLastUpdated;
     protected WeakReference<Context> mContext;
     protected List<Note> mKnownNotes;
+    protected boolean mIsSyncing;
 
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
@@ -42,10 +45,21 @@ public class EvernoteSyncHandler {
 
     protected EvernoteSyncHandler() {
         // Setup sync handler
-        mChangedNotes = new ArrayList<Note>();
+        mChangedNotes = new LinkedHashSet<Note>();
     }
 
     public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback)  {
+        if (mIsSyncing) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        // ensure authentication
+        if (!EvernoteIntegration.getInstance().isAuthenticated()) {
+            callback.onException(new Exception("Evernote not authenticated"));
+        }
+
+        mIsSyncing = true;
         mKnownNotes = null;
         mChangedNotes.clear();
         mContext = new WeakReference<Context>(context);
@@ -58,11 +72,6 @@ public class EvernoteSyncHandler {
             }
         }
 
-        // ensure authentication
-        if (!EvernoteIntegration.getInstance().isAuthenticated()) {
-            callback.onException(new Exception("Evernote not authenticated"));
-        }
-
         // TODO work with needToClearCache
         boolean hasLocalChanges = checkForLocalChanges();
         if (!hasLocalChanges) {
@@ -70,6 +79,8 @@ public class EvernoteSyncHandler {
             if ((null != mLastUpdated) && (new Date().getTime() - mLastUpdated.getTime() < sFetchChangesTimeout)) {
                 // checking too soon
                 callback.onSuccess(null);
+                mIsSyncing = false;
+                return;
             }
         }
 
@@ -86,7 +97,8 @@ public class EvernoteSyncHandler {
         boolean result = false;
         List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
         for (GsonTask todoWithEvernote : objectsWithEvernote) {
-            if (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+            if (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null &&
+                    todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
                 result = true;
                 break;
             }
@@ -175,6 +187,7 @@ public class EvernoteSyncHandler {
             public void onException(Exception e) {
                 Log.e(sTag, "findUpdatedNotesWithTag exception", e);
                 callback.onException(e);
+                mIsSyncing = false;
             }
         });
     }
@@ -192,9 +205,9 @@ public class EvernoteSyncHandler {
     }
 
     protected void fetchEvernoteChanges(final OnEvernoteCallback<Void> callback) {
-        final String query = (null != mLastUpdated) ? "updated:" + getEvernoteFormattedDateString() : "";
+        final String query = (null != mLastUpdated) ? "updated:" + getEvernoteFormattedDateString() : null;
 
-        EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
+        EvernoteIntegration.getInstance().findNotes(query, new OnEvernoteCallback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> data) {
                 if (null == mKnownNotes) {
@@ -211,6 +224,7 @@ public class EvernoteSyncHandler {
             public void onException(Exception e) {
                 Log.e(sTag, "fetchEvernoteChanges exception", e);
                 callback.onException(e);
+                mIsSyncing = false;
             }
         });
     }
@@ -295,7 +309,7 @@ public class EvernoteSyncHandler {
 
     protected void findAndHandleMatches(final GsonTask parentToDo, final EvernoteToDoProcessor processor) {
         final TasksService tasksService = TasksService.getInstance(mContext.get());
-        List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(parentToDo.getObjectId()));
+        List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(parentToDo.getTempId()));
         List<EvernoteToDo> evernoteToDos = new ArrayList<EvernoteToDo>(processor.getToDos());
 
         // Creating helper arrays for determining which ones has already been matched
@@ -350,33 +364,34 @@ public class EvernoteSyncHandler {
                     bestScore = match;
                     bestMatch = subtask;
                 }
-                boolean isNew = false;
-                if (bestScore >= 120) // TODO check score (might be wrong for java implementation)
-                    matchingSubtask = bestMatch;
-
-                if (null == matchingSubtask) {
-                    Date currentDate = new Date();
-                    String tempId = UUID.randomUUID().toString();
-                    matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getObjectId(), currentDate, currentDate, false,
-                            evernoteToDo.getTitle(), null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
-                            EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
-                    tasksService.saveTask(matchingSubtask, true);
-                    updated = true;
-                    isNew = true;
-                }
-                else if (null == matchingSubtask.getOrigin()) {
-                    // subtask exists but not marked as evernote yet
-                    matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
-                    matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
-                    tasksService.saveTask(matchingSubtask, true);
-                }
-
-                subtasksLeftToBeFound.remove(matchingSubtask);
-                evernoteToDosLeftToBeFound.remove(evernoteToDo);
-
-                if (handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, tasksService))
-                    updated = true;
             }
+
+            boolean isNew = false;
+            if (bestScore >= 120) // TODO check score (might be wrong for java implementation)
+                matchingSubtask = bestMatch;
+
+            if (null == matchingSubtask) {
+                Date currentDate = new Date();
+                String tempId = UUID.randomUUID().toString();
+                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
+                        evernoteToDo.getTitle(), null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
+                        EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
+                tasksService.saveTask(matchingSubtask, true);
+                updated = true;
+                isNew = true;
+            }
+            else if (null == matchingSubtask.getOrigin()) {
+                // subtask exists but not marked as evernote yet
+                matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
+                matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
+                tasksService.saveTask(matchingSubtask, true);
+            }
+
+            subtasksLeftToBeFound.remove(matchingSubtask);
+            evernoteToDosLeftToBeFound.remove(evernoteToDo);
+
+            if (handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, tasksService))
+                updated = true;
 
             subtasks.clear();
             subtasks.addAll(subtasksLeftToBeFound);
@@ -389,7 +404,7 @@ public class EvernoteSyncHandler {
         }
 
         // add newly added tasks to evernote
-        subtasks = filterSubtasksWithoutOrigin(tasksService.loadSubtasksForTask(parentToDo.getObjectId()));
+        subtasks = filterSubtasksWithoutOrigin(tasksService.loadSubtasksForTask(parentToDo.getTempId()));
         for (GsonTask subtask : subtasks) {
             if (processor.addToDo(subtask.getTitle())) {
                 subtask.setOriginIdentifier(subtask.getTitle());
@@ -420,11 +435,13 @@ public class EvernoteSyncHandler {
         if (returnCount == targetCount) {
             if (null != ex) {
                 callback.onException(ex);
+                mIsSyncing = false;
                 return;
             }
             setUpdatedAt(date);
             mChangedNotes.clear();
             callback.onSuccess(null);
+            mIsSyncing = false;
 
             /* TODO ?
             self.block(SyncStatusSuccess, @{@"updated": [self._updatedTasks copy]}, nil);
@@ -444,7 +461,7 @@ public class EvernoteSyncHandler {
         for (final GsonTask todoWithEvernote : objectsWithEvernote) {
             GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
 
-            final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
+            final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
             final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
             if (!hasLocalChanges && !hasChangesFromEvernote) {
                 finalizeSync(date, returnCount, targetCount, runningError[0], callback);
@@ -491,6 +508,7 @@ public class EvernoteSyncHandler {
         
         if (!syncedAnything) {
             callback.onSuccess(null);
+            mIsSyncing = false;
         }
     }
 }

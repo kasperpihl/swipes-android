@@ -17,6 +17,9 @@ import com.swipesapp.android.db.TagSync;
 import com.swipesapp.android.db.TaskSync;
 import com.swipesapp.android.db.dao.ExtTagSyncDao;
 import com.swipesapp.android.db.dao.ExtTaskSyncDao;
+import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteSyncHandler;
+import com.swipesapp.android.evernote.OnEvernoteCallback;
 import com.swipesapp.android.sync.gson.GsonObjects;
 import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -157,6 +160,20 @@ public class SyncService {
                             performSync(changesOnly, true);
                         }
                     });
+        }
+
+        if (EvernoteIntegration.getInstance().isAuthenticated()) {
+            EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
+                @Override
+                public void onSuccess(Void data) {
+                    Log.i(LOG_TAG, "Evernote synchronized!");
+                }
+
+                @Override
+                public void onException(Exception ex) {
+                    Log.e(LOG_TAG, "Evernote sync error!", ex);
+                }
+            });
         }
     }
 

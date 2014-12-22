@@ -182,8 +182,10 @@ public class EvernoteIntegration {
     }
 
     public void downloadNote(String noteRefString, final OnEvernoteCallback<Note>callback) {
+        final Note note = EvernoteIntegration.noteFromJson(noteRefString);
         try {
-            mEvernoteSession.getClientFactory().createNoteStoreClient().getNote(noteRefString, true, false, false, false, new OnClientCallback<Note>() {
+            // TODO get note store too!
+            mEvernoteSession.getClientFactory().createNoteStoreClient().getNote(note.getGuid(), true, false, false, false, new OnClientCallback<Note>() {
                 @Override
                 public void onSuccess(Note data) {
                     callback.onSuccess(data);

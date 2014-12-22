@@ -235,8 +235,8 @@ public class SettingsActivity extends AccentActivity {
         }
 
         private void syncDebug() {
-            Preference preferenceLogout = findPreference("sync");
-            preferenceLogout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            Preference preferenceSync = findPreference("sync");
+            preferenceSync.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     // Force sync for debug.
                     SyncService.getInstance(getActivity()).performSync(false);
@@ -245,7 +245,7 @@ public class SettingsActivity extends AccentActivity {
             });
 
             // For debugging sync, comment the line below.
-            getPreferenceScreen().removePreference(preferenceLogout);
+//            getPreferenceScreen().removePreference(preferenceSync);
         }
 
     }
