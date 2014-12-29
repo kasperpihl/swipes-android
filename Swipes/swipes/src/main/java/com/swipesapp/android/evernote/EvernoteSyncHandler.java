@@ -120,6 +120,7 @@ public class EvernoteSyncHandler {
 
             Date currentDate = new Date();
             String tempId = UUID.randomUUID().toString();
+            Log.i(sTag, "Creating task with UUID: " + tempId);
             GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
                     title, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
                     null, null, null, Arrays.asList(attachment), 0);
@@ -127,10 +128,10 @@ public class EvernoteSyncHandler {
         }
     }
 
-    protected String getEvernoteFormattedDateString() {
+    protected String getEvernoteFormattedDateString(Date since) {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'", Locale.US);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(new Date());
+        return dateFormat.format(since);
     }
 
     protected List<Note> extractKnownNotes()  {
@@ -163,7 +164,7 @@ public class EvernoteSyncHandler {
         final StringBuilder query = new StringBuilder("tag:" + tag);
         if (null != mLastUpdated) {
             query.append(" updated:");
-            query.append(getEvernoteFormattedDateString());
+            query.append(getEvernoteFormattedDateString(mLastUpdated));
         }
 
         EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
@@ -205,7 +206,7 @@ public class EvernoteSyncHandler {
     }
 
     protected void fetchEvernoteChanges(final OnEvernoteCallback<Void> callback) {
-        final String query = (null != mLastUpdated) ? "updated:" + getEvernoteFormattedDateString() : null;
+        final String query = (null != mLastUpdated) ? "updated:" + getEvernoteFormattedDateString(mLastUpdated) : null;
 
         EvernoteIntegration.getInstance().findNotes(query, new OnEvernoteCallback<List<Note>>() {
             @Override
@@ -242,34 +243,37 @@ public class EvernoteSyncHandler {
         boolean subtaskIsCompleted = subtask.getLocalCompletionDate() != null;
 
         // difference in completion
-        if (subtaskIsCompleted) {
-            // If subtask was completed in Swipes after last sync override evernote
-            if (null != mLastUpdated && mLastUpdated.before(subtask.getLocalCompletionDate())) {
-                Log.i(sTag, "completing evernote");
-                processor.updateToDo(evernoteToDo, subtaskIsCompleted);
+        if (subtaskIsCompleted != evernoteToDo.isChecked()) {
+            // difference in completion
+            if (subtaskIsCompleted) {
+                // If subtask was completed in Swipes after last sync override evernote
+                if (null != mLastUpdated && mLastUpdated.before(subtask.getLocalCompletionDate())) {
+                    Log.i(sTag, "completing evernote");
+                    processor.updateToDo(evernoteToDo, subtaskIsCompleted);
+                }
+                // If not - uncomplete in Swipes
+                else {
+                    Log.i(sTag, "uncompleting subtask");
+                    subtask.setCompletionDate(null);
+                    tasksService.saveTask(subtask, true);
+                    updated = true;
+                }
             }
-            // If not - uncomplete in Swipes
+            // If task is completed in Evernote, but not in Swipes
             else {
-                Log.i(sTag, "uncompleting subtask");
-                subtask.setCompletionDate(null);
-                tasksService.saveTask(subtask, true);
-                updated = true;
-            }
-        }
-        // If task is completed in Evernote, but not in Swipes
-        else {
-            // If subtask is updated later than last sync override Evernote
-            // There could be an error margin here, but I don't see a better solution at the moment
-            if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getLocalUpdatedAt())) {
-                Log.i(sTag, "uncompleting evernote");
-                processor.updateToDo(evernoteToDo, false);
-            }
-            // If not, override in Swipes
-            else{
-                Log.i(sTag, "completing subtask");
-                subtask.setLocalCompletionDate(new Date());
-                tasksService.saveTask(subtask, true);
-                updated = true;
+                // If subtask is updated later than last sync override Evernote
+                // There could be an error margin here, but I don't see a better solution at the moment
+                if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getLocalUpdatedAt())) {
+                    Log.i(sTag, "uncompleting evernote");
+                    processor.updateToDo(evernoteToDo, false);
+                }
+                // If not, override in Swipes
+                else {
+                    Log.i(sTag, "completing subtask");
+                    subtask.setLocalCompletionDate(new Date());
+                    tasksService.saveTask(subtask, true);
+                    updated = true;
+                }
             }
         }
 
@@ -373,9 +377,10 @@ public class EvernoteSyncHandler {
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
                 String tempId = UUID.randomUUID().toString();
+                Log.i(sTag, "Creating subtask with UUID: " + tempId);
                 matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
-                        evernoteToDo.getTitle(), null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
-                        EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
+                        evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
+                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;

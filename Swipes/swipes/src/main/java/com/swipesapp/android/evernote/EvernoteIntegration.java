@@ -153,6 +153,7 @@ public class EvernoteIntegration {
     public void logoutInContext(Context ctx) {
         try {
             mEvernoteSession.logOut(ctx);
+            EvernoteSyncHandler.getInstance().setUpdatedAt(null);
         } catch (InvalidAuthenticationException e) {
             // TODO log exception
         }
