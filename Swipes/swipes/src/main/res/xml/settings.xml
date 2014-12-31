@@ -48,15 +48,14 @@
             android:targetPackage="com.swipesapp.android" />
     </PreferenceScreen>
 
+    <Preference
+        android:key="sync"
+        android:title="@string/settings_sync" />
+
     <PreferenceScreen android:title="@string/about">
         <intent
             android:targetClass="com.swipesapp.android.ui.activity.AboutActivity"
             android:targetPackage="com.swipesapp.android" />
     </PreferenceScreen>
-
-    <!-- Sync button used for debug only. -->
-    <Preference
-        android:key="sync"
-        android:title="Sync" />
 
 </PreferenceScreen>

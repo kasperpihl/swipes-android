@@ -16,7 +16,7 @@ public class GsonAttachment {
     @Expose
     private String title;
     @Expose
-    private Boolean sync;
+    private Integer sync;
 
     // Local properties.
     private Long id;
@@ -26,7 +26,7 @@ public class GsonAttachment {
         this.identifier = identifier;
         this.service = service;
         this.title = title;
-        this.sync = sync;
+        this.sync = sync ? 1 : 0;
     }
 
     public Long getId() {
@@ -58,11 +58,11 @@ public class GsonAttachment {
     }
 
     public Boolean getSync() {
-        return sync;
+        return sync == 1;
     }
 
     public void setSync(Boolean sync) {
-        this.sync = sync;
+        this.sync = sync ? 1 : 0;
     }
 
 }

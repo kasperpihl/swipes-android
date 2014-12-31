@@ -23,6 +23,10 @@ public class PreferenceUtils {
 
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
 
+    public static final String SYNC_LAST_CALL = "sync_last_call";
+
+    public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
+
     /**
      * Saves a boolean preference.
      *
@@ -129,6 +133,28 @@ public class PreferenceUtils {
     public static String getSyncLastUpdate(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(SYNC_LAST_UPDATE, null);
+    }
+
+    /**
+     * Reads sync last call.
+     *
+     * @param context Context instance.
+     * @return Last call to sync.
+     */
+    public static String getSyncLastCall(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(SYNC_LAST_CALL, null);
+    }
+
+    /**
+     * Check if Evernote sync is enabled.
+     *
+     * @param context Context instance.
+     * @return True if it's enabled in the app.
+     */
+    public static boolean isEvernoteSyncEnabled(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(EVERNOTE_SYNC_KEY, true);
     }
 
 }

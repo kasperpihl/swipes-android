@@ -387,7 +387,7 @@ public class TasksService {
     public void deleteAttachment(long id) {
         // Delete from database.
         Attachment attachment = mExtAttachmentDao.selectAttachment(id);
-        mExtAttachmentDao.getDao().delete(attachment);
+        if (attachment != null) mExtAttachmentDao.getDao().delete(attachment);
     }
 
     /**

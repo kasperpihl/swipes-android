@@ -21,6 +21,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
@@ -71,15 +72,29 @@ public class SettingsActivity extends AccentActivity {
                 }
             });
 
+            final Preference preferenceSync = findPreference("sync");
+            preferenceSync.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    // Force sync and refresh.
+                    SyncService.getInstance(getActivity()).performSync(true);
+                    refreshSyncDate(preferenceSync);
+                    return true;
+                }
+            });
+
             if (ParseUser.getCurrentUser() == null) {
                 // Hide logout preference.
                 getPreferenceScreen().removePreference(preferenceLogout);
+
+                // Hide manual sync button.
+                getPreferenceScreen().removePreference(preferenceSync);
             } else {
                 // Hide login preference.
                 getPreferenceScreen().removePreference(preferenceLogin);
-            }
 
-            syncDebug();
+                // Show last sync date.
+                refreshSyncDate(preferenceSync);
+            }
 
             // Location is not available yet, so hide the setting.
             Preference preferenceLocation = findPreference("settings_enable_location");
@@ -234,18 +249,13 @@ public class SettingsActivity extends AccentActivity {
             }
         }
 
-        private void syncDebug() {
-            Preference preferenceSync = findPreference("sync");
-            preferenceSync.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    // Force sync for debug.
-                    SyncService.getInstance(getActivity()).performSync(false);
-                    return true;
-                }
-            });
+        private void refreshSyncDate(Preference preferenceSync) {
+            String lastUpdate = PreferenceUtils.getSyncLastCall(getActivity());
 
-            // For debugging sync, comment the line below.
-//            getPreferenceScreen().removePreference(preferenceSync);
+            if (lastUpdate != null) {
+                String syncSummary = DateUtils.formatToRecent(DateUtils.dateFromSync(lastUpdate), getActivity());
+                preferenceSync.setSummary(getResources().getString(R.string.settings_sync_summary, syncSummary));
+            }
         }
 
     }

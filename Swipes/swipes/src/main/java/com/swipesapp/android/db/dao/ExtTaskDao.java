@@ -53,7 +53,7 @@ public class ExtTaskDao {
             Log.w(LOG_TAG, "Duplicate found with tempId" + tempId);
         }
 
-        return tasks != null ? tasks.get(0) : null;
+        return tasks != null && !tasks.isEmpty() ? tasks.get(0) : null;
     }
 
     public List<Task> listAllTasks() {

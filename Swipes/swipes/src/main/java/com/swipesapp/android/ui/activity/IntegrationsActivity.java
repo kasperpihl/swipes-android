@@ -1,11 +1,13 @@
 package com.swipesapp.android.ui.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
+import com.evernote.client.android.EvernoteSession;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
@@ -24,6 +26,18 @@ public class IntegrationsActivity extends AccentActivity {
                 new IntegrationsFragment()).commit();
 
         getActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EvernoteSession.REQUEST_CODE_OAUTH:
+                if (resultCode == Activity.RESULT_OK) {
+                    // Refresh UI after Evernote login.
+                    recreate();
+                }
+                break;
+        }
     }
 
     public static class IntegrationsFragment extends PreferenceFragment {
@@ -104,6 +118,12 @@ public class IntegrationsActivity extends AccentActivity {
                 getPreferenceScreen().removePreference(evernoteSyncBusiness);
                 getPreferenceScreen().removePreference(evernoteOpenImporter);
             }
+
+            // TODO: Remove this in the future. These settings are only temporarily disabled.
+            getPreferenceScreen().removePreference(evernoteSyncPersonal);
+            getPreferenceScreen().removePreference(evernoteSyncBusiness);
+            getPreferenceScreen().removePreference(evernoteOpenImporter);
         }
+
     }
 }

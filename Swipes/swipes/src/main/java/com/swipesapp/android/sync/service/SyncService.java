@@ -30,6 +30,7 @@ import com.swipesapp.android.values.Actions;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -108,6 +109,10 @@ public class SyncService {
                 // Start thread with low priority.
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
+                // Save date of last sync call.
+                String lastSync = DateUtils.dateToSync(new Date());
+                PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_CALL, lastSync, mContext.get());
+
                 // Forward call to internal sync method.
                 performSync(changesOnly, false);
             }
@@ -162,7 +167,8 @@ public class SyncService {
                     });
         }
 
-        if (EvernoteIntegration.getInstance().isAuthenticated()) {
+        // Start Evernote sync.
+        if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
             EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
@@ -279,7 +285,9 @@ public class SyncService {
         }).start();
 
         // Save last update time.
-        PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
+        if (response.getUpdateTime() != null) {
+            PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
+        }
     }
 
     public void saveTaskChangesForSync(GsonTask task) {
@@ -392,7 +400,7 @@ public class SyncService {
             new Gson().fromJson(response, GsonSync.class);
             return !response.isEmpty();
         } catch (Exception e) {
-            Log.w(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" + e.getMessage());
+            Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" + e.getMessage());
             return false;
         }
     }

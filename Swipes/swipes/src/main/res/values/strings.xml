@@ -65,6 +65,8 @@
     <string name="settings_login">Login</string>
     <string name="settings_logout">Logout</string>
     <string name="settings_integrations">Integrations</string>
+    <string name="settings_sync">Synchronize</string>
+    <string name="settings_sync_summary">Last sync: %s</string>
     <string name="switch_on">YES</string>
     <string name="switch_off">NO</string>
 

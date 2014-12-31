@@ -48,7 +48,7 @@ public class EvernoteSyncHandler {
         mChangedNotes = new LinkedHashSet<Note>();
     }
 
-    public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback)  {
+    public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback) {
         if (mIsSyncing) {
             callback.onSuccess(null);
             return;
@@ -87,8 +87,7 @@ public class EvernoteSyncHandler {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("evernote_auto_import", false)) {
             findUpdatedNotesWithTag(EvernoteIntegration.SWIPES_TAG_NAME, callback);
-        }
-        else {
+        } else {
             syncEvernote(callback);
         }
     }
@@ -134,7 +133,7 @@ public class EvernoteSyncHandler {
         return dateFormat.format(since);
     }
 
-    protected List<Note> extractKnownNotes()  {
+    protected List<Note> extractKnownNotes() {
         List<String> evernoteIdentifiers = TasksService.getInstance(mContext.get()).loadIdentifiersWithEvernote(true);
         List<Note> knownNotes = new ArrayList<Note>(evernoteIdentifiers.size());
         for (String s : evernoteIdentifiers) {
@@ -176,7 +175,7 @@ public class EvernoteSyncHandler {
                 ArrayList<Note> newNotes = new ArrayList<Note>();
                 for (Note note : data) {
                     if (isNoteNew(note, mKnownNotes)) {
-                       newNotes.add(note);
+                        newNotes.add(note);
                     }
                     mChangedNotes.add(note);
                 }
@@ -198,8 +197,7 @@ public class EvernoteSyncHandler {
         SharedPreferences.Editor editor = mContext.get().getSharedPreferences(sPrefsName, Context.MODE_PRIVATE).edit();
         if (null != date) {
             editor.putLong(sKeyLastUpdated, date.getTime());
-        }
-        else {
+        } else {
             editor.remove(sKeyLastUpdated);
         }
         editor.commit();
@@ -384,8 +382,7 @@ public class EvernoteSyncHandler {
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
-            }
-            else if (null == matchingSubtask.getOrigin()) {
+            } else if (null == matchingSubtask.getOrigin()) {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
                 matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
@@ -428,7 +425,7 @@ public class EvernoteSyncHandler {
     protected boolean hasChangesFromEvernoteId(String enid) {
         Note searchNote = EvernoteIntegration.noteFromJson(enid);
         for (Note note : mChangedNotes) {
-            if (note.getGuid().equalsIgnoreCase(searchNote.getGuid()) && note.getNotebookGuid().equalsIgnoreCase(searchNote.getNotebookGuid())) {
+            if (searchNote != null && note.getGuid().equalsIgnoreCase(searchNote.getGuid()) && note.getNotebookGuid().equalsIgnoreCase(searchNote.getNotebookGuid())) {
                 return true;
             }
         }
@@ -454,7 +451,7 @@ public class EvernoteSyncHandler {
         }
     }
 
-    protected void syncEvernote(final OnEvernoteCallback<Void> callback)  {
+    protected void syncEvernote(final OnEvernoteCallback<Void> callback) {
         List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
 
         final Date date = new Date();
@@ -466,51 +463,52 @@ public class EvernoteSyncHandler {
         for (final GsonTask todoWithEvernote : objectsWithEvernote) {
             GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
 
-            final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
-            final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
-            if (!hasLocalChanges && !hasChangesFromEvernote) {
-                finalizeSync(date, returnCount, targetCount, runningError[0], callback);
-                continue;
+            if (attachment != null) {
+                final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
+                final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
+                if (!hasLocalChanges && !hasChangesFromEvernote) {
+                    finalizeSync(date, returnCount, targetCount, runningError[0], callback);
+                    continue;
+                }
+                syncedAnything = true;
+
+                EvernoteToDoProcessor.createInstance(attachment.getIdentifier(), new OnEvernoteCallback<EvernoteToDoProcessor>() {
+                    @Override
+                    public void onSuccess(final EvernoteToDoProcessor processor) {
+                        EvernoteSyncHandler.this.findAndHandleMatches(todoWithEvernote, processor);
+                        if (processor.getNeedUpdate()) {
+                            processor.saveToEvernote(new OnEvernoteCallback<Boolean>() {
+                                @Override
+                                public void onSuccess(Boolean data) {
+                                    finalizeSync(date, returnCount, targetCount, runningError[0], callback);
+                                }
+
+                                @Override
+                                public void onException(Exception ex) {
+                                    // TODO we can handle updated and deleted here at some point
+                                    if (null == runningError[0])
+                                        runningError[0] = ex;
+                                    finalizeSync(date, returnCount, targetCount, ex, callback);
+                                    Log.e(sTag, ex.getMessage(), ex);
+                                }
+                            });
+                        } else {
+                            finalizeSync(date, returnCount, targetCount, runningError[0], callback);
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception ex) {
+                        // TODO we can handle updated and deleted here at some point
+                        if (null == runningError[0])
+                            runningError[0] = ex;
+                        finalizeSync(date, returnCount, targetCount, ex, callback);
+                        Log.e(sTag, ex.getMessage(), ex);
+                    }
+                });
             }
-            syncedAnything = true;
-
-            EvernoteToDoProcessor.createInstance(attachment.getIdentifier(), new OnEvernoteCallback<EvernoteToDoProcessor>() {
-                @Override
-                public void onSuccess(final EvernoteToDoProcessor processor) {
-                    EvernoteSyncHandler.this.findAndHandleMatches(todoWithEvernote, processor);
-                    if (processor.getNeedUpdate()) {
-                        processor.saveToEvernote(new OnEvernoteCallback<Boolean>() {
-                            @Override
-                            public void onSuccess(Boolean data) {
-                                finalizeSync(date, returnCount, targetCount, runningError[0], callback);
-                            }
-
-                            @Override
-                            public void onException(Exception ex) {
-                                // TODO we can handle updated and deleted here at some point
-                                if (null == runningError[0])
-                                    runningError[0] = ex;
-                                finalizeSync(date, returnCount, targetCount, ex, callback);
-                                Log.e(sTag, ex.getMessage(), ex);
-                            }
-                        });
-                    }
-                    else {
-                        finalizeSync(date, returnCount, targetCount, runningError[0], callback);
-                    }
-                }
-
-                @Override
-                public void onException(Exception ex) {
-                    // TODO we can handle updated and deleted here at some point
-                    if (null == runningError[0])
-                        runningError[0] = ex;
-                    finalizeSync(date, returnCount, targetCount, ex, callback);
-                    Log.e(sTag, ex.getMessage(), ex);
-                }
-            });
         }
-        
+
         if (!syncedAnything) {
             callback.onSuccess(null);
             mIsSyncing = false;
