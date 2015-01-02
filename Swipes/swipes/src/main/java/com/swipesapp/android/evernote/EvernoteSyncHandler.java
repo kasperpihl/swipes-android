@@ -11,6 +11,7 @@ import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.LevenshteinDistance;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
 import java.lang.ref.WeakReference;
@@ -26,12 +27,14 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 public class EvernoteSyncHandler {
-    protected final static String sTag = "EvernoteSyncHandler";
-    protected final static String sPrefsName = "EvernoteSyncHandler";
-    protected final static String sKeyLastUpdated = "lastUpdated";
-    protected final static EvernoteSyncHandler sInstance = new EvernoteSyncHandler();
-    protected final static int sTitleMaxLength = 255;
-    protected final static long sFetchChangesTimeout = 30 * 1000; // 30 seconds
+
+    protected final static String TAG = "EvernoteSyncHandler";
+    protected final static String PREFS_NAME = "EvernoteSyncHandler";
+    protected final static String KEY_LAST_UPDATED = "lastUpdated";
+    protected final static int TITLE_MAX_LENGTH = 255;
+    protected final static long FETCH_CHANGES_TIMEOUT = 30 * 1000; // 30 seconds
+
+    protected static EvernoteSyncHandler sInstance = new EvernoteSyncHandler();
 
     protected Set<Note> mChangedNotes;
     protected Date mLastUpdated;
@@ -65,8 +68,8 @@ public class EvernoteSyncHandler {
         mContext = new WeakReference<Context>(context);
         // retrieve last update time
         if (null == mLastUpdated) {
-            SharedPreferences prefs = context.getSharedPreferences(sPrefsName, Context.MODE_PRIVATE);
-            long dateLong = prefs.getLong(sKeyLastUpdated, 0);
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            long dateLong = prefs.getLong(KEY_LAST_UPDATED, 0);
             if (0 < dateLong) {
                 mLastUpdated = new Date(dateLong);
             }
@@ -76,7 +79,7 @@ public class EvernoteSyncHandler {
         boolean hasLocalChanges = checkForLocalChanges();
         if (!hasLocalChanges) {
             // no local changes
-            if ((null != mLastUpdated) && (new Date().getTime() - mLastUpdated.getTime() < sFetchChangesTimeout)) {
+            if ((null != mLastUpdated) && (new Date().getTime() - mLastUpdated.getTime() < FETCH_CHANGES_TIMEOUT)) {
                 // checking too soon
                 callback.onSuccess(null);
                 mIsSyncing = false;
@@ -111,15 +114,15 @@ public class EvernoteSyncHandler {
             if (null == title) {
                 title = mContext.get().getString(R.string.evernote_untitled_note);
             }
-            if (sTitleMaxLength < title.length()) {
-                title = title.substring(0, sTitleMaxLength);
+            if (TITLE_MAX_LENGTH < title.length()) {
+                title = title.substring(0, TITLE_MAX_LENGTH);
             }
             // add to DB
             GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), EvernoteIntegration.EVERNOTE_SERVICE, title, true);
 
             Date currentDate = new Date();
             String tempId = UUID.randomUUID().toString();
-            Log.i(sTag, "Creating task with UUID: " + tempId);
+            Log.i(TAG, "Creating task with UUID: " + tempId);
             GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
                     title, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
                     null, null, null, Arrays.asList(attachment), 0);
@@ -185,7 +188,7 @@ public class EvernoteSyncHandler {
 
             @Override
             public void onException(Exception e) {
-                Log.e(sTag, "findUpdatedNotesWithTag exception", e);
+                Log.e(TAG, "findUpdatedNotesWithTag exception", e);
                 callback.onException(e);
                 mIsSyncing = false;
             }
@@ -194,13 +197,11 @@ public class EvernoteSyncHandler {
 
     protected void setUpdatedAt(Date date) {
         mLastUpdated = date;
-        SharedPreferences.Editor editor = mContext.get().getSharedPreferences(sPrefsName, Context.MODE_PRIVATE).edit();
         if (null != date) {
-            editor.putLong(sKeyLastUpdated, date.getTime());
+            PreferenceUtils.saveLongPreference(KEY_LAST_UPDATED, date.getTime(), mContext.get());
         } else {
-            editor.remove(sKeyLastUpdated);
+            PreferenceUtils.removePreference(KEY_LAST_UPDATED, mContext.get());
         }
-        editor.commit();
     }
 
     protected void fetchEvernoteChanges(final OnEvernoteCallback<Void> callback) {
@@ -221,7 +222,7 @@ public class EvernoteSyncHandler {
 
             @Override
             public void onException(Exception e) {
-                Log.e(sTag, "fetchEvernoteChanges exception", e);
+                Log.e(TAG, "fetchEvernoteChanges exception", e);
                 callback.onException(e);
                 mIsSyncing = false;
             }
@@ -233,7 +234,7 @@ public class EvernoteSyncHandler {
 
         // If subtask is deleted from Swipes - mark completed in Evernote
         if (subtask.isDeleted() && !evernoteToDo.isChecked()) {
-            Log.i(sTag, "completing evernote - subtask was deleted");
+            Log.i(TAG, "completing evernote - subtask was deleted");
             processor.updateToDo(evernoteToDo, true);
             return false;
         }
@@ -246,12 +247,12 @@ public class EvernoteSyncHandler {
             if (subtaskIsCompleted) {
                 // If subtask was completed in Swipes after last sync override evernote
                 if (null != mLastUpdated && mLastUpdated.before(subtask.getLocalCompletionDate())) {
-                    Log.i(sTag, "completing evernote");
+                    Log.i(TAG, "completing evernote");
                     processor.updateToDo(evernoteToDo, subtaskIsCompleted);
                 }
                 // If not - uncomplete in Swipes
                 else {
-                    Log.i(sTag, "uncompleting subtask");
+                    Log.i(TAG, "uncompleting subtask");
                     subtask.setCompletionDate(null);
                     tasksService.saveTask(subtask, true);
                     updated = true;
@@ -262,12 +263,12 @@ public class EvernoteSyncHandler {
                 // If subtask is updated later than last sync override Evernote
                 // There could be an error margin here, but I don't see a better solution at the moment
                 if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getLocalUpdatedAt())) {
-                    Log.i(sTag, "uncompleting evernote");
+                    Log.i(TAG, "uncompleting evernote");
                     processor.updateToDo(evernoteToDo, false);
                 }
                 // If not, override in Swipes
                 else {
-                    Log.i(sTag, "completing subtask");
+                    Log.i(TAG, "completing subtask");
                     subtask.setLocalCompletionDate(new Date());
                     tasksService.saveTask(subtask, true);
                     updated = true;
@@ -278,7 +279,7 @@ public class EvernoteSyncHandler {
         // difference in name
         if (!subtask.getTitle().equals(subtask.getOriginIdentifier())) {
             if (processor.updateToDo(evernoteToDo, subtask.getTitle())) {
-                Log.i(sTag, "renamed evernote");
+                Log.i(TAG, "renamed evernote");
                 subtask.setOriginIdentifier(subtask.getTitle());
                 tasksService.saveTask(subtask, true);
                 updated = true;
@@ -375,7 +376,7 @@ public class EvernoteSyncHandler {
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
                 String tempId = UUID.randomUUID().toString();
-                Log.i(sTag, "Creating subtask with UUID: " + tempId);
+                Log.i(TAG, "Creating subtask with UUID: " + tempId);
                 matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
                         RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
@@ -489,7 +490,7 @@ public class EvernoteSyncHandler {
                                     if (null == runningError[0])
                                         runningError[0] = ex;
                                     finalizeSync(date, returnCount, targetCount, ex, callback);
-                                    Log.e(sTag, ex.getMessage(), ex);
+                                    Log.e(TAG, ex.getMessage(), ex);
                                 }
                             });
                         } else {
@@ -503,7 +504,7 @@ public class EvernoteSyncHandler {
                         if (null == runningError[0])
                             runningError[0] = ex;
                         finalizeSync(date, returnCount, targetCount, ex, callback);
-                        Log.e(sTag, ex.getMessage(), ex);
+                        Log.e(TAG, ex.getMessage(), ex);
                     }
                 });
             }

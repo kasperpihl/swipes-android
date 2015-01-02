@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
+import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
@@ -139,6 +140,10 @@ public class EditTaskActivity extends AccentActivity {
 
     private static final String TAG_SEPARATOR = ", ";
 
+    private static final int ACTION_EVERNOTE = 0;
+    private static final int ACTION_SHARE = 1;
+    private static final int ACTION_DELETE = 2;
+
     private WeakReference<Context> mContext;
 
     private TasksService mTasksService;
@@ -158,7 +163,8 @@ public class EditTaskActivity extends AccentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        // TODO: Revert back to default themes when the action bar has correct icons.
+        setTheme(ThemeUtils.isLightTheme(this) ? R.style.Edit_Task_Theme_Light : R.style.Edit_Task_Theme_Dark);
         setContentView(R.layout.activity_edit_task);
         ButterKnife.inject(this);
 
@@ -181,10 +187,22 @@ public class EditTaskActivity extends AccentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO: Set icons for current theme.
-        menu.add(Menu.NONE, 0, Menu.NONE, getResources().getString(R.string.edit_task_share_action)).setIcon(android.R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, 1, Menu.NONE, getResources().getString(R.string.edit_task_delete_action)).setIcon(android.R.drawable.ic_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, 2, Menu.NONE, getResources().getString(R.string.edit_task_evernote_action)).setIcon(R.drawable.evernote_logo).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        // Load icons for current theme. TODO: Change to correct icons with transparency.
+        int evernoteIcon = ThemeUtils.isLightTheme(this) ? R.drawable.evernote_light : R.drawable.evernote_dark;
+        int shareIcon = ThemeUtils.isLightTheme(this) ? R.drawable.share_light : R.drawable.share_dark;
+        int deleteIcon = ThemeUtils.isLightTheme(this) ? R.drawable.delete_light : R.drawable.delete_dark;
+
+        // Show Evernote action only when logged in.
+        if (EvernoteIntegration.getInstance().isAuthenticated()) {
+            menu.add(Menu.NONE, ACTION_EVERNOTE, Menu.NONE, getResources().getString(R.string.edit_task_evernote_action))
+                    .setIcon(evernoteIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+
+        // Show standard actions.
+        menu.add(Menu.NONE, ACTION_SHARE, Menu.NONE, getResources().getString(R.string.edit_task_share_action))
+                .setIcon(shareIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, ACTION_DELETE, Menu.NONE, getResources().getString(R.string.edit_task_delete_action))
+                .setIcon(deleteIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -192,14 +210,14 @@ public class EditTaskActivity extends AccentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
+            case ACTION_EVERNOTE:
+                attachEvernote();
+                break;
+            case ACTION_SHARE:
                 shareTask();
                 break;
-            case 1:
+            case ACTION_DELETE:
                 deleteTask();
-                break;
-            case 2:
-                attachEvernote();
                 break;
         }
         return super.onOptionsItemSelected(item);

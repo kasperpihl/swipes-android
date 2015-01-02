@@ -52,6 +52,29 @@ public class PreferenceUtils {
     }
 
     /**
+     * Saves a long preference.
+     *
+     * @param preference Preference to save.
+     * @param value      Value to apply.
+     * @param context    Context instance.
+     */
+    public static void saveLongPreference(String preference, Long value, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putLong(preference, value).apply();
+    }
+
+    /**
+     * Removes a preference.
+     *
+     * @param preference Preference to remove.
+     * @param context    Context instance.
+     */
+    public static void removePreference(String preference, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().remove(preference).apply();
+    }
+
+    /**
      * Reads theme setting.
      *
      * @param context Context instance.

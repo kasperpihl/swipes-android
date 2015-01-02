@@ -5,8 +5,8 @@
     <item name="done_accent_color" type="color">#45d984</item>
     <item name="later_accent_color" type="color">#fc614b</item>
     <item name="focus_accent_color" type="color">#f4cb1c</item>
-    <item name="light_theme_background" type="color">#ffffff</item>
-    <item name="dark_theme_background" type="color">#24282e</item>
+    <item name="light_theme_background" type="color">#F8F8F9</item>
+    <item name="dark_theme_background" type="color">#1A1D22</item>
     <item name="neutral_background" type="color">#e3e3e3</item>
     <item name="light_theme_text" type="color">#000000</item>
     <item name="dark_theme_text" type="color">#ffffff</item>

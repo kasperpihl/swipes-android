@@ -38,6 +38,7 @@
                 style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_toRightOf="@id/button_edit_task_priority"
                 android:background="@color/transparent"
                 android:focusableInTouchMode="true"
