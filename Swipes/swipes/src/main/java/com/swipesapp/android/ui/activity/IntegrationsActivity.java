@@ -25,6 +25,8 @@ public class IntegrationsActivity extends AccentActivity {
         getFragmentManager().beginTransaction().replace(R.id.integrations_content,
                 new IntegrationsFragment()).commit();
 
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
         getActionBar().setDisplayShowTitleEnabled(false);
     }
 

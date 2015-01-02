@@ -273,6 +273,7 @@ public class TasksListAdapter extends BaseAdapter {
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         holder.frontView.setVisibility(View.VISIBLE);
+        holder.backView.setVisibility(View.GONE);
         holder.containerView.setVisibility(View.VISIBLE);
 
         // Reset properties.

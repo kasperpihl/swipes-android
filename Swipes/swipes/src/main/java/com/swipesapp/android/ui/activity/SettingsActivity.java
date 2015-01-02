@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.FrameLayout;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
@@ -25,15 +26,23 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
+import butterknife.InjectView;
+
 public class SettingsActivity extends AccentActivity {
+
+    @InjectView(R.id.settings_content)
+    FrameLayout mContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_settings);
 
         getFragmentManager().beginTransaction().replace(R.id.settings_content,
                 new SettingsFragment()).commit();
+
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
@@ -41,7 +50,6 @@ public class SettingsActivity extends AccentActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getActivity().setTheme(ThemeUtils.getThemeResource(getActivity()));
 
             addPreferencesFromResource(R.xml.settings);
 

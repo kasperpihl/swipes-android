@@ -42,9 +42,10 @@ public class AboutActivity extends AccentActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.inject(this);
 
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
         getActionBar().setDisplayShowTitleEnabled(false);
 
-        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mBroughtBy.setTextColor(ThemeUtils.getTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getTextColor(this));
         mSignatureLine.setBackgroundColor(ThemeUtils.getDividerColor(this));

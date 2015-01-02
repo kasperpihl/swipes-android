@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -19,15 +18,17 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,23 +100,11 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @InjectView(R.id.button_edit_task)
     SwipesButton mButtonEditTask;
 
-    @InjectView(R.id.button_assign_tags)
-    SwipesButton mButtonAssignTags;
-
-    @InjectView(R.id.button_delete_tasks)
-    SwipesButton mButtonDeleteTasks;
-
-    @InjectView(R.id.button_share_tasks)
-    SwipesButton mButtonShareTasks;
-
     @InjectView(R.id.add_task_tag_container)
     FlowLayout mAddTaskTagContainer;
 
     @InjectView(R.id.action_buttons_container)
-    FrameLayout mActionButtonsContainer;
-
-    @InjectView(R.id.action_buttons_gradient)
-    FrameLayout mActionButtonsGradient;
+    LinearLayout mActionButtonsContainer;
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
 
@@ -129,16 +118,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private static Typeface sTypeface;
 
-    private TransitionDrawable mBackgroundTransition;
-
-    private boolean mIsEmptyBackground;
-
     private List<GsonTag> mSelectedTags;
 
     // Used by animator to store tags container position.
     private float mTagsTranslationY;
 
     public static BitmapDrawable sBlurDrawable;
+
+    private int mCurrentSectionColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +135,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         ButterKnife.inject(this);
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
+
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
 
         createSnoozeAlarm();
 
@@ -187,15 +176,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
 
-        // Setup background.
-        mActivityMainLayout.setBackgroundResource(ThemeUtils.getTransitionBackground(this));
-        mBackgroundTransition = (TransitionDrawable) mActivityMainLayout.getBackground();
-
-        // Set button selectors.
-        mButtonAddTask.setSelector(R.string.round_add, R.string.round_add_full);
-
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
+
+        mButtonAddTask.setTextColor(ThemeUtils.getSectionColor(Sections.FOCUS, this));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
     }
@@ -225,19 +209,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         public void onPageSelected(int position) {
             if (position != Sections.FOCUS.getSectionNumber()) {
                 clearEmptyBackground();
-                mIsEmptyBackground = false;
             }
 
             customizeTabColors(ThemeUtils.getTextColor(mContext.get()), ThemeUtils.getDividerColor(mContext.get()), position);
 
             if (position == Sections.SETTINGS.getSectionNumber()) {
                 mButtonAddTask.setVisibility(View.GONE);
-                hideGradient();
             } else {
                 mButtonAddTask.setVisibility(View.VISIBLE);
-                showGradient();
-
-                if (position != Sections.DONE.getSectionNumber()) collapseGradient();
             }
 
             sCurrentSection = Sections.getSectionByNumber(position);
@@ -246,6 +225,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             mTasksService.sendBroadcast(Actions.TAB_CHANGED);
 
             hideEditBar();
+
+            mCurrentSectionColor = ThemeUtils.getSectionColor(sCurrentSection, mContext.get());
         }
     };
 
@@ -289,57 +270,53 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    public void showGradient() {
-        mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-        mActionButtonsGradient.setBackgroundDrawable(ThemeUtils.getGradientDrawable(this));
-    }
-
-    public void hideGradient() {
-        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
-        mActionButtonsGradient.setBackgroundColor(Color.TRANSPARENT);
-    }
-
-    public void expandGradient() {
-        // Increase container height and make it transparent, so the gradient is on top of the done buttons.
-        setViewHeight(mActionButtonsContainer, R.dimen.button_container_expanded_height);
-        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
-    }
-
-    public void collapseGradient() {
-        // Restore original container height and background.
-        setViewHeight(mActionButtonsContainer, R.dimen.button_container_height);
-        mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-    }
-
     private void clearEmptyBackground() {
-        // Reset background and divider color.
-        mBackgroundTransition.resetTransition();
-
-        // Load text color.
-        int textColor = ThemeUtils.getTextColor(this);
-
-        // Reset tab colors.
-        customizeTabColors(textColor, ThemeUtils.getDividerColor(this), sCurrentSection.getSectionNumber());
-
-        // Reset buttons and text colors.
-        mButtonAddTask.setTextColor(textColor);
-
-        showGradient();
+        // Do nothing.
     }
 
     private void setEmptyBackground() {
-        // Change background.
-        mBackgroundTransition.startTransition(Constants.ANIMATION_DURATION);
+        // TODO: Animate empty background.
 
-        // Change tab colors, otherwise they look misplaced against the image background.
-        customizeTabColors(Color.WHITE, getResources().getColor(R.color.empty_divider), sCurrentSection.getSectionNumber());
+        mActivityMainLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                switch (sCurrentSection) {
+                    case LATER:
+                        // Customize Later empty View.
+                        RelativeLayout laterEmptyView = (RelativeLayout) mActivityMainLayout.findViewById(R.id.later_empty_view);
+                        laterEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+                        break;
+                    case FOCUS:
+                        // Customize Focus empty view.
+                        ScrollView focusEmptyView = (ScrollView) mActivityMainLayout.findViewById(R.id.focus_empty_view);
+                        focusEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
 
-        // Change buttons and text colors to improve visibility.
-        mButtonAddTask.setTextColor(Color.WHITE);
+                        TextView allDoneText = (TextView) mActivityMainLayout.findViewById(R.id.text_all_done);
+                        allDoneText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+
+                        TextView nextTaskText = (TextView) mActivityMainLayout.findViewById(R.id.text_next_task);
+                        nextTaskText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+
+                        TextView allDoneMessage = (TextView) mActivityMainLayout.findViewById(R.id.text_all_done_message);
+                        allDoneMessage.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+
+                        Button facebookShare = (Button) mActivityMainLayout.findViewById(R.id.button_facebook_share);
+                        facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
+                                R.drawable.facebook_rounded_button_light : R.drawable.facebook_rounded_button_dark);
+
+                        Button twitterShare = (Button) mActivityMainLayout.findViewById(R.id.button_twitter_share);
+                        twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
+                                R.drawable.twitter_rounded_button_light : R.drawable.twitter_rounded_button_dark);
+                        break;
+                    case DONE:
+                        // Customize Done empty view.
+                        RelativeLayout doneEmptyView = (RelativeLayout) mActivityMainLayout.findViewById(R.id.done_empty_view);
+                        doneEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+                        break;
+                }
+            }
+        });
 
         hideEditBar();
-
-        hideGradient();
     }
 
     /**
@@ -381,6 +358,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     public void hideEditBar() {
+        // Clear container color.
+        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
+
         // Animate views only when necessary.
         if (mEditTasksBar.isShown()) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -401,6 +381,9 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         @Override
         public void onAnimationEnd(Animation animation) {
             mButtonAddTask.setVisibility(View.GONE);
+
+            // Apply container color.
+            mActionButtonsContainer.setBackgroundColor(mCurrentSectionColor);
         }
 
         @Override
@@ -596,18 +579,16 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onEmpty(Sections section) {
-        if (section == sCurrentSection && section == Sections.FOCUS && !mIsEmptyBackground) {
+        if (section == sCurrentSection) {
             setEmptyBackground();
-            mIsEmptyBackground = true;
         }
     }
 
     // HACK: This is a workaround to change the background entirely.
     @Override
     public void onNotEmpty(Sections section) {
-        if (section == sCurrentSection && section == Sections.FOCUS && mIsEmptyBackground) {
+        if (section == sCurrentSection) {
             clearEmptyBackground();
-            mIsEmptyBackground = false;
         }
     }
 
@@ -645,8 +626,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mActionButtonsContainer.setVisibility(View.VISIBLE);
         mButtonAddTask.setVisibility(View.VISIBLE);
         mEditTasksBar.setVisibility(View.GONE);
-
-        showGradient();
     }
 
     private Animation.AnimationListener mHideButtonsListener = new Animation.AnimationListener() {
@@ -657,8 +636,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         @Override
         public void onAnimationEnd(Animation animation) {
             mActionButtonsContainer.setVisibility(View.GONE);
-
-            hideGradient();
         }
 
         @Override

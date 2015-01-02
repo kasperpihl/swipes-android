@@ -18,6 +18,8 @@ public class SnoozeSettingsActivity extends AccentActivity {
         getFragmentManager().beginTransaction().replace(R.id.snooze_settings_content,
                 new SnoozeSettingsFragment()).commit();
 
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
         getActionBar().setDisplayShowTitleEnabled(false);
     }
 

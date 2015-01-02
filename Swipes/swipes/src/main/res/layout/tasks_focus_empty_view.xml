@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/focus_empty_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/date_stamp_background"
+            android:id="@+id/all_done_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -23,14 +24,13 @@
             style="@android:style/TextAppearance.Holo.Large.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/date_stamp_background"
+            android:layout_below="@id/all_done_image"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:text="@string/all_done"
-            android:textColor="@android:color/white" />
+            android:text="@string/all_done" />
 
         <TextView
-            android:id="@+id/text_date_stamp_today"
+            android:id="@+id/text_next_task"
             style="@android:style/TextAppearance.Holo.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,41 +38,39 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
             android:text="@string/example_date"
-            android:textColor="@android:color/white"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/text_date_stamp_message"
+            android:id="@+id/text_all_done_message"
             style="@android:style/TextAppearance.Holo.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_date_stamp_today"
+            android:layout_below="@id/text_next_task"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
             android:gravity="center"
-            android:text="@string/all_done_message"
-            android:textColor="@android:color/white" />
+            android:text="@string/all_done_message" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_date_stamp_message"
+            android:layout_below="@id/text_all_done_message"
             android:layout_centerHorizontal="true">
 
             <Button
-                android:id="@+id/button_date_stamp_facebook"
+                android:id="@+id/button_facebook_share"
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
                 android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/facebook_rounded_button"
+                android:background="@drawable/facebook_rounded_button_dark"
                 android:onClick="shareOnFacebook" />
 
             <Button
-                android:id="@+id/button_date_stamp_twitter"
+                android:id="@+id/button_twitter_share"
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
                 android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/twitter_rounded_button"
+                android:background="@drawable/twitter_rounded_button_dark"
                 android:onClick="shareOnTwitter" />
 
         </LinearLayout>

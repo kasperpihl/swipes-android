@@ -27,6 +27,8 @@ public class EvernoteLearnActivity extends Activity {
         setContentView(R.layout.activity_evernote_learn);
         ButterKnife.inject(this);
 
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.evernote_gray_background));
+
         getActionBar().hide();
 
         mContext = new WeakReference<Context>(this);

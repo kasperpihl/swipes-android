@@ -77,6 +77,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private Sections mSection;
 
     /**
+     * Section color for this fragment.
+     */
+    private int mSectionColor;
+
+    /**
      * Customized list view to display tasks.
      */
     private DynamicListView mListView;
@@ -127,8 +132,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
-    @InjectView(R.id.footer_view)
-    LinearLayout mFooterView;
+    @InjectView(R.id.header_view)
+    LinearLayout mHeaderView;
 
     @InjectView(R.id.button_show_old)
     TransparentButton mButtonShowOld;
@@ -144,6 +149,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(R.id.tags_container)
     FlowLayout mTaskTagsContainer;
+
+    @InjectView(R.id.section_header)
+    LinearLayout mSectionHeader;
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
@@ -166,6 +174,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mSection = Sections.getSectionByNumber(sectionNumber);
 
+        mSectionColor = ThemeUtils.getSectionColor(mSection, getActivity());
+
         View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -173,15 +183,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         switch (mSection) {
             case LATER:
                 setupView(rootView, mTasksService.loadScheduledTasks(), R.layout.tasks_later_empty_view);
-                configureLaterListView(mAdapter);
+                configureLaterView(mAdapter);
                 break;
             case FOCUS:
                 setupView(rootView, mTasksService.loadFocusedTasks(), R.layout.tasks_focus_empty_view);
-                configureFocusListView(mAdapter);
+                configureFocusView(mAdapter);
                 break;
             case DONE:
                 setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
-                configureDoneListView(mAdapter);
+                configureDoneView(mAdapter);
                 customizeDoneButtons();
                 break;
         }
@@ -299,28 +309,26 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mCloseSearchButton.setOnClickListener(mSearchCloseListener);
         mCloseSearchButton.setSelector(R.string.round_close, R.string.round_close_full);
 
-        // Customize colors.
         mFiltersContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
     }
 
     private void customizeDoneButtons() {
-        int background = ThemeUtils.isLightTheme(getActivity()) ? R.drawable.transparent_button_selector_light : R.drawable.transparent_button_selector_dark;
-        int color = ThemeUtils.isLightTheme(getActivity()) ? R.color.button_text_color_selector_light : R.color.button_text_color_selector_dark;
+        mButtonShowOld.setBackgroundResource(R.drawable.transparent_button_selector_dark);
+        mButtonShowOld.setTextColor(getResources().getColorStateList(R.color.button_text_color_selector_dark));
 
-        mButtonShowOld.setBackgroundResource(background);
-        mButtonShowOld.setTextColor(getResources().getColorStateList(color));
-
-        mButtonClearOld.setBackgroundResource(background);
-        mButtonClearOld.setTextColor(getResources().getColorStateList(color));
+        mButtonClearOld.setBackgroundResource(R.drawable.transparent_button_selector_dark);
+        mButtonClearOld.setTextColor(getResources().getColorStateList(R.color.button_text_color_selector_dark));
     }
 
-    private void configureLaterListView(TasksListAdapter adapter) {
+    private void configureLaterView(TasksListAdapter adapter) {
+        // Setup header.
+        mSectionHeader.setBackgroundColor(mSectionColor);
+
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
 
         // Setup back view.
-        mListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setLongSwipeEnabled(true);
         mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
@@ -342,7 +350,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
     }
 
-    private void configureFocusListView(TasksListAdapter adapter) {
+    private void configureFocusView(TasksListAdapter adapter) {
+        // Setup header.
+        mSectionHeader.setBackgroundColor(mSectionColor);
+
         // Setup content.
         mListView.setContentList(adapter.getData());
         mListView.setAdapter(adapter);
@@ -350,7 +361,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setListOrderListener(this);
 
         // Setup back view.
-        mListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setBackIconText(R.string.done_full, R.string.later_full);
 
@@ -366,13 +376,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
     }
 
-    private void configureDoneListView(TasksListAdapter adapter) {
+    private void configureDoneView(TasksListAdapter adapter) {
+        // Setup header.
+        mSectionHeader.setBackgroundColor(mSectionColor);
+
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
 
         // Setup back view.
-        mListView.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setLongSwipeEnabled(true);
         mListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setLongSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
@@ -632,14 +644,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Only display buttons in the done section and when the oldest completed task is older than today.
             if (mSection == Sections.DONE && !mAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
-                mFooterView.setVisibility(View.VISIBLE);
-                mFooterView.setAlpha(1f);
-
-                // Expand gradient to cover the buttons and remove list view padding.
-                ((TasksActivity) getActivity()).expandGradient();
-                mListView.setPadding(0, 0, 0, 0);
+                mHeaderView.setVisibility(View.VISIBLE);
+                mHeaderView.setAlpha(1f);
             } else {
-                mFooterView.setVisibility(View.GONE);
+                mHeaderView.setVisibility(View.GONE);
             }
         }
     }
@@ -665,16 +673,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @OnClick(R.id.button_show_old)
     protected void showOldTasks() {
         // Animate footer view.
-        mFooterView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
+        mHeaderView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Hide buttons.
-                mFooterView.setVisibility(View.GONE);
+                mHeaderView.setVisibility(View.GONE);
                 // Show old tasks.
                 mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
-                // Collapse gradient and restore list view padding.
-                ((TasksActivity) getActivity()).collapseGradient();
-                mListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.button_container_height));
             }
         });
     }
@@ -702,10 +707,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Proceed with delete.
                         mTasksService.deleteTasks(oldTasks);
                         refreshTaskList(false);
-
-                        // Collapse gradient and restore list view padding.
-                        ((TasksActivity) getActivity()).collapseGradient();
-                        mListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.button_container_height));
                     }
                 })
                 .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
@@ -742,7 +743,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Hide main activity content.
         ((TasksActivity) getActivity()).setTabsVisibility(View.GONE);
         ((TasksActivity) getActivity()).hideActionButtons();
-        ((TasksActivity) getActivity()).hideGradient();
 
         loadTags();
     }
@@ -758,7 +758,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Show main activity content.
         ((TasksActivity) getActivity()).setTabsVisibility(View.VISIBLE);
         ((TasksActivity) getActivity()).showActionButtons();
-        ((TasksActivity) getActivity()).showGradient();
 
         mSelectedTasks.clear();
 

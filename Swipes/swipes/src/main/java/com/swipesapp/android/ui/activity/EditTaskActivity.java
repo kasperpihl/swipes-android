@@ -168,6 +168,8 @@ public class EditTaskActivity extends AccentActivity {
         setContentView(R.layout.activity_edit_task);
         ButterKnife.inject(this);
 
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
         getActionBar().setDisplayShowTitleEnabled(false);
 
         mContext = new WeakReference<Context>(this);
@@ -250,7 +252,6 @@ public class EditTaskActivity extends AccentActivity {
     }
 
     private void setupViews() {
-        mLayout.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mLayout.requestFocus();
 
         mTitle.setTextColor(ThemeUtils.getTextColor(this));
