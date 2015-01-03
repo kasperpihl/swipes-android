@@ -5,13 +5,12 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
-import com.swipesapp.android.R;
-import com.swipesapp.android.ui.activity.SettingsActivity;
 import com.swipesapp.android.ui.fragments.TasksListFragment;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -19,26 +18,23 @@ import java.util.Locale;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    /**
-     * Context reference.
-     */
+    private List<TasksListFragment> mFragments = new ArrayList<TasksListFragment>();
+
     private WeakReference<Context> mContext;
 
     public SectionsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         mContext = new WeakReference<Context>(context);
+
+        // Pre-load fragments.
+        for (int x = 0; x < getCount(); x++) {
+            mFragments.add(TasksListFragment.newInstance(x));
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        Fragment result;
-        if (position == Sections.SETTINGS.getSectionNumber()) {
-            result = new SettingsActivity.SettingsFragment();
-        } else {
-            result = TasksListFragment.newInstance(position);
-        }
-        return result;
+        return mFragments.get(position);
     }
 
     @Override
@@ -46,27 +42,4 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return Sections.getSectionsCount();
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        Locale l = Locale.getDefault();
-        String title = null;
-        Context context = mContext.get();
-        if (context != null) {
-            switch (position) {
-                case 0:
-                    title = context.getString(R.string.title_later).toUpperCase(l);
-                    break;
-                case 1:
-                    title = context.getString(R.string.title_focus).toUpperCase(l);
-                    break;
-                case 2:
-                    title = context.getString(R.string.title_done).toUpperCase(l);
-                    break;
-                case 3:
-                    title = context.getString(R.string.title_settings).toUpperCase(l);
-                    break;
-            }
-        }
-        return title;
-    }
 }

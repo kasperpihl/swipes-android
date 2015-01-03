@@ -155,9 +155,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
+
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -221,6 +224,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         filter.addAction(Actions.DELETE_TASKS);
         filter.addAction(Actions.SHARE_TASKS);
         filter.addAction(Actions.BACK_PRESSED);
+
         getActivity().registerReceiver(mTasksReceiver, filter);
 
         refreshTaskList(false);
@@ -741,7 +745,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Hide main activity content.
-        ((TasksActivity) getActivity()).setTabsVisibility(View.GONE);
         ((TasksActivity) getActivity()).hideActionButtons();
 
         loadTags();
@@ -756,7 +759,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Show main activity content.
-        ((TasksActivity) getActivity()).setTabsVisibility(View.VISIBLE);
         ((TasksActivity) getActivity()).showActionButtons();
 
         mSelectedTasks.clear();

@@ -3,13 +3,11 @@ package com.swipesapp.android.ui.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -32,7 +30,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -69,12 +66,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     @InjectView(R.id.pager)
     NoSwipeViewPager mViewPager;
-
-    @InjectView(R.id.tabs)
-    PagerSlidingTabStrip mTabs;
-
-    @InjectView(R.id.tasks_activity_container)
-    ViewGroup mActivityMainLayout;
 
     @InjectView(R.id.button_add_task)
     SwipesButton mButtonAddTask;
@@ -116,8 +107,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private static Sections sCurrentSection;
 
-    private static Typeface sTypeface;
-
     private List<GsonTag> mSelectedTags;
 
     // Used by animator to store tags container position.
@@ -133,48 +122,33 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
-        mContext = new WeakReference<Context>(this);
-        mTasksService = TasksService.getInstance(this);
 
         getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
+
+        getActionBar().hide();
+
+        mContext = new WeakReference<Context>(this);
+        mTasksService = TasksService.getInstance(this);
 
         createSnoozeAlarm();
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mTabs.setViewPager(mViewPager);
+        mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
 
-        if (sTypeface == null) {
-            sTypeface = Typeface.createFromAsset(getAssets(), Constants.FONT_NAME);
-        }
-        mTabs.setTypeface(sTypeface, 0);
+        // Default to second item, index starts at zero.
+        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        sCurrentSection = Sections.FOCUS;
 
-        int dimension = getResources().getDimensionPixelSize(R.dimen.action_bar_icon_size);
-        mTabs.setTextSize(dimension);
-        mTabs.setIndicatorColor(ThemeUtils.getTextColor(this));
-        mTabs.setTextColor(ThemeUtils.getTextColor(this));
-        mTabs.setDividerColor(ThemeUtils.getDividerColor(this));
-        mTabs.setTabBackground(ThemeUtils.getTabBackground(this));
-        mTabs.setOnPageChangeListener(mSimpleOnPageChangeListener);
-
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+        // Define a custom duration to the page scroller, providing a more natural feel.
+        customizeScroller();
 
         mSelectedTags = new ArrayList<GsonTag>();
 
         mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
 
-        // Default to second item, index starts at zero
-        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-        sCurrentSection = Sections.FOCUS;
-
         // HACK: Flip add task confirm button, so the arrow points to the right.
         mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
-
-        // Define a custom duration to the page scroller, providing a more natural feel.
-        customizeScroller();
 
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
@@ -207,18 +181,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            if (position != Sections.FOCUS.getSectionNumber()) {
-                clearEmptyBackground();
-            }
-
-            customizeTabColors(ThemeUtils.getTextColor(mContext.get()), ThemeUtils.getDividerColor(mContext.get()), position);
-
-            if (position == Sections.SETTINGS.getSectionNumber()) {
-                mButtonAddTask.setVisibility(View.GONE);
-            } else {
-                mButtonAddTask.setVisibility(View.VISIBLE);
-            }
-
             sCurrentSection = Sections.getSectionByNumber(position);
 
             // Notify listeners that current tab has changed.
@@ -250,26 +212,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         }
     }
 
-    private void customizeTabColors(int textColor, int dividerColor, int position) {
-        int[] textColors = {
-                ThemeUtils.getSectionColor(Sections.LATER, mContext.get()),
-                ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()),
-                ThemeUtils.getSectionColor(Sections.DONE, mContext.get()),
-                textColor
-        };
-
-        mTabs.setIndicatorColor(textColors[position]);
-        mTabs.setTextColor(textColor);
-        mTabs.setDividerColor(dividerColor);
-
-        View view = mTabs.getTabView(position);
-
-        if (view != null && view instanceof TextView) {
-            TextView tabTextView = (TextView) view;
-            tabTextView.setTextColor(textColors[position]);
-        }
-    }
-
     private void clearEmptyBackground() {
         // Do nothing.
     }
@@ -277,39 +219,39 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     private void setEmptyBackground() {
         // TODO: Animate empty background.
 
-        mActivityMainLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mViewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 switch (sCurrentSection) {
                     case LATER:
                         // Customize Later empty View.
-                        RelativeLayout laterEmptyView = (RelativeLayout) mActivityMainLayout.findViewById(R.id.later_empty_view);
+                        RelativeLayout laterEmptyView = (RelativeLayout) mViewPager.findViewById(R.id.later_empty_view);
                         laterEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
                         break;
                     case FOCUS:
                         // Customize Focus empty view.
-                        ScrollView focusEmptyView = (ScrollView) mActivityMainLayout.findViewById(R.id.focus_empty_view);
+                        ScrollView focusEmptyView = (ScrollView) mViewPager.findViewById(R.id.focus_empty_view);
                         focusEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
 
-                        TextView allDoneText = (TextView) mActivityMainLayout.findViewById(R.id.text_all_done);
+                        TextView allDoneText = (TextView) mViewPager.findViewById(R.id.text_all_done);
                         allDoneText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
 
-                        TextView nextTaskText = (TextView) mActivityMainLayout.findViewById(R.id.text_next_task);
+                        TextView nextTaskText = (TextView) mViewPager.findViewById(R.id.text_next_task);
                         nextTaskText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
 
-                        TextView allDoneMessage = (TextView) mActivityMainLayout.findViewById(R.id.text_all_done_message);
+                        TextView allDoneMessage = (TextView) mViewPager.findViewById(R.id.text_all_done_message);
                         allDoneMessage.setTextColor(ThemeUtils.getTextColor(mContext.get()));
 
-                        Button facebookShare = (Button) mActivityMainLayout.findViewById(R.id.button_facebook_share);
+                        Button facebookShare = (Button) mViewPager.findViewById(R.id.button_facebook_share);
                         facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
                                 R.drawable.facebook_rounded_button_light : R.drawable.facebook_rounded_button_dark);
 
-                        Button twitterShare = (Button) mActivityMainLayout.findViewById(R.id.button_twitter_share);
+                        Button twitterShare = (Button) mViewPager.findViewById(R.id.button_twitter_share);
                         twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
                                 R.drawable.twitter_rounded_button_light : R.drawable.twitter_rounded_button_dark);
                         break;
                     case DONE:
                         // Customize Done empty view.
-                        RelativeLayout doneEmptyView = (RelativeLayout) mActivityMainLayout.findViewById(R.id.done_empty_view);
+                        RelativeLayout doneEmptyView = (RelativeLayout) mViewPager.findViewById(R.id.done_empty_view);
                         doneEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
                         break;
                 }
@@ -481,8 +423,8 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         animateTags(true);
 
         // Show the main layout.
-        mActivityMainLayout.setAlpha(1f);
-        mActivityMainLayout.setVisibility(View.VISIBLE);
+        mViewPager.setAlpha(1f);
+        mViewPager.setVisibility(View.VISIBLE);
 
         // Fade out the blur background.
         mBlurBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeOutListener);
@@ -532,7 +474,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         @Override
         public void onAnimationEnd(Animator animation) {
             // Hide the main layout.
-            mActivityMainLayout.setVisibility(View.GONE);
+            mViewPager.setVisibility(View.GONE);
         }
     };
 
@@ -603,7 +545,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     }
 
     public void updateBlurDrawable(int alphaColor) {
-        sBlurDrawable = BlurBuilder.blur(this, mActivityMainLayout, alphaColor);
+        sBlurDrawable = BlurBuilder.blur(this, mViewPager, alphaColor);
     }
 
     public static BitmapDrawable getBlurDrawable() {
@@ -694,10 +636,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
                 mSelectedTags.remove(tag);
             }
         }
-    }
-
-    public void setTabsVisibility(int visibility) {
-        mTabs.setVisibility(visibility);
     }
 
 }

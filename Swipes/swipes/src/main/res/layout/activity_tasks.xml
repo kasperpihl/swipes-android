@@ -1,32 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
     <!-- Tasks area -->
-    <LinearLayout
-        android:id="@+id/tasks_activity_container"
+    <com.swipesapp.android.ui.view.NoSwipeViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.astuetz.PagerSlidingTabStrip
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:visibility="gone"
-            app:pstsDeactivateTextColor="@android:color/black"
-            app:pstsIndicatorHeight="2dp"
-            app:pstsShouldExpand="true"
-            app:pstsUnderlineHeight="0dp" />
-
-        <com.swipesapp.android.ui.view.NoSwipeViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/action_buttons_container"
