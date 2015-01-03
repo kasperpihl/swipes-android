@@ -43,7 +43,6 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
-import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
@@ -65,7 +64,7 @@ import butterknife.OnClick;
 public class TasksActivity extends AccentActivity implements ListContentsListener {
 
     @InjectView(R.id.pager)
-    NoSwipeViewPager mViewPager;
+    ViewPager mViewPager;
 
     @InjectView(R.id.button_add_task)
     SwipesButton mButtonAddTask;
