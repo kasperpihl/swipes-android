@@ -253,7 +253,7 @@ public class TasksListAdapter extends BaseAdapter {
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
-                    holder.time.setText(DateUtils.getTimeAsString(mContext.get(), completionDate));
+                    holder.time.setText(DateUtils.formatToRecent(completionDate, mContext.get()));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.DONE, mContext.get()));
                 }
 

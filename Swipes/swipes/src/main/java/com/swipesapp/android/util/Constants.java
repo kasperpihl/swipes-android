@@ -51,6 +51,11 @@ public class Constants {
     public static final int WELCOME_REQUEST_CODE = 4;
 
     /**
+     * Request code for Evernote attachments.
+     */
+    public static final int EVERNOTE_ATTACHMENTS_REQUEST_CODE = 5;
+
+    /**
      * Intent extra for caller identifier.
      */
     public static final String EXTRA_CALLER_NAME = "CALLER_NAME";

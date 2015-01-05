@@ -62,32 +62,31 @@ public class SubtasksAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SubtaskHolder holder;
-        View row = convertView;
         GsonTask task = mData.get(position);
         LayoutInflater inflater = ((Activity) mContext.get()).getLayoutInflater();
 
         // Inflate layout according to completion.
         if (task.getLocalCompletionDate() != null) {
-            row = inflater.inflate(R.layout.subtask_completed, parent, false);
+            convertView = inflater.inflate(R.layout.subtask_completed, parent, false);
         } else {
-            row = inflater.inflate(R.layout.subtask_default, parent, false);
+            convertView = inflater.inflate(R.layout.subtask_default, parent, false);
         }
 
         holder = new SubtaskHolder();
 
         // Since this list is quite small, there's not much need to reuse the holder.
-        holder.container = (RelativeLayout) row.findViewById(R.id.subtask_container);
-        holder.circleContainer = (FrameLayout) row.findViewById(R.id.subtask_circle_container);
-        holder.buttonContainer = (FrameLayout) row.findViewById(R.id.subtask_buttons_container);
-        holder.circle = row.findViewById(R.id.subtask_circle);
-        holder.title = (TextView) row.findViewById(R.id.subtask_title);
-        holder.button = (SwipesTextView) row.findViewById(R.id.subtask_button);
+        holder.container = (RelativeLayout) convertView.findViewById(R.id.subtask_container);
+        holder.circleContainer = (FrameLayout) convertView.findViewById(R.id.subtask_circle_container);
+        holder.buttonContainer = (FrameLayout) convertView.findViewById(R.id.subtask_buttons_container);
+        holder.circle = convertView.findViewById(R.id.subtask_circle);
+        holder.title = (TextView) convertView.findViewById(R.id.subtask_title);
+        holder.button = (SwipesTextView) convertView.findViewById(R.id.subtask_button);
 
-        row.setTag(holder);
+        convertView.setTag(holder);
 
         customizeView(holder, task);
 
-        return row;
+        return convertView;
     }
 
     private void customizeView(final SubtaskHolder holder, final GsonTask task) {

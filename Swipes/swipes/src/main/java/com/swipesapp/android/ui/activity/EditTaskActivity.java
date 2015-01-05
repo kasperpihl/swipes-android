@@ -2,7 +2,6 @@ package com.swipesapp.android.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -27,6 +27,7 @@ import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
@@ -43,6 +44,7 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.RepeatOptions;
+import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -102,6 +104,15 @@ public class EditTaskActivity extends AccentActivity {
     SwipesTextView mTagsIcon;
     @InjectView(R.id.edit_task_tags)
     TextView mTags;
+
+    @InjectView(R.id.evernote_attachment_container)
+    RelativeLayout mEvernoteAttachmentContainer;
+    @InjectView(R.id.evernote_attachment_icon)
+    ImageView mEvernoteAttachmentIcon;
+    @InjectView(R.id.evernote_attachment_title)
+    TextView mEvernoteAttachmentTitle;
+    @InjectView(R.id.evernote_attached_view)
+    TextView mEvernoteAttachedView;
 
     @InjectView(R.id.edit_task_notes_icon)
     SwipesTextView mNotesIcon;
@@ -225,11 +236,17 @@ public class EditTaskActivity extends AccentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check if the request code the one from snooze task.
         if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
             switch (resultCode) {
-                case Activity.RESULT_OK:
+                case RESULT_OK:
                     // Task has been snoozed. Update views.
+                    updateViews();
+                    break;
+            }
+        } else if (requestCode == Constants.EVERNOTE_ATTACHMENTS_REQUEST_CODE) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    // Attachment was added. Update views.
                     updateViews();
                     break;
             }
@@ -267,6 +284,13 @@ public class EditTaskActivity extends AccentActivity {
         mTagsIcon.setTextColor(ThemeUtils.getTextColor(this));
         mTags.setTextColor(ThemeUtils.getTextColor(this));
         mTags.setHintTextColor(ThemeUtils.getTextColor(this));
+
+        int icon = ThemeUtils.isLightTheme(this) ? R.drawable.evernote_light : R.drawable.evernote_dark;
+        int reverseColor = ThemeUtils.isLightTheme(this) ? R.color.dark_theme_text : R.color.light_theme_text;
+        mEvernoteAttachmentIcon.setImageDrawable(getResources().getDrawable(icon));
+        mEvernoteAttachmentTitle.setTextColor(ThemeUtils.getTextColor(this));
+        mEvernoteAttachedView.setBackgroundResource(ThemeUtils.isLightTheme(this) ? R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark);
+        mEvernoteAttachedView.setTextColor(getResources().getColor(reverseColor));
 
         mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setTextColor(ThemeUtils.getTextColor(this));
@@ -344,6 +368,8 @@ public class EditTaskActivity extends AccentActivity {
 
         mTags.setText(buildFormattedTags());
 
+        loadEvernoteAttachment();
+
         mNotes.setText(mTask.getNotes());
 
         mSubtaskVisibilityCaption.setText(getResources().getQuantityString(R.plurals.subtask_show_caption, mSubtasks.size(), mSubtasks.size()));
@@ -353,6 +379,19 @@ public class EditTaskActivity extends AccentActivity {
         mSubtaskFirstItem.setAlpha(1f);
 
         loadFirstSubtask();
+    }
+
+    private void loadEvernoteAttachment() {
+        if (mTask.getAttachments() != null) {
+            for (GsonAttachment attachment : mTask.getAttachments()) {
+                // Check if attachment comes from Evernote.
+                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
+                    // Attachment found. Update views.
+                    mEvernoteAttachmentContainer.setVisibility(View.VISIBLE);
+                    mEvernoteAttachmentTitle.setText(attachment.getTitle());
+                }
+            }
+        }
     }
 
     private void loadFirstSubtask() {
@@ -504,7 +543,7 @@ public class EditTaskActivity extends AccentActivity {
         // Call attachments activity.
         Intent intent = new Intent(this, EvernoteAttachmentsActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
-        startActivity(intent);
+        startActivityForResult(intent, Constants.EVERNOTE_ATTACHMENTS_REQUEST_CODE);
 
         // Update blurred background and override animation.
         updateBlurDrawable(ThemeUtils.getSnoozeBlurAlphaColor(this));

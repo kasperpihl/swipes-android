@@ -131,7 +131,7 @@
 
             <include layout="@layout/repeat_options" />
 
-            <!-- Assigned Tags -->
+            <!-- Assigned tags -->
             <RelativeLayout
                 android:id="@+id/tags_container"
                 android:layout_width="match_parent"
@@ -161,12 +161,61 @@
                     android:hint="@string/edit_task_tags_default_text" />
             </RelativeLayout>
 
+            <!-- Evernote attachment -->
+            <RelativeLayout
+                android:id="@+id/evernote_attachment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/evernote_attachment_icon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="13dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/evernote_light" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@id/evernote_attachment_icon"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/evernote_attachment_title"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <TextView
+                        android:id="@+id/evernote_attached_view"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/edit_task_evernote_attached" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
             <!-- Notes -->
             <RelativeLayout
                 android:id="@+id/notes_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="22dp">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/edit_task_notes_icon"

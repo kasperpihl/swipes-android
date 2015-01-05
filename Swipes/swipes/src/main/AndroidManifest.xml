@@ -155,7 +155,7 @@
             android:label="@string/title_activity_evernote_attachments"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver" />
 
