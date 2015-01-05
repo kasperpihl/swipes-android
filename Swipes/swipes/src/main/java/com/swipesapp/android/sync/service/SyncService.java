@@ -50,6 +50,9 @@ public class SyncService {
     private List<TagSync> mSyncedTags;
     private List<TaskSync> mSyncedTasks;
 
+    private boolean mIsSyncing;
+    private boolean mIsSyncingEvernote;
+
     private static final String API_URL = "http://api.swipesapp.com/v1/sync";
 
     private static final String PLATFORM = "android";
@@ -134,7 +137,10 @@ public class SyncService {
         List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
 
         // Only sync when called out of recursion or when there still are local changes.
-        if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) {
+        if ((!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) && !mIsSyncing) {
+            // Mark sync as in progress.
+            mIsSyncing = true;
+
             // Prepare Gson request.
             GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
 
@@ -161,25 +167,39 @@ public class SyncService {
                             // Read API response and save changes locally.
                             handleResponse(new Gson().fromJson(result, GsonSync.class));
 
+                            // Mark sync as performed.
+                            mIsSyncing = false;
+
                             // Call recursion to sync remaining objects.
                             performSync(changesOnly, true);
                         }
                     });
         }
 
-        // Start Evernote sync.
-        if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
-            EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    Log.i(LOG_TAG, "Evernote synchronized!");
-                }
+        if (!mIsSyncingEvernote) {
+            // Mark Evernote sync as in progress.
+            mIsSyncingEvernote = true;
 
-                @Override
-                public void onException(Exception ex) {
-                    Log.e(LOG_TAG, "Evernote sync error!", ex);
-                }
-            });
+            // Start Evernote sync.
+            if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
+                EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        Log.i(LOG_TAG, "Evernote synchronized!");
+
+                        // Mark Evernote sync as performed.
+                        mIsSyncingEvernote = false;
+
+                        // Refresh local content.
+                        TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+                    }
+
+                    @Override
+                    public void onException(Exception ex) {
+                        Log.e(LOG_TAG, "Evernote sync error!", ex);
+                    }
+                });
+            }
         }
     }
 
