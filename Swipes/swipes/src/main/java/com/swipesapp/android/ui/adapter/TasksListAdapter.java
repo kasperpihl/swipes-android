@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -24,6 +26,7 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -110,6 +113,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.title = (TextView) row.findViewById(R.id.task_title);
             holder.time = (TextView) row.findViewById(R.id.task_time);
             holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties_container);
+            holder.evernoteIcon = (ImageView) row.findViewById(R.id.task_evernote_icon);
             holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
             holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
             holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
@@ -140,6 +144,7 @@ public class TasksListAdapter extends BaseAdapter {
         String title = tasks.get(position).getTitle();
         List<GsonTag> tagList = tasks.get(position).getTags();
         String tags = null;
+        List<GsonAttachment> attachments = tasks.get(position).getAttachments();
         String notes = tasks.get(position).getNotes();
         Date repeatDate = tasks.get(position).getLocalRepeatDate();
         Integer priority = tasks.get(position).getPriority();
@@ -185,6 +190,20 @@ public class TasksListAdapter extends BaseAdapter {
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
             mDisplayProperties = true;
+        }
+
+        // Set Evernote icon according to theme.
+        int icon = ThemeUtils.isLightTheme(mContext.get()) ? R.drawable.evernote_light : R.drawable.evernote_dark;
+        holder.evernoteIcon.setImageDrawable(mContext.get().getResources().getDrawable(icon));
+
+        // Display Evernote icon.
+        if (attachments != null) {
+            for (GsonAttachment attachment : attachments) {
+                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
+                    holder.evernoteIcon.setVisibility(View.VISIBLE);
+                    mDisplayProperties = true;
+                }
+            }
         }
 
         // Display notes icon.
@@ -436,6 +455,7 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Properties.
         RelativeLayout propertiesContainer;
+        ImageView evernoteIcon;
         SwipesTextView locationIcon;
         SwipesTextView notesIcon;
         SwipesTextView repeatIcon;

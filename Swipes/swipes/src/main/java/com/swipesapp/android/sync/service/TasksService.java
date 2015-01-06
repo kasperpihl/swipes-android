@@ -700,6 +700,16 @@ public class TasksService {
     }
 
     /**
+     * Loads all attachments for a given task.
+     *
+     * @param taskId ID of the task.
+     * @return List of attachments.
+     */
+    public List<GsonAttachment> loadAttachmentsForTask(Long taskId) {
+        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForTask(taskId));
+    }
+
+    /**
      * Loads a single attachment.
      *
      * @param id Database ID of the attachment.
@@ -780,7 +790,7 @@ public class TasksService {
 
         if (tasks != null) {
             for (Task task : tasks) {
-                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), gsonFromAttachments(task.getAttachments()), task.getId()));
+                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), loadAttachmentsForTask(task.getId()), task.getId()));
             }
         }
 

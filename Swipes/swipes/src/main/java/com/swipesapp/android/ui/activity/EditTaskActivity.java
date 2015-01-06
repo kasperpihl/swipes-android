@@ -2,9 +2,11 @@ package com.swipesapp.android.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.InputType;
@@ -43,6 +45,7 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Services;
 
@@ -266,6 +269,22 @@ public class EditTaskActivity extends AccentActivity {
         }
     }
 
+    @Override
+    public void onResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Actions.TASKS_CHANGED);
+        registerReceiver(mReceiver, filter);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        unregisterReceiver(mReceiver);
+
+        super.onPause();
+    }
+
     private void setupViews() {
         mLayout.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mLayout.requestFocus();
@@ -419,6 +438,17 @@ public class EditTaskActivity extends AccentActivity {
 
         mSubtaskFirstItem.setVisibility(allCompleted ? View.GONE : View.VISIBLE);
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
+                // Refresh subtasks.
+                loadFirstSubtask();
+                refreshSubtasks();
+            }
+        }
+    };
 
     private String buildFormattedTags() {
         String tags = null;

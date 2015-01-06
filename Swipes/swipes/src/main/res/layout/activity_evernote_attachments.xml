@@ -56,7 +56,7 @@
                 android:layout_toRightOf="@id/search_icon"
                 android:hint="@string/evernote_search_hint"
                 android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
+                android:inputType="textFilter"
                 android:textCursorDrawable="@null" />
         </RelativeLayout>
 

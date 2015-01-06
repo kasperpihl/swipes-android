@@ -174,8 +174,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_marginLeft="13dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/evernote_light" />
+                    android:scaleType="centerInside" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
