@@ -12,6 +12,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -86,7 +87,8 @@ public class SplashActivity extends Activity {
     }
 
     private void addWelcomeTasks() {
-        TasksService service = TasksService.getInstance(this);
+        TasksService tasksService = TasksService.getInstance(this);
+        SyncService syncService = SyncService.getInstance(this);
         Date currentDate = new Date();
 
         GsonTask task = GsonTask.gsonForLocal(null, null, null, null, currentDate, currentDate, false, null, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), null, 0);
@@ -97,7 +99,8 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task, true);
+        syncService.saveTaskChangesForSync(task);
+        tasksService.saveTask(task, false);
 
         // Save second task.
         title = getString(R.string.welcome_task_two);
@@ -105,7 +108,8 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task, true);
+        syncService.saveTaskChangesForSync(task);
+        tasksService.saveTask(task, false);
 
         // Save third task.
         title = getString(R.string.welcome_task_three);
@@ -113,7 +117,8 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        service.saveTask(task, true);
+        syncService.saveTaskChangesForSync(task);
+        tasksService.saveTask(task, false);
     }
 
 }

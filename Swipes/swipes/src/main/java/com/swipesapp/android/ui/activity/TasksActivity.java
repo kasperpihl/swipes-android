@@ -37,6 +37,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.receiver.SnoozeReceiver;
+import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
@@ -48,6 +49,7 @@ import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.NoSwipeViewPager;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
@@ -210,6 +212,15 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     public void onBackPressed() {
         // Forward call to listeners.
         mTasksService.sendBroadcast(Actions.BACK_PRESSED);
+    }
+
+    @Override
+    public void onResume() {
+        // Sync only changes after initial sync has been performed.
+        boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
+        SyncService.getInstance(this).performSync(changesOnly);
+
+        super.onResume();
     }
 
     private void createSnoozeAlarm() {

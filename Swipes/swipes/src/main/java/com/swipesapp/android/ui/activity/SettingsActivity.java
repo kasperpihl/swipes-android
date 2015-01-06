@@ -198,6 +198,9 @@ public class SettingsActivity extends AccentActivity {
 
             // Set welcome screen as not shown.
             PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_SCREEN, "", getActivity());
+
+            // Clear last sync date.
+            PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, null, getActivity());
         }
 
         private void askToKeepData() {
@@ -228,9 +231,6 @@ public class SettingsActivity extends AccentActivity {
         }
 
         private void finishLogin() {
-            // Perform sync with changesOnly = false.
-            SyncService.getInstance(getActivity()).performSync(false);
-
             getActivity().recreate();
         }
 
