@@ -170,6 +170,7 @@ public class SyncService {
 
                             // Mark sync as performed.
                             mIsSyncing = false;
+                            Log.d(LOG_TAG, "Sync done.");
 
                             // Call recursion to sync remaining objects.
                             performSync(changesOnly, true);
@@ -186,7 +187,7 @@ public class SyncService {
                 EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
                     @Override
                     public void onSuccess(Void data) {
-                        Log.i(LOG_TAG, "Evernote synchronized!");
+                        Log.d(LOG_TAG, "Evernote synced.");
 
                         // Mark Evernote sync as performed.
                         mIsSyncingEvernote = false;
@@ -197,7 +198,10 @@ public class SyncService {
 
                     @Override
                     public void onException(Exception ex) {
-                        Log.e(LOG_TAG, "Evernote sync error!", ex);
+                        Log.e(LOG_TAG, "Evernote sync error.", ex);
+
+                        // Mark Evernote sync as performed.
+                        mIsSyncingEvernote = false;
                     }
                 });
             }
@@ -294,6 +298,11 @@ public class SyncService {
                         task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
                         task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
                         task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+
+                        // HACK: Fix bug causing other platforms to delete the attachments.
+                        if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
+                            task.setAttachments(old.getAttachments());
+                        }
 
                         // Save or update task locally.
                         TasksService.getInstance(mContext.get()).saveTask(task, false);
