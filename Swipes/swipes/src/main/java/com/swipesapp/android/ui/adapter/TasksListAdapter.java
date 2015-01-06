@@ -297,6 +297,7 @@ public class TasksListAdapter extends BaseAdapter {
         // Reset properties.
         holder.tagsIcon.setVisibility(View.GONE);
         holder.tags.setVisibility(View.GONE);
+        holder.evernoteIcon.setVisibility(View.GONE);
         holder.notesIcon.setVisibility(View.GONE);
         holder.repeatIcon.setVisibility(View.GONE);
         holder.locationIcon.setVisibility(View.GONE);

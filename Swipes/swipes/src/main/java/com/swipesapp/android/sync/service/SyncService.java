@@ -20,6 +20,7 @@ import com.swipesapp.android.db.dao.ExtTaskSyncDao;
 import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
+import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonObjects;
 import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -338,6 +339,7 @@ public class SyncService {
             taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), task.getLocalRepeatDate()) ? DateUtils.dateToSync(task.getLocalRepeatDate()) : null);
             taskSync.setRepeatOption(task.getRepeatOption().equals(old.getRepeatOption()) ? null : task.getRepeatOption());
             taskSync.setTags(hasObjectChanged(old.getTags(), task.getTags()) ? tagsToString(task.getTags()) : null);
+            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), task.getAttachments()) ? attachmentsToString(task.getAttachments()) : null);
 
             mExtTaskSyncDao.getDao().insert(taskSync);
         }
@@ -360,17 +362,19 @@ public class SyncService {
     }
 
     private TaskSync taskSyncFromGson(GsonTask task) {
-        return new TaskSync(null, task.getObjectId(), task.getTempId(), task.getParentLocalId(), DateUtils.dateToSync(task.getLocalCreatedAt()), DateUtils.dateToSync(task.getLocalUpdatedAt()),
-                task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), DateUtils.dateToSync(task.getLocalCompletionDate()), DateUtils.dateToSync(task.getLocalSchedule()),
-                task.getLocation(), DateUtils.dateToSync(task.getLocalRepeatDate()), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tagsToString(task.getTags()));
+        return new TaskSync(null, task.getObjectId(), task.getTempId(), task.getParentLocalId(), DateUtils.dateToSync(task.getLocalCreatedAt()),
+                DateUtils.dateToSync(task.getLocalUpdatedAt()), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(),
+                DateUtils.dateToSync(task.getLocalCompletionDate()), DateUtils.dateToSync(task.getLocalSchedule()), task.getLocation(), DateUtils.dateToSync(task.getLocalRepeatDate()),
+                task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tagsToString(task.getTags()), attachmentsToString(task.getAttachments()));
     }
 
     private GsonTask gsonFromTaskSync(TaskSync task) {
         String tempId = task.getTempId() != null ? task.getTempId() : task.getObjectId();
-        List<GsonTag> tags = TasksService.getInstance(mContext.get()).loadTask(tempId).getTags();
+        GsonTask gsonTask = TasksService.getInstance(mContext.get()).loadTask(tempId);
 
-        return GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
-                task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tags);
+        return GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(),
+                task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(),
+                task.getOrigin(), task.getOriginIdentifier(), gsonTask.getTags(), gsonTask.getAttachments());
     }
 
     private String tagsToString(List<GsonTag> tags) {
@@ -384,6 +388,19 @@ public class SyncService {
         }
 
         return stringTags;
+    }
+
+    private String attachmentsToString(List<GsonAttachment> attachments) {
+        String stringAttachments = "";
+
+        // Convert attachments to comma-separated string.
+        if (attachments != null) {
+            for (GsonAttachment attachment : attachments) {
+                stringAttachments += attachment.getIdentifier() + ",";
+            }
+        }
+
+        return stringAttachments;
     }
 
     private boolean hasObjectChanged(Object oldObject, Object newObject) {

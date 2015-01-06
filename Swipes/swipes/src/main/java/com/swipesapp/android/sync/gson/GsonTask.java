@@ -48,8 +48,7 @@ public class GsonTask {
     private String originIdentifier;
     @Expose
     private List<GsonTag> tags;
-
-    // TODO: Expose this when attachments sync is done.
+    @Expose
     private List<GsonAttachment> attachments;
 
     // Local properties.
@@ -101,7 +100,7 @@ public class GsonTask {
      *
      * @return GsonTask object.
      */
-    public static GsonTask gsonForSync(String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags) {
+    public static GsonTask gsonForSync(String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, List<GsonTag> tags, List<GsonAttachment> attachments) {
         GsonTask task = new GsonTask();
         task.objectId = objectId;
         task.tempId = tempId;
@@ -121,8 +120,7 @@ public class GsonTask {
         task.origin = origin;
         task.originIdentifier = originIdentifier;
         task.tags = tags;
-
-        // TODO: Include attachments when their sync is done.
+        task.attachments = attachments;
 
         return task;
     }

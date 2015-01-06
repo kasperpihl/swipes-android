@@ -12,7 +12,7 @@ import de.greenrobot.daogenerator.*;
 public class SwipesDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1003, "com.swipesapp.android.db");
+        Schema schema = new Schema(1004, "com.swipesapp.android.db");
         schema.enableKeepSectionsByDefault();
 
         addEntities(schema);
@@ -104,6 +104,7 @@ public class SwipesDaoGenerator {
         taskSync.addStringProperty("origin");
         taskSync.addStringProperty("originIdentifier");
         taskSync.addStringProperty("tags");
+        taskSync.addStringProperty("attachments");
 
         // Tag sync table.
         Entity tagSync = schema.addEntity("TagSync");
