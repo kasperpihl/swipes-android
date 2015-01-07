@@ -131,80 +131,82 @@ public class SyncService {
      */
     private synchronized void performSync(final boolean changesOnly, boolean isRecursion) {
         // Skip sync when the user isn't logged in.
-        if (ParseUser.getCurrentUser() == null) return;
+        if (ParseUser.getCurrentUser() != null && !mIsSyncing) {
 
-        // Objects holding all local changes.
-        List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
-        List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
+            // Objects holding all local changes.
+            List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
+            List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
 
-        // Only sync when called out of recursion or when there still are local changes.
-        if ((!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) && !mIsSyncing) {
-            // Mark sync as in progress.
-            mIsSyncing = true;
+            // Only sync when called out of recursion or when there still are local changes.
+            if ((!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty())) {
+                // Mark sync as in progress.
+                mIsSyncing = true;
 
-            // Prepare Gson request.
-            GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
+                // Prepare Gson request.
+                GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
 
-            // Create JSON string.
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = handleRequestNulls(gson.toJson(request));
+                // Create JSON string.
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String json = handleRequestNulls(gson.toJson(request));
 
-            // Send changes to the API.
-            Ion.with(mContext.get())
-                    .load(API_URL)
-                    .setHeader("Content-Type", "application/json")
-                    .setStringBody(json)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            // Skip processing if response is invalid.
-                            if (!isResponseValid(result)) return;
+                // Send changes to the API.
+                Ion.with(mContext.get())
+                        .load(API_URL)
+                        .setHeader("Content-Type", "application/json")
+                        .setStringBody(json)
+                        .asString()
+                        .setCallback(new FutureCallback<String>() {
+                            @Override
+                            public void onCompleted(Exception e, String result) {
+                                // Skip processing if response is invalid.
+                                if (!isResponseValid(result)) return;
 
-                            // Delete synced objects from tracking.
-                            deleteTrackedTags(mSyncedTags);
-                            deleteTrackedTasks(mSyncedTasks);
+                                // Delete synced objects from tracking.
+                                deleteTrackedTags(mSyncedTags);
+                                deleteTrackedTasks(mSyncedTasks);
 
-                            // Read API response and save changes locally.
-                            handleResponse(new Gson().fromJson(result, GsonSync.class));
+                                // Read API response and save changes locally.
+                                handleResponse(new Gson().fromJson(result, GsonSync.class));
 
-                            // Mark sync as performed.
-                            mIsSyncing = false;
-                            Log.d(LOG_TAG, "Sync done.");
+                                // Mark sync as performed.
+                                mIsSyncing = false;
+                                Log.d(LOG_TAG, "Sync done.");
 
-                            // Call recursion to sync remaining objects.
-                            performSync(changesOnly, true);
-                        }
-                    });
+                                // Call recursion to sync remaining objects.
+                                performSync(changesOnly, true);
+                            }
+                        });
+            }
         }
 
-        if (!mIsSyncingEvernote) {
+        // Skip sync when the user isn't authenticated or sync is disabled.
+        if (EvernoteIntegration.getInstance().isAuthenticated() &&
+                PreferenceUtils.isEvernoteSyncEnabled(mContext.get()) && !mIsSyncingEvernote) {
+
             // Mark Evernote sync as in progress.
             mIsSyncingEvernote = true;
 
             // Start Evernote sync.
-            if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
-                EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void data) {
-                        Log.d(LOG_TAG, "Evernote synced.");
+            EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
+                @Override
+                public void onSuccess(Void data) {
+                    Log.d(LOG_TAG, "Evernote synced.");
 
-                        // Mark Evernote sync as performed.
-                        mIsSyncingEvernote = false;
+                    // Mark Evernote sync as performed.
+                    mIsSyncingEvernote = false;
 
-                        // Refresh local content.
-                        TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
-                    }
+                    // Refresh local content.
+                    TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+                }
 
-                    @Override
-                    public void onException(Exception ex) {
-                        Log.e(LOG_TAG, "Evernote sync error.", ex);
+                @Override
+                public void onException(Exception ex) {
+                    Log.e(LOG_TAG, "Evernote sync error.", ex);
 
-                        // Mark Evernote sync as performed.
-                        mIsSyncingEvernote = false;
-                    }
-                });
-            }
+                    // Mark Evernote sync as performed.
+                    mIsSyncingEvernote = false;
+                }
+            });
         }
     }
 
