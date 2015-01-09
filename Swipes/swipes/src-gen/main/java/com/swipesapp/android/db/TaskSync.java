@@ -28,6 +28,7 @@ public class TaskSync {
     private String origin;
     private String originIdentifier;
     private String tags;
+    private String attachments;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -39,7 +40,7 @@ public class TaskSync {
         this.id = id;
     }
 
-    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, String tags) {
+    public TaskSync(Long id, String objectId, String tempId, String parentLocalId, String createdAt, String updatedAt, Boolean deleted, String title, String notes, Integer order, Integer priority, String completionDate, String schedule, String location, String repeatDate, String repeatOption, String origin, String originIdentifier, String tags, String attachments) {
         this.id = id;
         this.objectId = objectId;
         this.tempId = tempId;
@@ -59,6 +60,7 @@ public class TaskSync {
         this.origin = origin;
         this.originIdentifier = originIdentifier;
         this.tags = tags;
+        this.attachments = attachments;
     }
 
     public Long getId() {
@@ -211,6 +213,14 @@ public class TaskSync {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(String attachments) {
+        this.attachments = attachments;
     }
 
     // KEEP METHODS - put your custom methods here

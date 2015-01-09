@@ -8,7 +8,7 @@
     tools:context="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity">
 
     <!-- Pop-up area -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/attachments_view"
         android:layout_width="match_parent"
@@ -16,7 +16,8 @@
         android:layout_marginLeft="@dimen/schedule_options_margin_sides"
         android:layout_marginRight="@dimen/schedule_options_margin_sides"
         android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <!-- Search row -->
         <RelativeLayout
@@ -55,24 +56,31 @@
                 android:layout_toRightOf="@id/search_icon"
                 android:hint="@string/evernote_search_hint"
                 android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
+                android:inputType="textFilter"
                 android:textCursorDrawable="@null" />
         </RelativeLayout>
 
         <include
             layout="@layout/horizontal_line_white"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/search_area" />
+            android:layout_height="1dp" />
 
-        <!-- TODO: Include list view. -->
+        <!-- List area -->
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:dividerHeight="0dp" />
 
         <!-- Footer with checkbox -->
         <RelativeLayout
             android:id="@+id/footer_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_margin="10dp">
 
             <FrameLayout
@@ -89,7 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/evernote_check_selector"
-                    android:button="@null" />
+                    android:button="@null"
+                    android:checked="true" />
             </FrameLayout>
 
             <TextView
@@ -104,6 +113,6 @@
                 android:textColor="@color/white" />
         </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

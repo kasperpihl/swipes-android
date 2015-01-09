@@ -101,6 +101,7 @@ public class TasksService {
      */
     public void saveTask(GsonTask gsonTask, boolean sync) {
         Long id = gsonTask.getId();
+        String parentId = gsonTask.getParentLocalId();
 
         if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonTask);
 
@@ -111,7 +112,30 @@ public class TasksService {
             updateTask(gsonTask, task);
         }
 
+        if (parentId != null) {
+            updateParent(gsonTask, sync);
+        }
+
         if (sync) SyncService.getInstance(mContext.get()).performSync(true);
+    }
+
+    /**
+     * Updates the parent of a given subtask.
+     *
+     * @param subtask Subtask to update parent.
+     * @param sync    True to queue changes for sync.
+     */
+    private void updateParent(GsonTask subtask, boolean sync) {
+        GsonTask gsonParent = loadTask(subtask.getParentLocalId());
+        gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
+
+        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonParent);
+
+        Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
+
+        synchronized (this) {
+            mExtTaskDao.getDao().update(parent);
+        }
     }
 
     /**
@@ -700,6 +724,16 @@ public class TasksService {
     }
 
     /**
+     * Loads all attachments for a given task.
+     *
+     * @param taskId ID of the task.
+     * @return List of attachments.
+     */
+    public List<GsonAttachment> loadAttachmentsForTask(Long taskId) {
+        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForTask(taskId));
+    }
+
+    /**
      * Loads a single attachment.
      *
      * @param id Database ID of the attachment.
@@ -780,7 +814,7 @@ public class TasksService {
 
         if (tasks != null) {
             for (Task task : tasks) {
-                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), gsonFromAttachments(task.getAttachments()), task.getId()));
+                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), loadAttachmentsForTask(task.getId()), task.getId()));
             }
         }
 

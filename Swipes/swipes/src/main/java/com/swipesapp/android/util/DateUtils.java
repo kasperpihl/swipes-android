@@ -34,6 +34,12 @@ public class DateUtils {
     // Date format AM/PM.
     public static final String DATE_FORMAT_A = "MMM d, hh:mm a";
 
+    // Date format 24-hour with year.
+    public static final String DATE_FORMAT_24_YEAR = "MMM d ''yy, hh:mm";
+
+    // Date format AM/PM with year.
+    public static final String DATE_FORMAT_A_YEAR = "MMM d ''yy, hh:mm a";
+
     // Date format for syncing.
     public static final String DATE_FORMAT_SYNC = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -75,17 +81,22 @@ public class DateUtils {
     /**
      * Returns a formatted date. Format will be "MMM d, hh:mm" or "MMM d, hh:mm a",
      * depending on the device's 24-hour format setting.
+     * <p/>
+     * When the date is in a different year, the format will include it as "''yy".
      *
      * @param date Desired date.
      * @return Formatted date.
      */
     public static String getDateAsString(Context context, Date date) {
         String time;
+        String format;
 
         if (DateFormat.is24HourFormat(context)) {
-            time = new SimpleDateFormat(DATE_FORMAT_24).format(date);
+            format = isSameYear(date) ? DATE_FORMAT_24 : DATE_FORMAT_24_YEAR;
+            time = new SimpleDateFormat(format).format(date);
         } else {
-            time = new SimpleDateFormat(DATE_FORMAT_A).format(date);
+            format = isSameYear(date) ? DATE_FORMAT_A : DATE_FORMAT_A_YEAR;
+            time = new SimpleDateFormat(format).format(date);
         }
 
         return time;
@@ -198,10 +209,31 @@ public class DateUtils {
         int providedDayOfWeek = providedDate.get(Calendar.DAY_OF_WEEK);
         int currentDayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK);
 
-        boolean isWithinWeek = providedMillis <= currentMillis || providedMillis - currentMillis < 604800000L;
+        boolean isWithinWeek = providedMillis > currentMillis && providedMillis - currentMillis < 604800000L;
         boolean isSameDayNextWeek = providedMillis > currentMillis && providedDayOfWeek == currentDayOfWeek;
 
         return isWithinWeek || isSameDayNextWeek;
+    }
+
+    /**
+     * Checks if the provided date is in the same year as today.
+     *
+     * @param date Date to check.
+     * @return True if it's in the same year.
+     */
+    public static boolean isSameYear(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(date);
+        Calendar currentDate = Calendar.getInstance();
+
+        int providedYear = providedDate.get(Calendar.YEAR);
+        int currentYear = currentDate.get(Calendar.YEAR);
+
+        return providedYear == currentYear;
     }
 
     /**
@@ -333,6 +365,19 @@ public class DateUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Returns a Date object from a time in milliseconds.
+     *
+     * @param dateInMillis Time in millis.
+     * @return Date object.
+     */
+    public static Date dateFromMillis(long dateInMillis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateInMillis);
+
+        return calendar.getTime();
     }
 
 }

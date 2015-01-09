@@ -20,6 +20,7 @@ import com.swipesapp.android.db.dao.ExtTaskSyncDao;
 import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
+import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonObjects;
 import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -49,6 +50,9 @@ public class SyncService {
 
     private List<TagSync> mSyncedTags;
     private List<TaskSync> mSyncedTasks;
+
+    private boolean mIsSyncing;
+    private boolean mIsSyncingEvernote;
 
     private static final String API_URL = "http://api.swipesapp.com/v1/sync";
 
@@ -127,57 +131,80 @@ public class SyncService {
      */
     private synchronized void performSync(final boolean changesOnly, boolean isRecursion) {
         // Skip sync when the user isn't logged in.
-        if (ParseUser.getCurrentUser() == null) return;
+        if (ParseUser.getCurrentUser() != null && !mIsSyncing) {
 
-        // Objects holding all local changes.
-        List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
-        List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
+            // Objects holding all local changes.
+            List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
+            List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
 
-        // Only sync when called out of recursion or when there still are local changes.
-        if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) {
-            // Prepare Gson request.
-            GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
+            // Only sync when called out of recursion or when there still are local changes.
+            if ((!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty())) {
+                // Mark sync as in progress.
+                mIsSyncing = true;
 
-            // Create JSON string.
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = handleRequestNulls(gson.toJson(request));
+                // Prepare Gson request.
+                GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
 
-            // Send changes to the API.
-            Ion.with(mContext.get())
-                    .load(API_URL)
-                    .setHeader("Content-Type", "application/json")
-                    .setStringBody(json)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            // Skip processing if response is invalid.
-                            if (!isResponseValid(result)) return;
+                // Create JSON string.
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String json = handleRequestNulls(gson.toJson(request));
 
-                            // Delete synced objects from tracking.
-                            deleteTrackedTags(mSyncedTags);
-                            deleteTrackedTasks(mSyncedTasks);
+                // Send changes to the API.
+                Ion.with(mContext.get())
+                        .load(API_URL)
+                        .setHeader("Content-Type", "application/json")
+                        .setStringBody(json)
+                        .asString()
+                        .setCallback(new FutureCallback<String>() {
+                            @Override
+                            public void onCompleted(Exception e, String result) {
+                                // Skip processing if response is invalid.
+                                if (!isResponseValid(result)) return;
 
-                            // Read API response and save changes locally.
-                            handleResponse(new Gson().fromJson(result, GsonSync.class));
+                                // Delete synced objects from tracking.
+                                deleteTrackedTags(mSyncedTags);
+                                deleteTrackedTasks(mSyncedTasks);
 
-                            // Call recursion to sync remaining objects.
-                            performSync(changesOnly, true);
-                        }
-                    });
+                                // Read API response and save changes locally.
+                                handleResponse(new Gson().fromJson(result, GsonSync.class));
+
+                                // Mark sync as performed.
+                                mIsSyncing = false;
+                                Log.d(LOG_TAG, "Sync done.");
+
+                                // Call recursion to sync remaining objects.
+                                performSync(changesOnly, true);
+                            }
+                        });
+            }
         }
 
-        // Start Evernote sync.
-        if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
+        // Skip sync when the user isn't authenticated or sync is disabled.
+        if (EvernoteIntegration.getInstance().isAuthenticated() &&
+                PreferenceUtils.isEvernoteSyncEnabled(mContext.get()) && !mIsSyncingEvernote) {
+
+            // Mark Evernote sync as in progress.
+            mIsSyncingEvernote = true;
+
+            // Start Evernote sync.
             EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
-                    Log.i(LOG_TAG, "Evernote synchronized!");
+                    Log.d(LOG_TAG, "Evernote synced.");
+
+                    // Mark Evernote sync as performed.
+                    mIsSyncingEvernote = false;
+
+                    // Refresh local content.
+                    TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
                 }
 
                 @Override
                 public void onException(Exception ex) {
-                    Log.e(LOG_TAG, "Evernote sync error!", ex);
+                    Log.e(LOG_TAG, "Evernote sync error.", ex);
+
+                    // Mark Evernote sync as performed.
+                    mIsSyncingEvernote = false;
                 }
             });
         }
@@ -274,6 +301,11 @@ public class SyncService {
                         task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
                         task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
 
+                        // HACK: Fix bug causing other platforms to delete the attachments.
+                        if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
+                            task.setAttachments(old.getAttachments());
+                        }
+
                         // Save or update task locally.
                         TasksService.getInstance(mContext.get()).saveTask(task, false);
                     }
@@ -318,6 +350,7 @@ public class SyncService {
             taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), task.getLocalRepeatDate()) ? DateUtils.dateToSync(task.getLocalRepeatDate()) : null);
             taskSync.setRepeatOption(task.getRepeatOption().equals(old.getRepeatOption()) ? null : task.getRepeatOption());
             taskSync.setTags(hasObjectChanged(old.getTags(), task.getTags()) ? tagsToString(task.getTags()) : null);
+            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), task.getAttachments()) ? attachmentsToString(task.getAttachments()) : null);
 
             mExtTaskSyncDao.getDao().insert(taskSync);
         }
@@ -340,17 +373,19 @@ public class SyncService {
     }
 
     private TaskSync taskSyncFromGson(GsonTask task) {
-        return new TaskSync(null, task.getObjectId(), task.getTempId(), task.getParentLocalId(), DateUtils.dateToSync(task.getLocalCreatedAt()), DateUtils.dateToSync(task.getLocalUpdatedAt()),
-                task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), DateUtils.dateToSync(task.getLocalCompletionDate()), DateUtils.dateToSync(task.getLocalSchedule()),
-                task.getLocation(), DateUtils.dateToSync(task.getLocalRepeatDate()), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tagsToString(task.getTags()));
+        return new TaskSync(null, task.getObjectId(), task.getTempId(), task.getParentLocalId(), DateUtils.dateToSync(task.getLocalCreatedAt()),
+                DateUtils.dateToSync(task.getLocalUpdatedAt()), task.isDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(),
+                DateUtils.dateToSync(task.getLocalCompletionDate()), DateUtils.dateToSync(task.getLocalSchedule()), task.getLocation(), DateUtils.dateToSync(task.getLocalRepeatDate()),
+                task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tagsToString(task.getTags()), attachmentsToString(task.getAttachments()));
     }
 
     private GsonTask gsonFromTaskSync(TaskSync task) {
         String tempId = task.getTempId() != null ? task.getTempId() : task.getObjectId();
-        List<GsonTag> tags = TasksService.getInstance(mContext.get()).loadTask(tempId).getTags();
+        GsonTask gsonTask = TasksService.getInstance(mContext.get()).loadTask(tempId);
 
-        return GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
-                task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), tags);
+        return GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(),
+                task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(),
+                task.getOrigin(), task.getOriginIdentifier(), gsonTask.getTags(), gsonTask.getAttachments());
     }
 
     private String tagsToString(List<GsonTag> tags) {
@@ -364,6 +399,19 @@ public class SyncService {
         }
 
         return stringTags;
+    }
+
+    private String attachmentsToString(List<GsonAttachment> attachments) {
+        String stringAttachments = "";
+
+        // Convert attachments to comma-separated string.
+        if (attachments != null) {
+            for (GsonAttachment attachment : attachments) {
+                stringAttachments += attachment.getIdentifier() + ",";
+            }
+        }
+
+        return stringAttachments;
     }
 
     private boolean hasObjectChanged(Object oldObject, Object newObject) {

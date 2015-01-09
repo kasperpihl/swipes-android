@@ -226,8 +226,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         refreshTaskList(false);
 
-        SyncService.getInstance(getActivity()).performSync(true);
-
         super.onResume();
     }
 
