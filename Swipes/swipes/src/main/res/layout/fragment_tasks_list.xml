@@ -7,13 +7,6 @@
     android:padding="25dp"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-    <!-- TODO: Show details. -->
-    <LinearLayout
-        android:id="@+id/section_header"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal" />
-
     <!-- List view area -->
     <LinearLayout
         android:id="@+id/list_area"

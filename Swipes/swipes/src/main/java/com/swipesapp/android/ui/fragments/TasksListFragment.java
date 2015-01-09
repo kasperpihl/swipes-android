@@ -150,9 +150,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @InjectView(R.id.tags_container)
     FlowLayout mTaskTagsContainer;
 
-    @InjectView(R.id.section_header)
-    LinearLayout mSectionHeader;
-
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
 
@@ -325,9 +322,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void configureLaterView(TasksListAdapter adapter) {
-        // Setup header.
-        mSectionHeader.setBackgroundColor(mSectionColor);
-
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
@@ -355,9 +349,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void configureFocusView(TasksListAdapter adapter) {
-        // Setup header.
-        mSectionHeader.setBackgroundColor(mSectionColor);
-
         // Setup content.
         mListView.setContentList(adapter.getData());
         mListView.setAdapter(adapter);
@@ -381,9 +372,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void configureDoneView(TasksListAdapter adapter) {
-        // Setup header.
-        mSectionHeader.setBackgroundColor(mSectionColor);
-
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);

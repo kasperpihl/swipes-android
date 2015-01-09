@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -124,7 +125,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
         getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
 
-        getActionBar().hide();
+        getActionBar().setTitle("");
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
@@ -155,6 +156,14 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mButtonAddTask.setTextColor(ThemeUtils.getSectionColor(Sections.FOCUS, this));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
+    }
+
+    static int blendColors(int from, int to, float ratio) {
+        final float inverseRation = 1f - ratio;
+        final float r = Color.red(from) * ratio + Color.red(to) * inverseRation;
+        final float g = Color.green(from) * ratio + Color.green(to) * inverseRation;
+        final float b = Color.blue(from) * ratio + Color.blue(to) * inverseRation;
+        return Color.rgb((int) r, (int) g, (int) b);
     }
 
     @Override
@@ -188,6 +197,28 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
             hideEditBar();
 
             mCurrentSectionColor = ThemeUtils.getSectionColor(sCurrentSection, mContext.get());
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            // Protect against index out of bound.
+            if (position >= mSectionsPagerAdapter.getCount() - 1) {
+                return;
+            }
+
+            // Retrieve the current and next sections.
+            Sections from = Sections.getSectionByNumber(position);
+            Sections to = Sections.getSectionByNumber(position + 1);
+
+            // Load colors for sections.
+            int fromColor = ThemeUtils.getSectionColor(from, mContext.get());
+            int toColor = ThemeUtils.getSectionColor(to, mContext.get());
+
+            // Blend the colors and adjust the ActionBar.
+            int blended = blendColors(toColor, fromColor, positionOffset);
+            ColorDrawable actionBarBackground = new ColorDrawable();
+            actionBarBackground.setColor(blended);
+            getActionBar().setBackgroundDrawable(actionBarBackground);
         }
     };
 
@@ -521,7 +552,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @Override
     public void onEmpty(Sections section) {
         if (section == sCurrentSection) {
-            setEmptyBackground();
+//            setEmptyBackground();
         }
     }
 
@@ -529,7 +560,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     @Override
     public void onNotEmpty(Sections section) {
         if (section == sCurrentSection) {
-            clearEmptyBackground();
+//            clearEmptyBackground();
         }
     }
 

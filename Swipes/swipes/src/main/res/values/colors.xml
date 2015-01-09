@@ -2,9 +2,9 @@
 <resources>
 
     <item name="swipes_brand_color" type="color">#fd4534</item>
-    <item name="done_accent_color" type="color">#45d984</item>
-    <item name="later_accent_color" type="color">#fc614b</item>
-    <item name="focus_accent_color" type="color">#f4cb1c</item>
+    <item name="done_accent_color" type="color">#8CC152</item>
+    <item name="later_accent_color" type="color">#FC5830</item>
+    <item name="focus_accent_color" type="color">#FDC02F</item>
     <item name="light_theme_background" type="color">#FFFFFF</item>
     <item name="dark_theme_background" type="color">#1A1D22</item>
     <item name="neutral_background" type="color">#F8F8F9</item>

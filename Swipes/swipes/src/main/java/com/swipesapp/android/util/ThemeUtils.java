@@ -96,6 +96,22 @@ public class ThemeUtils {
     }
 
     /**
+     * @return Accent color resource for the chosen section.
+     */
+    public static int getSectionColorResource(Sections section) {
+        switch (section) {
+            case FOCUS:
+                return R.color.focus_accent_color;
+            case LATER:
+                return R.color.later_accent_color;
+            case DONE:
+                return R.color.done_accent_color;
+            default:
+                return Color.TRANSPARENT;
+        }
+    }
+
+    /**
      * @param context Context to use.
      * @return Current theme's divider color.
      */
