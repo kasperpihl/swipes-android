@@ -16,16 +16,16 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 12
         versionName "1.0.0"
-        renderscriptTargetApi 19
-        renderscriptSupportMode true
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
     }
 
     signingConfigs {
@@ -39,7 +39,7 @@ android {
 
     buildTypes {
         release {
-            runProguard true
+            minifyEnabled true
             proguardFile getDefaultProguardFile('proguard-android.txt')
             proguardFile 'proguard-config.cfg'
             signingConfig signingConfigs.release
@@ -59,15 +59,15 @@ dependencies {
     compile project(':libraries:android-betterpickers')
     compile project(':libraries:ParseUI-Android:ParseLoginUI')
     compile project(':libraries:evernote-sdk-android')
-    compile 'com.android.support:support-v13:20.+'
+    compile 'com.android.support:support-v13:21.0.3'
     compile 'com.jakewharton:butterknife:4.0.1'
-    compile 'com.android.support:support-v4:20.+'
+    compile 'com.android.support:support-v4:21.0.3'
     compile 'com.negusoft.holoaccent:library:1.1'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3'
     compile('de.greenrobot:greendao:1.3.0') {
         exclude module: 'support-v4'
     }
     compile 'com.crashlytics.android:crashlytics:1.+'
-    compile 'com.koushikdutta.ion:ion:1.+'
+    compile 'com.koushikdutta.ion:ion:2.0.4'
     compile 'org.apache.commons:commons-collections4:4.0'
 }
