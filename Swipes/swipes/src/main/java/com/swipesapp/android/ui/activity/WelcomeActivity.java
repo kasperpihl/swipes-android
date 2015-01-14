@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
+import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
@@ -15,6 +16,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.ThemeUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,13 +24,14 @@ import butterknife.OnClick;
 /**
  * Simple activity to display when the user first launches the app.
  */
-public class WelcomeActivity extends Activity {
+public class WelcomeActivity extends AccentActivity {
 
     private TasksService mTasksService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(ThemeUtils.getThemeResource(this));
         Crashlytics.start(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);

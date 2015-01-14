@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -20,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.negusoft.holoaccent.activity.AccentActivity;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -125,6 +129,10 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
     private int mCurrentSectionColor;
 
+    private SystemBarTintManager mTintManager;
+
+    private Window mWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,12 +140,20 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
 
-        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
+        mWindow = getWindow();
+        mWindow.getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mWindow.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
         getActionBar().setTitle("");
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
+
+        mTintManager = new SystemBarTintManager(this);
+        mTintManager.setStatusBarTintEnabled(true);
 
         createSnoozeAlarm();
 
@@ -165,14 +181,6 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         mButtonAddTask.setTextColor(ThemeUtils.getSectionColor(Sections.FOCUS, this));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
-    }
-
-    static int blendColors(int from, int to, float ratio) {
-        final float inverseRation = 1f - ratio;
-        final float r = Color.red(from) * ratio + Color.red(to) * inverseRation;
-        final float g = Color.green(from) * ratio + Color.green(to) * inverseRation;
-        final float b = Color.blue(from) * ratio + Color.blue(to) * inverseRation;
-        return Color.rgb((int) r, (int) g, (int) b);
     }
 
     @Override
@@ -270,11 +278,34 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             // Blend the colors and adjust the ActionBar.
             int blended = blendColors(toColor, fromColor, positionOffset);
-            ColorDrawable actionBarBackground = new ColorDrawable();
-            actionBarBackground.setColor(blended);
+            ColorDrawable actionBarBackground = new ColorDrawable(blended);
             getActionBar().setBackgroundDrawable(actionBarBackground);
+
+            // Load dark colors for sections.
+            fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
+            toColor = ThemeUtils.getSectionColorDark(to, mContext.get());
+
+            // Blend the colors for status bar.
+            blended = blendColors(toColor, fromColor, positionOffset);
+
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                // Adjust status bar for KitKat.
+                ColorDrawable statusBarBackground = new ColorDrawable(blended);
+                mTintManager.setStatusBarTintDrawable(statusBarBackground);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // Adjust status bar for Lollipop.
+                mWindow.setStatusBarColor(blended);
+            }
         }
     };
+
+    private int blendColors(int from, int to, float ratio) {
+        final float inverseRatio = 1f - ratio;
+        final float r = Color.red(from) * ratio + Color.red(to) * inverseRatio;
+        final float g = Color.green(from) * ratio + Color.green(to) * inverseRatio;
+        final float b = Color.blue(from) * ratio + Color.blue(to) * inverseRatio;
+        return Color.rgb((int) r, (int) g, (int) b);
+    }
 
     /**
      * Returns the current section being displayed.

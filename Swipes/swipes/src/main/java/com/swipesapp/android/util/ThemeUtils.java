@@ -96,16 +96,17 @@ public class ThemeUtils {
     }
 
     /**
-     * @return Accent color resource for the chosen section.
+     * @param context Context to use.
+     * @return Dark accent color for the chosen section.
      */
-    public static int getSectionColorResource(Sections section) {
+    public static int getSectionColorDark(Sections section, Context context) {
         switch (section) {
             case FOCUS:
-                return R.color.focus_accent_color;
+                return context.getResources().getColor(R.color.focus_accent_color_dark);
             case LATER:
-                return R.color.later_accent_color;
+                return context.getResources().getColor(R.color.later_accent_color_dark);
             case DONE:
-                return R.color.done_accent_color;
+                return context.getResources().getColor(R.color.done_accent_color_dark);
             default:
                 return Color.TRANSPARENT;
         }

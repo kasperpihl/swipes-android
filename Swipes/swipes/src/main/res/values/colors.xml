@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Swipes colors -->
     <item name="swipes_brand_color" type="color">#fd4534</item>
     <item name="done_accent_color" type="color">#8CC152</item>
+    <item name="done_accent_color_dark" type="color">#6BA42E</item>
     <item name="later_accent_color" type="color">#FC5830</item>
+    <item name="later_accent_color_dark" type="color">#DF3108</item>
     <item name="focus_accent_color" type="color">#FDC02F</item>
+    <item name="focus_accent_color_dark" type="color">#E0A007</item>
+
+    <!-- Theme colors -->
     <item name="light_theme_background" type="color">#FFFFFF</item>
     <item name="dark_theme_background" type="color">#1A1D22</item>
     <item name="neutral_background" type="color">#F8F8F9</item>
@@ -12,19 +18,20 @@
     <item name="dark_theme_text" type="color">#ffffff</item>
     <item name="light_theme_divider" type="color">#e8e8e8</item>
     <item name="dark_theme_divider" type="color">#4e5156</item>
-    <item name="empty_divider" type="color">#e8e8e8</item>
     <item name="light_theme_accent_color" type="color">#e8e8e8</item>
     <item name="dark_theme_accent_color" type="color">#4e5156</item>
     <item name="light_snooze_blur_alpha_color" type="color">#7ff8f8fa</item>
     <item name="dark_snooze_blur_alpha_color" type="color">#7f313438</item>
-    <item name="snooze_background_color" type="color">#1b1e23</item>
     <item name="light_text_hint_color" type="color">#747778</item>
     <item name="dark_text_hint_color" type="color">#a1a3a5</item>
     <item name="light_tasks_blur_alpha_color" type="color">#b2f8f8fa</item>
     <item name="dark_tasks_blur_alpha_color" type="color">#b25d5f63</item>
+
+    <!-- Component colors -->
     <item name="red_button_color" type="color">#CCfd4534</item>
     <item name="red_button_color_push" type="color">#80fd4534</item>
     <item name="evernote_brand_color" type="color">#2DBE60</item>
+    <item name="evernote_brand_color_dark" type="color">#07A949</item>
     <item name="evernote_gray_background" type="color">#E1E1E1</item>
 
 </resources>
