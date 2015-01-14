@@ -44,6 +44,12 @@
     <string name="all_done_message">Hooray! All tasks swiped away, time to\nrelax #ProductiveDay</string>
     <string name="example_date">Next task @ 19:00</string>
 
+    <!-- Tasks list -->
+    <string name="tasks_list_multi_select_action">Multi Select</string>
+    <string name="tasks_list_search_action">Search</string>
+    <string name="tasks_list_workspaces_action">Workspaces</string>
+    <string name="tasks_list_settings_action">Settings</string>
+
     <!-- Settings -->
     <string name="general">GENERAL</string>
     <string name="notifications">Notifications</string>

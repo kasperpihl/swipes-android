@@ -15,6 +15,8 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -100,6 +102,11 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
     LinearLayout mActionButtonsContainer;
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
+
+    private static final int ACTION_MULTI_SELECT = 0;
+    private static final int ACTION_SEARCH = 1;
+    private static final int ACTION_WORKSPACES = 2;
+    private static final int ACTION_SETTINGS = 3;
 
     private WeakReference<Context> mContext;
 
@@ -187,6 +194,42 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         SyncService.getInstance(this).performSync(changesOnly);
 
         super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // TODO: Show standard actions.
+        menu.add(Menu.NONE, ACTION_MULTI_SELECT, Menu.NONE, getResources().getString(R.string.tasks_list_multi_select_action))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, ACTION_SEARCH, Menu.NONE, getResources().getString(R.string.tasks_list_search_action))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, ACTION_WORKSPACES, Menu.NONE, getResources().getString(R.string.tasks_list_workspaces_action))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, ACTION_SETTINGS, Menu.NONE, getResources().getString(R.string.tasks_list_settings_action))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // TODO: Show icons.
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case ACTION_MULTI_SELECT:
+                // TODO: New selection UI.
+                break;
+            case ACTION_SEARCH:
+                // TODO: New search UI.
+                break;
+            case ACTION_WORKSPACES:
+                // TODO: Implement workspaces.
+                break;
+            case ACTION_SETTINGS:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void createSnoozeAlarm() {
