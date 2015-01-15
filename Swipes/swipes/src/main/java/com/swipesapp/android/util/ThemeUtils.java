@@ -46,26 +46,19 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's dialog resource file.
-     */
-    public static int getDialogThemeResource(Context context) {
-        return isLightTheme(context) ? R.style.Light_Theme_Dialog : R.style.Dark_Theme_Dialog;
-    }
-
-    /**
-     * @param context Context to use.
-     * @return Current theme's picker resource file.
-     */
-    public static int getPickerThemeResource(Context context) {
-        return isLightTheme(context) ? R.style.Light_Picker : R.style.Dark_Picker;
-    }
-
-    /**
-     * @param context Context to use.
      * @return Current theme's background color.
      */
     public static int getBackgroundColor(Context context) {
         int color = isLightTheme(context) ? R.color.light_theme_background : R.color.dark_theme_background;
+        return context.getResources().getColor(color);
+    }
+
+    /**
+     * @param context Context to use.
+     * @return Current theme's neutral background color.
+     */
+    public static int getNeutralBackgroundColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_theme_neutral_background : R.color.dark_theme_neutral_background;
         return context.getResources().getColor(color);
     }
 

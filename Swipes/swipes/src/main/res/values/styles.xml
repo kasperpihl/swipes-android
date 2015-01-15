@@ -1,45 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.HoloAccent.Light" />
-
-    <style name="swipesTabButton" parent="android:Widget.Holo.Light.Button">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light" />
 
     <!-- Application themes -->
-    <style name="Light_Theme" parent="Theme.HoloAccent.Light">
+    <style name="Light_Theme" parent="Theme.AppCompat.Light">
         <item name="android:textColor">@color/light_theme_text</item>
-        <item name="android:actionBarStyle">@style/Light_ActionBar</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="accentColor">@color/light_theme_accent_color</item>
+        <item name="colorPrimary">@color/focus_accent_color</item>
+        <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
+        <item name="colorAccent">@color/light_theme_accent_color</item>
         <item name="android:editTextBackground">@drawable/light_theme_edit_text_background</item>
         <item name="android:homeAsUpIndicator">@drawable/light_theme_back_icon</item>
-        <item name="android:windowTranslucentStatus" tools:targetApi="19">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <style name="Dark_Theme" parent="Theme.HoloAccent">
+    <style name="Dark_Theme" parent="Theme.AppCompat">
         <item name="android:textColor">@color/dark_theme_text</item>
-        <item name="android:actionBarStyle">@style/Dark_ActionBar</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="accentColor">@color/dark_theme_accent_color</item>
+        <item name="colorPrimary">@color/focus_accent_color</item>
+        <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
+        <item name="colorAccent">@color/dark_theme_accent_color</item>
         <item name="android:editTextBackground">@drawable/dark_theme_edit_text_background</item>
         <item name="android:homeAsUpIndicator">@drawable/dark_theme_back_icon</item>
-        <item name="android:windowTranslucentStatus" tools:targetApi="19">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
-    </style>
-
-    <style name="Light_Theme_Dialog" parent="Theme.HoloAccent.Light.Dialog.NoActionBar">
-        <item name="android:textColor">@color/light_theme_text</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="accentColor">@color/light_theme_accent_color</item>
-    </style>
-
-    <style name="Dark_Theme_Dialog" parent="Theme.HoloAccent.Dialog.NoActionBar">
-        <item name="android:textColor">@color/dark_theme_text</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="accentColor">@color/dark_theme_accent_color</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="Dark_Theme_Activity_Overlay" parent="android:Theme.NoTitleBar">
@@ -52,45 +36,6 @@
         <item name="android:windowBackground">@color/light_theme_background</item>
     </style>
 
-    <!-- Action bar themes -->
-    <style name="Light_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@drawable/ab_solid_light</item>
-        <item name="android:titleTextStyle">@style/Light_ActionBar_Text</item>
-        <item name="android:icon">@android:color/transparent</item>
-        <item name="android:height">@dimen/action_bar_height</item>
-    </style>
-
-    <style name="Dark_ActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">@drawable/ab_solid_dark</item>
-        <item name="android:titleTextStyle">@style/Dark_ActionBar_Text</item>
-        <item name="android:icon">@android:color/transparent</item>
-        <item name="android:height">@dimen/action_bar_height</item>
-    </style>
-
-    <!-- Action bar text themes -->
-    <style name="Light_ActionBar_Text" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/light_theme_text</item>
-    </style>
-
-    <style name="Dark_ActionBar_Text" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/dark_theme_text</item>
-    </style>
-
-    <!-- Picker themes -->
-    <style name="Light_Picker">
-        <item name="bpDialogBackground">@drawable/light_background</item>
-        <item name="bpTextColor">@color/light_theme_text</item>
-        <item name="bpButtonBackground">@drawable/light_background</item>
-        <item name="bpDividerColor">@color/light_theme_divider</item>
-    </style>
-
-    <style name="Dark_Picker">
-        <item name="bpDialogBackground">@drawable/dark_background</item>
-        <item name="bpTextColor">@color/dark_theme_text</item>
-        <item name="bpButtonBackground">@drawable/dark_background</item>
-        <item name="bpDividerColor">@color/dark_theme_divider</item>
-    </style>
-
     <!-- Splash screen theme. -->
     <style name="Splash_Theme" parent="android:Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
@@ -99,21 +44,11 @@
     </style>
 
     <!-- Login screen theme. -->
-    <style name="Login_Theme" parent="Theme.HoloAccent.Light">
+    <style name="Login_Theme" parent="Theme.AppCompat.Light">
         <item name="android:textColor">@color/light_theme_text</item>
         <item name="accentColor">@color/light_theme_accent_color</item>
         <item name="android:editTextBackground">@drawable/light_theme_edit_text_background</item>
         <item name="android:windowBackground">@drawable/splash_bg</item>
-    </style>
-
-    <!-- TODO: Edit task themes are temporary. Remove when the action bar has correct icons. -->
-    <!-- Edit task themes. -->
-    <style name="Edit_Task_Theme_Light" parent="Light_Theme">
-        <item name="android:actionBarItemBackground">@null</item>
-    </style>
-
-    <style name="Edit_Task_Theme_Dark" parent="Dark_Theme">
-        <item name="android:actionBarItemBackground">@null</item>
     </style>
 
 </resources>

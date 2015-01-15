@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
@@ -24,7 +24,7 @@ import butterknife.OnClick;
 /**
  * Simple activity to display when the user first launches the app.
  */
-public class WelcomeActivity extends AccentActivity {
+public class WelcomeActivity extends ActionBarActivity {
 
     private TasksService mTasksService;
 
@@ -34,7 +34,7 @@ public class WelcomeActivity extends AccentActivity {
         setTheme(ThemeUtils.getThemeResource(this));
         Crashlytics.start(this);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_welcome);
 

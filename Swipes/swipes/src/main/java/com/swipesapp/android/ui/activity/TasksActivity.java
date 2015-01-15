@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,7 +37,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -70,7 +70,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends AccentActivity implements ListContentsListener {
+public class TasksActivity extends ActionBarActivity implements ListContentsListener {
 
     @InjectView(R.id.pager)
     ViewPager mViewPager;
@@ -141,19 +141,22 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
         ButterKnife.inject(this);
 
         mWindow = getWindow();
-        mWindow.getDecorView().setBackgroundColor(getResources().getColor(R.color.neutral_background));
+        mWindow.getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWindow.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            // Enable KitKat translucency and tint.
+            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            mTintManager = new SystemBarTintManager(this);
+            mTintManager.setStatusBarTintEnabled(true);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Enable Lollipop status bar tint.
+            mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        getActionBar().setTitle("");
+        getSupportActionBar().setTitle("");
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
-
-        mTintManager = new SystemBarTintManager(this);
-        mTintManager.setStatusBarTintEnabled(true);
 
         createSnoozeAlarm();
 
@@ -278,8 +281,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             // Blend the colors and adjust the ActionBar.
             int blended = blendColors(toColor, fromColor, positionOffset);
-            ColorDrawable actionBarBackground = new ColorDrawable(blended);
-            getActionBar().setBackgroundDrawable(actionBarBackground);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(blended));
 
             // Load dark colors for sections.
             fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
@@ -290,8 +292,7 @@ public class TasksActivity extends AccentActivity implements ListContentsListene
 
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
                 // Adjust status bar for KitKat.
-                ColorDrawable statusBarBackground = new ColorDrawable(blended);
-                mTintManager.setStatusBarTintDrawable(statusBarBackground);
+                mTintManager.setStatusBarTintDrawable(new ColorDrawable(blended));
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // Adjust status bar for Lollipop.
                 mWindow.setStatusBarColor(blended);

@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.FrameLayout;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
@@ -28,7 +28,7 @@ import com.swipesapp.android.util.ThemeUtils;
 
 import butterknife.InjectView;
 
-public class SettingsActivity extends AccentActivity {
+public class SettingsActivity extends ActionBarActivity {
 
     @InjectView(R.id.settings_content)
     FrameLayout mContent;

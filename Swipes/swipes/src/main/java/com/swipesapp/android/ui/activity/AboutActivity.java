@@ -3,11 +3,11 @@ package com.swipesapp.android.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
@@ -15,7 +15,7 @@ import com.swipesapp.android.util.ThemeUtils;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class AboutActivity extends AccentActivity {
+public class AboutActivity extends ActionBarActivity {
 
     @InjectView(R.id.about_view)
     ScrollView mView;
@@ -44,7 +44,7 @@ public class AboutActivity extends AccentActivity {
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
-        getActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mBroughtBy.setTextColor(ThemeUtils.getTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getTextColor(this));

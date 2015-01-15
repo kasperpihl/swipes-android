@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,7 +26,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
@@ -62,7 +62,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class EditTaskActivity extends AccentActivity {
+public class EditTaskActivity extends ActionBarActivity {
 
     @InjectView(R.id.main_layout)
     LinearLayout mLayout;
@@ -177,14 +177,13 @@ public class EditTaskActivity extends AccentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: Revert back to default themes when the action bar has correct icons.
-        setTheme(ThemeUtils.isLightTheme(this) ? R.style.Edit_Task_Theme_Light : R.style.Edit_Task_Theme_Dark);
+        setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_edit_task);
         ButterKnife.inject(this);
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
-        getActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mContext = new WeakReference<Context>(this);
 
@@ -531,7 +530,7 @@ public class EditTaskActivity extends AccentActivity {
         mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Hide action bar.
-        getActionBar().hide();
+        getSupportActionBar().hide();
 
         loadTags();
     }
@@ -610,7 +609,7 @@ public class EditTaskActivity extends AccentActivity {
         mContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Hide action bar.
-        getActionBar().show();
+        getSupportActionBar().show();
 
         updateViews();
 

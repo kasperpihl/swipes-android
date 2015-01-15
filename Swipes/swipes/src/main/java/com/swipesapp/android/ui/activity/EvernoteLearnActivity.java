@@ -4,38 +4,41 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.negusoft.holoaccent.activity.AccentActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
-import com.swipesapp.android.util.ThemeUtils;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class EvernoteLearnActivity extends AccentActivity {
+public class EvernoteLearnActivity extends ActionBarActivity {
 
     @InjectView(R.id.evernote_get_started)
     Button mButtonGetStarted;
 
     private WeakReference<Context> mContext;
 
+    private Window mWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        setTheme(R.style.Light_Theme);
         setContentView(R.layout.activity_evernote_learn);
         ButterKnife.inject(this);
 
-        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.evernote_gray_background));
+        mWindow = getWindow();
+        mWindow.getDecorView().setBackgroundColor(getResources().getColor(R.color.evernote_gray_background));
 
-        getActionBar().hide();
+        getSupportActionBar().hide();
 
         themeStatusBar();
 
@@ -55,19 +58,22 @@ public class EvernoteLearnActivity extends AccentActivity {
     }
 
     private void themeStatusBar() {
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-
         int statusBarColor = getResources().getColor(R.color.evernote_brand_color_dark);
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            // Enable KitKat translucency and tint.
+            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+
             // Adjust status bar for KitKat.
-            ColorDrawable statusBarBackground = new ColorDrawable(statusBarColor);
-            tintManager.setStatusBarTintDrawable(statusBarBackground);
+            tintManager.setStatusBarTintDrawable(new ColorDrawable(statusBarColor));
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Enable Lollipop status bar tint.
+            mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
             // Adjust status bar for Lollipop.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(statusBarColor);
+            mWindow.setStatusBarColor(statusBarColor);
         }
     }
 

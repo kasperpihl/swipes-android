@@ -75,8 +75,6 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         setContentView(R.layout.activity_evernote_attachments);
         ButterKnife.inject(this);
 
-        getActionBar().hide();
-
         mContext = new WeakReference<Context>(this);
 
         mTasksService = TasksService.getInstance(this);

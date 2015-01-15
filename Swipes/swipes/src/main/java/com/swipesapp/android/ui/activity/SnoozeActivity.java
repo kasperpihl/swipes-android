@@ -115,8 +115,6 @@ public class SnoozeActivity extends FragmentActivity {
         setContentView(R.layout.activity_snooze);
         ButterKnife.inject(this);
 
-        getActionBar().hide();
-
         mContext = new WeakReference<Context>(this);
 
         mTasksService = TasksService.getInstance(this);
