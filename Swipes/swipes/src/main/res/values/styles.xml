@@ -6,7 +6,6 @@
     <!-- Application themes -->
     <style name="Light_Theme" parent="Theme.AppCompat.Light">
         <item name="android:textColor">@color/light_theme_text</item>
-        <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/focus_accent_color</item>
         <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
         <item name="colorAccent">@color/light_theme_accent_color</item>
@@ -17,7 +16,6 @@
 
     <style name="Dark_Theme" parent="Theme.AppCompat">
         <item name="android:textColor">@color/dark_theme_text</item>
-        <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/focus_accent_color</item>
         <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
         <item name="colorAccent">@color/dark_theme_accent_color</item>
