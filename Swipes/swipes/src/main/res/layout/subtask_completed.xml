@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:text="@string/focus_light"
+            android:text="@string/focus_full"
             android:textSize="17sp" />
     </FrameLayout>
 

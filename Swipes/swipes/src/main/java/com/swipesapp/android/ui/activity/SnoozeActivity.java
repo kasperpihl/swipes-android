@@ -134,42 +134,45 @@ public class SnoozeActivity extends FragmentActivity {
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mAdjustHint.setTextColor(getResources().getColor(hintColor));
 
-        setSelector(mLaterTodayIcon, R.string.schedule_coffee, R.string.schedule_coffee_full);
-        mLaterTodayIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mLaterTodayTitle.setTextColor(ThemeUtils.getTextColor(this));
+        int textColor = ThemeUtils.getTextColor(this);
+        int iconColor = ThemeUtils.getSectionColor(Sections.LATER, this);
 
-        setSelector(mThisEveningIcon, R.string.schedule_moon, R.string.schedule_moon_full);
-        mThisEveningIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisEveningTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mLaterTodayIcon);
+        mLaterTodayIcon.setTextColor(iconColor);
+        mLaterTodayTitle.setTextColor(textColor);
 
-        setSelector(mTomorrowIcon, R.string.schedule_sun, R.string.schedule_sun_full);
-        mTomorrowIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTomorrowTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mThisEveningIcon);
+        mThisEveningIcon.setTextColor(iconColor);
+        mThisEveningTitle.setTextColor(textColor);
 
-        setSelector(mTwoDaysIcon, R.string.schedule_logbook, R.string.schedule_logbook_full);
-        mTwoDaysIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mTwoDaysTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mTomorrowIcon);
+        mTomorrowIcon.setTextColor(iconColor);
+        mTomorrowTitle.setTextColor(textColor);
+
+        setSelector(mTwoDaysIcon);
+        mTwoDaysIcon.setTextColor(iconColor);
+        mTwoDaysTitle.setTextColor(textColor);
         mTwoDaysTitle.setText(getTwoDaysTitle());
 
-        setSelector(mThisWeekendIcon, R.string.schedule_glass, R.string.schedule_glass_full);
-        mThisWeekendIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mThisWeekendTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mThisWeekendIcon);
+        mThisWeekendIcon.setTextColor(iconColor);
+        mThisWeekendTitle.setTextColor(textColor);
 
-        setSelector(mNextWeekIcon, R.string.schedule_circle, R.string.schedule_circle_full);
-        mNextWeekIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mNextWeekTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mNextWeekIcon);
+        mNextWeekIcon.setTextColor(iconColor);
+        mNextWeekTitle.setTextColor(textColor);
 
-//        setSelector(mUnspecifiedIcon, R.string.schedule_cloud, R.string.schedule_cloud_full);
-//        mUnspecifiedIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-//        mUnspecifiedTitle.setTextColor(ThemeUtils.getTextColor(this));
+//        setSelector(mUnspecifiedIcon);
+//        mUnspecifiedIcon.setTextColor(iconColor);
+//        mUnspecifiedTitle.setTextColor(textColor);
 
-        setSelector(mAtLocationIcon, R.string.schedule_location, R.string.schedule_location_full);
-        mAtLocationIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mAtLocationTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mAtLocationIcon);
+        mAtLocationIcon.setTextColor(iconColor);
+        mAtLocationTitle.setTextColor(textColor);
 
-        setSelector(mPickDateIcon, R.string.schedule_calendar, R.string.schedule_calendar_full);
-        mPickDateIcon.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, this));
-        mPickDateTitle.setTextColor(ThemeUtils.getTextColor(this));
+        setSelector(mPickDateIcon);
+        mPickDateIcon.setTextColor(iconColor);
+        mPickDateTitle.setTextColor(textColor);
     }
 
     private void blurBackground() {
@@ -201,19 +204,19 @@ public class SnoozeActivity extends FragmentActivity {
         }
     }
 
-    public void setSelector(final SwipesTextView icon, final int resource, final int resourceFull) {
+    public void setSelector(final SwipesTextView icon) {
         // Create selector based on touch state.
         ((View) icon.getParent()).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // Change resource to pressed state.
-                        icon.setText(getString(resourceFull));
+                        // Change alpha to pressed state.
+                        icon.animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
                         break;
                     case MotionEvent.ACTION_UP:
-                        // Change resource to default state.
-                        icon.setText(getString(resource));
+                        // Change alpha to default state.
+                        icon.animate().alpha(1.0f);
                         break;
                 }
                 return false;

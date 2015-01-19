@@ -10,10 +10,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,8 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -37,7 +33,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -70,7 +65,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends ActionBarActivity implements ListContentsListener {
+public class TasksActivity extends BaseActivity implements ListContentsListener {
 
     @InjectView(R.id.pager)
     ViewPager mViewPager;
@@ -116,6 +111,8 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
 
     private TasksService mTasksService;
 
+    private TasksActivity mActivity;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private static Sections sCurrentSection;
@@ -129,10 +126,6 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
 
     private int mCurrentSectionColor;
 
-    private SystemBarTintManager mTintManager;
-
-    private Window mWindow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,23 +133,13 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
 
-        mWindow = getWindow();
-        mWindow.getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
-
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            // Enable KitKat translucency and tint.
-            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            mTintManager = new SystemBarTintManager(this);
-            mTintManager.setStatusBarTintEnabled(true);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Enable Lollipop status bar tint.
-            mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
 
         getSupportActionBar().setTitle("");
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
+        mActivity = this;
 
         createSnoozeAlarm();
 
@@ -208,6 +191,18 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.SETTINGS_REQUEST_CODE) {
+            switch (resultCode) {
+                case Constants.THEME_CHANGED_RESULT_CODE:
+                    // Theme has changed. Reload activity.
+                    recreate();
+                    break;
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // TODO: Show standard actions.
         menu.add(Menu.NONE, ACTION_MULTI_SELECT, Menu.NONE, getResources().getString(R.string.tasks_list_multi_select_action))
@@ -237,7 +232,8 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
                 // TODO: Implement workspaces.
                 break;
             case ACTION_SETTINGS:
-                startActivity(new Intent(this, SettingsActivity.class));
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, Constants.SETTINGS_REQUEST_CODE);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -287,16 +283,9 @@ public class TasksActivity extends ActionBarActivity implements ListContentsList
             fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
             toColor = ThemeUtils.getSectionColorDark(to, mContext.get());
 
-            // Blend the colors for status bar.
+            // Blend the colors and adjust the status bar.
             blended = blendColors(toColor, fromColor, positionOffset);
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                // Adjust status bar for KitKat.
-                mTintManager.setStatusBarTintDrawable(new ColorDrawable(blended));
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Adjust status bar for Lollipop.
-                mWindow.setStatusBarColor(blended);
-            }
+            mActivity.themeStatusBar(blended);
         }
     };
 

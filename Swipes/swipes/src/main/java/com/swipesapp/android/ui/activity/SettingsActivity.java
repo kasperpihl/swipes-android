@@ -124,7 +124,10 @@ public class SettingsActivity extends ActionBarActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equalsIgnoreCase(PreferenceUtils.THEME_KEY)) {
-                // Theme has changed. Reload activity.
+                // Theme has changed. Set result code.
+                getActivity().setResult(Constants.THEME_CHANGED_RESULT_CODE);
+
+                // Reload activity.
                 getActivity().recreate();
             }
         }

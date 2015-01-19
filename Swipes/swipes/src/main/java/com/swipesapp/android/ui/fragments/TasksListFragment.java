@@ -292,11 +292,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Add listeners and customize buttons.
         mFiltersTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_tags_button);
         mFiltersTagsButton.setOnClickListener(mShowTagsFilterListener);
-        mFiltersTagsButton.setSelector(R.string.action_tag, R.string.action_tag_full);
 
         SwipesButton filtersCloseTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_tags_button);
         filtersCloseTagsButton.setOnClickListener(mCloseTagsFilterListener);
-        filtersCloseTagsButton.setSelector(R.string.round_close, R.string.round_close_full);
 
         mSearchEditText = (ActionEditText) mFiltersContainer.findViewById(R.id.filters_search_edit_text);
         mSearchEditText.setOnFocusChangeListener(mSearchFocusListener);
@@ -306,7 +304,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mCloseSearchButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_search_button);
         mCloseSearchButton.setOnClickListener(mSearchCloseListener);
-        mCloseSearchButton.setSelector(R.string.round_close, R.string.round_close_full);
 
         mFiltersContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
     }

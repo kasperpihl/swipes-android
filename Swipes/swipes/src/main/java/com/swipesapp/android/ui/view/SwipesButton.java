@@ -32,6 +32,7 @@ public class SwipesButton extends Button {
 
     private void init(Context context) {
         mContext = context;
+
         if (sTypeface == null) {
             synchronized (SwipesButton.class) {
                 if (sTypeface == null) {
@@ -39,23 +40,25 @@ public class SwipesButton extends Button {
                 }
             }
         }
-        this.setTypeface(sTypeface);
-        this.setTextColor(ThemeUtils.getTextColor(mContext));
+
+        setTypeface(sTypeface);
+        setTextColor(ThemeUtils.getTextColor(mContext));
+        setSelector();
     }
 
-    public void setSelector(final int resource, final int resourceFull) {
+    private void setSelector() {
         // Create selector based on touch state.
         setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // Change resource to pressed state.
-                        setText(mContext.getString(resourceFull));
+                        // Change alpha to pressed state.
+                        animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
                         break;
                     case MotionEvent.ACTION_UP:
-                        // Change resource to default state.
-                        setText(mContext.getString(resource));
+                        // Change alpha to default state.
+                        animate().alpha(1.0f);
                         break;
                 }
                 return false;

@@ -60,6 +60,7 @@
             android:clipToPadding="false"
             android:divider="@null"
             android:dividerHeight="0dp"
+            android:overScrollMode="never"
             android:paddingBottom="@dimen/button_container_height"
             swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
             swipe:swipeBackIconRight="@+id/swipe_back_icon_right"

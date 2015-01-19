@@ -11,6 +11,11 @@ public class Constants {
     public static final String FONT_NAME = "swipes-Regular.ttf";
 
     /**
+     * Alpha value for pressed buttons.
+     */
+    public static final float PRESSED_BUTTON_ALPHA = 0.6f;
+
+    /**
      * Default animation duration.
      */
     public static final int ANIMATION_DURATION = 500;
@@ -49,6 +54,16 @@ public class Constants {
      * Request code for welcome screen.
      */
     public static final int WELCOME_REQUEST_CODE = 4;
+
+    /**
+     * Request code for settings screen.
+     */
+    public static final int SETTINGS_REQUEST_CODE = 5;
+
+    /**
+     * Result code for theme changed.
+     */
+    public static final int THEME_CHANGED_RESULT_CODE = 1;
 
     /**
      * Request code for Evernote attachments.

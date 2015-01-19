@@ -96,7 +96,6 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
         mSearchField.setTextColor(Color.WHITE);
         mSearchField.setHintTextColor(Color.WHITE);
-        mSearchField.setBackgroundResource(R.drawable.edit_text_white_background);
         mSearchField.addTextChangedListener(mSearchTypeListener);
     }
 

@@ -43,7 +43,7 @@
     <dimen name="subtask_counter_height">21dp</dimen>
 
     <!-- Scheduler -->
-    <dimen name="schedule_options_icon_size">40sp</dimen>
+    <dimen name="schedule_options_icon_size">35sp</dimen>
     <dimen name="schedule_options_margin_vertical">20dp</dimen>
     <dimen name="schedule_options_margin_middle">10dp</dimen>
     <dimen name="schedule_options_margin_sides">10dp</dimen>
