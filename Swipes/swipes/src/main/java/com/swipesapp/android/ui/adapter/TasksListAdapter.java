@@ -166,7 +166,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         // Set priority.
-        holder.priorityButton.setChecked(priority == 1);
+        if (priority != null) holder.priorityButton.setChecked(priority == 1);
 
         // Set selection.
         if (selected) {

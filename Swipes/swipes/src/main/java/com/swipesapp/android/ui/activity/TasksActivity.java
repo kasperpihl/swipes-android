@@ -12,9 +12,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,6 +115,8 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     private TasksActivity mActivity;
 
+    private ActionBar mActionBar;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private static Sections sCurrentSection;
@@ -126,6 +130,12 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     private int mCurrentSectionColor;
 
+    private View mActionBarView;
+
+    private float mPreviousOffset;
+
+    private boolean mHasChangedTab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,11 +145,17 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
 
-        getSupportActionBar().setTitle("");
-
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
         mActivity = this;
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
+
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayShowCustomEnabled(true);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setCustomView(mActionBarView);
 
         createSnoozeAlarm();
 
@@ -252,12 +268,24 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         public void onPageSelected(int position) {
             sCurrentSection = Sections.getSectionByNumber(position);
 
-            // Notify listeners that current tab has changed.
-            mTasksService.sendBroadcast(Actions.TAB_CHANGED);
-
             hideEditBar();
 
             mCurrentSectionColor = ThemeUtils.getSectionColor(sCurrentSection, mContext.get());
+
+            mHasChangedTab = true;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if (state == ViewPager.SCROLL_STATE_IDLE) {
+                if (mHasChangedTab) {
+                    // Notify listeners that current tab has changed.
+                    mTasksService.sendBroadcast(Actions.TAB_CHANGED);
+                    mHasChangedTab = false;
+                }
+
+                mActionBarView.setAlpha(1f);
+            }
         }
 
         @Override
@@ -277,7 +305,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
             // Blend the colors and adjust the ActionBar.
             int blended = blendColors(toColor, fromColor, positionOffset);
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(blended));
+            mActionBar.setBackgroundDrawable(new ColorDrawable(blended));
 
             // Load dark colors for sections.
             fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
@@ -286,6 +314,9 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             // Blend the colors and adjust the status bar.
             blended = blendColors(toColor, fromColor, positionOffset);
             mActivity.themeStatusBar(blended);
+
+            // Fade ActionBar content gradually.
+            fadeActionBar(positionOffset);
         }
     };
 
@@ -295,6 +326,32 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         final float g = Color.green(from) * ratio + Color.green(to) * inverseRatio;
         final float b = Color.blue(from) * ratio + Color.blue(to) * inverseRatio;
         return Color.rgb((int) r, (int) g, (int) b);
+    }
+
+    private void fadeActionBar(float positionOffset) {
+        if (mPreviousOffset > 0) {
+            if (positionOffset > mPreviousOffset) {
+                // Swiping to the right of the ViewPager.
+                if (positionOffset < 0.5) {
+                    // Fade out until half of the way.
+                    mActionBarView.setAlpha(1 - positionOffset * 2);
+                } else {
+                    // Fade in from half to the the end.
+                    mActionBarView.setAlpha((positionOffset - 0.5f) * 2);
+                }
+            } else {
+                // Swiping to the left of the ViewPager.
+                if (positionOffset > 0.5) {
+                    // Fade out until half of the way.
+                    mActionBarView.setAlpha(positionOffset / 2);
+                } else {
+                    // Fade in from half to the the end.
+                    mActionBarView.setAlpha((0.5f - positionOffset) * 2);
+                }
+            }
+        }
+
+        mPreviousOffset = positionOffset;
     }
 
     /**
