@@ -9,25 +9,25 @@
         android:key="evernote_unlink"
         android:summary="@string/evernote_unlink_account_detail"
         android:title="@string/evernote_unlink_account" />
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="evernote_sync_device"
         android:summary="@string/evernote_sync_device"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on" />
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="evernote_auto_import"
         android:summary="@string/evernote_auto_import"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on" />
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="evernote_sync_personal"
         android:summary="@string/evernote_sync_personal"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on" />
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="evernote_sync_business"
         android:summary="@string/evernote_sync_business"

@@ -20,21 +20,21 @@
             android:targetPackage="com.swipesapp.android" />
     </PreferenceScreen>
 
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_notifications"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on"
         android:title="@string/notifications" />
 
-    <com.negusoft.holoaccent.preference.SwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="settings_enable_location"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on"
         android:title="@string/location" />
 
-    <com.negusoft.holoaccent.preference.ListPreference
+    <ListPreference
         android:defaultValue="light"
         android:dialogTitle="@string/settings_theme_chooser_dialog_title"
         android:entries="@array/theme_list"
