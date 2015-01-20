@@ -33,6 +33,8 @@ public class SettingsActivity extends ActionBarActivity {
     @InjectView(R.id.settings_content)
     FrameLayout mContent;
 
+    private static boolean mHasChangedTheme;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,12 @@ public class SettingsActivity extends ActionBarActivity {
                 new SettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        if (mHasChangedTheme) {
+            // Theme has changed. Set result code.
+            setResult(Constants.THEME_CHANGED_RESULT_CODE);
+            mHasChangedTheme = false;
+        }
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
@@ -124,8 +132,8 @@ public class SettingsActivity extends ActionBarActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equalsIgnoreCase(PreferenceUtils.THEME_KEY)) {
-                // Theme has changed. Set result code.
-                getActivity().setResult(Constants.THEME_CHANGED_RESULT_CODE);
+                // Theme has changed. Save state.
+                mHasChangedTheme = true;
 
                 // Reload activity.
                 getActivity().recreate();

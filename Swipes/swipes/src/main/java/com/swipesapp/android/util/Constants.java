@@ -8,7 +8,7 @@ public class Constants {
     /**
      * Swipes font name.
      */
-    public static final String FONT_NAME = "swipes-Regular.ttf";
+    public static final String FONT_NAME = "swipes.ttf";
 
     /**
      * Alpha value for pressed buttons.

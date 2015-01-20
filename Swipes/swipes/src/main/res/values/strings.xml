@@ -247,11 +247,11 @@
 
     <!-- Section icons -->
     <string name="swipes_logo">&#xe600;</string>
-    <string name="later_full">&#xe608;</string>
-    <string name="focus_full">&#xe607;</string>
-    <string name="done_full">&#xe606;</string>
+    <string name="later_full">&#xe604;</string>
+    <string name="focus_full">&#xe603;</string>
+    <string name="done_full">&#xe602;</string>
     <string name="settings_full">&#xe605;</string>
-    <string name="swipes_signature">&#xe61a;</string>
+    <string name="swipes_signature">&#xe623;</string>
 
     <!-- Action icons -->
     <string name="round_add">&#xe62f;</string>
