@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,17 +19,16 @@
         android:orientation="vertical">
 
         <!-- Add task button -->
-        <com.swipesapp.android.ui.view.SwipesButton
+        <com.melnykov.fab.FloatingActionButton
             android:id="@+id/button_add_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@color/transparent"
-            android:text="@string/round_add"
-            android:textColor="@color/focus_accent_color"
-            android:textSize="@dimen/add_task_button_size" />
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_add"
+            fab:fab_colorNormal="@color/focus_accent_color"
+            fab:fab_colorPressed="@color/focus_accent_color_dark"
+            fab:fab_colorRipple="@color/focus_accent_color_ripple" />
 
         <!-- Edit bar -->
         <LinearLayout

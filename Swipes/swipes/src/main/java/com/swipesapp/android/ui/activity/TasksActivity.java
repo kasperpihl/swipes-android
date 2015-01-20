@@ -35,6 +35,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -73,7 +74,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
     ViewPager mViewPager;
 
     @InjectView(R.id.button_add_task)
-    SwipesButton mButtonAddTask;
+    FloatingActionButton mButtonAddTask;
 
     @InjectView(R.id.blur_background)
     ImageView mBlurBackground;
@@ -179,8 +180,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
-
-        mButtonAddTask.setTextColor(ThemeUtils.getSectionColor(Sections.FOCUS, this));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
     }
@@ -329,6 +328,10 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
     }
 
     private void fadeActionBar(float positionOffset) {
+        // TODO: Set text and icons properly.
+//        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
+//        title.setText(from.getSectionNumber() != 1 ? "LATER" : "TODAY");
+
         if (mPreviousOffset > 0) {
             if (positionOffset > mPreviousOffset) {
                 // Swiping to the right of the ViewPager.

@@ -9,6 +9,7 @@
     <item name="later_accent_color_dark" type="color">#DF3108</item>
     <item name="focus_accent_color" type="color">#FDC02F</item>
     <item name="focus_accent_color_dark" type="color">#E0A007</item>
+    <item name="focus_accent_color_ripple" type="color">#AE7B00</item>
 
     <!-- Theme colors -->
     <item name="light_theme_background" type="color">#FFFFFF</item>

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -323,7 +324,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Setup back view.
         mListView.setLongSwipeEnabled(true);
-        mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
+        mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), Color.TRANSPARENT);
         mListView.setLongSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mListView.setBackIconText(R.string.focus_full, R.string.later_full);
         mListView.setLongSwipeBackIconText(R.string.done_full, R.string.later_full);
@@ -351,7 +352,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setListOrderListener(this);
 
         // Setup back view.
-        mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
+        mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), Color.TRANSPARENT);
         mListView.setBackIconText(R.string.done_full, R.string.later_full);
 
         // Setup priority button.
@@ -373,7 +374,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Setup back view.
         mListView.setLongSwipeEnabled(true);
-        mListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), ThemeUtils.getBackgroundColor(getActivity()));
+        mListView.setSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()), Color.TRANSPARENT);
         mListView.setLongSwipeBackgroundColors(0, ThemeUtils.getSectionColor(Sections.LATER, getActivity()));
         mListView.setBackIconText(0, R.string.focus_full);
         mListView.setLongSwipeBackIconText(0, R.string.later_full);
