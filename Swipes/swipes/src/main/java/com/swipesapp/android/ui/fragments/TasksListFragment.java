@@ -455,6 +455,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
                     editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, mSelectedTasks.get(0).getId());
+                    editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
                     startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
 
                     // Clear selected tasks.

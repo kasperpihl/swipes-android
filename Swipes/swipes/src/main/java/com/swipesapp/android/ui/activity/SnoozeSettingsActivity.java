@@ -2,12 +2,12 @@ package com.swipesapp.android.ui.activity;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.ActionBarActivity;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Sections;
 
-public class SnoozeSettingsActivity extends ActionBarActivity {
+public class SnoozeSettingsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,8 @@ public class SnoozeSettingsActivity extends ActionBarActivity {
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
     }
 
     public static class SnoozeSettingsFragment extends PreferenceFragment {

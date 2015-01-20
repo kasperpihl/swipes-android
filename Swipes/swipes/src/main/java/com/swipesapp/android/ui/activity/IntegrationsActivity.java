@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.ActionBarActivity;
 
 import com.evernote.client.android.EvernoteSession;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Sections;
 
-public class IntegrationsActivity extends ActionBarActivity {
+public class IntegrationsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,8 @@ public class IntegrationsActivity extends ActionBarActivity {
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
     }
 
     @Override

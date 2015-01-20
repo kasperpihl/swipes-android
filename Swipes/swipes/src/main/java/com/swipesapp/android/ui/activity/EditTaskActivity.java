@@ -8,8 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -47,6 +47,7 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
+import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
@@ -62,7 +63,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class EditTaskActivity extends ActionBarActivity {
+public class EditTaskActivity extends BaseActivity {
 
     @InjectView(R.id.main_layout)
     LinearLayout mLayout;
@@ -183,7 +184,12 @@ public class EditTaskActivity extends ActionBarActivity {
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
+        int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
+        Sections section = Sections.getSectionByNumber(sectionNumber);
+
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        setupSystemBars(section);
 
         mContext = new WeakReference<Context>(this);
 
@@ -245,6 +251,9 @@ public class EditTaskActivity extends ActionBarActivity {
                 case RESULT_OK:
                     // Task has been snoozed. Update views.
                     updateViews();
+
+                    // Change bar colors for a clear visual hint.
+                    setupSystemBars(Sections.LATER);
                     break;
             }
         } else if (requestCode == Constants.EVERNOTE_ATTACHMENTS_REQUEST_CODE) {
@@ -284,6 +293,15 @@ public class EditTaskActivity extends ActionBarActivity {
         unregisterReceiver(mReceiver);
 
         super.onPause();
+    }
+
+    private void setupSystemBars(Sections section) {
+        // Apply ActionBar color.
+        ColorDrawable actionBarBackground = new ColorDrawable(ThemeUtils.getSectionColor(section, this));
+        getSupportActionBar().setBackgroundDrawable(actionBarBackground);
+
+        // Apply StatusBar color.
+        themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
     }
 
     private void setupViews() {

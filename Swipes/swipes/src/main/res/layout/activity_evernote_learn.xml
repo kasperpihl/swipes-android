@@ -27,6 +27,7 @@
             android:layout_toLeftOf="@id/evernote_logo"
             android:gravity="center"
             android:text="@string/evernote_learn_more_title_left"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <TextView
@@ -36,6 +37,7 @@
             android:layout_toRightOf="@id/evernote_logo"
             android:gravity="center"
             android:text="@string/evernote_learn_more_title_right"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
     </RelativeLayout>

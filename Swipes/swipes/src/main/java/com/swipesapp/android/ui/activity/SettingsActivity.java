@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.widget.FrameLayout;
 
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
@@ -25,10 +24,11 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Sections;
 
 import butterknife.InjectView;
 
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends BaseActivity {
 
     @InjectView(R.id.settings_content)
     FrameLayout mContent;
@@ -45,6 +45,8 @@ public class SettingsActivity extends ActionBarActivity {
                 new SettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
 
         if (mHasChangedTheme) {
             // Theme has changed. Set result code.
