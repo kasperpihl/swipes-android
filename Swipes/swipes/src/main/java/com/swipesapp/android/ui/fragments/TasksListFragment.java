@@ -78,11 +78,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private Sections mSection;
 
     /**
-     * Section color for this fragment.
-     */
-    private int mSectionColor;
-
-    /**
      * Customized list view to display tasks.
      */
     private DynamicListView mListView;
@@ -130,6 +125,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private TextView mFiltersEmptyTags;
     private SwipesButton mCloseSearchButton;
 
+    /**
+     * Controls the display of old tasks.
+     */
+    private boolean mIsShowingOld;
+
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
@@ -175,8 +175,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mSection = Sections.getSectionByNumber(sectionNumber);
 
-        mSectionColor = ThemeUtils.getSectionColor(mSection, getActivity());
-
         View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -194,9 +192,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
                 configureDoneView(mAdapter);
                 customizeDoneButtons();
+                handleDoneButtons();
                 break;
         }
-
         measureListView(mListView);
 
         hideFilters();
@@ -420,10 +418,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
+                mAdapter.setShowingOld(mIsShowingOld);
                 mAdapter.update(tasks, animateRefresh);
-
-                // Hide or show buttons.
-                handleDoneButtons();
                 break;
         }
     }
@@ -625,19 +621,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void handleDoneButtons() {
-        if (isCurrentSection()) {
-            // Load date of the oldest completed task.
-            List<GsonTask> completedTasks = mTasksService.loadCompletedTasks();
-            GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
-            Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
+        // Load date of the oldest completed task.
+        List<GsonTask> completedTasks = mTasksService.loadCompletedTasks();
+        GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
+        Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
 
-            // Only display buttons in the done section and when the oldest completed task is older than today.
-            if (mSection == Sections.DONE && !mAdapter.isShowingOld() && DateUtils.isOlderThanToday(completionDate)) {
-                mHeaderView.setVisibility(View.VISIBLE);
-                mHeaderView.setAlpha(1f);
-            } else {
-                mHeaderView.setVisibility(View.GONE);
-            }
+        // Only display buttons in the done section and when the oldest completed task is older than today.
+        if (mSection == Sections.DONE && !mIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
+            mHeaderView.setVisibility(View.VISIBLE);
+            mHeaderView.setAlpha(1f);
         }
     }
 
@@ -669,6 +661,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 mHeaderView.setVisibility(View.GONE);
                 // Show old tasks.
                 mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
+                // Set old tasks as shown.
+                mIsShowingOld = true;
             }
         });
     }
@@ -696,6 +690,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Proceed with delete.
                         mTasksService.deleteTasks(oldTasks);
                         refreshTaskList(false);
+
+                        // Hide buttons.
+                        mHeaderView.setVisibility(View.GONE);
                     }
                 })
                 .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
