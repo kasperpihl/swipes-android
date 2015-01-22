@@ -128,7 +128,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     /**
      * Controls the display of old tasks.
      */
-    private boolean mIsShowingOld;
+    private static boolean sIsShowingOld;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -418,7 +418,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
-                mAdapter.setShowingOld(mIsShowingOld);
+                mAdapter.setShowingOld(sIsShowingOld);
                 mAdapter.update(tasks, animateRefresh);
                 break;
         }
@@ -628,7 +628,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
 
         // Only display buttons in the done section and when the oldest completed task is older than today.
-        if (mSection == Sections.DONE && !mIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
+        if (mSection == Sections.DONE && !sIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
             mHeaderView.setVisibility(View.VISIBLE);
             mHeaderView.setAlpha(1f);
         }
@@ -663,7 +663,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Show old tasks.
                 mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
                 // Set old tasks as shown.
-                mIsShowingOld = true;
+                sIsShowingOld = true;
             }
         });
     }
