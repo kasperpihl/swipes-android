@@ -273,8 +273,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
             themeRecentsHeader(ThemeUtils.getSectionColor(sCurrentSection, mContext.get()));
 
-            hideEditBar();
-
             mHasChangedTab = true;
         }
 

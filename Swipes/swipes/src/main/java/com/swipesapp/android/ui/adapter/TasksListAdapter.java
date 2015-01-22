@@ -399,11 +399,6 @@ public class TasksListAdapter extends BaseAdapter {
         super.notifyDataSetChanged();
     }
 
-    public void hideOld() {
-        // Reset flag.
-        mIsShowingOld = false;
-    }
-
     public void setShowingOld(boolean isShowing) {
         mIsShowingOld = isShowing;
     }

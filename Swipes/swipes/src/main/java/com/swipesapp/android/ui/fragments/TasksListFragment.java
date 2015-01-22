@@ -105,7 +105,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     /**
      * Selected tasks, tags and filters.
      */
-    private List<GsonTask> mSelectedTasks;
+    private static List<GsonTask> sSelectedTasks;
     private List<GsonTag> mAssignedTags;
     private List<Long> mSelectedFilterTags;
 
@@ -170,7 +170,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mRepeatHandler = new RepeatHandler(getActivity());
 
-        mSelectedTasks = new ArrayList<GsonTask>();
+        sSelectedTasks = new ArrayList<GsonTask>();
 
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mSection = Sections.getSectionByNumber(sectionNumber);
@@ -439,24 +439,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Perform refresh.
                     refreshTaskList(false);
                 } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
-                    // Hide old tasks in the done section.
-                    if (mSection == Sections.DONE) mAdapter.hideOld();
-
-                    // Clear selected tasks and perform refresh.
-                    mSelectedTasks.clear();
-                    refreshTaskList(false);
+                    // Perform refresh.
+                    if (sSelectedTasks.isEmpty()) refreshTaskList(false);
 
                     // Hide search and tags.
                     hideFilters();
                 } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
-                    editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, mSelectedTasks.get(0).getId());
+                    editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, sSelectedTasks.get(0).getId());
                     editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
                     startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
 
                     // Clear selected tasks.
-                    mSelectedTasks.clear();
+                    sSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.ASSIGN_TAGS)) {
                     // Hide buttons and show tags view.
                     showTags();
@@ -469,11 +465,16 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                     // Hide bar and clear selection.
                     ((TasksActivity) getActivity()).hideEditBar();
-                    mSelectedTasks.clear();
+                    sSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
                         closeTags();
+                    } else if (!sSelectedTasks.isEmpty()) {
+                        // Clear selected tasks and hide edit bar.
+                        sSelectedTasks.clear();
+                        ((TasksActivity) getActivity()).hideEditBar();
+                        refreshTaskList(false);
                     } else {
                         getActivity().finish();
                     }
@@ -562,12 +563,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Deselect task.
                 task.setSelected(false);
                 selectedIndicator.setBackgroundColor(0);
-                mSelectedTasks.remove(task);
+                sSelectedTasks.remove(task);
             } else {
                 // Select task.
                 task.setSelected(true);
                 selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
-                mSelectedTasks.add(task);
+                sSelectedTasks.add(task);
             }
 
             handleEditBar();
@@ -594,7 +595,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             reorderTasks((List<GsonTask>) list);
 
             // Clear selected tasks and hide edit bar.
-            mSelectedTasks.clear();
+            sSelectedTasks.clear();
             ((TasksActivity) getActivity()).hideEditBar();
 
             refreshTaskList(false);
@@ -611,9 +612,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void handleEditBar() {
-        if (!mSelectedTasks.isEmpty()) {
+        if (!sSelectedTasks.isEmpty()) {
             // Display bar.
-            ((TasksActivity) getActivity()).showEditBar(mSelectedTasks.size() > 1);
+            ((TasksActivity) getActivity()).showEditBar(sSelectedTasks.size() > 1);
         } else {
             // Hide bar.
             ((TasksActivity) getActivity()).hideEditBar();
@@ -636,13 +637,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void deleteSelectedTasks() {
         // Display confirmation dialog.
         new AccentAlertDialog.Builder(getActivity())
-                .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, mSelectedTasks.size(), mSelectedTasks.size()))
-                .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, mSelectedTasks.size()))
+                .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, sSelectedTasks.size(), sSelectedTasks.size()))
+                .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, sSelectedTasks.size()))
                 .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         // Proceed with delete.
-                        mTasksService.deleteTasks(mSelectedTasks);
+                        mTasksService.deleteTasks(sSelectedTasks);
                         refreshTaskList(false);
                     }
                 })
@@ -743,7 +744,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Show main activity content.
         ((TasksActivity) getActivity()).showActionButtons();
 
-        mSelectedTasks.clear();
+        sSelectedTasks.clear();
 
         refreshTaskList(false);
 
@@ -874,7 +875,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private boolean isTagAssigned(GsonTag selectedTag) {
         int assigns = 0;
         // Using a counter, check if the tag is assigned to all selected tasks.
-        for (GsonTask task : mSelectedTasks) {
+        for (GsonTask task : sSelectedTasks) {
             // Increase counter if tag is already assigned to the task.
             for (GsonTag tag : task.getTags()) {
                 if (tag.getId().equals(selectedTag.getId())) {
@@ -882,12 +883,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 }
             }
         }
-        return assigns == mSelectedTasks.size();
+        return assigns == sSelectedTasks.size();
     }
 
     private void assignTag(GsonTag tag) {
         // Assign to all selected tasks.
-        for (GsonTask task : mSelectedTasks) {
+        for (GsonTask task : sSelectedTasks) {
             mAssignedTags.add(tag);
             task.setTags(mAssignedTags);
             mTasksService.saveTask(task, true);
@@ -896,7 +897,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void unassignTag(GsonTag tag) {
         // Unassign from all selected tasks.
-        for (GsonTask task : mSelectedTasks) {
+        for (GsonTask task : sSelectedTasks) {
             mTasksService.unassignTag(tag.getId(), task.getId());
         }
 
@@ -1118,7 +1119,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         String content = getString(R.string.share_message_header);
 
         // Append task titles.
-        for (GsonTask task : mSelectedTasks) {
+        for (GsonTask task : sSelectedTasks) {
             content += getString(R.string.share_message_circle) + task.getTitle() + "\n";
 
             for (GsonTask subtask : mTasksService.loadSubtasksForTask(task.getTempId())) {
