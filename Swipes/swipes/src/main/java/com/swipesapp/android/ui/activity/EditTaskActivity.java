@@ -300,6 +300,9 @@ public class EditTaskActivity extends BaseActivity {
 
         // Apply StatusBar color.
         themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
+
+        // Apply recents header color.
+        themeRecentsHeader(ThemeUtils.getSectionColor(section, this));
     }
 
     private void setupViews() {

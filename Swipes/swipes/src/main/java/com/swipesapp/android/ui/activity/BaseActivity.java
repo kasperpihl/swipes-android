@@ -1,5 +1,9 @@
 package com.swipesapp.android.ui.activity;
 
+import android.app.Activity;
+import android.app.ActivityManager.TaskDescription;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -87,6 +91,21 @@ public class BaseActivity extends ActionBarActivity {
     protected void themeActionBar(int color) {
         ColorDrawable background = new ColorDrawable(color);
         getSupportActionBar().setBackgroundDrawable(background);
+    }
+
+    /**
+     * Applies a given color to the header in the recents list.
+     *
+     * @param color Color to apply.
+     */
+    protected void themeRecentsHeader(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+
+            // Adjust header properties.
+            TaskDescription description = new TaskDescription(getString(R.string.app_name), icon, color);
+            ((Activity) this).setTaskDescription(description);
+        }
     }
 
 }

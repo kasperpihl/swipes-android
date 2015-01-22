@@ -123,8 +123,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     public static BitmapDrawable sBlurDrawable;
 
-    private int mCurrentSectionColor;
-
     private View mActionBarView;
 
     private float mPreviousOffset;
@@ -272,9 +270,9 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         public void onPageSelected(int position) {
             sCurrentSection = Sections.getSectionByNumber(position);
 
-            hideEditBar();
+            themeRecentsHeader(ThemeUtils.getSectionColor(sCurrentSection, mContext.get()));
 
-            mCurrentSectionColor = ThemeUtils.getSectionColor(sCurrentSection, mContext.get());
+            hideEditBar();
 
             mHasChangedTab = true;
         }
@@ -495,7 +493,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             mButtonAddTask.setVisibility(View.GONE);
 
             // Apply container color.
-            mActionButtonsContainer.setBackgroundColor(mCurrentSectionColor);
+            mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
         }
 
         @Override
