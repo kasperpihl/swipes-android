@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -297,8 +296,7 @@ public class EditTaskActivity extends BaseActivity {
 
     private void setupSystemBars(Sections section) {
         // Apply ActionBar color.
-        ColorDrawable actionBarBackground = new ColorDrawable(ThemeUtils.getSectionColor(section, this));
-        getSupportActionBar().setBackgroundDrawable(actionBarBackground);
+        themeActionBar(ThemeUtils.getSectionColor(section, this));
 
         // Apply StatusBar color.
         themeStatusBar(ThemeUtils.getSectionColorDark(section, this));

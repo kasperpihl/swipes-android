@@ -12,7 +12,6 @@ import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Sections;
 
 public class IntegrationsActivity extends BaseActivity {
 
@@ -26,10 +25,6 @@ public class IntegrationsActivity extends BaseActivity {
                 new IntegrationsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
     }
 
     @Override

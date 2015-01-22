@@ -404,8 +404,8 @@ public class TasksListAdapter extends BaseAdapter {
         mIsShowingOld = false;
     }
 
-    public boolean isShowingOld() {
-        return mIsShowingOld;
+    public void setShowingOld(boolean isShowing) {
+        mIsShowingOld = isShowing;
     }
 
     private void handleOldTasks() {

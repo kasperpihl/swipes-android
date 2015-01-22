@@ -4,9 +4,14 @@
     android:layout_height="match_parent"
     tools:context="com.swipesapp.android.ui.activity.IntegrationsActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <FrameLayout
         android:id="@+id/integrations_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar" />
 
 </RelativeLayout>

@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:text="@string/focus_title"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
 </LinearLayout>

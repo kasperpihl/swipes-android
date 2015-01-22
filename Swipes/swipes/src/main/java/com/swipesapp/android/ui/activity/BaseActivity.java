@@ -4,10 +4,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.swipesapp.android.R;
+import com.swipesapp.android.util.ThemeUtils;
 
 /**
  * Standard activity to be extended across the app.
@@ -39,6 +42,26 @@ public class BaseActivity extends ActionBarActivity {
             // Enable Lollipop status bar tint.
             mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        themeStatusBar(getResources().getColor(R.color.neutral_accent_color_dark));
+    }
+
+    /**
+     * Inflates the content while also setting the Toolbar as ActionBar.
+     *
+     * @param layoutResID Resource ID to be inflated.
+     */
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+
+        // Set the ToolBar as activity's ActionBar.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setPopupTheme(ThemeUtils.getToolbarPopupTheme(this));
+        setSupportActionBar(toolbar);
+
+        // Enable ActionBar up navigation.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -54,6 +77,16 @@ public class BaseActivity extends ActionBarActivity {
             // Adjust status bar for Lollipop.
             mWindow.setStatusBarColor(color);
         }
+    }
+
+    /**
+     * Applies a given color to the ActionBar.
+     *
+     * @param color Color to apply.
+     */
+    protected void themeActionBar(int color) {
+        ColorDrawable background = new ColorDrawable(color);
+        getSupportActionBar().setBackgroundDrawable(background);
     }
 
 }

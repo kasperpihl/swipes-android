@@ -2,7 +2,6 @@ package com.swipesapp.android.util;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.values.Sections;
@@ -116,22 +115,6 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's tab background resource.
-     */
-    public static int getTabBackground(Context context) {
-        return isLightTheme(context) ? R.drawable.background_tab_light : R.drawable.background_tab_dark;
-    }
-
-    /**
-     * @param context Context to use.
-     * @return Current theme's transition background resource.
-     */
-    public static int getTransitionBackground(Context context) {
-        return isLightTheme(context) ? R.drawable.background_transition_light : R.drawable.background_transition_dark;
-    }
-
-    /**
-     * @param context Context to use.
      * @return Current theme's snooze blur alpha color.
      */
     public static int getSnoozeBlurAlphaColor(Context context) {
@@ -150,11 +133,10 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
-     * @return Current theme's gradient drawable.
+     * @return Current theme's toolbar popup theme.
      */
-    public static Drawable getGradientDrawable(Context context) {
-        int drawable = isLightTheme(context) ? R.drawable.light_gradient : R.drawable.dark_gradient;
-        return context.getResources().getDrawable(drawable);
+    public static int getToolbarPopupTheme(Context context) {
+        return isLightTheme(context) ? R.style.Theme_AppCompat_Light : R.style.Theme_AppCompat;
     }
 
 }

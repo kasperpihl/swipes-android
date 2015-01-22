@@ -1,24 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light" />
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <!-- Application themes -->
-    <style name="Light_Theme" parent="Theme.AppCompat.Light">
+    <style name="Light_Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/light_theme_text</item>
-        <item name="colorPrimary">@color/focus_accent_color</item>
-        <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
+        <item name="colorPrimary">@color/neutral_accent_color</item>
+        <item name="colorPrimaryDark">@color/neutral_accent_color_dark</item>
         <item name="colorAccent">@color/light_theme_accent_color</item>
-        <item name="android:homeAsUpIndicator">@drawable/light_theme_back_icon</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <style name="Dark_Theme" parent="Theme.AppCompat">
+    <style name="Dark_Theme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColor">@color/dark_theme_text</item>
-        <item name="colorPrimary">@color/focus_accent_color</item>
-        <item name="colorPrimaryDark">@color/focus_accent_color_dark</item>
+        <item name="colorPrimary">@color/neutral_accent_color</item>
+        <item name="colorPrimaryDark">@color/neutral_accent_color_dark</item>
         <item name="colorAccent">@color/dark_theme_accent_color</item>
-        <item name="android:homeAsUpIndicator">@drawable/dark_theme_back_icon</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
@@ -33,16 +31,15 @@
     </style>
 
     <!-- Splash screen theme. -->
-    <style name="Splash_Theme" parent="android:Theme.Light.NoTitleBar">
+    <style name="Splash_Theme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
         <item name="android:windowTranslucentStatus" tools:targetApi="19">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
     </style>
 
     <!-- Login screen theme. -->
-    <style name="Login_Theme" parent="Theme.AppCompat.Light">
+    <style name="Login_Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/light_theme_text</item>
-        <item name="accentColor">@color/light_theme_accent_color</item>
         <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 

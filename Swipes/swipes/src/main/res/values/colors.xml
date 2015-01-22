@@ -10,6 +10,8 @@
     <item name="focus_accent_color" type="color">#FDC02F</item>
     <item name="focus_accent_color_dark" type="color">#E0A007</item>
     <item name="focus_accent_color_ripple" type="color">#AE7B00</item>
+    <item name="neutral_accent_color" type="color">#607D8B</item>
+    <item name="neutral_accent_color_dark" type="color">#455A64</item>
 
     <!-- Theme colors -->
     <item name="light_theme_background" type="color">#FFFFFF</item>

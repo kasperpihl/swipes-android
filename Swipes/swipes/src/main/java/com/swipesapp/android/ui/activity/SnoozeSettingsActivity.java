@@ -5,7 +5,6 @@ import android.preference.PreferenceFragment;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Sections;
 
 public class SnoozeSettingsActivity extends BaseActivity {
 
@@ -19,10 +18,6 @@ public class SnoozeSettingsActivity extends BaseActivity {
                 new SnoozeSettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
     }
 
     public static class SnoozeSettingsFragment extends PreferenceFragment {

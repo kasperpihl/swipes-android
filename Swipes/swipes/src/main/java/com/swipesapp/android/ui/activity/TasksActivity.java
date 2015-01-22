@@ -9,10 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -114,10 +112,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     private TasksService mTasksService;
 
-    private TasksActivity mActivity;
-
-    private ActionBar mActionBar;
-
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private static Sections sCurrentSection;
@@ -148,15 +142,14 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
-        mActivity = this;
 
         LayoutInflater inflater = LayoutInflater.from(this);
         mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
 
-        mActionBar = getSupportActionBar();
-        mActionBar.setDisplayShowCustomEnabled(true);
-        mActionBar.setDisplayShowTitleEnabled(false);
-        mActionBar.setCustomView(mActionBarView);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setCustomView(mActionBarView);
 
         createSnoozeAlarm();
 
@@ -165,8 +158,12 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
 
         // Default to second item, index starts at zero.
-        mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-        sCurrentSection = Sections.FOCUS;
+        if (sCurrentSection == null) {
+            mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+            sCurrentSection = Sections.FOCUS;
+        }
+
+        setupSystemBars(sCurrentSection);
 
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
@@ -254,6 +251,14 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         return super.onOptionsItemSelected(item);
     }
 
+    private void setupSystemBars(Sections section) {
+        // Apply colors.
+        themeActionBar(ThemeUtils.getSectionColor(section, this));
+        themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
+
+        // TODO: Set section title and icon.
+    }
+
     private void createSnoozeAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, SnoozeReceiver.class);
@@ -304,7 +309,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
             // Blend the colors and adjust the ActionBar.
             int blended = blendColors(toColor, fromColor, positionOffset);
-            mActionBar.setBackgroundDrawable(new ColorDrawable(blended));
+            themeActionBar(blended);
 
             // Load dark colors for sections.
             fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
@@ -312,7 +317,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
             // Blend the colors and adjust the status bar.
             blended = blendColors(toColor, fromColor, positionOffset);
-            mActivity.themeStatusBar(blended);
+            themeStatusBar(blended);
 
             // Fade ActionBar content gradually.
             fadeActionBar(positionOffset);

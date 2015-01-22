@@ -8,6 +8,8 @@
     android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.EditTaskActivity">
 
+    <include layout="@layout/toolbar" />
+
     <LinearLayout
         android:id="@+id/edit_task_container"
         android:layout_width="match_parent"

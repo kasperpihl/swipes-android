@@ -4,21 +4,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Sections;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class AboutActivity extends BaseActivity {
-
-    @InjectView(R.id.about_view)
-    ScrollView mView;
 
     @InjectView(R.id.about_brought_by)
     TextView mBroughtBy;
@@ -43,10 +38,6 @@ public class AboutActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
 
         mBroughtBy.setTextColor(ThemeUtils.getTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getTextColor(this));
