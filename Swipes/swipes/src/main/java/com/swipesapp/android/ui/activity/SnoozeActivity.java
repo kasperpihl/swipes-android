@@ -23,7 +23,6 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
@@ -135,7 +134,7 @@ public class SnoozeActivity extends FragmentActivity {
         mAdjustHint.setTextColor(getResources().getColor(hintColor));
 
         int textColor = ThemeUtils.getTextColor(this);
-        int iconColor = ThemeUtils.getSectionColor(Sections.LATER, this);
+        int iconColor = ThemeUtils.getTextColor(this);
 
         setSelector(mLaterTodayIcon);
         mLaterTodayIcon.setTextColor(iconColor);
