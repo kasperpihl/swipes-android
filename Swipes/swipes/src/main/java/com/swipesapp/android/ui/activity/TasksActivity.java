@@ -154,6 +154,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
+        mViewPager.setOffscreenPageLimit(Sections.getSectionsCount());
 
         // Default to second item, index starts at zero.
         if (sCurrentSection == null) {
