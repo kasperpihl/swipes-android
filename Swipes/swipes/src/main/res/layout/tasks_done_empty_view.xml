@@ -5,24 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tasks_done_empty_view_done_label"
-        style="?android:textAppearanceMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="15dp"
-        android:text="@string/done"
-        android:textColor="@color/done_accent_color" />
-
     <com.swipesapp.android.ui.view.SwipesTextView
         android:id="@+id/tasks_done_empty_view_done_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/tasks_done_empty_view_done_label"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:background="@android:color/transparent"
         android:text="@string/done_full"
         android:textColor="@color/done_accent_color"
-        android:textSize="65sp" />
+        android:textSize="70sp" />
 </RelativeLayout>
