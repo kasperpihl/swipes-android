@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -48,6 +49,23 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         themeStatusBar(getResources().getColor(R.color.neutral_accent_color_dark));
+    }
+
+    /**
+     * Handles the ActionBar's up navigation.
+     *
+     * @param item Pressed item.
+     * @return True to consume event.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the ActionBar's back button.
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

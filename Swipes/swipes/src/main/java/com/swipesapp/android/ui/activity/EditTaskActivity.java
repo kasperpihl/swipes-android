@@ -239,6 +239,9 @@ public class EditTaskActivity extends BaseActivity {
             case ACTION_DELETE:
                 deleteTask();
                 break;
+            case android.R.id.home:
+                performChanges(false);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
