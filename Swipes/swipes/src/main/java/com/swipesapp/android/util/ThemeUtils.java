@@ -72,6 +72,15 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
+     * @return Current theme's secondary text color.
+     */
+    public static int getSecondaryTextColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_secondary_text : R.color.dark_secondary_text;
+        return context.getResources().getColor(color);
+    }
+
+    /**
+     * @param context Context to use.
      * @return Accent color for the chosen section.
      */
     public static int getSectionColor(Sections section, Context context) {

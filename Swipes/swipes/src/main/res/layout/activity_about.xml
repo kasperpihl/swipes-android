@@ -28,6 +28,7 @@
                 android:text="@string/about_brought_by" />
 
             <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/about_swipes_signature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -38,9 +39,10 @@
                 android:id="@+id/about_signature_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="25dp" />
 
             <TextView
+                android:id="@+id/about_version"
                 style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,31 +50,47 @@
                 android:text="@string/about_app_version" />
 
             <TextView
-                android:id="@+id/about_version"
+                android:id="@+id/about_version_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp" />
+                android:layout_marginBottom="25dp" />
+
+            <LinearLayout
+                android:id="@+id/about_policies_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/about_policies"
+                    style="?android:textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_policies" />
+
+                <TextView
+                    android:id="@+id/about_policies_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="25dp"
+                    android:text="@string/about_policies_detail" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/about_policies"
+                android:id="@+id/about_oss"
                 style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/about_policies" />
+                android:text="@string/about_oss" />
 
             <TextView
                 android:id="@+id/about_oss_licenses"
-                style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:text="@string/about_oss_licenses" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_oss_license_1" />
 
         </LinearLayout>
     </ScrollView>

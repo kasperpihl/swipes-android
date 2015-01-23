@@ -52,6 +52,7 @@
     <!-- Settings -->
     <string name="general">GENERAL</string>
     <string name="notifications">Notifications</string>
+    <string name="vibration">Vibration</string>
     <string name="location">Location</string>
     <string name="theme">Theme</string>
     <string name="settings_theme_chooser_dialog_title">Choose a theme</string>
@@ -106,9 +107,10 @@
     <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">This app is brought to you by</string>
     <string name="about_app_version">App version</string>
-    <string name="about_policies"><u>Policies</u></string>
-    <string name="about_oss_licenses">Open source licenses</string>
-    <string name="about_oss_license_1">TimePreference based on CommonsWare code. Licensed under Apache.</string>
+    <string name="about_policies">Policies</string>
+    <string name="about_policies_detail">Tap to download policies</string>
+    <string name="about_oss">Open source licenses</string>
+    <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
 
     <!-- Invite -->
     <string name="settings_invite">Invite friends to Swipes</string>
