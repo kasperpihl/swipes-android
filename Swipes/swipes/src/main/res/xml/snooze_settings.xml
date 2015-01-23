@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <com.swipesapp.android.ui.view.TimePreference
         android:key="settings_day_start"
         android:title="@string/day_start" />
+
     <com.swipesapp.android.ui.view.TimePreference
         android:key="settings_evening_start"
         android:title="@string/evening_start" />
+
     <com.swipesapp.android.ui.view.TimePreference
         android:key="settings_weekend_day_start"
         android:title="@string/weekend_day_start" />
+
     <ListPreference
         android:dialogTitle="@string/settings_snoozes_week_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"
         android:key="settings_snoozes_week_start_dow"
         android:title="@string/week_start" />
+
     <ListPreference
         android:dialogTitle="@string/settings_snoozes_weekend_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"
         android:key="settings_snoozes_weekend_start_dow"
         android:title="@string/weekend_start" />
+
 </PreferenceScreen>

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
@@ -54,6 +55,10 @@ public class SettingsActivity extends BaseActivity {
 
             addPreferencesFromResource(R.xml.settings);
 
+            PreferenceCategory categoryCloud = (PreferenceCategory) findPreference("group_cloud");
+            PreferenceCategory categoryPreferences = (PreferenceCategory) findPreference("group_preferences");
+            PreferenceCategory categoryOther = (PreferenceCategory) findPreference("group_other");
+
             Preference preferenceInvite = findPreference("invite");
             preferenceInvite.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
@@ -93,13 +98,13 @@ public class SettingsActivity extends BaseActivity {
 
             if (ParseUser.getCurrentUser() == null) {
                 // Hide logout preference.
-                getPreferenceScreen().removePreference(preferenceLogout);
+                categoryCloud.removePreference(preferenceLogout);
 
                 // Hide manual sync button.
-                getPreferenceScreen().removePreference(preferenceSync);
+                categoryOther.removePreference(preferenceSync);
             } else {
                 // Hide login preference.
-                getPreferenceScreen().removePreference(preferenceLogin);
+                categoryCloud.removePreference(preferenceLogin);
 
                 // Show last sync date.
                 refreshSyncDate(preferenceSync);
@@ -107,7 +112,7 @@ public class SettingsActivity extends BaseActivity {
 
             // Location is not available yet, so hide the setting.
             Preference preferenceLocation = findPreference("settings_enable_location");
-            getPreferenceScreen().removePreference(preferenceLocation);
+            categoryPreferences.removePreference(preferenceLocation);
         }
 
         @Override

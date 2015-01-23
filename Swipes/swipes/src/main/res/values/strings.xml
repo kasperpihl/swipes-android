@@ -50,7 +50,9 @@
     <string name="tasks_list_settings_action">Settings</string>
 
     <!-- Settings -->
-    <string name="general">GENERAL</string>
+    <string name="group_cloud">Cloud</string>
+    <string name="group_preferences">Preferences</string>
+    <string name="group_other">Other</string>
     <string name="notifications">Notifications</string>
     <string name="vibration">Vibration</string>
     <string name="location">Location</string>
