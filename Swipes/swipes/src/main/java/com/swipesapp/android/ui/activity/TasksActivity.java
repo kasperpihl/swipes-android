@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -206,8 +207,13 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         if (requestCode == Constants.SETTINGS_REQUEST_CODE) {
             switch (resultCode) {
                 case Constants.THEME_CHANGED_RESULT_CODE:
-                    // Theme has changed. Reload activity.
-                    recreate();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Theme has changed. Reload activity.
+                            recreate();
+                        }
+                    }, 1);
                     break;
             }
         }
