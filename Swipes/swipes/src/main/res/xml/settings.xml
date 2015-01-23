@@ -29,6 +29,13 @@
 
     <SwitchPreference
         android:defaultValue="true"
+        android:key="settings_enable_vibration"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on"
+        android:title="@string/vibration" />
+
+    <SwitchPreference
+        android:defaultValue="true"
         android:key="settings_enable_location"
         android:switchTextOff="@string/switch_off"
         android:switchTextOn="@string/switch_on"

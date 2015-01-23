@@ -70,8 +70,14 @@ public class SnoozeReceiver extends BroadcastReceiver {
         if (PreferenceUtils.areNotificationsEnabled(context)) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             builder.setSmallIcon(R.drawable.ic_notification);
-            builder.setDefaults(Notification.DEFAULT_ALL);
             builder.setAutoCancel(true);
+
+            // Turn on vibration if allowed.
+            if (PreferenceUtils.isVibrationEnabled(context)) {
+                builder.setDefaults(Notification.DEFAULT_ALL);
+            } else {
+                builder.setDefaults(Notification.DEFAULT_SOUND);
+            }
 
             // Intent to open app.
             Class intentTarget = ThemeUtils.isLightTheme(context) ? BlankActivityLight.class : BlankActivityDark.class;
