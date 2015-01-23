@@ -30,6 +30,10 @@
     <item name="dark_text_hint_color" type="color">#a1a3a5</item>
     <item name="light_tasks_blur_alpha_color" type="color">#b2f8f8fa</item>
     <item name="dark_tasks_blur_alpha_color" type="color">#b25d5f63</item>
+    <item name="light_highlight" type="color">#66999999</item>
+    <item name="dark_highlight" type="color">#40CCCCCC</item>
+    <item name="light_secondary_text" type="color">#676767</item>
+    <item name="dark_secondary_text" type="color">#BBBCBD</item>
 
     <!-- Component colors -->
     <item name="red_button_color" type="color">#CCfd4534</item>

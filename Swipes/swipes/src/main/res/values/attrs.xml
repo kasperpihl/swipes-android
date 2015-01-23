@@ -1,6 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FlowLayout">
         <attr name="android:verticalSpacing" />
         <attr name="android:horizontalSpacing" />
+    </declare-styleable>
+
+    <declare-styleable name="FlatButton">
+        <attr name="textColor" format="color" />
     </declare-styleable>
 </resources>

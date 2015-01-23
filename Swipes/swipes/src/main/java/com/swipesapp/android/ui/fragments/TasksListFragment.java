@@ -47,7 +47,6 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
-import com.swipesapp.android.ui.view.TransparentButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
@@ -136,12 +135,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @InjectView(R.id.header_view)
     LinearLayout mHeaderView;
 
-    @InjectView(R.id.button_show_old)
-    TransparentButton mButtonShowOld;
-
-    @InjectView(R.id.button_clear_old)
-    TransparentButton mButtonClearOld;
-
     @InjectView(R.id.list_area)
     LinearLayout mListArea;
 
@@ -191,7 +184,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             case DONE:
                 setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
                 configureDoneView(mAdapter);
-                customizeDoneButtons();
                 handleDoneButtons();
                 break;
         }
@@ -305,14 +297,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mCloseSearchButton.setOnClickListener(mSearchCloseListener);
 
         mFiltersContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
-    }
-
-    private void customizeDoneButtons() {
-        mButtonShowOld.setBackgroundResource(R.drawable.transparent_button_selector_dark);
-        mButtonShowOld.setTextColor(getResources().getColorStateList(R.color.button_text_color_selector_dark));
-
-        mButtonClearOld.setBackgroundResource(R.drawable.transparent_button_selector_dark);
-        mButtonClearOld.setTextColor(getResources().getColorStateList(R.color.button_text_color_selector_dark));
     }
 
     private void configureLaterView(TasksListAdapter adapter) {
