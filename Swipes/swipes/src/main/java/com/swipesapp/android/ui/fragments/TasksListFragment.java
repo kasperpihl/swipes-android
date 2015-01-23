@@ -460,6 +460,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         ((TasksActivity) getActivity()).hideEditBar();
                         refreshTaskList(false);
                     } else {
+                        TasksActivity.clearCurrentSection();
                         getActivity().finish();
                     }
                 }

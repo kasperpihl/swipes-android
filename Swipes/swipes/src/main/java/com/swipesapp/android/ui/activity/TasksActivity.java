@@ -374,6 +374,13 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         return sCurrentSection;
     }
 
+    /**
+     * Clears the current section being displayed.
+     */
+    public static void clearCurrentSection() {
+        sCurrentSection = null;
+    }
+
     private void customizeScroller() {
         try {
             // HACK: Use reflection to access the scroller and customize it.
