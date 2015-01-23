@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -37,7 +36,6 @@ import com.swipesapp.android.ui.adapter.SubtasksAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
-import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.RepeatOption;
 import com.swipesapp.android.ui.view.SwipesTextView;
@@ -167,8 +165,6 @@ public class EditTaskActivity extends BaseActivity {
     private GsonTask mTask;
 
     private List<GsonTag> mAssignedTags;
-
-    public static BitmapDrawable sBlurDrawable;
 
     private SubtasksAdapter mAdapter;
     private ListView mListView;
@@ -539,11 +535,7 @@ public class EditTaskActivity extends BaseActivity {
 
     @OnClick(R.id.tags_container)
     protected void setTags() {
-        // Apply blur to the tags background.
-        int alphaColor = ThemeUtils.getTasksBlurAlphaColor(this);
-        updateBlurDrawable(alphaColor);
-        mTagsArea.setBackgroundDrawable(getBlurDrawable());
-
+        mTagsArea.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mContainer.setVisibility(View.GONE);
 
         // Show tags area with fade animation.
@@ -597,8 +589,7 @@ public class EditTaskActivity extends BaseActivity {
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
         startActivityForResult(intent, Constants.EVERNOTE_ATTACHMENTS_REQUEST_CODE);
 
-        // Update blurred background and override animation.
-        updateBlurDrawable(ThemeUtils.getSnoozeBlurAlphaColor(this));
+        // Override animation.
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
@@ -606,20 +597,10 @@ public class EditTaskActivity extends BaseActivity {
         // Call snooze activity.
         Intent intent = new Intent(this, SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
-        intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_EDIT_TASKS);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
 
-        // Update blurred background and override animation.
-        updateBlurDrawable(ThemeUtils.getSnoozeBlurAlphaColor(this));
+        // Override animation.
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-    }
-
-    private void updateBlurDrawable(int alphaColor) {
-        sBlurDrawable = BlurBuilder.blur(this, getWindow().getDecorView(), alphaColor);
-    }
-
-    public static BitmapDrawable getBlurDrawable() {
-        return sBlurDrawable;
     }
 
     private void closeTags() {

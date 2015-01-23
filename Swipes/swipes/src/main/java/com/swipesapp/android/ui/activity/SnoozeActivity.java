@@ -2,14 +2,11 @@ package com.swipesapp.android.ui.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,9 +31,6 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class SnoozeActivity extends FragmentActivity {
-
-    @InjectView(R.id.snooze_main_layout)
-    LinearLayout mLayout;
 
     @InjectView(R.id.snooze_view)
     LinearLayout mView;
@@ -123,8 +117,6 @@ public class SnoozeActivity extends FragmentActivity {
         mTask = mTasksService.loadTask(id);
 
         customizeViews();
-
-        blurBackground();
     }
 
     private void customizeViews() {
@@ -172,35 +164,6 @@ public class SnoozeActivity extends FragmentActivity {
         setSelector(mPickDateIcon);
         mPickDateIcon.setTextColor(iconColor);
         mPickDateTitle.setTextColor(textColor);
-    }
-
-    private void blurBackground() {
-        // Make activity window transparent.
-        getWindow().setBackgroundDrawable(new ColorDrawable(0));
-
-        // Wait for main layout to be drawn.
-        ViewTreeObserver observer = mLayout.getViewTreeObserver();
-        if (observer.isAlive()) {
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-                    BitmapDrawable blurDrawable = null;
-                    String caller = getIntent().getStringExtra(Constants.EXTRA_CALLER_NAME);
-
-                    // Update blur based on caller.
-                    if (caller.equals(Constants.CALLER_TASKS_LIST)) {
-                        blurDrawable = TasksActivity.getBlurDrawable();
-                    } else if (caller.equals(Constants.CALLER_EDIT_TASKS)) {
-                        blurDrawable = EditTaskActivity.getBlurDrawable();
-                    }
-
-                    // Apply blurred background.
-                    mLayout.setBackgroundDrawable(blurDrawable);
-                }
-            });
-        }
     }
 
     public void setSelector(final SwipesTextView icon) {

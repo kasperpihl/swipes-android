@@ -690,21 +690,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Call snooze activity.
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
-        intent.putExtra(Constants.EXTRA_CALLER_NAME, Constants.CALLER_TASKS_LIST);
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
 
-        // Update blurred background and override animation.
-        int alphaColor = ThemeUtils.getSnoozeBlurAlphaColor(getActivity());
-        ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
+        // Override animation.
         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void showTags() {
-        // Apply blur to the tags background.
-        int alphaColor = ThemeUtils.getTasksBlurAlphaColor(getActivity());
-        ((TasksActivity) getActivity()).updateBlurDrawable(alphaColor);
-        mTagsArea.setBackgroundDrawable(TasksActivity.getBlurDrawable());
-
+        mTagsArea.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListArea.setVisibility(View.GONE);
 
         // Show tags area with fade animation.

@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -27,7 +26,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -45,7 +43,6 @@ import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
-import com.swipesapp.android.ui.view.BlurBuilder;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
@@ -75,8 +72,8 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
     @InjectView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
 
-    @InjectView(R.id.blur_background)
-    ImageView mBlurBackground;
+    @InjectView(R.id.clear_background)
+    View mClearBackground;
 
     @InjectView(R.id.add_task_container)
     RelativeLayout mAddTaskContainer;
@@ -121,8 +118,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     // Used by animator to store tags container position.
     private float mTagsTranslationY;
-
-    public static BitmapDrawable sBlurDrawable;
 
     private View mActionBarView;
 
@@ -551,14 +546,12 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
-        // Blur background.
-        updateBlurDrawable(ThemeUtils.getTasksBlurAlphaColor(this));
-        mBlurBackground.setImageDrawable(sBlurDrawable);
+        mClearBackground.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
-        // Fade in the blur background.
-        mBlurBackground.setAlpha(0f);
-        mBlurBackground.setVisibility(View.VISIBLE);
-        mBlurBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeInListener);
+        // Fade in the background.
+        mClearBackground.setAlpha(0f);
+        mClearBackground.setVisibility(View.VISIBLE);
+        mClearBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION).setListener(mClearFadeInListener);
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -579,8 +572,8 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         loadTags();
     }
 
-    @OnClick(R.id.blur_background)
-    protected void blurBackgroundClick() {
+    @OnClick(R.id.clear_background)
+    protected void clearBackgroundClick() {
         endAddTaskWorkflow(false);
     }
 
@@ -606,8 +599,8 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         mViewPager.setAlpha(1f);
         mViewPager.setVisibility(View.VISIBLE);
 
-        // Fade out the blur background.
-        mBlurBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mBlurFadeOutListener);
+        // Fade out the clear background.
+        mClearBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mClearFadeOutListener);
 
         // Broadcast changes.
         mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
@@ -650,7 +643,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         mTasksService.sendBroadcast(Actions.SHARE_TASKS);
     }
 
-    private AnimatorListenerAdapter mBlurFadeInListener = new AnimatorListenerAdapter() {
+    private AnimatorListenerAdapter mClearFadeInListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
             // Hide the main layout.
@@ -658,11 +651,11 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         }
     };
 
-    private AnimatorListenerAdapter mBlurFadeOutListener = new AnimatorListenerAdapter() {
+    private AnimatorListenerAdapter mClearFadeOutListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-            // Hide the blur background.
-            mBlurBackground.setVisibility(View.GONE);
+            // Hide the clear background.
+            mClearBackground.setVisibility(View.GONE);
         }
     };
 
@@ -722,14 +715,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
     public void shareOnTwitter(View v) {
         // TODO: Call sharing flow.
         Toast.makeText(this, "Twitter share coming soon", Toast.LENGTH_SHORT).show();
-    }
-
-    public void updateBlurDrawable(int alphaColor) {
-        sBlurDrawable = BlurBuilder.blur(this, mViewPager, alphaColor);
-    }
-
-    public static BitmapDrawable getBlurDrawable() {
-        return sBlurDrawable;
     }
 
     private void setViewHeight(View view, int dimen) {

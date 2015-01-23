@@ -75,19 +75,4 @@ public class Constants {
      */
     public static final int EVERNOTE_ATTACHMENTS_REQUEST_CODE = 5;
 
-    /**
-     * Intent extra for caller identifier.
-     */
-    public static final String EXTRA_CALLER_NAME = "CALLER_NAME";
-
-    /**
-     * Caller identifier for tasks list.
-     */
-    public static final String CALLER_TASKS_LIST = "TASKS_LIST";
-
-    /**
-     * Caller identifier for edit tasks.
-     */
-    public static final String CALLER_EDIT_TASKS = "EDIT_TASKS";
-
 }

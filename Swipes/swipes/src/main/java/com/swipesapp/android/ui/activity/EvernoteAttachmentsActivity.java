@@ -2,14 +2,12 @@ package com.swipesapp.android.ui.activity;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,9 +35,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class EvernoteAttachmentsActivity extends FragmentActivity {
-
-    @InjectView(R.id.attachments_main_layout)
-    LinearLayout mLayout;
 
     @InjectView(R.id.attachments_view)
     LinearLayout mView;
@@ -86,8 +81,6 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
         customizeViews();
 
-        blurBackground();
-
         setupListView();
     }
 
@@ -97,25 +90,6 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         mSearchField.setTextColor(Color.WHITE);
         mSearchField.setHintTextColor(Color.WHITE);
         mSearchField.addTextChangedListener(mSearchTypeListener);
-    }
-
-    private void blurBackground() {
-        // Make activity window transparent.
-        getWindow().setBackgroundDrawable(new ColorDrawable(0));
-
-        // Wait for main layout to be drawn.
-        ViewTreeObserver observer = mLayout.getViewTreeObserver();
-        if (observer.isAlive()) {
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-                    // Apply blurred background.
-                    mLayout.setBackgroundDrawable(EditTaskActivity.getBlurDrawable());
-                }
-            });
-        }
     }
 
     private void setupListView() {

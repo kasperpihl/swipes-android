@@ -84,9 +84,9 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Blurred background -->
-    <ImageView
-        android:id="@+id/blur_background"
+    <!-- Clear background -->
+    <View
+        android:id="@+id/clear_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
