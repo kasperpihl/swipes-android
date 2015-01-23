@@ -9,6 +9,8 @@
         <item name="colorPrimary">@color/neutral_accent</item>
         <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
         <item name="colorAccent">@color/neutral_accent_light</item>
+        <item name="colorControlHighlight">@color/light_highlight</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/light_highlight</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
@@ -17,6 +19,8 @@
         <item name="colorPrimary">@color/neutral_accent</item>
         <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
         <item name="colorAccent">@color/neutral_accent_light</item>
+        <item name="colorControlHighlight">@color/dark_highlight</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/dark_highlight</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
