@@ -14,8 +14,6 @@
     <item name="neutral_accent_color_dark" type="color">#455A64</item>
 
     <!-- Theme colors -->
-    <item name="light_theme_background" type="color">#FFFFFF</item>
-    <item name="dark_theme_background" type="color">#1A1D22</item>
     <item name="light_theme_neutral_background" type="color">#F8F8F9</item>
     <item name="dark_theme_neutral_background" type="color">#24282e</item>
     <item name="light_theme_text" type="color">#000000</item>
@@ -28,6 +26,8 @@
     <item name="dark_text_hint_color" type="color">#a1a3a5</item>
     <item name="light_highlight" type="color">#66999999</item>
     <item name="dark_highlight" type="color">#40CCCCCC</item>
+    <item name="light_background" type="color">#FFFFFF</item>
+    <item name="dark_background" type="color">#1A1D22</item>
     <item name="light_secondary_text" type="color">#676767</item>
     <item name="dark_secondary_text" type="color">#BBBCBD</item>
 

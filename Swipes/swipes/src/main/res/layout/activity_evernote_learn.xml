@@ -10,7 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/evernote_brand_color">
+        android:background="@color/evernote_brand"
+        android:elevation="@dimen/toolbar_elevation">
 
         <ImageView
             android:id="@+id/evernote_logo"

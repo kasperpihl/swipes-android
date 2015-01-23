@@ -127,7 +127,7 @@ public class ThemeUtils {
      * @return Current theme's toolbar popup theme.
      */
     public static int getToolbarPopupTheme(Context context) {
-        return isLightTheme(context) ? R.style.Theme_AppCompat_Light : R.style.Theme_AppCompat;
+        return isLightTheme(context) ? R.style.Light_Theme_Popup_Menu : R.style.Dark_Theme_Popup_Menu;
     }
 
 }

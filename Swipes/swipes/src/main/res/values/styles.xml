@@ -28,6 +28,14 @@
     <style name="Light_Theme_Activity_Overlay" parent="android:Theme.NoTitleBar">
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@color/light_theme_background</item>
+
+    <!-- Toolbar themes. -->
+    <style name="Light_Theme_Popup_Menu" parent="Light_Theme">
+        <item name="android:colorBackground">@color/light_background</item>
+    </style>
+
+    <style name="Dark_Theme_Popup_Menu" parent="Dark_Theme">
+        <item name="android:colorBackground">@color/dark_background</item>
     </style>
 
     <!-- Splash screen theme. -->
