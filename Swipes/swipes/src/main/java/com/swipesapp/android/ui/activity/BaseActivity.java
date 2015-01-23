@@ -48,7 +48,7 @@ public class BaseActivity extends ActionBarActivity {
             mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        themeStatusBar(getResources().getColor(R.color.neutral_accent_color_dark));
+        themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
     }
 
     /**

@@ -17,7 +17,7 @@
         android:right="5dp"
         android:top="5dp">
         <shape android:shape="oval">
-            <solid android:color="@color/done_accent_color" />
+            <solid android:color="@color/done_accent" />
         </shape>
     </item>
 </layer-list>

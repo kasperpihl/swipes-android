@@ -31,9 +31,9 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
             android:src="@drawable/ic_action_add"
-            fab:fab_colorNormal="@color/focus_accent_color"
-            fab:fab_colorPressed="@color/focus_accent_color_dark"
-            fab:fab_colorRipple="@color/focus_accent_color_ripple" />
+            fab:fab_colorNormal="@color/focus_accent"
+            fab:fab_colorPressed="@color/focus_accent_dark"
+            fab:fab_colorRipple="@color/focus_accent_ripple" />
 
         <!-- Edit bar -->
         <LinearLayout

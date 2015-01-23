@@ -9,5 +9,5 @@
 
     <stroke
         android:width="@dimen/subtask_circle_thickness"
-        android:color="@color/dark_theme_text" />
+        android:color="@color/dark_text" />
 </shape>

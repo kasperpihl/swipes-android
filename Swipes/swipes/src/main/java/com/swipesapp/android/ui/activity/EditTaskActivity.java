@@ -323,7 +323,7 @@ public class EditTaskActivity extends BaseActivity {
         mTags.setHintTextColor(ThemeUtils.getTextColor(this));
 
         int icon = ThemeUtils.isLightTheme(this) ? R.drawable.evernote_light : R.drawable.evernote_dark;
-        int reverseColor = ThemeUtils.isLightTheme(this) ? R.color.dark_theme_text : R.color.light_theme_text;
+        int reverseColor = ThemeUtils.isLightTheme(this) ? R.color.dark_text : R.color.light_text;
         mEvernoteAttachmentIcon.setImageDrawable(getResources().getDrawable(icon));
         mEvernoteAttachmentTitle.setTextColor(ThemeUtils.getTextColor(this));
         mEvernoteAttachedView.setBackgroundResource(ThemeUtils.isLightTheme(this) ? R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark);
@@ -439,7 +439,7 @@ public class EditTaskActivity extends BaseActivity {
             if (subtask.getLocalCompletionDate() == null) {
                 mSubtaskFirstTitle.setText(subtask.getTitle());
 
-                int gray = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+                int gray = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
                 mSubtaskFirstTitle.setTextColor(ThemeUtils.getTextColor(this));
 
                 // Change add subtask view margin when needed.

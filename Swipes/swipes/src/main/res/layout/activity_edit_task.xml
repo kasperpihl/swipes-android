@@ -284,7 +284,7 @@
                 android:layout_marginRight="12dp"
                 android:background="@android:color/transparent"
                 android:text="@string/left_arrow"
-                android:textColor="@color/light_theme_text"
+                android:textColor="@color/light_text"
                 android:textSize="25sp" />
 
             <com.swipesapp.android.ui.view.SwipesButton
@@ -296,7 +296,7 @@
                 android:layout_marginRight="12dp"
                 android:background="@android:color/transparent"
                 android:text="@string/plus_sign"
-                android:textColor="@color/light_theme_text"
+                android:textColor="@color/light_text"
                 android:textSize="25sp" />
         </RelativeLayout>
 

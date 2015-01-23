@@ -170,7 +170,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         // HACK: Flip add task confirm button, so the arrow points to the right.
         mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
 
-        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);

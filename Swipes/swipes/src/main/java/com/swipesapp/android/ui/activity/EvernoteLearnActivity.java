@@ -31,7 +31,7 @@ public class EvernoteLearnActivity extends BaseActivity {
 
         getSupportActionBar().hide();
 
-        themeStatusBar(getResources().getColor(R.color.evernote_brand_color_dark));
+        themeStatusBar(getResources().getColor(R.color.evernote_brand_dark));
 
         mContext = new WeakReference<Context>(this);
 

@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/task_properties_margin"
-                    android:textColor="@color/focus_accent_color"
+                    android:textColor="@color/focus_accent"
                     android:visibility="gone" />
 
                 <ImageView

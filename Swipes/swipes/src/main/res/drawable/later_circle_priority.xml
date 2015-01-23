@@ -6,7 +6,7 @@
             <corners android:radius="10dp" />
             <stroke
                 android:width="2dp"
-                android:color="@color/later_accent_color" />
+                android:color="@color/later_accent" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>
@@ -17,7 +17,7 @@
         android:right="6dp"
         android:top="6dp">
         <shape android:shape="oval">
-            <solid android:color="@color/later_accent_color" />
+            <solid android:color="@color/later_accent" />
         </shape>
     </item>
 </layer-list>

@@ -2,40 +2,39 @@
 <resources>
 
     <!-- Swipes colors -->
-    <item name="swipes_brand_color" type="color">#fd4534</item>
-    <item name="done_accent_color" type="color">#8CC152</item>
-    <item name="done_accent_color_dark" type="color">#6BA42E</item>
-    <item name="later_accent_color" type="color">#FC5830</item>
-    <item name="later_accent_color_dark" type="color">#DF3108</item>
-    <item name="focus_accent_color" type="color">#FDC02F</item>
-    <item name="focus_accent_color_dark" type="color">#E0A007</item>
-    <item name="focus_accent_color_ripple" type="color">#AE7B00</item>
-    <item name="neutral_accent_color" type="color">#607D8B</item>
-    <item name="neutral_accent_color_dark" type="color">#455A64</item>
+    <item name="swipes_brand" type="color">#fd4534</item>
+    <item name="done_accent" type="color">#8CC152</item>
+    <item name="done_accent_dark" type="color">#6BA42E</item>
+    <item name="later_accent" type="color">#FC5830</item>
+    <item name="later_accent_dark" type="color">#DF3108</item>
+    <item name="focus_accent" type="color">#FDC02F</item>
+    <item name="focus_accent_dark" type="color">#E0A007</item>
+    <item name="focus_accent_ripple" type="color">#AE7B00</item>
+    <item name="neutral_accent" type="color">#607D8B</item>
+    <item name="neutral_accent_dark" type="color">#455A64</item>
+    <item name="neutral_accent_light" type="color">#78909C</item>
 
     <!-- Theme colors -->
-    <item name="light_theme_neutral_background" type="color">#F8F8F9</item>
-    <item name="dark_theme_neutral_background" type="color">#24282e</item>
-    <item name="light_theme_text" type="color">#000000</item>
-    <item name="dark_theme_text" type="color">#ffffff</item>
-    <item name="light_theme_divider" type="color">#e8e8e8</item>
-    <item name="dark_theme_divider" type="color">#4e5156</item>
-    <item name="light_theme_accent_color" type="color">#e8e8e8</item>
-    <item name="dark_theme_accent_color" type="color">#4e5156</item>
-    <item name="light_text_hint_color" type="color">#747778</item>
-    <item name="dark_text_hint_color" type="color">#a1a3a5</item>
     <item name="light_highlight" type="color">#66999999</item>
     <item name="dark_highlight" type="color">#40CCCCCC</item>
     <item name="light_background" type="color">#FFFFFF</item>
     <item name="dark_background" type="color">#1A1D22</item>
+    <item name="light_neutral_background" type="color">#F8F8F9</item>
+    <item name="dark_neutral_background" type="color">#24282e</item>
+    <item name="light_text" type="color">#1F1F1F</item>
+    <item name="dark_text" type="color">#FFFFFF</item>
     <item name="light_secondary_text" type="color">#676767</item>
     <item name="dark_secondary_text" type="color">#BBBCBD</item>
+    <item name="light_hint" type="color">#A6A6A6</item>
+    <item name="dark_hint" type="color">#E8E8E8</item>
+    <item name="light_divider" type="color">#E0E0E0</item>
+    <item name="dark_divider" type="color">#36383D</item>
 
     <!-- Component colors -->
-    <item name="red_button_color" type="color">#CCfd4534</item>
-    <item name="red_button_color_push" type="color">#80fd4534</item>
-    <item name="evernote_brand_color" type="color">#2DBE60</item>
-    <item name="evernote_brand_color_dark" type="color">#07A949</item>
+    <item name="red_button" type="color">#CCfd4534</item>
+    <item name="red_button_push" type="color">#80fd4534</item>
+    <item name="evernote_brand" type="color">#2DBE60</item>
+    <item name="evernote_brand_dark" type="color">#07A949</item>
     <item name="evernote_gray_background" type="color">#E1E1E1</item>
 
 </resources>

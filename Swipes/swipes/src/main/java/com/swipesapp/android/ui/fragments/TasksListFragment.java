@@ -954,7 +954,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mFiltersTagsArea.setVisibility(View.GONE);
             mFiltersEmptyTags.setVisibility(View.VISIBLE);
 
-            int hintColor = ThemeUtils.isLightTheme(getActivity()) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+            int hintColor = ThemeUtils.isLightTheme(getActivity()) ? R.color.light_hint : R.color.dark_hint;
             mFiltersEmptyTags.setTextColor(getResources().getColor(hintColor));
         }
     }

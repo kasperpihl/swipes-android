@@ -122,7 +122,7 @@ public class SubtasksAdapter extends BaseAdapter {
         });
 
         // Customize colors.
-        int lightGray = ThemeUtils.isLightTheme(mContext.get()) ? R.color.light_text_hint_color : R.color.dark_text_hint_color;
+        int lightGray = ThemeUtils.isLightTheme(mContext.get()) ? R.color.light_hint : R.color.dark_hint;
         holder.button.setTextColor(mResources.getColor(lightGray));
         holder.title.setTextColor(isCompleted ? mResources.getColor(lightGray) : ThemeUtils.getTextColor(mContext.get()));
 

@@ -85,7 +85,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     }
 
     private void customizeViews() {
-        mView.setBackgroundColor(getResources().getColor(R.color.evernote_brand_color));
+        mView.setBackgroundColor(getResources().getColor(R.color.evernote_brand));
 
         mSearchField.setTextColor(Color.WHITE);
         mSearchField.setHintTextColor(Color.WHITE);
