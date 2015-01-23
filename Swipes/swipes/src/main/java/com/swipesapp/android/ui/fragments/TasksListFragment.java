@@ -900,14 +900,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void hideFilters() {
-        // Scroll list to first position, hiding the search.
-        mListView.post(new Runnable() {
-            @Override
-            public void run() {
-                mListView.setSelection(1);
-            }
-        });
-
         // Hide tag filters.
         mFiltersTagsContainer.setVisibility(View.GONE);
         mFiltersSearchContainer.setVisibility(View.VISIBLE);

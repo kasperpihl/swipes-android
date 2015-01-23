@@ -11,7 +11,9 @@
     <dimen name="task_icons_margin_top">5dp</dimen>
     <dimen name="add_task_button_size">60sp</dimen>
     <dimen name="gradient_height">35dp</dimen>
-    <dimen name="button_container_height">68dp</dimen>
+    <dimen name="button_container_height">56dp</dimen>
+    <dimen name="list_padding_bottom">88dp</dimen>
+    <dimen name="list_padding_sides">25dp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
