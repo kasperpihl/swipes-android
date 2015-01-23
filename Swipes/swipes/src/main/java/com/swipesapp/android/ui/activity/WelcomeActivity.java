@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Window;
 
 import com.crashlytics.android.Crashlytics;
 import com.negusoft.holoaccent.dialog.AccentAlertDialog;
@@ -33,8 +32,6 @@ public class WelcomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getThemeResource(this));
         Crashlytics.start(this);
-
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_welcome);
 
