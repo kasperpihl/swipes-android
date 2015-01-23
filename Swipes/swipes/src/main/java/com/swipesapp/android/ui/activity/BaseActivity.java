@@ -40,7 +40,7 @@ public class BaseActivity extends ActionBarActivity {
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             // Enable KitKat translucency and tint.
-            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             mTintManager = new SystemBarTintManager(this);
             mTintManager.setStatusBarTintEnabled(true);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
