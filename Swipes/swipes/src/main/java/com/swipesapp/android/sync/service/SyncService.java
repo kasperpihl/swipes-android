@@ -348,7 +348,7 @@ public class SyncService {
             taskSync.setSchedule(hasObjectChanged(old.getLocalSchedule(), task.getLocalSchedule()) ? DateUtils.dateToSync(task.getLocalSchedule()) : null);
             taskSync.setLocation(hasObjectChanged(old.getLocation(), task.getLocation()) ? task.getLocation() : null);
             taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), task.getLocalRepeatDate()) ? DateUtils.dateToSync(task.getLocalRepeatDate()) : null);
-            taskSync.setRepeatOption(task.getRepeatOption().equals(old.getRepeatOption()) ? null : task.getRepeatOption());
+            taskSync.setRepeatOption(hasObjectChanged(old.getRepeatOption(), task.getRepeatOption()) ? null : task.getRepeatOption());
             taskSync.setTags(hasObjectChanged(old.getTags(), task.getTags()) ? tagsToString(task.getTags()) : null);
             taskSync.setAttachments(hasObjectChanged(old.getAttachments(), task.getAttachments()) ? attachmentsToString(task.getAttachments()) : null);
 
