@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -67,7 +68,7 @@ import butterknife.OnClick;
 public class TasksActivity extends BaseActivity implements ListContentsListener {
 
     @InjectView(R.id.pager)
-    ViewPager mViewPager;
+    DynamicViewPager mViewPager;
 
     @InjectView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
@@ -374,6 +375,13 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
      */
     public static void clearCurrentSection() {
         sCurrentSection = null;
+    }
+
+    /**
+     * @return The ViewPager being used.
+     */
+    public DynamicViewPager getViewPager() {
+        return mViewPager;
     }
 
     private void customizeScroller() {

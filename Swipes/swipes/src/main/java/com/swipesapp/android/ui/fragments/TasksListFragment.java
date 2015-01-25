@@ -303,6 +303,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
+        mListView.setViewPager(((TasksActivity) getActivity()).getViewPager());
 
         // Setup back view.
         mListView.setLongSwipeEnabled(true);
@@ -332,6 +333,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
         mListView.setListOrderListener(this);
+        mListView.setViewPager(((TasksActivity) getActivity()).getViewPager());
 
         // Setup back view.
         mListView.setSwipeBackgroundColors(ThemeUtils.getSectionColor(Sections.DONE, getActivity()), ThemeUtils.getSectionColor(Sections.LATER, getActivity()), Color.TRANSPARENT);
@@ -353,6 +355,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Setup content.
         mListView.setAdapter(adapter);
         mListView.setSwipeListViewListener(mSwipeListener);
+        mListView.setViewPager(((TasksActivity) getActivity()).getViewPager());
 
         // Setup back view.
         mListView.setLongSwipeEnabled(true);
@@ -461,6 +464,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         refreshTaskList(false);
                     } else {
                         TasksActivity.clearCurrentSection();
+                        sIsShowingOld = false;
                         getActivity().finish();
                     }
                 }
