@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -170,6 +171,8 @@ public class EditTaskActivity extends BaseActivity {
     private ListView mListView;
     private List<GsonTask> mSubtasks;
 
+    private Sections mSection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,11 +183,11 @@ public class EditTaskActivity extends BaseActivity {
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
-        Sections section = Sections.getSectionByNumber(sectionNumber);
+        mSection = Sections.getSectionByNumber(sectionNumber);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        setupSystemBars(section);
+        setupSystemBars(mSection);
 
         mContext = new WeakReference<Context>(this);
 
@@ -332,6 +335,7 @@ public class EditTaskActivity extends BaseActivity {
         mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setHintTextColor(ThemeUtils.getTextColor(this));
+        mNotes.setLinkTextColor(ThemeUtils.getSectionColor(mSection, this));
         mNotes.setOnEditorActionListener(mEnterListener);
         mNotes.setListener(mKeyboardBackListener);
 
@@ -408,6 +412,7 @@ public class EditTaskActivity extends BaseActivity {
         loadEvernoteAttachment();
 
         mNotes.setText(mTask.getNotes());
+        Linkify.addLinks(mNotes, Linkify.ALL);
 
         mSubtaskVisibilityCaption.setText(getResources().getQuantityString(R.plurals.subtask_show_caption, mSubtasks.size(), mSubtasks.size()));
 
