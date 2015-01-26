@@ -291,9 +291,9 @@ public class EvernoteToDoProcessor {
                 case '&':
                     escapedXML.append("&amp;");
                     break;
-                case '\'':
-                    escapedXML.append("&#x27;");
-                    break;
+                //case '\'':
+                //    escapedXML.append("&#x27;");
+                //    break;
                 default:
                     escapedXML.append(c);
             }
