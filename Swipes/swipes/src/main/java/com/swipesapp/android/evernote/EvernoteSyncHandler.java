@@ -101,8 +101,8 @@ public class EvernoteSyncHandler {
         return result;
     }
 
-    protected void addAndSyncNewTasksFromNotes(List<Note> notes) {
-        for (Note note : notes) {
+    protected void addAndSyncNewTasksFromNotes(List<Note> notes, final OnEvernoteCallback<Void> callback) {
+        for (final Note note : notes) {
             String title = note.getTitle();
             if (null == title) {
                 title = mContext.get().getString(R.string.evernote_untitled_note);
@@ -110,16 +110,26 @@ public class EvernoteSyncHandler {
             if (TITLE_MAX_LENGTH < title.length()) {
                 title = title.substring(0, TITLE_MAX_LENGTH);
             }
+            final String fTitle = title;
             // add to DB
-            GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), EvernoteIntegration.EVERNOTE_SERVICE, title, true);
+            EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+                public void onSuccess(String data) {
+                    final GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), EvernoteIntegration.EVERNOTE_SERVICE, fTitle, true);
 
-            Date currentDate = new Date();
-            String tempId = UUID.randomUUID().toString();
-            Log.d(TAG, "Creating task with UUID: " + tempId);
-            GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
-                    title, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
-                    null, null, null, Arrays.asList(attachment), 0);
-            TasksService.getInstance(mContext.get()).saveTask(newTodo, true);
+                    final Date currentDate = new Date();
+                    final String tempId = UUID.randomUUID().toString();
+                    Log.d(TAG, "Creating task with UUID: " + tempId);
+                    GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
+                            fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
+                            null, null, null, Arrays.asList(attachment), 0);
+                    TasksService.getInstance(mContext.get()).saveTask(newTodo, true);
+                    callback.onSuccess(null);
+                }
+
+                public void onException(Exception ex) {
+                    callback.onException(ex);
+                }
+            });
         }
     }
 
@@ -163,7 +173,6 @@ public class EvernoteSyncHandler {
         }
 
         EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
-            @Override
             public void onSuccess(List<Note> data) {
                 if (null == mKnownNotes) {
                     mKnownNotes = extractKnownNotes();
@@ -175,11 +184,17 @@ public class EvernoteSyncHandler {
                     }
                     mChangedNotes.add(note);
                 }
-                addAndSyncNewTasksFromNotes(newNotes);
-                fetchEvernoteChanges(callback);
+                addAndSyncNewTasksFromNotes(newNotes, new OnEvernoteCallback<Void>() {
+                    public void onSuccess(Void data) {
+                        fetchEvernoteChanges(callback);
+                    }
+
+                    public void onException(Exception ex) {
+                        callback.onException(ex);
+                    }
+                });
             }
 
-            @Override
             public void onException(Exception e) {
                 Log.e(TAG, "findUpdatedNotesWithTag exception", e);
                 callback.onException(e);
@@ -403,8 +418,15 @@ public class EvernoteSyncHandler {
 
         // remove evernote subtasks not found in the evernote from our task
         if (subtasks != null && subtasks.size() > 0) {
-            updated = true;
-            tasksService.deleteTasks(subtasks);
+            ArrayList<GsonTask> tasksToDelete = new ArrayList<GsonTask>();
+            for (GsonTask subtask : subtasks) {
+                if (null != subtask.getOrigin() && subtask.getOrigin().equals(EvernoteIntegration.EVERNOTE_SERVICE)) {
+                    updated = true;
+                    tasksToDelete.add(subtask);
+                }
+            }
+            if (0 < tasksToDelete.size())
+                tasksService.deleteTasks(tasksToDelete);
         }
 
         // add newly added tasks to evernote
