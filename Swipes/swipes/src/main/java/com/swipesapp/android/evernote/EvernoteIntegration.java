@@ -57,6 +57,7 @@ public class EvernoteIntegration {
 
     private static final String sKeyNoteGuid = "noteguid";
     private static final String sKeyNotebookGuid = "notebookguid";
+
     private static final String sKeyJson = "json:";
     private static final String sKeyJsonGuid = "guid";
     private static final String sKeyJsonType = "type";
@@ -80,20 +81,6 @@ public class EvernoteIntegration {
 
     public static EvernoteIntegration getInstance() {
         return sInstance;
-    }
-
-    public static String jsonFromNote(final Note note) {
-        final JSONObject json = new JSONObject();
-        try {
-            json.put(sKeyNoteGuid, note.getGuid());
-            json.put(sKeyNoteGuid, note.getGuid());
-            if (note.isSetNotebookGuid())
-                json.put(sKeyNotebookGuid, note.getNotebookGuid());
-        } catch (Exception e) {
-            Log.e(sTag, e.getMessage(), e);
-            return null;
-        }
-        return json.toString();
     }
 
     public void asyncJsonFromNote(final Note note, final OnEvernoteCallback<String> callback) {
@@ -146,42 +133,37 @@ public class EvernoteIntegration {
 
     public static Note noteFromJson(String jsonString) {
         Note note;
-        try {
-            final JSONObject json = new JSONObject(jsonString);
-            note = new Note();
-            note.setGuid(json.getString(sKeyNoteGuid));
-            note.setNotebookGuid(json.optString(sKeyNotebookGuid));
-        } catch (Exception e) {
-            note = null;
-            Log.e(sTag, e.getMessage(), e);
-        }
-        return note;
-    }
-
-    public static void asyncNoteFromJson(String jsonString, final OnEvernoteCallback<Note> callback) {
         if (jsonString.startsWith(sKeyJson)) {
             try {
                 final JSONObject json = new JSONObject(jsonString.substring(sKeyJson.length(), jsonString.length()));
-                final Note note = new Note();
+                note = new Note();
                 note.setGuid(json.getString(sKeyJsonGuid));
 
-                note.setNotebookGuid(json.optString(sKeyNotebookGuid));
+                String type = json.getString(sKeyJsonType);
+                if (null != type && !sKeyJsonTypePersonal.equalsIgnoreCase(type)) {
+                    JSONObject jsonLinkedNotebook = json.getJSONObject(sKeyJsonLinkedNotebook);
+                    if (null != jsonLinkedNotebook) {
+                        note.setNotebookGuid(jsonLinkedNotebook.getString(sKeyJsonNotebookGuid));
+                    }
+                }
+
             } catch (Exception ex) {
+                note = null;
                 Log.e(sTag, ex.getMessage(), ex);
-                callback.onException(ex);
             }
         }
         else {
             try {
                 final JSONObject json = new JSONObject(jsonString);
-                final Note note = new Note();
+                note = new Note();
                 note.setGuid(json.getString(sKeyNoteGuid));
                 note.setNotebookGuid(json.optString(sKeyNotebookGuid));
-            } catch (Exception ex) {
-                Log.e(sTag, ex.getMessage(), ex);
-                callback.onException(ex);
+            } catch (Exception e) {
+                note = null;
+                Log.e(sTag, e.getMessage(), e);
             }
         }
+        return note;
     }
 
     protected EvernoteIntegration() {
@@ -201,14 +183,19 @@ public class EvernoteIntegration {
 
                     public void onSuccess(Notebook data) {
                         mUserNoteStoreGuid = data.getGuid();
-                        final AsyncBusinessNoteStoreClient asyncBusinessNoteStoreClient;
-                        try {
-                            asyncBusinessNoteStoreClient = clientFactory.createBusinessNoteStoreClient();
-                            mBusinessNoteStoreNotebooks = asyncBusinessNoteStoreClient.listNotebooks();
-                            callback.onSuccess(null);
-                        } catch (Exception ex) {
-                            callback.onException(ex);
-                        }
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                final AsyncBusinessNoteStoreClient asyncBusinessNoteStoreClient;
+                                try {
+                                    asyncBusinessNoteStoreClient = clientFactory.createBusinessNoteStoreClient();
+                                    mBusinessNoteStoreNotebooks = asyncBusinessNoteStoreClient.listNotebooks();
+                                    callback.onSuccess(null);
+                                } catch (Exception ex) {
+                                    callback.onException(ex);
+                                }
+                            }
+                        }).start();
                     }
 
                     public void onException(Exception ex) {

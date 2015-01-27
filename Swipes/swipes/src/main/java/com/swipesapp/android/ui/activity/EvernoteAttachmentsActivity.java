@@ -190,15 +190,26 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
     private EvernoteAttachmentsListener mAttachmentsListener = new EvernoteAttachmentsListener() {
         @Override
-        public void attachNote(Note note) {
-            // Save attachment to task.
-            GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), Services.EVERNOTE.getValue(), note.getTitle(), true);
-            mTask.addAttachment(attachment);
-            mTasksService.saveTask(mTask, true);
+        public void attachNote(final Note note) {
+            EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+                @Override
+                public void onSuccess(String data) {
+                    // Save attachment to task.
+                    GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE.getValue(), note.getTitle(), true);
+                    mTask.addAttachment(attachment);
+                    mTasksService.saveTask(mTask, true);
 
-            // Send activity result to refresh UI.
-            setResult(RESULT_OK);
-            finish();
+                    // Send activity result to refresh UI.
+                    setResult(RESULT_OK);
+                    finish();
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+            });
         }
     };
 

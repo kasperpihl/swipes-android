@@ -41,6 +41,9 @@ public class EvernoteSyncHandler {
     protected WeakReference<Context> mContext;
     protected List<Note> mKnownNotes;
     protected Integer mReturnCount = 0;
+    protected int totalNoteCount;
+    protected int currentNoteCount;
+    protected Exception runningError;
 
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
@@ -102,6 +105,14 @@ public class EvernoteSyncHandler {
     }
 
     protected void addAndSyncNewTasksFromNotes(List<Note> notes, final OnEvernoteCallback<Void> callback) {
+        totalNoteCount = notes.size();
+        if (totalNoteCount == 0) {
+            callback.onSuccess(null);
+            return;
+        }
+        currentNoteCount = 0;
+        runningError = null;
+
         for (final Note note : notes) {
             String title = note.getTitle();
             if (null == title) {
@@ -114,7 +125,7 @@ public class EvernoteSyncHandler {
             // add to DB
             EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                 public void onSuccess(String data) {
-                    final GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), EvernoteIntegration.EVERNOTE_SERVICE, fTitle, true);
+                    final GsonAttachment attachment = new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, fTitle, true);
 
                     final Date currentDate = new Date();
                     final String tempId = UUID.randomUUID().toString();
@@ -123,11 +134,20 @@ public class EvernoteSyncHandler {
                             fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
                             null, null, null, Arrays.asList(attachment), 0);
                     TasksService.getInstance(mContext.get()).saveTask(newTodo, true);
-                    callback.onSuccess(null);
+                    if (++currentNoteCount >= totalNoteCount) {
+                        if (null == runningError)
+                            callback.onSuccess(null);
+                        else
+                            callback.onException(runningError);
+                    }
                 }
 
                 public void onException(Exception ex) {
-                    callback.onException(ex);
+                    if (null == runningError)
+                        runningError = ex;
+                    if (++currentNoteCount >= totalNoteCount) {
+                        callback.onException(runningError);
+                    }
                 }
             });
         }
