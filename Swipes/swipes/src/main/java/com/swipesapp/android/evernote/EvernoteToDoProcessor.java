@@ -161,6 +161,7 @@ public class EvernoteToDoProcessor {
         if (null == updatedContent)
             callback.onException(new Exception("Note not updated"));
 
+        note.setContent(updatedContent);
         EvernoteIntegration.getInstance().updateNote(note, new OnEvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note data) {

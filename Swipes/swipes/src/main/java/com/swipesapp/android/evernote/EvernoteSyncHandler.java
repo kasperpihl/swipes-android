@@ -65,8 +65,8 @@ public class EvernoteSyncHandler {
         mContext = new WeakReference<Context>(context);
         // retrieve last update time
         if (null == mLastUpdated) {
-            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            long dateLong = prefs.getLong(KEY_LAST_UPDATED, 0);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            long dateLong = settings.getLong(KEY_LAST_UPDATED, 0);
             if (0 < dateLong) {
                 mLastUpdated = new Date(dateLong);
             }
@@ -506,7 +506,7 @@ public class EvernoteSyncHandler {
             GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
 
             if (attachment != null) {
-                final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
+                final boolean hasLocalChanges = /*(mLastUpdated == null) ||*/ (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
                 final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
                 if (!hasLocalChanges && !hasChangesFromEvernote) {
                     finalizeSync(date, targetCount, runningError[0], callback);

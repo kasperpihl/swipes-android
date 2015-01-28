@@ -170,7 +170,7 @@ public class EvernoteIntegration {
         //Set up the Evernote Singleton Session
     }
 
-    public void setContext(Context context) {
+    public void setContext(final Context context) {
         mEvernoteSession = EvernoteSession.getInstance(context, sConsumerKey, sConsumerSecret, sEvernoteService, sSupportAppLinkedNotebooks);
     }
 
@@ -219,7 +219,7 @@ public class EvernoteIntegration {
         return mEvernoteSession.isLoggedIn();
     }
 
-    public void authenticateInContext(Context ctx)
+    public void authenticateInContext(final Context ctx)
     {
         mEvernoteSession.authenticate(ctx);
     }
@@ -265,7 +265,7 @@ public class EvernoteIntegration {
         }
     }
 
-    public void logoutInContext(Context ctx) {
+    public void logoutInContext(final Context ctx) {
         try {
             mEvernoteSession.logOut(ctx);
             EvernoteSyncHandler.getInstance().setUpdatedAt(null);
@@ -274,7 +274,7 @@ public class EvernoteIntegration {
         }
     }
 
-    public void findNotes(String query, final OnEvernoteCallback<List<Note>> callback) {
+    public void findNotes(final String query, final OnEvernoteCallback<List<Note>> callback) {
         final NoteFilter filter = new NoteFilter();
         filter.setOrder(NoteSortOrder.UPDATED.getValue());
         filter.setWords(query);
@@ -295,39 +295,120 @@ public class EvernoteIntegration {
         }
     }
 
-    public void downloadNote(String noteRefString, final OnEvernoteCallback<Note>callback) {
-        final Note note = EvernoteIntegration.noteFromJson(noteRefString);
-        try {
-            // TODO get note store too!
-            mEvernoteSession.getClientFactory().createNoteStoreClient().getNote(note.getGuid(), true, false, false, false, new OnClientCallback<Note>() {
+    private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<LinkedNotebook>callback) {
+        getNoteStoreGuids(new OnEvernoteCallback<Void>() {
+            public void onSuccess(Void data) {
+                if (null != mBusinessNoteStoreNotebooks) {
+                    for (LinkedNotebook notebook : mBusinessNoteStoreNotebooks) {
+                        if (notebook.getGuid().equalsIgnoreCase(notebookGuid)) {
+                            callback.onSuccess(notebook);
+                        }
+                    }
+                }
+                callback.onSuccess(null);
+            }
 
-                public void onSuccess(Note data) {
-                    callback.onSuccess(data);
+            public void onException(Exception e) {
+                callback.onException(e);
+            }
+        });
+    }
+
+    void provideAsyncNoteStoreClientForNote(final Note note, final OnEvernoteCallback<AsyncNoteStoreClient>callback) {
+        if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNoteStoreGuid)) {
+            try {
+                callback.onSuccess(mEvernoteSession.getClientFactory().createNoteStoreClient());
+            }
+            catch (Exception e) {
+                callback.onException(e);
+            }
+        }
+        else {
+            // business or linked note
+            checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<LinkedNotebook>() {
+                public void onSuccess(final LinkedNotebook linkedNotebook) {
+//                    if (null != linkedNotebook) {
+                        mEvernoteSession.getClientFactory().createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
+                            public void onSuccess(AsyncBusinessNoteStoreClient client) {
+                                callback.onSuccess(client.getAsyncClient());
+                            }
+
+                            public void onException(Exception e) {
+                                callback.onException(e);
+                            }
+                        });
+//                    }
+//                    else {
+//                        int i = 5;
+//                    }
                 }
 
                 public void onException(Exception e) {
                     callback.onException(e);
                 }
             });
-        } catch (Exception e) {
-            callback.onException(e);
         }
     }
 
-    public void updateNote(Note note, final OnEvernoteCallback<Note>callback) {
-        try {
-            mEvernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
+    public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note>callback) {
+        final Note note = EvernoteIntegration.noteFromJson(noteRefString);
 
-                public void onSuccess(Note data) {
-                    callback.onSuccess(data);
-                }
+        provideAsyncNoteStoreClientForNote(note, new OnEvernoteCallback<AsyncNoteStoreClient>() {
+            public void onSuccess(AsyncNoteStoreClient client) {
+                client.getNote(note.getGuid(), true, false, false, false, new OnClientCallback<Note>() {
+                    public void onSuccess(Note data) {
+//                        if (null != note.getNotebookGuid() && (!note.getNotebookGuid().equalsIgnoreCase(mUserNoteStoreGuid))) {
+//                            data.setNotebookGuid(note.getNotebookGuid()); // daf*ck is it different?
+//                        }
+                        callback.onSuccess(data);
+                    }
 
-                public void onException(Exception e) {
-                    callback.onException(e);
-                }
-            });
-        } catch (Exception e) {
-            callback.onException(e);
-        }
+                    public void onException(Exception e) {
+                        callback.onException(e);
+                    }
+                });
+            }
+
+            public void onException(Exception e) {
+                callback.onException(e);
+            }
+        });
+    }
+
+    public void updateNote(final Note note, final OnEvernoteCallback<Note>callback) {
+
+        provideAsyncNoteStoreClientForNote(note, new OnEvernoteCallback<AsyncNoteStoreClient>() {
+            public void onSuccess(AsyncNoteStoreClient client) {
+                client.updateNote(note, new OnClientCallback<Note>() {
+                    public void onSuccess(Note data) {
+                        callback.onSuccess(data);
+                    }
+
+                    public void onException(Exception e) {
+                        callback.onException(e);
+                    }
+                });
+            }
+
+            @Override
+            public void onException(Exception e) {
+                callback.onException(e);
+            }
+        });
+
+//        try {
+//            mEvernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
+//
+//                public void onSuccess(Note data) {
+//                    callback.onSuccess(data);
+//                }
+//
+//                public void onException(Exception e) {
+//                    callback.onException(e);
+//                }
+//            });
+//        } catch (Exception e) {
+//            callback.onException(e);
+//        }
     }
 }
