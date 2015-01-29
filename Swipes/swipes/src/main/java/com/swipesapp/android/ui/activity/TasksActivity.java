@@ -559,7 +559,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         // Fade in the background.
         mClearBackground.setAlpha(0f);
         mClearBackground.setVisibility(View.VISIBLE);
-        mClearBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION).setListener(mClearFadeInListener);
+        mClearBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).setListener(mClearFadeInListener);
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -608,7 +608,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         mViewPager.setVisibility(View.VISIBLE);
 
         // Fade out the clear background.
-        mClearBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION).setListener(mClearFadeOutListener);
+        mClearBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).setListener(mClearFadeOutListener);
 
         // Broadcast changes.
         mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
@@ -622,7 +622,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         float toY = isHiding ? -displaymetrics.heightPixels : mTagsTranslationY;
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(mAddTaskTagContainer, "translationY", fromY, toY);
-        animator.setDuration(Constants.ANIMATION_DURATION).start();
+        animator.setDuration(Constants.ANIMATION_DURATION_LONG).start();
     }
 
     @OnClick(R.id.button_edit_task)

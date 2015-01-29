@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.Button;
 
 import com.swipesapp.android.R;
@@ -34,6 +35,7 @@ public class FlatButton extends Button {
         int textColor = array.getColor(R.styleable.FlatButton_textColor, Color.BLACK);
         int background = ThemeUtils.isLightTheme(context) ? R.drawable.flat_button_light : R.drawable.flat_button_dark;
         int padding = getResources().getDimensionPixelSize(R.dimen.flat_button_padding);
+        float textSize = context.getResources().getDimension(R.dimen.flat_button_text_size);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             background = ThemeUtils.isLightTheme(context) ? R.drawable.flat_button_ripple_light : R.drawable.flat_button_ripple_dark;
@@ -41,7 +43,7 @@ public class FlatButton extends Button {
 
         setBackgroundResource(background);
         setPadding(padding, padding, padding, padding);
-        setTextAppearance(context, android.R.style.TextAppearance_Small);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         setTypeface(null, Typeface.BOLD);
         setTextColor(textColor);
         setEllipsize(TextUtils.TruncateAt.END);

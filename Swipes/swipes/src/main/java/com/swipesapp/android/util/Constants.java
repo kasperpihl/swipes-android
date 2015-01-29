@@ -16,11 +16,6 @@ public class Constants {
     public static final float PRESSED_BUTTON_ALPHA = 0.6f;
 
     /**
-     * Default animation duration.
-     */
-    public static final int ANIMATION_DURATION = 500;
-
-    /**
      * Short animation duration.
      */
     public static final int ANIMATION_DURATION_SHORT = 200;
@@ -28,7 +23,12 @@ public class Constants {
     /**
      * Medium animation duration.
      */
-    public static final int ANIMATION_DURATION_MEDIUM = 350;
+    public static final int ANIMATION_DURATION_MEDIUM = 400;
+
+    /**
+     * Default animation duration.
+     */
+    public static final int ANIMATION_DURATION_LONG = 500;
 
     /**
      * Intent extra for task ID.

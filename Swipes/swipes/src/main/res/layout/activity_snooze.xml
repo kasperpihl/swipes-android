@@ -11,8 +11,6 @@
         android:id="@+id/snooze_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
-        android:layout_marginRight="@dimen/schedule_options_margin_sides"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
@@ -337,6 +335,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:singleLine="true"
-        android:text="@string/snooze_adjust_hint" />
+        android:text="@string/snooze_adjust_hint"
+        android:visibility="gone" />
 
 </LinearLayout>

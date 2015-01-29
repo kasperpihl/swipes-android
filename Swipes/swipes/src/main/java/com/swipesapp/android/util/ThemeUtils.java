@@ -45,6 +45,14 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
+     * @return Current theme's dialog resource file.
+     */
+    public static int getDialogThemeResource(Context context) {
+        return isLightTheme(context) ? R.style.Dialog_Theme_Light : R.style.Dialog_Theme_Dark;
+    }
+
+    /**
+     * @param context Context to use.
      * @return Current theme's background color.
      */
     public static int getBackgroundColor(Context context) {

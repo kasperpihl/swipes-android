@@ -80,7 +80,7 @@
             android:name="com.swipesapp.android.ui.activity.SnoozeActivity"
             android:label="@string/title_activity_edit_task"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
@@ -148,7 +148,7 @@
             android:name="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity"
             android:label="@string/title_activity_evernote_attachments"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver" />

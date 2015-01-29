@@ -603,9 +603,6 @@ public class EditTaskActivity extends BaseActivity {
         Intent intent = new Intent(this, SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
-
-        // Override animation.
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void closeTags() {

@@ -110,7 +110,7 @@
                 android:layout_toRightOf="@id/filter_checkbox_area"
                 android:ellipsize="end"
                 android:text="@string/evernote_filter_description"
-                android:textColor="@color/white" />
+                android:textColor="@android:color/white" />
         </RelativeLayout>
 
     </LinearLayout>

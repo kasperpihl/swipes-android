@@ -157,7 +157,7 @@
     <string name="snooze_unspecified">Unspecified</string>
     <string name="snooze_at_location">At Location</string>
     <string name="snooze_pick_date">Pick Date</string>
-    <string name="snooze_done_text">Snooze</string>
+    <string name="snooze_done_text">SNOOZE</string>
     <string name="snooze_adjust_hint">Hold down to adjust time</string>
 
     <!-- Week days -->

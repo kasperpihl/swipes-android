@@ -695,9 +695,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
-
-        // Override animation.
-        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void showTags() {

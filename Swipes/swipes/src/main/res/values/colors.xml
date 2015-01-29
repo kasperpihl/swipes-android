@@ -31,6 +31,7 @@
     <item name="dark_divider" type="color">#36383D</item>
 
     <!-- Component colors -->
+    <item name="transparent" type="color">#00000000</item>
     <item name="red_button" type="color">#CCfd4534</item>
     <item name="red_button_push" type="color">#80fd4534</item>
     <item name="evernote_brand" type="color">#2DBE60</item>

@@ -61,5 +61,6 @@
     <dimen name="toolbar_elevation">3dp</dimen>
     <dimen name="flat_button_height">36dp</dimen>
     <dimen name="flat_button_padding">8dp</dimen>
+    <dimen name="flat_button_text_size">14sp</dimen>
 
 </resources>

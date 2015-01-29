@@ -73,4 +73,5 @@ dependencies {
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.melnykov:floatingactionbutton:1.1.0'
+    compile 'com.afollestad:material-dialogs:0.6.2.1'
 }

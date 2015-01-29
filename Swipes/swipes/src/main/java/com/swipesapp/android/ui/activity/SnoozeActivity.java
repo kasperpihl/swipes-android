@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +20,6 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Themes;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
@@ -31,9 +30,6 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class SnoozeActivity extends FragmentActivity {
-
-    @InjectView(R.id.snooze_view)
-    LinearLayout mView;
 
     // Later today.
     @InjectView(R.id.snooze_later_today_icon)
@@ -104,9 +100,11 @@ public class SnoozeActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_snooze);
         ButterKnife.inject(this);
+
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mContext = new WeakReference<Context>(this);
 
@@ -119,13 +117,18 @@ public class SnoozeActivity extends FragmentActivity {
         customizeViews();
     }
 
-    private void customizeViews() {
-        mView.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+    @Override
+    public void finish() {
+        super.finish();
 
+        overridePendingTransition(0, 0);
+    }
+
+    private void customizeViews() {
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
         mAdjustHint.setTextColor(getResources().getColor(hintColor));
 
-        int textColor = ThemeUtils.getTextColor(this);
+        int textColor = ThemeUtils.getSecondaryTextColor(this);
         int iconColor = ThemeUtils.getTextColor(this);
 
         setSelector(mLaterTodayIcon);
@@ -382,7 +385,7 @@ public class SnoozeActivity extends FragmentActivity {
 
     private void adjustSnoozeTime(final Calendar snooze, int startHour, int startMinute) {
         // Hide snooze view.
-        mView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        getWindow().getDecorView().animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Create time picker listener.
         RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
@@ -403,7 +406,7 @@ public class SnoozeActivity extends FragmentActivity {
             @Override
             public void onDialogDismiss(DialogInterface dialoginterface) {
                 // Show snooze view.
-                mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+                getWindow().getDecorView().animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
             }
         };
 
@@ -413,7 +416,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnTimeSetListener(timeSetListener);
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
+        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
         dialog.set24HourMode(DateFormat.is24HourFormat(this));
         dialog.show(getSupportFragmentManager(), TIME_PICKER_TAG);
 
@@ -428,7 +431,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.MINUTE, 0);
 
         // Hide snooze view.
-        mView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        getWindow().getDecorView().animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Create date picker listener.
         CalendarDatePickerDialog.OnDateSetListener dateSetListener = new CalendarDatePickerDialog.OnDateSetListener() {
@@ -448,7 +451,7 @@ public class SnoozeActivity extends FragmentActivity {
             @Override
             public void onDialogDismiss(DialogInterface dialoginterface) {
                 // Show snooze view.
-                mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+                getWindow().getDecorView().animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
             }
         };
 
@@ -457,7 +460,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnDateSetListener(dateSetListener);
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
-        dialog.setThemeDark(ThemeUtils.getCurrentTheme(this) != Themes.LIGHT);
+        dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
         dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
 
         // Mark schedule as not performed.
