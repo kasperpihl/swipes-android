@@ -46,7 +46,6 @@
     <!-- Splash screen theme. -->
     <style name="Splash_Theme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
-        <!--<item name="android:windowTranslucentStatus" tools:targetApi="19">true</item>-->
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
     </style>
 

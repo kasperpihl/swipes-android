@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ThemeUtils;
 
@@ -25,7 +24,6 @@ import com.swipesapp.android.util.ThemeUtils;
 public class BaseActivity extends ActionBarActivity {
 
     private Window mWindow;
-    private SystemBarTintManager mTintManager;
 
     /**
      * Default constructor. Enables Status Bar tint.
@@ -38,12 +36,7 @@ public class BaseActivity extends ActionBarActivity {
 
         mWindow = getWindow();
 
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            // Enable KitKat translucency and tint.
-//            mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            mTintManager = new SystemBarTintManager(this);
-            mTintManager.setStatusBarTintEnabled(true);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Enable Lollipop status bar tint.
             mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
@@ -92,10 +85,7 @@ public class BaseActivity extends ActionBarActivity {
      * @param color Color to apply.
      */
     protected void themeStatusBar(int color) {
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            // Adjust status bar for KitKat.
-            mTintManager.setStatusBarTintDrawable(new ColorDrawable(color));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Adjust status bar for Lollipop.
             mWindow.setStatusBarColor(color);
         }
