@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
@@ -23,6 +22,7 @@ import com.swipesapp.android.util.ThemeUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -68,10 +68,10 @@ public class SnoozeActivity extends FragmentActivity {
     TextView mNextWeekTitle;
 
     // Unspecified.
-//    @InjectView(R.id.snooze_unspecified_icon)
-//    SwipesTextView mUnspecifiedIcon;
-//    @InjectView(R.id.snooze_unspecified_title)
-//    TextView mUnspecifiedTitle;
+    @InjectView(R.id.snooze_unspecified_icon)
+    SwipesTextView mUnspecifiedIcon;
+    @InjectView(R.id.snooze_unspecified_title)
+    TextView mUnspecifiedTitle;
 
     // At location.
     @InjectView(R.id.snooze_at_location_icon)
@@ -156,9 +156,9 @@ public class SnoozeActivity extends FragmentActivity {
         mNextWeekIcon.setTextColor(iconColor);
         mNextWeekTitle.setTextColor(textColor);
 
-//        setSelector(mUnspecifiedIcon);
-//        mUnspecifiedIcon.setTextColor(iconColor);
-//        mUnspecifiedTitle.setTextColor(textColor);
+        setSelector(mUnspecifiedIcon);
+        mUnspecifiedIcon.setTextColor(iconColor);
+        mUnspecifiedTitle.setTextColor(textColor);
 
         setSelector(mAtLocationIcon);
         mAtLocationIcon.setTextColor(iconColor);
@@ -208,7 +208,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_later_today)
@@ -233,7 +233,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_this_evening)
@@ -255,7 +255,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_tomorrow)
@@ -278,7 +278,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_two_days)
@@ -303,7 +303,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextWeekTreatment(snooze);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_this_weekend)
@@ -330,7 +330,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextWeekTreatment(snooze);
 
-        performChanges(snooze);
+        performChanges(snooze.getTime());
     }
 
     @OnLongClick(R.id.snooze_next_week)
@@ -347,25 +347,27 @@ public class SnoozeActivity extends FragmentActivity {
         return true;
     }
 
-//    @OnClick(R.id.snooze_unspecified)
-//    protected void unspecified() {
-//        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
-//    }
+    @OnClick(R.id.snooze_unspecified)
+    protected void unspecified() {
+        // Set date as unspecified.
+        performChanges(null);
+    }
 
-//    @OnLongClick(R.id.snooze_unspecified)
-//    protected boolean unspecifiedAdjust() {
-//        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
-//        return true;
-//    }
+    @OnLongClick(R.id.snooze_unspecified)
+    protected boolean unspecifiedAdjust() {
+        // Set date as unspecified.
+        performChanges(null);
+        return true;
+    }
 
     @OnClick(R.id.snooze_at_location)
     protected void atLocation() {
-        Toast.makeText(getApplicationContext(), "Location reminders coming soon", Toast.LENGTH_SHORT).show();
+        // TODO: Location reminders.
     }
 
     @OnLongClick(R.id.snooze_at_location)
     protected boolean atLocationAdjust() {
-        Toast.makeText(getApplicationContext(), "Snooze option coming soon", Toast.LENGTH_SHORT).show();
+        // TODO: Location reminders.
         return true;
     }
 
@@ -397,7 +399,7 @@ public class SnoozeActivity extends FragmentActivity {
 
                 applyNextDayTreatment(snooze);
 
-                performChanges(snooze);
+                performChanges(snooze.getTime());
             }
         };
 
@@ -442,7 +444,7 @@ public class SnoozeActivity extends FragmentActivity {
                 snooze.set(Calendar.MONTH, monthOfYear);
                 snooze.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                performChanges(snooze);
+                performChanges(snooze.getTime());
             }
         };
 
@@ -467,9 +469,9 @@ public class SnoozeActivity extends FragmentActivity {
         setResult(RESULT_CANCELED);
     }
 
-    private void performChanges(Calendar snooze) {
+    private void performChanges(Date schedule) {
         // Perform task changes.
-        mTask.setLocalSchedule(snooze.getTime());
+        mTask.setLocalSchedule(schedule);
         mTask.setLocalCompletionDate(null);
         mTasksService.saveTask(mTask, true);
 

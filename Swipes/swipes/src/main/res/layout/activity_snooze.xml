@@ -231,44 +231,46 @@
             android:weightSum="1">
 
             <!-- Unspecified -->
-            <!--<LinearLayout-->
-            <!--android:id="@+id/snooze_unspecified"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginRight="@dimen/schedule_options_margin_sides"-->
-            <!--android:layout_weight="0.33"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<com.swipesapp.android.ui.view.SwipesTextView-->
-            <!--android:id="@+id/snooze_unspecified_icon"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/schedule_cloud"-->
-            <!--android:textSize="@dimen/schedule_options_icon_size" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/snooze_unspecified_title"-->
-            <!--style="?android:textAppearanceSmall"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="@dimen/schedule_options_margin_vertical"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:ellipsize="end"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--android:singleLine="true"-->
-            <!--android:text="@string/snooze_unspecified" />-->
-            <!--</LinearLayout>-->
-
-            <!-- At location -->
             <LinearLayout
-                android:id="@+id/snooze_at_location"
+                android:id="@+id/snooze_unspecified"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/schedule_options_margin_sides"
                 android:layout_weight="0.33"
                 android:gravity="center"
                 android:orientation="vertical">
+
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/snooze_unspecified_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/schedule_cloud"
+                    android:textSize="@dimen/schedule_options_icon_size" />
+
+                <TextView
+                    android:id="@+id/snooze_unspecified_title"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/schedule_options_margin_vertical"
+                    android:background="@color/transparent"
+                    android:ellipsize="end"
+                    android:focusableInTouchMode="true"
+                    android:singleLine="true"
+                    android:text="@string/snooze_unspecified" />
+            </LinearLayout>
+
+            <!-- At location -->
+            <LinearLayout
+                android:id="@+id/snooze_at_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/schedule_options_margin_sides"
+                android:layout_marginRight="@dimen/schedule_options_margin_sides"
+                android:layout_weight="0.33"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/snooze_at_location_icon"
@@ -295,7 +297,7 @@
                 android:id="@+id/snooze_pick_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/schedule_options_margin_sides"
+                android:layout_marginLeft="@dimen/schedule_options_margin_sides"
                 android:layout_weight="0.33"
                 android:gravity="center"
                 android:orientation="vertical">
