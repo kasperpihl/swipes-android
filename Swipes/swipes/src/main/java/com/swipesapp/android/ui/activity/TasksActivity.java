@@ -1,7 +1,5 @@
 package com.swipesapp.android.ui.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -47,6 +45,7 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
+import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
@@ -67,14 +66,14 @@ import butterknife.OnClick;
 
 public class TasksActivity extends BaseActivity implements ListContentsListener {
 
+    @InjectView(R.id.tasks_area)
+    RelativeLayout mTasksArea;
+
     @InjectView(R.id.pager)
     DynamicViewPager mViewPager;
 
     @InjectView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
-
-    @InjectView(R.id.clear_background)
-    View mClearBackground;
 
     @InjectView(R.id.add_task_container)
     RelativeLayout mAddTaskContainer;
@@ -125,6 +124,8 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
     private float mPreviousOffset;
 
     private boolean mHasChangedTab;
+
+    private boolean mIsAddingTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,7 +308,7 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             int toColor = ThemeUtils.getSectionColor(to, mContext.get());
 
             // Blend the colors and adjust the ActionBar.
-            int blended = blendColors(toColor, fromColor, positionOffset);
+            int blended = ColorUtils.blendColors(fromColor, toColor, positionOffset);
             themeActionBar(blended);
 
             // Load dark colors for sections.
@@ -315,21 +316,13 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             toColor = ThemeUtils.getSectionColorDark(to, mContext.get());
 
             // Blend the colors and adjust the status bar.
-            blended = blendColors(toColor, fromColor, positionOffset);
-            themeStatusBar(blended);
+            blended = ColorUtils.blendColors(fromColor, toColor, positionOffset);
+            if (!mIsAddingTask) themeStatusBar(blended);
 
             // Fade ActionBar content gradually.
             fadeActionBar(positionOffset);
         }
     };
-
-    private int blendColors(int from, int to, float ratio) {
-        final float inverseRatio = 1f - ratio;
-        final float r = Color.red(from) * ratio + Color.red(to) * inverseRatio;
-        final float g = Color.green(from) * ratio + Color.green(to) * inverseRatio;
-        final float b = Color.blue(from) * ratio + Color.blue(to) * inverseRatio;
-        return Color.rgb((int) r, (int) g, (int) b);
-    }
 
     private void fadeActionBar(float positionOffset) {
         // TODO: Set text and icons properly.
@@ -549,17 +542,17 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
+        // Set flag.
+        mIsAddingTask = true;
+
         // Go to main fragment if needed.
         if (sCurrentSection != Sections.FOCUS) {
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
-        mClearBackground.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        // Fade in the background.
-        mClearBackground.setAlpha(0f);
-        mClearBackground.setVisibility(View.VISIBLE);
-        mClearBackground.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).setListener(mClearFadeInListener);
+        // Fade out the tasks.
+        mTasksArea.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG);
+        transitionStatusBar(ThemeUtils.getStatusBarColor(this));
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -580,12 +573,15 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         loadTags();
     }
 
-    @OnClick(R.id.clear_background)
-    protected void clearBackgroundClick() {
+    @OnClick(R.id.add_task_container)
+    protected void addTaskAreaClick() {
         endAddTaskWorkflow(false);
     }
 
     private void endAddTaskWorkflow(boolean resetFields) {
+        // Reset flag.
+        mIsAddingTask = false;
+
         // Remove focus and hide text view.
         mEditTextAddNewTask.clearFocus();
         mEditTextAddNewTask.setVisibility(View.GONE);
@@ -603,12 +599,9 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         // Hide tags area.
         animateTags(true);
 
-        // Show the main layout.
-        mViewPager.setAlpha(1f);
-        mViewPager.setVisibility(View.VISIBLE);
-
-        // Fade out the clear background.
-        mClearBackground.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).setListener(mClearFadeOutListener);
+        // Fade in the tasks.
+        mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
+        transitionStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
 
         // Broadcast changes.
         mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
@@ -650,22 +643,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         // Send a broadcast to share selected tasks. The fragment should handle it.
         mTasksService.sendBroadcast(Actions.SHARE_TASKS);
     }
-
-    private AnimatorListenerAdapter mClearFadeInListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            // Hide the main layout.
-            mViewPager.setVisibility(View.GONE);
-        }
-    };
-
-    private AnimatorListenerAdapter mClearFadeOutListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            // Hide the clear background.
-            mClearBackground.setVisibility(View.GONE);
-        }
-    };
 
     private View.OnFocusChangeListener mFocusListener = new View.OnFocusChangeListener() {
         @Override

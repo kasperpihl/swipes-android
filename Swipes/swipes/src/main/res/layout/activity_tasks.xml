@@ -4,38 +4,38 @@
     android:layout_height="match_parent"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
     <!-- Tasks area -->
-    <com.fortysevendeg.swipelistview.DynamicViewPager
-        android:id="@+id/pager"
+    <RelativeLayout
+        android:id="@+id/tasks_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/action_buttons_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
 
-        <!-- Add task button -->
-        <include layout="@layout/add_task_button" />
+        <com.fortysevendeg.swipelistview.DynamicViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar" />
 
-        <!-- Edit bar -->
-        <include layout="@layout/edit_bar" />
+        <LinearLayout
+            android:id="@+id/action_buttons_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <!-- Add task button -->
+            <include layout="@layout/add_task_button" />
 
-    <!-- Clear background -->
-    <View
-        android:id="@+id/clear_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+            <!-- Edit bar -->
+            <include layout="@layout/edit_bar" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <!-- Add task area -->
     <include layout="@layout/add_tasks_view" />

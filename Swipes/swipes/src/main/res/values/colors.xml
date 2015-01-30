@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Swipes colors -->
-    <item name="swipes_brand" type="color">#fd4534</item>
+    <!-- Section colors -->
     <item name="done_accent" type="color">#8CC152</item>
     <item name="done_accent_dark" type="color">#6BA42E</item>
     <item name="later_accent" type="color">#FC5830</item>
@@ -14,13 +13,15 @@
     <item name="neutral_accent_dark" type="color">#455A64</item>
     <item name="neutral_accent_light" type="color">#78909C</item>
 
-    <!-- Theme colors -->
+    <!-- Background colors -->
     <item name="light_highlight" type="color">#66999999</item>
     <item name="dark_highlight" type="color">#40CCCCCC</item>
     <item name="light_background" type="color">#FFFFFF</item>
     <item name="dark_background" type="color">#1A1D22</item>
     <item name="light_neutral_background" type="color">#F8F8F9</item>
     <item name="dark_neutral_background" type="color">#24282e</item>
+
+    <!-- Text colors -->
     <item name="light_text" type="color">#1F1F1F</item>
     <item name="dark_text" type="color">#FFFFFF</item>
     <item name="light_secondary_text" type="color">#676767</item>
@@ -37,5 +38,7 @@
     <item name="evernote_brand" type="color">#2DBE60</item>
     <item name="evernote_brand_dark" type="color">#07A949</item>
     <item name="evernote_gray_background" type="color">#E1E1E1</item>
+    <item name="light_status_bar" type="color">#CECECE</item>
+    <item name="dark_status_bar" type="color">#121720</item>
 
 </resources>

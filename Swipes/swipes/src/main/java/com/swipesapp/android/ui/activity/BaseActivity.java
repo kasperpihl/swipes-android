@@ -1,5 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityManager.TaskDescription;
 import android.content.pm.ActivityInfo;
@@ -15,6 +16,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.util.ColorUtils;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 
 /**
@@ -118,6 +121,32 @@ public class BaseActivity extends ActionBarActivity {
             // Adjust header properties.
             TaskDescription description = new TaskDescription(getString(R.string.app_name), icon, color);
             ((Activity) this).setTaskDescription(description);
+        }
+    }
+
+    /**
+     * Applies a given color to the Status Bar with a smooth transition.
+     *
+     * @param toColor Color to apply.
+     */
+    protected void transitionStatusBar(final int toColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final int fromColor = getWindow().getStatusBarColor();
+
+            ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    // Blend colors according to position.
+                    float position = animation.getAnimatedFraction();
+                    int blended = ColorUtils.blendColors(fromColor, toColor, position);
+
+                    // Adjust status bar for Lollipop.
+                    themeStatusBar(blended);
+                }
+            });
+
+            anim.setDuration(Constants.ANIMATION_DURATION_LONG).start();
         }
     }
 

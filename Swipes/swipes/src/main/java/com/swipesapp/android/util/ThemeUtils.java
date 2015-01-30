@@ -146,4 +146,13 @@ public class ThemeUtils {
         return isLightTheme(context) ? R.drawable.dialog_light : R.drawable.dialog_dark;
     }
 
+    /**
+     * @param context Context to use.
+     * @return Current theme's status bar color.
+     */
+    public static int getStatusBarColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_status_bar : R.color.dark_status_bar;
+        return context.getResources().getColor(color);
+    }
+
 }
