@@ -7,7 +7,10 @@
     android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.SnoozeActivity">
 
-    <include layout="@layout/snooze_view" />
+    <include
+        layout="@layout/snooze_view"
+        android:layout_width="@dimen/snooze_view_width"
+        android:layout_height="@dimen/snooze_view_height" />
 
     <!-- Adjust time tip -->
     <TextView

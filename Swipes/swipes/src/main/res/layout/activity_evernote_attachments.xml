@@ -13,8 +13,8 @@
         android:id="@+id/attachments_view"
         android:layout_width="match_parent"
         android:layout_height="380dp"
-        android:layout_marginLeft="@dimen/schedule_options_margin_sides"
-        android:layout_marginRight="@dimen/schedule_options_margin_sides"
+        android:layout_marginLeft="@dimen/snooze_options_margin_sides"
+        android:layout_marginRight="@dimen/snooze_options_margin_sides"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:weightSum="1">

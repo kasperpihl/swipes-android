@@ -138,4 +138,12 @@ public class ThemeUtils {
         return isLightTheme(context) ? R.style.Light_Theme_Popup_Menu : R.style.Dark_Theme_Popup_Menu;
     }
 
+    /**
+     * @param context Context to use.
+     * @return Current theme's dialog background resource.
+     */
+    public static int getDialogBackground(Context context) {
+        return isLightTheme(context) ? R.drawable.dialog_light : R.drawable.dialog_dark;
+    }
+
 }

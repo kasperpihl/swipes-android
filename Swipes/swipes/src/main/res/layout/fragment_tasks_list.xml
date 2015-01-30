@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,37 +15,8 @@
         android:weightSum="1"
         tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-        <!-- Buttons area -->
-        <LinearLayout
-            android:id="@+id/header_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <com.swipesapp.android.ui.view.FlatButton
-                android:id="@+id/button_show_old"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/flat_button_height"
-                android:layout_marginLeft="@dimen/done_buttons_margin_sides"
-                android:layout_marginRight="@dimen/done_buttons_margin_middle"
-                android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-                android:maxWidth="@dimen/done_buttons_max_width"
-                android:text="@string/show_old"
-                app:textColor="@color/done_accent" />
-
-            <com.swipesapp.android.ui.view.FlatButton
-                android:id="@+id/button_clear_old"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/flat_button_height"
-                android:layout_marginLeft="@dimen/done_buttons_margin_middle"
-                android:layout_marginRight="@dimen/done_buttons_margin_sides"
-                android:layout_marginTop="@dimen/done_buttons_margin_vertical"
-                android:maxWidth="@dimen/done_buttons_max_width"
-                android:text="@string/clear_old"
-                app:textColor="@color/done_accent" />
-        </LinearLayout>
+        <!-- Done buttons -->
+        <include layout="@layout/done_buttons_view" />
 
         <!-- List view -->
         <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
@@ -74,52 +44,6 @@
     </LinearLayout>
 
     <!-- Tags area -->
-    <LinearLayout
-        android:id="@+id/tags_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/tags_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="17dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp" />
-
-        <!-- Tag management buttons -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/tags_back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="12dp"
-                android:background="@android:color/transparent"
-                android:text="@string/left_arrow"
-                android:textSize="25sp" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/tags_add_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="12dp"
-                android:background="@android:color/transparent"
-                android:text="@string/plus_sign"
-                android:textSize="25sp" />
-        </RelativeLayout>
-
-    </LinearLayout>
+    <include layout="@layout/tags_view" />
 
 </LinearLayout>

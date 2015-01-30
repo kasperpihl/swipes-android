@@ -252,54 +252,6 @@
     </LinearLayout>
 
     <!-- Tags area -->
-    <LinearLayout
-        android:id="@+id/assign_tags_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/assign_tags_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="17dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp" />
-
-        <!-- Tag management buttons -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/tags_back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="12dp"
-                android:background="@android:color/transparent"
-                android:text="@string/left_arrow"
-                android:textColor="@color/light_text"
-                android:textSize="25sp" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/tags_add_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="12dp"
-                android:background="@android:color/transparent"
-                android:text="@string/plus_sign"
-                android:textColor="@color/light_text"
-                android:textSize="25sp" />
-        </RelativeLayout>
-
-    </LinearLayout>
+    <include layout="@layout/tags_view" />
 
 </LinearLayout>

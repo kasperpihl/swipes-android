@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Scheduler -->
+    <dimen name="snooze_view_width">420dp</dimen>
+    <dimen name="snooze_view_height">420dp</dimen>
+
+</resources>

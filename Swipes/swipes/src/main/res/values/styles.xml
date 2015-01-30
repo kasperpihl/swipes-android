@@ -59,14 +59,14 @@
     <style name="Dialog_Theme_Light" parent="Theme.AppCompat.Dialog">
         <item name="android:windowAnimationStyle">@style/Dialog_Animation</item>
         <item name="android:backgroundDimAmount">0.2</item>
-        <item name="android:windowBackground">@drawable/dialog_light</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Dialog_Theme_Dark" parent="Theme.AppCompat.Dialog">
         <item name="android:windowAnimationStyle">@style/Dialog_Animation</item>
         <item name="android:backgroundDimAmount">0.4</item>
-        <item name="android:windowBackground">@drawable/dialog_dark</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 

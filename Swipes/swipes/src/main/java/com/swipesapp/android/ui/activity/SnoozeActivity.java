@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
@@ -30,6 +31,9 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class SnoozeActivity extends FragmentActivity {
+
+    @InjectView(R.id.snooze_view)
+    LinearLayout mView;
 
     // Later today.
     @InjectView(R.id.snooze_later_today_icon)
@@ -125,6 +129,8 @@ public class SnoozeActivity extends FragmentActivity {
     }
 
     private void customizeViews() {
+        mView.setBackgroundResource(ThemeUtils.getDialogBackground(this));
+
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
         mAdjustHint.setTextColor(getResources().getColor(hintColor));
 

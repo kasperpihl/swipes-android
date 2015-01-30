@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,64 +23,11 @@
         android:orientation="vertical">
 
         <!-- Add task button -->
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/button_add_task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_action_add"
-            fab:fab_colorNormal="@color/focus_accent"
-            fab:fab_colorPressed="@color/focus_accent_dark"
-            fab:fab_colorRipple="@color/focus_accent_ripple" />
+        <include layout="@layout/add_task_button" />
 
         <!-- Edit bar -->
-        <LinearLayout
-            android:id="@+id/edit_tasks_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/edit_bar_margin"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="1">
+        <include layout="@layout/edit_bar" />
 
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/button_edit_task"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:background="@android:color/transparent"
-                android:text="@string/action_edit"
-                android:textSize="@dimen/action_buttons_size" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/button_assign_tags"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:background="@android:color/transparent"
-                android:text="@string/action_tag"
-                android:textSize="@dimen/action_buttons_size" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/button_delete_tasks"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:background="@android:color/transparent"
-                android:text="@string/action_delete"
-                android:textSize="@dimen/action_buttons_size" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/button_share_tasks"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:background="@android:color/transparent"
-                android:text="@string/action_share"
-                android:textSize="@dimen/action_buttons_size" />
-        </LinearLayout>
     </LinearLayout>
 
     <!-- Clear background -->
@@ -92,65 +38,6 @@
         android:visibility="gone" />
 
     <!-- Add task area -->
-    <RelativeLayout
-        android:id="@+id/add_task_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:id="@+id/add_task_fields_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <CheckBox
-                android:id="@+id/button_add_task_priority"
-                android:layout_width="@dimen/task_circles_size"
-                android:layout_height="@dimen/task_circles_size"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/focus_circle_selector"
-                android:button="@null" />
-
-            <com.swipesapp.android.ui.view.SwipesButton
-                android:id="@+id/button_confirm_add_task"
-                android:layout_width="25dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="12dp"
-                android:background="@android:color/transparent"
-                android:text="@string/left_arrow"
-                android:textSize="25sp" />
-
-            <com.swipesapp.android.ui.view.ActionEditText
-                android:id="@+id/edit_text_add_task_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/button_confirm_add_task"
-                android:layout_toRightOf="@id/button_add_task_priority"
-                android:hint="@string/add_task_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
-                android:textCursorDrawable="@null" />
-        </RelativeLayout>
-
-        <!-- Tags area -->
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/add_task_tag_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/add_task_fields_container"
-            android:layout_marginBottom="17dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp" />
-
-    </RelativeLayout>
+    <include layout="@layout/add_tasks_view" />
 
 </RelativeLayout>

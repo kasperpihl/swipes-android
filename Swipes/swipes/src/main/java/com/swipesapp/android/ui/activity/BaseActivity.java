@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager.TaskDescription;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -35,6 +36,10 @@ public class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         mWindow = getWindow();
+
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Enable Lollipop status bar tint.

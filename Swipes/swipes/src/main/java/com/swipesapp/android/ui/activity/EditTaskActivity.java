@@ -121,10 +121,10 @@ public class EditTaskActivity extends BaseActivity {
     @InjectView(R.id.edit_task_notes)
     ActionEditText mNotes;
 
-    @InjectView(R.id.assign_tags_area)
+    @InjectView(R.id.tags_area)
     LinearLayout mTagsArea;
 
-    @InjectView(R.id.assign_tags_container)
+    @InjectView(R.id.tags_container)
     FlowLayout mTaskTagsContainer;
 
     @InjectView(R.id.subtask_footer)
@@ -627,7 +627,7 @@ public class EditTaskActivity extends BaseActivity {
         closeTags();
     }
 
-    @OnClick(R.id.assign_tags_area)
+    @OnClick(R.id.tags_area)
     protected void tagsAreaClick() {
         // Close tags area with animation.
         closeTags();

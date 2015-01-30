@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/header_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <!-- Show old -->
+    <com.swipesapp.android.ui.view.FlatButton
+        android:id="@+id/button_show_old"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/flat_button_height"
+        android:layout_marginLeft="@dimen/done_buttons_margin_sides"
+        android:layout_marginRight="@dimen/done_buttons_margin_middle"
+        android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+        android:maxWidth="@dimen/done_buttons_max_width"
+        android:text="@string/show_old"
+        app:textColor="@color/done_accent" />
+
+    <!-- Clear old -->
+    <com.swipesapp.android.ui.view.FlatButton
+        android:id="@+id/button_clear_old"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/flat_button_height"
+        android:layout_marginLeft="@dimen/done_buttons_margin_middle"
+        android:layout_marginRight="@dimen/done_buttons_margin_sides"
+        android:layout_marginTop="@dimen/done_buttons_margin_vertical"
+        android:maxWidth="@dimen/done_buttons_max_width"
+        android:text="@string/clear_old"
+        app:textColor="@color/done_accent" />
+
+</LinearLayout>

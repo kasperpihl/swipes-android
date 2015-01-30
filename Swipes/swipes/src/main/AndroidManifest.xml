@@ -15,7 +15,6 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Splash_Theme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,13 +26,11 @@
         <activity
             android:name="com.swipesapp.android.ui.activity.TasksActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name="com.swipesapp.android.ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.TasksActivity" />
@@ -41,8 +38,7 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.IntegrationsActivity"
-            android:label="@string/title_activity_integrations"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_integrations">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
@@ -50,8 +46,7 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.SnoozeSettingsActivity"
-            android:label="@string/title_activity_snooze_settings"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_snooze_settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
@@ -59,8 +54,7 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_about">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
@@ -69,7 +63,6 @@
         <activity
             android:name="com.swipesapp.android.ui.activity.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -79,33 +72,28 @@
         <activity
             android:name="com.swipesapp.android.ui.activity.SnoozeActivity"
             android:label="@string/title_activity_edit_task"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Dialog"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name="com.swipesapp.android.ui.activity.BlankActivityLight"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@style/Light_Theme_Activity_Overlay" />
 
         <activity
             android:name="com.swipesapp.android.ui.activity.BlankActivityDark"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@style/Dark_Theme_Activity_Overlay" />
 
         <activity
             android:name="com.swipesapp.android.ui.activity.WelcomeActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@style/Login_Theme" />
 
         <activity
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:theme="@style/Login_Theme">
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
@@ -124,8 +112,7 @@
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTop" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -137,8 +124,7 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.EvernoteLearnActivity"
-            android:label="@string/title_activity_evernote_learn"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_evernote_learn">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.IntegrationsActivity" />
@@ -147,7 +133,6 @@
         <activity
             android:name="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity"
             android:label="@string/title_activity_evernote_attachments"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Dialog"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
