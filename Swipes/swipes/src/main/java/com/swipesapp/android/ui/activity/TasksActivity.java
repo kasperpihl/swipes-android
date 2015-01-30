@@ -47,6 +47,7 @@ import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
@@ -149,16 +150,9 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
 
         createSnoozeAlarm();
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
-        mViewPager.setOffscreenPageLimit(Sections.getSectionsCount());
+        if (sCurrentSection == null) sCurrentSection = Sections.FOCUS;
 
-        // Default to second item, index starts at zero.
-        if (sCurrentSection == null) {
-            mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-            sCurrentSection = Sections.FOCUS;
-        }
+        setupViewPager();
 
         setupSystemBars(sCurrentSection);
 
@@ -267,6 +261,20 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, 60000, 60000, alarmIntent);
+    }
+
+    private void setupViewPager() {
+        if (DeviceUtils.isLandscape(this)) mSimpleOnPageChangeListener = null;
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
+        mViewPager.setOffscreenPageLimit(Sections.getSectionsCount());
+        mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin_sides));
+        mViewPager.setCurrentItem(sCurrentSection.getSectionNumber());
+
+        // TODO: Find out why over scroll is buggy on tablets and turn it back on.
+        if (DeviceUtils.isTablet(this)) mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {

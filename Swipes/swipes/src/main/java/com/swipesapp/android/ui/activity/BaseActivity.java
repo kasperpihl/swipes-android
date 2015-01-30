@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
 /**
@@ -40,7 +41,7 @@ public class BaseActivity extends ActionBarActivity {
 
         mWindow = getWindow();
 
-        if (getResources().getBoolean(R.bool.portrait_only)) {
+        if (!DeviceUtils.isTablet(this)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 

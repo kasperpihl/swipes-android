@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.swipesapp.android.ui.fragments.TasksListFragment;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
@@ -40,6 +41,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return Sections.getSectionsCount();
+    }
+
+    @Override
+    public float getPageWidth(int position) {
+        // Set page width based on orientation.
+        if (DeviceUtils.isLandscape(mContext.get())) {
+            return 0.33333f;
+        } else {
+            return 1f;
+        }
     }
 
 }

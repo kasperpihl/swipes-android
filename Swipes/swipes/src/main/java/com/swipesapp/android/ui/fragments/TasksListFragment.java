@@ -49,6 +49,7 @@ import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
@@ -303,6 +304,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
         mListView.setLongSwipeActionRight(SwipeListView.LONG_SWIPE_ACTION_DISMISS);
         mListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
+
+        // Setup landscape padding.
+        if (DeviceUtils.isLandscape(getActivity())) {
+            int bottomPadding = mListView.getPaddingBottom();
+            int topPadding = mListView.getPaddingTop();
+            int sidePadding = mListView.getPaddingLeft();
+
+            mListView.setPadding(sidePadding, topPadding, Math.round(sidePadding / 2), bottomPadding);
+        }
     }
 
     private void configureFocusView(TasksListAdapter adapter) {
@@ -327,6 +337,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
+
+        // Setup landscape padding.
+        if (DeviceUtils.isLandscape(getActivity())) {
+            int bottomPadding = mListView.getPaddingBottom();
+            int topPadding = mListView.getPaddingTop();
+            int sidePadding = Math.round(mListView.getPaddingLeft() / 2);
+
+            mListView.setPadding(sidePadding, topPadding, sidePadding, bottomPadding);
+        }
     }
 
     private void configureDoneView(TasksListAdapter adapter) {
@@ -354,6 +373,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setSwipeActionRight(SwipeListView.SWIPE_ACTION_NONE);
         mListView.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_DISMISS);
         mListView.setLongSwipeActionLeft(SwipeListView.LONG_SWIPE_ACTION_REVEAL);
+
+        // Setup landscape padding.
+        if (DeviceUtils.isLandscape(getActivity())) {
+            int bottomPadding = mListView.getPaddingBottom();
+            int topPadding = mListView.getPaddingTop();
+            int sidePadding = mListView.getPaddingLeft();
+
+            mListView.setPadding(Math.round(sidePadding / 2), topPadding, sidePadding, bottomPadding);
+        }
     }
 
     private void measureListView(final DynamicListView listView) {
@@ -397,19 +425,39 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Listen to broadcasts intended for this section.
-            if (isCurrentSection()) {
-                // Filter intent actions.
-                if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                    // Perform refresh.
-                    refreshTaskList(false);
-                } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
-                    // Perform refresh.
-                    if (sSelectedTasks.isEmpty()) refreshTaskList(false);
+            // Filter intent actions.
+            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
+                // Perform refresh.
+                refreshTaskList(false);
+            } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
+                // Perform refresh.
+                if (sSelectedTasks.isEmpty()) refreshTaskList(false);
 
-                    // Hide search and tags.
-                    hideFilters();
-                } else if (intent.getAction().equals(Actions.EDIT_TASK)) {
+                // Enable or disable swiping.
+                boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
+                mListView.setSwipeEnabled(enabled);
+
+                // Hide search and tags.
+                hideFilters();
+            } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
+                // Don't close the app when assigning tags.
+                if (mTagsArea.getVisibility() == View.VISIBLE) {
+                    closeTags();
+                } else if (!sSelectedTasks.isEmpty()) {
+                    // Clear selected tasks and hide edit bar.
+                    sSelectedTasks.clear();
+                    ((TasksActivity) getActivity()).hideEditBar();
+                    refreshTaskList(false);
+                } else {
+                    TasksActivity.clearCurrentSection();
+                    sIsShowingOld = false;
+                    getActivity().finish();
+                }
+            }
+
+            // Filter actions intended only for this section.
+            if (isCurrentSection()) {
+                if (intent.getAction().equals(Actions.EDIT_TASK)) {
                     // Call task edit activity, passing the tempId of the selected task as parameter.
                     Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
                     editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, sSelectedTasks.get(0).getId());
@@ -431,20 +479,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Hide bar and clear selection.
                     ((TasksActivity) getActivity()).hideEditBar();
                     sSelectedTasks.clear();
-                } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
-                    // Don't close the app when assigning tags.
-                    if (mTagsArea.getVisibility() == View.VISIBLE) {
-                        closeTags();
-                    } else if (!sSelectedTasks.isEmpty()) {
-                        // Clear selected tasks and hide edit bar.
-                        sSelectedTasks.clear();
-                        ((TasksActivity) getActivity()).hideEditBar();
-                        refreshTaskList(false);
-                    } else {
-                        TasksActivity.clearCurrentSection();
-                        sIsShowingOld = false;
-                        getActivity().finish();
-                    }
                 }
             }
         }
