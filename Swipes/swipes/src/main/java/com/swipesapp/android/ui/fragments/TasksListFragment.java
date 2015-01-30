@@ -116,10 +116,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @InjectView(R.id.list_area)
     LinearLayout mListArea;
 
-    @InjectView(R.id.tags_area)
+    @InjectView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
 
-    @InjectView(R.id.tags_container)
+    @InjectView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
     public static TasksListFragment newInstance(int sectionNumber) {
@@ -708,19 +708,19 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         SyncService.getInstance(getActivity()).performSync(true);
     }
 
-    @OnClick(R.id.tags_back_button)
+    @OnClick(R.id.assign_tags_back_button)
     protected void tagsBack() {
         // Close tags area with animation.
         closeTags();
     }
 
-    @OnClick(R.id.tags_area)
+    @OnClick(R.id.assign_tags_area)
     protected void tagsAreaClick() {
         // Close tags area with animation.
         closeTags();
     }
 
-    @OnClick(R.id.tags_add_button)
+    @OnClick(R.id.assign_tags_add_button)
     protected void addTag() {
         // Create tag title input.
         final EditText input = new EditText(getActivity());

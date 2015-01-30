@@ -121,10 +121,10 @@ public class EditTaskActivity extends BaseActivity {
     @InjectView(R.id.edit_task_notes)
     ActionEditText mNotes;
 
-    @InjectView(R.id.tags_area)
+    @InjectView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
 
-    @InjectView(R.id.tags_container)
+    @InjectView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
     @InjectView(R.id.subtask_footer)
@@ -621,19 +621,19 @@ public class EditTaskActivity extends BaseActivity {
         SyncService.getInstance(this).performSync(true);
     }
 
-    @OnClick(R.id.tags_back_button)
+    @OnClick(R.id.assign_tags_back_button)
     protected void tagsBack() {
         // Close tags area with animation.
         closeTags();
     }
 
-    @OnClick(R.id.tags_area)
+    @OnClick(R.id.assign_tags_area)
     protected void tagsAreaClick() {
         // Close tags area with animation.
         closeTags();
     }
 
-    @OnClick(R.id.tags_add_button)
+    @OnClick(R.id.assign_tags_add_button)
     protected void addTag() {
         // Create tag title input.
         final EditText input = new EditText(this);

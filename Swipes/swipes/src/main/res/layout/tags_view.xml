@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tags_area"
+    android:id="@+id/assign_tags_area"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
@@ -10,7 +10,7 @@
 
     <!-- Floating tags -->
     <com.swipesapp.android.ui.view.FlowLayout
-        android:id="@+id/tags_container"
+        android:id="@+id/assign_tags_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="17dp"
@@ -25,7 +25,7 @@
         android:orientation="horizontal">
 
         <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/tags_back_button"
+            android:id="@+id/assign_tags_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -36,7 +36,7 @@
             android:textSize="25sp" />
 
         <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/tags_add_button"
+            android:id="@+id/assign_tags_add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
