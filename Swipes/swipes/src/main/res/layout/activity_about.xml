@@ -21,11 +21,11 @@
 
             <TextView
                 android:id="@+id/about_brought_by"
-                style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="@string/about_brought_by" />
+                android:text="@string/about_brought_by"
+                android:textSize="@dimen/text_size_medium" />
 
             <com.swipesapp.android.ui.view.SwipesTextView
                 android:id="@+id/about_swipes_signature"
@@ -43,11 +43,11 @@
 
             <TextView
                 android:id="@+id/about_version"
-                style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/about_app_version" />
+                android:text="@string/about_app_version"
+                android:textSize="@dimen/text_size_medium" />
 
             <TextView
                 android:id="@+id/about_version_number"
@@ -64,11 +64,11 @@
 
                 <TextView
                     android:id="@+id/about_policies"
-                    style="?android:textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:text="@string/about_policies" />
+                    android:text="@string/about_policies"
+                    android:textSize="@dimen/text_size_medium" />
 
                 <TextView
                     android:id="@+id/about_policies_detail"
@@ -80,11 +80,11 @@
 
             <TextView
                 android:id="@+id/about_oss"
-                style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/about_oss" />
+                android:text="@string/about_oss"
+                android:textSize="@dimen/text_size_medium" />
 
             <TextView
                 android:id="@+id/about_oss_licenses"

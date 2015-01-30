@@ -8,22 +8,22 @@
 
     <TextView
         android:id="@+id/attachment_title"
-        style="?android:textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_medium" />
 
     <TextView
         android:id="@+id/attachment_time"
-        style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_small" />
 
 </LinearLayout>

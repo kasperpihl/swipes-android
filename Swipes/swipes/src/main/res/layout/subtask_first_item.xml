@@ -44,13 +44,13 @@
     <!-- Subtask title -->
     <TextView
         android:id="@+id/subtask_first_item_title"
-        style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@id/subtask_first_circle_container"
         android:ellipsize="end"
-        android:maxLines="2" />
+        android:maxLines="2"
+        android:textSize="@dimen/text_size_small" />
 
 </RelativeLayout>

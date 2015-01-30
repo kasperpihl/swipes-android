@@ -103,14 +103,14 @@
 
             <TextView
                 android:id="@+id/filter_checkbox_description"
-                style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/filter_checkbox_area"
                 android:ellipsize="end"
                 android:text="@string/evernote_filter_description"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_medium" />
         </RelativeLayout>
 
     </LinearLayout>

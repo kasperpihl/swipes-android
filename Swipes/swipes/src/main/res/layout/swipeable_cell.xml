@@ -71,11 +71,11 @@
 
             <TextView
                 android:id="@+id/task_title"
-                style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2" />
+                android:maxLines="2"
+                android:textSize="@dimen/text_size_medium" />
 
             <!-- Time and tags container -->
             <RelativeLayout
@@ -86,12 +86,12 @@
 
                 <TextView
                     android:id="@+id/task_time"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/task_properties_margin"
                     android:textColor="@color/focus_accent"
+                    android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
 
                 <ImageView
@@ -120,7 +120,6 @@
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_notes_icon"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/task_properties_margin"
@@ -134,7 +133,6 @@
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_repeat_icon"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/task_properties_margin"
@@ -148,7 +146,6 @@
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/task_tags_icon"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/task_properties_margin"
@@ -162,7 +159,6 @@
 
                 <TextView
                     android:id="@+id/task_tags"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/task_properties_margin"
@@ -171,6 +167,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
             </RelativeLayout>
 

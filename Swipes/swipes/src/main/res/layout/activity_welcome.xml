@@ -15,20 +15,20 @@
         android:src="@drawable/splash_logo" />
 
     <TextView
-        style="?android:textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="@string/welcome_first_branding"
+        android:textSize="@dimen/text_size_medium"
         android:textStyle="bold|italic" />
 
     <TextView
-        style="?android:textAppearanceSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:text="@string/welcome_second_branding"
+        android:textSize="@dimen/text_size_small"
         android:textStyle="bold" />
 
     <Button

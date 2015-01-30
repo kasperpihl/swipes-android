@@ -24,23 +24,23 @@
             android:src="@drawable/evernote_logo" />
 
         <TextView
-            style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/evernote_logo"
             android:gravity="center"
             android:text="@string/evernote_learn_more_title_left"
             android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_medium"
             android:textStyle="bold" />
 
         <TextView
-            style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/evernote_logo"
             android:gravity="center"
             android:text="@string/evernote_learn_more_title_right"
             android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_medium"
             android:textStyle="bold" />
 
     </RelativeLayout>
@@ -58,13 +58,13 @@
             android:paddingRight="@dimen/activity_horizontal_margin">
 
             <TextView
-                style="?android:textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="30dp"
                 android:gravity="center_horizontal"
-                android:text="@string/evernote_what_it_is" />
+                android:text="@string/evernote_what_it_is"
+                android:textSize="@dimen/text_size_large" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,13 +82,13 @@
                 android:src="@drawable/evernote_what_it_is" />
 
             <TextView
-                style="?android:textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="30dp"
                 android:gravity="center_horizontal"
-                android:text="@string/evernote_how_it_works" />
+                android:text="@string/evernote_how_it_works"
+                android:textSize="@dimen/text_size_large" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -66,67 +66,45 @@ import butterknife.OnClick;
  */
 public class TasksListFragment extends ListFragment implements DynamicListView.ListOrderListener {
 
-    /**
-     * The fragment argument representing the section number for this fragment.
-     */
+    // The fragment argument representing the section number for this fragment.
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    /**
-     * Section the fragment belongs to.
-     */
+    // Section the fragment belongs to.
     private Sections mSection;
 
-    /**
-     * Customized list view to display tasks.
-     */
+    // Customized list view to display tasks.
     private DynamicListView mListView;
 
-    /**
-     * List view height, used for UI calculations.
-     */
+    // List view height, used for UI calculations.
     private int mListViewHeight;
 
-    /**
-     * Adapter for tasks.
-     */
+    // Adapter for tasks.
     private TasksListAdapter mAdapter;
 
-    /**
-     * Service to perform tasks operations.
-     */
+    // Service to perform tasks operations.
     private TasksService mTasksService;
 
-    /**
-     * Handler for repeated tasks.
-     */
+    // Handler for repeated tasks.
     private RepeatHandler mRepeatHandler;
 
-    /**
-     * Selected tasks, tags and filters.
-     */
+    // Selected tasks, tags and filters.
     private static List<GsonTask> sSelectedTasks;
     private List<GsonTag> mAssignedTags;
     private List<Long> mSelectedFilterTags;
 
-    /**
-     * Filters containers.
-     */
+    // Filters containers.
     private LinearLayout mFiltersContainer;
     private LinearLayout mFiltersTagsContainer;
     private LinearLayout mFiltersSearchContainer;
     private FlowLayout mFiltersTagsArea;
 
-    /**
-     * Filters views.
-     */
+    // Filters views.
     private ActionEditText mSearchEditText;
     private SwipesButton mFiltersTagsButton;
     private TextView mFiltersEmptyTags;
     private SwipesButton mCloseSearchButton;
 
-    /**
-     * Controls the display of old tasks.
-     */
+    // Controls the display of old tasks.
     private static boolean sIsShowingOld;
 
     @InjectView(android.R.id.empty)

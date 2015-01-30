@@ -37,7 +37,6 @@
 
             <com.swipesapp.android.ui.view.ActionEditText
                 android:id="@+id/edit_task_title"
-                style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
@@ -47,7 +46,8 @@
                 android:imeOptions="actionDone"
                 android:inputType="textMultiLine|textCapSentences"
                 android:maxHeight="@dimen/edit_task_title_max_height"
-                android:scrollHorizontally="false" />
+                android:scrollHorizontally="false"
+                android:textSize="@dimen/text_size_medium" />
         </RelativeLayout>
 
         <!-- Subtasks area -->
@@ -95,11 +95,11 @@
 
                 <TextView
                     android:id="@+id/edit_task_schedule"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/edit_task_schedule_icon" />
+                    android:layout_toRightOf="@id/edit_task_schedule_icon"
+                    android:textSize="@dimen/text_size_small" />
             </RelativeLayout>
 
             <!-- Repeat mode -->
@@ -123,12 +123,12 @@
 
                 <TextView
                     android:id="@+id/edit_task_repeat"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="1dp"
-                    android:layout_toRightOf="@id/edit_task_repeat_icon" />
+                    android:layout_toRightOf="@id/edit_task_repeat_icon"
+                    android:textSize="@dimen/text_size_small" />
             </RelativeLayout>
 
             <include layout="@layout/repeat_options" />
@@ -154,13 +154,13 @@
 
                 <TextView
                     android:id="@+id/edit_task_tags"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_toRightOf="@id/edit_task_tags_icon"
-                    android:hint="@string/edit_task_tags_default_text" />
+                    android:hint="@string/edit_task_tags_default_text"
+                    android:textSize="@dimen/text_size_small" />
             </RelativeLayout>
 
             <!-- Evernote attachment -->
@@ -190,23 +190,23 @@
 
                     <TextView
                         android:id="@+id/evernote_attachment_title"
-                        style="?android:textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
                         android:ellipsize="end"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textSize="@dimen/text_size_small" />
 
                     <TextView
                         android:id="@+id/evernote_attached_view"
-                        style="?android:textAppearanceSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="2dp"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
                         android:paddingTop="2dp"
-                        android:text="@string/edit_task_evernote_attached" />
+                        android:text="@string/edit_task_evernote_attached"
+                        android:textSize="@dimen/text_size_small" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -232,7 +232,6 @@
 
                 <com.swipesapp.android.ui.view.ActionEditText
                     android:id="@+id/edit_task_notes"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
@@ -244,7 +243,8 @@
                     android:imeOptions="actionDone"
                     android:inputType="textMultiLine|textCapSentences"
                     android:maxHeight="@dimen/edit_task_title_max_height"
-                    android:scrollHorizontally="false" />
+                    android:scrollHorizontally="false"
+                    android:textSize="@dimen/text_size_small" />
             </RelativeLayout>
 
         </LinearLayout>

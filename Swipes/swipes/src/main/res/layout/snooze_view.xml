@@ -36,7 +36,6 @@
 
             <TextView
                 android:id="@+id/snooze_later_today_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -44,7 +43,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_later_today" />
+                android:text="@string/snooze_later_today"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- This evening -->
@@ -67,7 +67,6 @@
 
             <TextView
                 android:id="@+id/snooze_this_evening_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -75,7 +74,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_this_evening" />
+                android:text="@string/snooze_this_evening"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- Tomorrow -->
@@ -97,7 +97,6 @@
 
             <TextView
                 android:id="@+id/snooze_tomorrow_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -105,7 +104,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_tomorrow" />
+                android:text="@string/snooze_tomorrow"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
     </LinearLayout>
@@ -139,7 +139,6 @@
 
             <TextView
                 android:id="@+id/snooze_two_days_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -147,7 +146,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_two_days_default" />
+                android:text="@string/snooze_two_days_default"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- This weekend -->
@@ -170,7 +170,6 @@
 
             <TextView
                 android:id="@+id/snooze_this_weekend_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -178,7 +177,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_this_weekend" />
+                android:text="@string/snooze_this_weekend"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- Next week -->
@@ -200,7 +200,6 @@
 
             <TextView
                 android:id="@+id/snooze_next_week_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -208,7 +207,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_next_week" />
+                android:text="@string/snooze_next_week"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
     </LinearLayout>
@@ -242,7 +242,6 @@
 
             <TextView
                 android:id="@+id/snooze_unspecified_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -250,7 +249,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_unspecified" />
+                android:text="@string/snooze_unspecified"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- At location -->
@@ -274,7 +274,6 @@
 
             <TextView
                 android:id="@+id/snooze_at_location_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -282,7 +281,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_at_location" />
+                android:text="@string/snooze_at_location"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <!-- Pick date -->
@@ -304,7 +304,6 @@
 
             <TextView
                 android:id="@+id/snooze_pick_date_title"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/snooze_options_margin_vertical"
@@ -312,7 +311,8 @@
                 android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
-                android:text="@string/snooze_pick_date" />
+                android:text="@string/snooze_pick_date"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
     </LinearLayout>

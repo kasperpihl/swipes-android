@@ -25,7 +25,6 @@
     <!-- Add subtask view -->
     <com.swipesapp.android.ui.view.ActionEditText
         android:id="@+id/subtask_add_title"
-        style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@id/subtask_add_circle_container"
@@ -36,6 +35,7 @@
         android:hint="@string/edit_task_add_subtask_hint"
         android:imeOptions="actionDone"
         android:inputType="textCapSentences"
-        android:scrollHorizontally="false" />
+        android:scrollHorizontally="false"
+        android:textSize="@dimen/text_size_small" />
 
 </RelativeLayout>
