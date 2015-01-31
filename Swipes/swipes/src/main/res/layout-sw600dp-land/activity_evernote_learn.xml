@@ -30,12 +30,14 @@
                     layout="@layout/evernote_learn_what"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
                     android:layout_weight="0.5" />
 
                 <include
                     layout="@layout/evernote_learn_how"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
                     android:layout_weight="0.5" />
 
             </LinearLayout>

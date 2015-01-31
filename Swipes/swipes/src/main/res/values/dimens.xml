@@ -60,6 +60,11 @@
     <dimen name="done_buttons_margin_sides">12dp</dimen>
     <dimen name="done_buttons_margin_middle">4dp</dimen>
 
+    <!-- Evernote -->
+    <dimen name="evernote_learn_margin_top">30dp</dimen>
+    <dimen name="evernote_get_started_margin_bottom">40dp</dimen>
+    <dimen name="evernote_get_started_margin_top">30dp</dimen>
+
     <!-- Components -->
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
