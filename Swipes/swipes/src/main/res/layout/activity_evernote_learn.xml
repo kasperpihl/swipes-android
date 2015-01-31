@@ -7,43 +7,7 @@
 
     <include layout="@layout/toolbar" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/evernote_brand"
-        android:elevation="@dimen/toolbar_elevation">
-
-        <ImageView
-            android:id="@+id/evernote_logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/evernote_logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/evernote_logo"
-            android:gravity="center"
-            android:text="@string/evernote_learn_more_title_left"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_medium"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/evernote_logo"
-            android:gravity="center"
-            android:text="@string/evernote_learn_more_title_right"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_medium"
-            android:textStyle="bold" />
-
-    </RelativeLayout>
+    <include layout="@layout/evernote_learn_header" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -57,66 +21,11 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="30dp"
-                android:gravity="center_horizontal"
-                android:text="@string/evernote_what_it_is"
-                android:textSize="@dimen/text_size_large" />
+            <include layout="@layout/evernote_learn_what" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_horizontal"
-                android:text="@string/evernote_what_it_is_description" />
+            <include layout="@layout/evernote_learn_how" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/evernote_what_it_is" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="30dp"
-                android:gravity="center_horizontal"
-                android:text="@string/evernote_how_it_works"
-                android:textSize="@dimen/text_size_large" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_horizontal"
-                android:text="@string/evernote_how_it_works_detail" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/evernote_how_it_works" />
-
-            <Button
-                android:id="@+id/evernote_get_started"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginBottom="40dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/red_button_selector"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:text="@string/evernote_get_started"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+            <include layout="@layout/evernote_get_started_button" />
 
         </LinearLayout>
     </ScrollView>
