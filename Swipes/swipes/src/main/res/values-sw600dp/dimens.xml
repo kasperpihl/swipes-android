@@ -13,4 +13,10 @@
     <dimen name="snooze_view_width">420dp</dimen>
     <dimen name="snooze_view_height">420dp</dimen>
 
+    <!-- Done -->
+    <dimen name="done_buttons_margin_vertical">25dp</dimen>
+
+    <!-- Components -->
+    <dimen name="floating_button_margin">24dp</dimen>
+
 </resources>
