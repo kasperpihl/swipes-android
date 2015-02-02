@@ -178,6 +178,9 @@ public class TasksService {
      * @param task     Task to update.
      */
     private void updateTask(GsonTask gsonTask, Task task) {
+        // Set new update date.
+        gsonTask.setLocalUpdatedAt(new Date());
+
         // Update only mutable attributes.
         task.setTempId(gsonTask.getTempId());
         task.setUpdatedAt(gsonTask.getLocalUpdatedAt());
