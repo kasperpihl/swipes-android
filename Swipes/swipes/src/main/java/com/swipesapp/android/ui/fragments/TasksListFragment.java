@@ -195,8 +195,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         getActivity().registerReceiver(mTasksReceiver, filter);
 
-        refreshTaskList(false);
-
         super.onResume();
     }
 
@@ -209,7 +207,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check if the request code the one from snooze task.
+        // Check if request code is the one from snooze task.
         if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
