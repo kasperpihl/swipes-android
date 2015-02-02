@@ -25,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
@@ -36,6 +35,7 @@ import com.swipesapp.android.sync.receiver.SnoozeReceiver;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
+import com.swipesapp.android.ui.fragments.TasksListFragment;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
@@ -123,6 +123,8 @@ public class TasksActivity extends BaseActivity {
     private boolean mHasChangedTab;
 
     private boolean mIsAddingTask;
+
+    private String mShareMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -633,12 +635,22 @@ public class TasksActivity extends BaseActivity {
 
     public void shareOnFacebook(View v) {
         // TODO: Call sharing flow.
-        Toast.makeText(this, "Facebook share coming soon", Toast.LENGTH_SHORT).show();
     }
 
     public void shareOnTwitter(View v) {
         // TODO: Call sharing flow.
-        Toast.makeText(this, "Twitter share coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    public void shareAll(View v) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, mShareMessage + " // " +
+                getString(R.string.all_done_share_url));
+        startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)));
+    }
+
+    public void setShareMessage(String message) {
+        mShareMessage = message;
     }
 
     private void setViewHeight(View view, int dimen) {
@@ -725,6 +737,13 @@ public class TasksActivity extends BaseActivity {
                 mSelectedTags.remove(tag);
             }
         }
+    }
+
+    // HACK: Use activity to notify the middle fragment.
+    public void updateEmptyView() {
+        int focusIndex = Sections.FOCUS.getSectionNumber();
+        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusIndex);
+        focusFragment.updateEmptyView();
     }
 
 }

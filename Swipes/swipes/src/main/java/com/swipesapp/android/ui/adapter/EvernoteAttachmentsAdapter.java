@@ -81,7 +81,7 @@ public class EvernoteAttachmentsAdapter extends BaseAdapter {
         // Setup properties.
         holder.title.setText(note.getTitle());
         Date time = DateUtils.dateFromMillis(note.getCreated());
-        holder.time.setText(DateUtils.formatToRecent(time, mContext.get()));
+        holder.time.setText(DateUtils.formatToRecent(time, mContext.get(), true));
 
         // Setup action.
         holder.container.setOnClickListener(new View.OnClickListener() {

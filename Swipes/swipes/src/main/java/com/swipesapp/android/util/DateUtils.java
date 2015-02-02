@@ -105,11 +105,12 @@ public class DateUtils {
     /**
      * Returns date formatted as "Today", "Tomorrow", "Yesterday" or a regular date.
      *
-     * @param rawDate Date to format.
-     * @param context Context instance.
+     * @param rawDate    Date to format.
+     * @param context    Context instance.
+     * @param capitalize True to capitalize first letter.
      * @return Formatted date.
      */
-    public static String formatToRecent(Date rawDate, Context context) {
+    public static String formatToRecent(Date rawDate, Context context, boolean capitalize) {
         // Check if date is unspecified.
         if (rawDate == null) return context.getString(R.string.date_unspecified);
 
@@ -127,20 +128,42 @@ public class DateUtils {
 
         if (providedDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
             // Date is today.
-            return context.getString(R.string.date_today) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_today) + getTimeAsString(context, rawDate);
         } else if (providedDate.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
             // Date is tomorrow.
-            return context.getString(R.string.date_tomorrow) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_tomorrow) + getTimeAsString(context, rawDate);
         } else if (providedDate.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
             // Date was yesterday.
-            return context.getString(R.string.date_yesterday) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_yesterday) + getTimeAsString(context, rawDate);
         } else if (isWithinWeek(providedDate.getTime())) {
             // Date is within a week.
-            return formatDayOfWeek(context, providedDate) + ", " + getTimeAsString(context, rawDate);
+            date = formatDayOfWeek(context, providedDate) + ", " + getTimeAsString(context, rawDate);
         } else {
-            // Date is some other day. Capitalize first letter.
+            // Date is some other day. Always capitalize first letter.
             return Character.toUpperCase(date.charAt(0)) + date.substring(1);
         }
+
+        // Capitalize first letter if needed.
+        return capitalize ? Character.toUpperCase(date.charAt(0)) + date.substring(1) : date;
+    }
+
+    /**
+     * Checks if the provided date is today.
+     *
+     * @param date Date to check.
+     * @return True if date is today.
+     */
+    public static boolean isToday(Date date) {
+        Calendar providedDate = Calendar.getInstance();
+        providedDate.setTime(date);
+        Calendar currentDate = Calendar.getInstance();
+
+        int providedYear = providedDate.get(Calendar.YEAR);
+        int currentYear = providedDate.get(Calendar.YEAR);
+        int providedDay = providedDate.get(Calendar.DAY_OF_YEAR);
+        int currentDay = currentDate.get(Calendar.DAY_OF_YEAR);
+
+        return providedYear == currentYear && providedDay == currentDay;
     }
 
     /**

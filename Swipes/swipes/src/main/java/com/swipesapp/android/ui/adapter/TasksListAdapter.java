@@ -253,7 +253,7 @@ public class TasksListAdapter extends BaseAdapter {
                 } else {
                     holder.time.setVisibility(View.VISIBLE);
                     // TODO: When dividers are done, change this to show time only.
-                    holder.time.setText(DateUtils.formatToRecent(schedule, mContext.get()));
+                    holder.time.setText(DateUtils.formatToRecent(schedule, mContext.get(), true));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
                 }
 
@@ -272,7 +272,7 @@ public class TasksListAdapter extends BaseAdapter {
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
-                    holder.time.setText(DateUtils.formatToRecent(completionDate, mContext.get()));
+                    holder.time.setText(DateUtils.formatToRecent(completionDate, mContext.get(), true));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.DONE, mContext.get()));
                 }
 

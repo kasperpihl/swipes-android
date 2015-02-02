@@ -270,7 +270,7 @@ public class SettingsActivity extends BaseActivity {
             String lastUpdate = PreferenceUtils.getSyncLastCall(getActivity());
 
             if (lastUpdate != null) {
-                String syncSummary = DateUtils.formatToRecent(DateUtils.dateFromSync(lastUpdate), getActivity());
+                String syncSummary = DateUtils.formatToRecent(DateUtils.dateFromSync(lastUpdate), getActivity(), false);
                 preferenceSync.setSummary(getResources().getString(R.string.settings_sync_summary, syncSummary));
             }
         }

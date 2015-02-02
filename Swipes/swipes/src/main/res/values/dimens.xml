@@ -21,9 +21,10 @@
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="date_stamp_margin">16dp</dimen>
+    <dimen name="date_stamp_margin">10dp</dimen>
     <dimen name="date_stamp_margin_top">40dp</dimen>
-    <dimen name="social_buttons_diameter">36dp</dimen>
+    <dimen name="social_buttons_diameter">40dp</dimen>
+    <dimen name="social_buttons_margin">14dp</dimen>
 
     <!-- Edit -->
     <dimen name="action_buttons_size">23sp</dimen>

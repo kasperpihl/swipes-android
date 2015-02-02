@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -92,6 +93,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     // Selected tasks, tags and filters.
     private static List<GsonTask> sSelectedTasks;
+    private static GsonTask sNextTask;
     private List<GsonTag> mAssignedTags;
     private List<Long> mSelectedFilterTags;
 
@@ -165,6 +167,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 setupView(rootView, mTasksService.loadFocusedTasks(), R.layout.tasks_focus_empty_view);
                 configureFocusView(mAdapter);
                 configureEmptyView();
+                updateEmptyView();
                 break;
             case DONE:
                 setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
@@ -252,6 +255,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mViewStub.setLayoutResource(emptyView);
         mEmptyView = mViewStub.inflate();
         mListView.setEmptyView(mEmptyView);
+
+        // Set next snoozed task.
+        if (!tasks.isEmpty() && mSection == Sections.LATER) {
+            sNextTask = tasks.get(0);
+        }
     }
 
     private void setupFiltersArea() {
@@ -392,22 +400,49 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Customize Focus empty view.
         if (mSection == Sections.FOCUS) {
             TextView allDoneText = (TextView) mEmptyView.findViewById(R.id.text_all_done);
-            allDoneText.setTextColor(ThemeUtils.getTextColor(getActivity()));
+            allDoneText.setTextColor(ThemeUtils.getSecondaryTextColor(getActivity()));
 
             TextView nextTaskText = (TextView) mEmptyView.findViewById(R.id.text_next_task);
-            nextTaskText.setTextColor(ThemeUtils.getTextColor(getActivity()));
+            nextTaskText.setTextColor(ThemeUtils.getSecondaryTextColor(getActivity()));
 
             TextView allDoneMessage = (TextView) mEmptyView.findViewById(R.id.text_all_done_message);
-            allDoneMessage.setTextColor(ThemeUtils.getTextColor(getActivity()));
+            allDoneMessage.setTextColor(ThemeUtils.getSecondaryTextColor(getActivity()));
+
+            Button share = (Button) mEmptyView.findViewById(R.id.button_share);
+            share.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
+                    R.drawable.ic_share_light : R.drawable.ic_share_dark);
+            setButtonSelector(share);
 
             Button facebookShare = (Button) mEmptyView.findViewById(R.id.button_facebook_share);
             facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
-                    R.drawable.facebook_rounded_button_light : R.drawable.facebook_rounded_button_dark);
+                    R.drawable.ic_facebook_light : R.drawable.ic_facebook_dark);
+            setButtonSelector(facebookShare);
 
             Button twitterShare = (Button) mEmptyView.findViewById(R.id.button_twitter_share);
             twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
-                    R.drawable.twitter_rounded_button_light : R.drawable.twitter_rounded_button_dark);
+                    R.drawable.ic_twitter_light : R.drawable.ic_twitter_dark);
+            setButtonSelector(twitterShare);
         }
+    }
+
+    private void setButtonSelector(final View button) {
+        // Create selector based on touch state.
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change alpha to pressed state.
+                        button.animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        // Change alpha to default state.
+                        button.animate().alpha(1.0f);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void measureListView(final DynamicListView listView) {
@@ -432,6 +467,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     tasks = mTasksService.loadScheduledTasks();
                     keepSelection(tasks);
                     mAdapter.update(tasks, animateRefresh);
+
+                    // Refresh empty view.
+                    sNextTask = !tasks.isEmpty() ? tasks.get(0) : null;
+                    ((TasksActivity) getActivity()).updateEmptyView();
                     break;
                 case FOCUS:
                     tasks = mTasksService.loadFocusedTasks();
@@ -668,6 +707,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
 
+            updateEmptyView();
+
             // Animate empty view.
             if (focusEmptyView.getAlpha() == 0f) {
                 focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
@@ -681,6 +722,41 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
             focusEmptyView.setAlpha(0f);
+        }
+    }
+
+    public void updateEmptyView() {
+        if (mSection == Sections.FOCUS) {
+            TextView allDoneText = (TextView) mEmptyView.findViewById(R.id.text_all_done);
+            TextView nextTaskText = (TextView) mEmptyView.findViewById(R.id.text_next_task);
+            TextView allDoneMessage = (TextView) mEmptyView.findViewById(R.id.text_all_done_message);
+
+            if (sNextTask != null) {
+                Date nextSchedule = sNextTask.getLocalSchedule();
+
+                if (nextSchedule != null) {
+                    // Set text according to the next scheduled task.
+                    if (DateUtils.isToday(nextSchedule)) {
+                        allDoneText.setText(getString(R.string.all_done_now));
+                        String nextDate = DateUtils.getTimeAsString(getActivity(), nextSchedule);
+                        nextTaskText.setText(getString(R.string.all_done_now_next, nextDate));
+                        allDoneMessage.setText(getString(R.string.all_done_now_message));
+                    } else {
+                        allDoneText.setText(getString(R.string.all_done_today));
+                        String nextDate = DateUtils.formatToRecent(nextSchedule, getActivity(), false);
+                        nextTaskText.setText(getString(R.string.all_done_today_next, nextDate));
+                        allDoneMessage.setText(getString(R.string.all_done_today_message));
+                    }
+                }
+            } else {
+                // Show default message.
+                allDoneText.setText(getString(R.string.all_done_today));
+                nextTaskText.setText(getString(R.string.all_done_next_empty));
+                allDoneMessage.setText(getString(R.string.all_done_today_message));
+            }
+
+            // Refresh sharing message.
+            ((TasksActivity) getActivity()).setShareMessage(allDoneMessage.getText().toString());
         }
     }
 

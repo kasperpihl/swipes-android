@@ -401,7 +401,7 @@ public class EditTaskActivity extends BaseActivity {
 
         mPriority.setChecked(mTask.getPriority() == 1);
 
-        mSchedule.setText(DateUtils.formatToRecent(mTask.getLocalSchedule(), this));
+        mSchedule.setText(DateUtils.formatToRecent(mTask.getLocalSchedule(), this, true));
 
         setSelectedRepeatOption();
 

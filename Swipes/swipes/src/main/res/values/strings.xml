@@ -39,9 +39,14 @@
     <string name="double_slash_divider">//</string>
 
     <!-- Empty view -->
-    <string name="all_done">ALL DONE FOR NOW</string>
-    <string name="all_done_message">Hooray! All tasks swiped away, time to\nrelax #ProductiveDay</string>
-    <string name="example_date">Next task @ 19:00</string>
+    <string name="all_done_now">= ALL DONE FOR NOW =</string>
+    <string name="all_done_today">= ALL DONE FOR TODAY =</string>
+    <string name="all_done_now_next">Next task @ %s</string>
+    <string name="all_done_today_next">Next task %s</string>
+    <string name="all_done_next_empty">No future tasks</string>
+    <string name="all_done_today_message">Hooray! All tasks swiped away, time to \nrelax. #ProductiveDay</string>
+    <string name="all_done_now_message">Time for a break! I\'ve been swiping \ntasks like a boss. #ProductiveDay</string>
+    <string name="all_done_share_url">swipesapp.com</string>
 
     <!-- Tasks list -->
     <string name="tasks_list_multi_select_action">Multi Select</string>
@@ -144,10 +149,10 @@
     <string name="keep_data_dialog_message">Do you want to keep the data from the test period?</string>
 
     <!-- Scheduler -->
-    <string name="date_today">Today,&#160;</string>
-    <string name="date_tomorrow">Tomorrow,&#160;</string>
-    <string name="date_yesterday">Yesterday,&#160;</string>
-    <string name="date_unspecified">Unspecified</string>
+    <string name="date_today">today,&#160;</string>
+    <string name="date_tomorrow">tomorrow,&#160;</string>
+    <string name="date_yesterday">yesterday,&#160;</string>
+    <string name="date_unspecified">unspecified</string>
     <string name="snooze_later_today">Later Today</string>
     <string name="snooze_this_evening">This Evening</string>
     <string name="snooze_tomorrow">Tomorrow</string>

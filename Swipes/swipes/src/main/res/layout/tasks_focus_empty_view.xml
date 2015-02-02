@@ -22,59 +22,63 @@
 
         <TextView
             android:id="@+id/text_all_done"
-            style="@android:style/TextAppearance.Holo.Large.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/all_done_image"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:text="@string/all_done" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/text_next_task"
-            style="@android:style/TextAppearance.Holo.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_all_done"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
-            android:text="@string/example_date"
-            android:visibility="gone" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/text_all_done_message"
-            style="@android:style/TextAppearance.Holo.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_next_task"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/date_stamp_margin"
             android:gravity="center"
-            android:text="@string/all_done_message" />
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_share"
+            android:layout_width="@dimen/social_buttons_diameter"
+            android:layout_height="@dimen/social_buttons_diameter"
+            android:layout_below="@id/text_all_done_message"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/social_buttons_margin"
+            android:onClick="shareAll" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_all_done_message"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/button_facebook_share"
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
-                android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/facebook_rounded_button_dark"
+                android:layout_margin="@dimen/social_buttons_margin"
                 android:onClick="shareOnFacebook" />
 
             <Button
                 android:id="@+id/button_twitter_share"
                 android:layout_width="@dimen/social_buttons_diameter"
                 android:layout_height="@dimen/social_buttons_diameter"
-                android:layout_margin="@dimen/date_stamp_margin"
-                android:background="@drawable/twitter_rounded_button_dark"
+                android:layout_margin="@dimen/social_buttons_margin"
                 android:onClick="shareOnTwitter" />
-
         </LinearLayout>
 
     </RelativeLayout>
+
 </ScrollView>
