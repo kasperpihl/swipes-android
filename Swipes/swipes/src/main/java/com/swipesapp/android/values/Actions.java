@@ -57,4 +57,9 @@ public class Actions {
      */
     public static final String BACK_PRESSED = "com.swipesapp.android.ACTION_BACK_PRESSED";
 
+    /**
+     * Notifies listeners that selection has been cleared.
+     */
+    public static final String SELECTION_CLEARED = "com.swipesapp.android.SELECTION_CLEARED";
+
 }

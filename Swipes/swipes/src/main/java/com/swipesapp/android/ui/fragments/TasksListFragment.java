@@ -191,6 +191,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         filter.addAction(Actions.DELETE_TASKS);
         filter.addAction(Actions.SHARE_TASKS);
         filter.addAction(Actions.BACK_PRESSED);
+        filter.addAction(Actions.SELECTION_CLEARED);
 
         getActivity().registerReceiver(mTasksReceiver, filter);
 
@@ -402,18 +403,32 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         switch (mSection) {
             case LATER:
                 tasks = mTasksService.loadScheduledTasks();
+                keepSelection(tasks);
                 mAdapter.update(tasks, animateRefresh);
                 break;
             case FOCUS:
                 tasks = mTasksService.loadFocusedTasks();
+                keepSelection(tasks);
                 mListView.setContentList(tasks);
                 mAdapter.update(tasks, animateRefresh);
                 break;
             case DONE:
                 tasks = mTasksService.loadCompletedTasks();
+                keepSelection(tasks);
                 mAdapter.setShowingOld(sIsShowingOld);
                 mAdapter.update(tasks, animateRefresh);
                 break;
+        }
+    }
+
+    private void keepSelection(List<GsonTask> tasks) {
+        for (GsonTask selected : sSelectedTasks) {
+            for (GsonTask task : tasks) {
+                if (selected.getTempId().equals(task.getTempId())) {
+                    task.setSelected(true);
+                    break;
+                }
+            }
         }
     }
 
@@ -430,29 +445,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Perform refresh.
                 refreshTaskList(false);
             } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
-                // Perform refresh.
-                if (sSelectedTasks.isEmpty()) refreshTaskList(false);
-
                 // Enable or disable swiping.
                 boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
                 mListView.setSwipeEnabled(enabled);
-
-                // Hide search and tags.
-                hideFilters();
-            } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
-                // Don't close the app when assigning tags.
-                if (mTagsArea.getVisibility() == View.VISIBLE) {
-                    closeTags();
-                } else if (!sSelectedTasks.isEmpty()) {
-                    // Clear selected tasks and hide edit bar.
-                    sSelectedTasks.clear();
-                    ((TasksActivity) getActivity()).hideEditBar();
-                    refreshTaskList(false);
-                } else {
-                    TasksActivity.clearCurrentSection();
-                    sIsShowingOld = false;
-                    getActivity().finish();
-                }
+            } else if (intent.getAction().equals(Actions.SELECTION_CLEARED)) {
+                // Refresh all sections.
+                refreshTaskList(false);
             }
 
             // Filter actions intended only for this section.
@@ -479,6 +477,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Hide bar and clear selection.
                     ((TasksActivity) getActivity()).hideEditBar();
                     sSelectedTasks.clear();
+                } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
+                    // Don't close the app when assigning tags.
+                    if (mTagsArea.getVisibility() == View.VISIBLE) {
+                        closeTags();
+                    } else if (!sSelectedTasks.isEmpty()) {
+                        // Clear selected tasks and hide edit bar.
+                        sSelectedTasks.clear();
+                        ((TasksActivity) getActivity()).hideEditBar();
+
+                        // Send broadcast to update UI.
+                        mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
+                    } else {
+                        TasksActivity.clearCurrentSection();
+                        sIsShowingOld = false;
+                        getActivity().finish();
+                    }
                 }
             }
         }
@@ -661,8 +675,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             public void onAnimationEnd(Animator animation) {
                 // Hide buttons.
                 mHeaderView.setVisibility(View.GONE);
+
                 // Show old tasks.
-                mAdapter.showOld(mTasksService.loadCompletedTasks(), mListViewHeight);
+                List<GsonTask> tasks = mTasksService.loadCompletedTasks();
+                keepSelection(tasks);
+                mAdapter.showOld(tasks, mListViewHeight);
+
                 // Set old tasks as shown.
                 sIsShowingOld = true;
             }
