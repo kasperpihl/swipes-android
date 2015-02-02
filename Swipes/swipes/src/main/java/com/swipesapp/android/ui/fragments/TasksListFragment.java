@@ -395,27 +395,30 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void refreshTaskList(boolean animateRefresh) {
-        List<GsonTask> tasks;
+        // Block refresh while swiping.
+        if (!mListView.isSwiping()) {
+            List<GsonTask> tasks;
 
-        // Update adapter with new data.
-        switch (mSection) {
-            case LATER:
-                tasks = mTasksService.loadScheduledTasks();
-                keepSelection(tasks);
-                mAdapter.update(tasks, animateRefresh);
-                break;
-            case FOCUS:
-                tasks = mTasksService.loadFocusedTasks();
-                keepSelection(tasks);
-                mListView.setContentList(tasks);
-                mAdapter.update(tasks, animateRefresh);
-                break;
-            case DONE:
-                tasks = mTasksService.loadCompletedTasks();
-                keepSelection(tasks);
-                mAdapter.setShowingOld(sIsShowingOld);
-                mAdapter.update(tasks, animateRefresh);
-                break;
+            // Update adapter with new data.
+            switch (mSection) {
+                case LATER:
+                    tasks = mTasksService.loadScheduledTasks();
+                    keepSelection(tasks);
+                    mAdapter.update(tasks, animateRefresh);
+                    break;
+                case FOCUS:
+                    tasks = mTasksService.loadFocusedTasks();
+                    keepSelection(tasks);
+                    mListView.setContentList(tasks);
+                    mAdapter.update(tasks, animateRefresh);
+                    break;
+                case DONE:
+                    tasks = mTasksService.loadCompletedTasks();
+                    keepSelection(tasks);
+                    mAdapter.setShowingOld(sIsShowingOld);
+                    mAdapter.update(tasks, animateRefresh);
+                    break;
+            }
         }
     }
 
