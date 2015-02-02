@@ -22,10 +22,12 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -65,7 +67,7 @@ import butterknife.OnClick;
 /**
  * Fragment for the list of tasks.
  */
-public class TasksListFragment extends ListFragment implements DynamicListView.ListOrderListener {
+public class TasksListFragment extends ListFragment implements DynamicListView.ListOrderListener, ListContentsListener {
 
     // The fragment argument representing the section number for this fragment.
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -104,6 +106,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private SwipesButton mFiltersTagsButton;
     private TextView mFiltersEmptyTags;
     private SwipesButton mCloseSearchButton;
+
+    // Empty view.
+    private View mEmptyView;
 
     // Controls the display of old tasks.
     private static boolean sIsShowingOld;
@@ -159,6 +164,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             case FOCUS:
                 setupView(rootView, mTasksService.loadFocusedTasks(), R.layout.tasks_focus_empty_view);
                 configureFocusView(mAdapter);
+                configureEmptyView();
                 break;
             case DONE:
                 setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
@@ -166,6 +172,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 handleDoneButtons();
                 break;
         }
+
         measureListView(mListView);
 
         hideFilters();
@@ -233,11 +240,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void setupView(View rootView, List<GsonTask> tasks, int emptyView) {
         // Initialize adapter.
         mAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, tasks, mSection);
-
-        // Set contents listener.
-        if (getActivity() instanceof ListContentsListener) {
-            mAdapter.setListContentsListener((ListContentsListener) getActivity());
-        }
+        mAdapter.setListContentsListener(this);
 
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
@@ -247,6 +250,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Setup empty view.
         mViewStub.setLayoutResource(emptyView);
+        mEmptyView = mViewStub.inflate();
+        mListView.setEmptyView(mEmptyView);
     }
 
     private void setupFiltersArea() {
@@ -380,6 +385,28 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             int sidePadding = mListView.getPaddingLeft();
 
             mListView.setPadding(Math.round(sidePadding / 2), topPadding, sidePadding, bottomPadding);
+        }
+    }
+
+    private void configureEmptyView() {
+        // Customize Focus empty view.
+        if (mSection == Sections.FOCUS) {
+            TextView allDoneText = (TextView) mEmptyView.findViewById(R.id.text_all_done);
+            allDoneText.setTextColor(ThemeUtils.getTextColor(getActivity()));
+
+            TextView nextTaskText = (TextView) mEmptyView.findViewById(R.id.text_next_task);
+            nextTaskText.setTextColor(ThemeUtils.getTextColor(getActivity()));
+
+            TextView allDoneMessage = (TextView) mEmptyView.findViewById(R.id.text_all_done_message);
+            allDoneMessage.setTextColor(ThemeUtils.getTextColor(getActivity()));
+
+            Button facebookShare = (Button) mEmptyView.findViewById(R.id.button_facebook_share);
+            facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
+                    R.drawable.facebook_rounded_button_light : R.drawable.facebook_rounded_button_dark);
+
+            Button twitterShare = (Button) mEmptyView.findViewById(R.id.button_twitter_share);
+            twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
+                    R.drawable.twitter_rounded_button_light : R.drawable.twitter_rounded_button_dark);
         }
     }
 
@@ -624,6 +651,36 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             GsonTask task = tasks.get(i);
             task.setOrder(i);
             mTasksService.saveTask(task, true);
+        }
+    }
+
+    @Override
+    public void onEmpty() {
+        showEmptyView();
+    }
+
+    @Override
+    public void onNotEmpty() {
+        hideEmptyView();
+    }
+
+    private void showEmptyView() {
+        if (mSection == Sections.FOCUS) {
+            ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
+
+            // Animate empty view.
+            if (focusEmptyView.getAlpha() == 0f) {
+                focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+            }
+
+            ((TasksActivity) getActivity()).hideEditBar();
+        }
+    }
+
+    private void hideEmptyView() {
+        if (mSection == Sections.FOCUS) {
+            ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
+            focusEmptyView.setAlpha(0f);
         }
     }
 

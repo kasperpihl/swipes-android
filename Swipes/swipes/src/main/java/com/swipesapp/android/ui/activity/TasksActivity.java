@@ -17,16 +17,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +37,6 @@ import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
-import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
@@ -65,7 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TasksActivity extends BaseActivity implements ListContentsListener {
+public class TasksActivity extends BaseActivity {
 
     @InjectView(R.id.tasks_area)
     RelativeLayout mTasksArea;
@@ -396,55 +392,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
         }
     }
 
-    private void clearEmptyBackground() {
-        // Do nothing.
-    }
-
-    private void setEmptyBackground() {
-        // TODO: Animate empty background.
-
-        mViewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                switch (sCurrentSection) {
-                    case LATER:
-                        // Customize Later empty View.
-                        RelativeLayout laterEmptyView = (RelativeLayout) mViewPager.findViewById(R.id.later_empty_view);
-                        laterEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
-                        break;
-                    case FOCUS:
-                        // Customize Focus empty view.
-                        ScrollView focusEmptyView = (ScrollView) mViewPager.findViewById(R.id.focus_empty_view);
-                        focusEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
-
-                        TextView allDoneText = (TextView) mViewPager.findViewById(R.id.text_all_done);
-                        allDoneText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
-
-                        TextView nextTaskText = (TextView) mViewPager.findViewById(R.id.text_next_task);
-                        nextTaskText.setTextColor(ThemeUtils.getTextColor(mContext.get()));
-
-                        TextView allDoneMessage = (TextView) mViewPager.findViewById(R.id.text_all_done_message);
-                        allDoneMessage.setTextColor(ThemeUtils.getTextColor(mContext.get()));
-
-                        Button facebookShare = (Button) mViewPager.findViewById(R.id.button_facebook_share);
-                        facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
-                                R.drawable.facebook_rounded_button_light : R.drawable.facebook_rounded_button_dark);
-
-                        Button twitterShare = (Button) mViewPager.findViewById(R.id.button_twitter_share);
-                        twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(mContext.get()) ?
-                                R.drawable.twitter_rounded_button_light : R.drawable.twitter_rounded_button_dark);
-                        break;
-                    case DONE:
-                        // Customize Done empty view.
-                        RelativeLayout doneEmptyView = (RelativeLayout) mViewPager.findViewById(R.id.done_empty_view);
-                        doneEmptyView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
-                        break;
-                }
-            }
-        });
-
-        hideEditBar();
-    }
-
     /**
      * Shows the task edit bar.
      *
@@ -683,22 +630,6 @@ public class TasksActivity extends BaseActivity implements ListContentsListener 
             endAddTaskWorkflow(false);
         }
     };
-
-    // HACK: This is a workaround to change the background entirely.
-    @Override
-    public void onEmpty(Sections section) {
-        if (section == sCurrentSection) {
-//            setEmptyBackground();
-        }
-    }
-
-    // HACK: This is a workaround to change the background entirely.
-    @Override
-    public void onNotEmpty(Sections section) {
-        if (section == sCurrentSection) {
-//            clearEmptyBackground();
-        }
-    }
 
     public void shareOnFacebook(View v) {
         // TODO: Call sharing flow.

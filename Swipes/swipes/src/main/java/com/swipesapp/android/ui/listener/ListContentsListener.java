@@ -1,11 +1,10 @@
 package com.swipesapp.android.ui.listener;
 
-import com.swipesapp.android.values.Sections;
-
 /**
- * Created by douglasdrumond on 4/30/14.
+ * @author Douglas Drumond
  */
 public interface ListContentsListener {
-    void onEmpty(Sections section);
-    void onNotEmpty(Sections section);
+    void onEmpty();
+
+    void onNotEmpty();
 }

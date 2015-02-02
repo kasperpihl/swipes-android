@@ -373,12 +373,11 @@ public class TasksListAdapter extends BaseAdapter {
     }
 
     private void checkEmpty() {
-        // HACK: This is a workaround to notify the activity through the fragment.
         if (mListContentsListener != null) {
             if (mData.isEmpty()) {
-                mListContentsListener.onEmpty(mSection);
+                mListContentsListener.onEmpty();
             } else {
-                mListContentsListener.onNotEmpty(mSection);
+                mListContentsListener.onNotEmpty();
             }
         }
     }
