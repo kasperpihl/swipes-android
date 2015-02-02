@@ -145,6 +145,11 @@ public class SnoozeActivity extends FragmentActivity {
         mThisEveningIcon.setTextColor(iconColor);
         mThisEveningTitle.setTextColor(textColor);
 
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour >= 19 && hour <= 23) {
+            mThisEveningTitle.setText(getString(R.string.snooze_tomorrow_eve));
+        }
+
         setSelector(mTomorrowIcon);
         mTomorrowIcon.setTextColor(iconColor);
         mTomorrowTitle.setTextColor(textColor);
@@ -210,7 +215,9 @@ public class SnoozeActivity extends FragmentActivity {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+        int minutes = snooze.get(Calendar.MINUTE);
         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
+        snooze.set(Calendar.MINUTE, roundMinutes(minutes));
 
         applyNextDayTreatment(snooze);
 
@@ -513,6 +520,16 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Return friendly name for day of the week.
         return DateUtils.formatDayOfWeek(this, now);
+    }
+
+    private int roundMinutes(int minutes) {
+        // Round initial minutes.
+        int mod = minutes % 5;
+        if (mod != 0) {
+            int add = 5 - mod;
+            minutes += add;
+        }
+        return minutes;
     }
 
 }

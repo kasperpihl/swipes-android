@@ -155,6 +155,7 @@
     <string name="date_unspecified">unspecified</string>
     <string name="snooze_later_today">Later Today</string>
     <string name="snooze_this_evening">This Evening</string>
+    <string name="snooze_tomorrow_eve">Tomorrow Eve</string>
     <string name="snooze_tomorrow">Tomorrow</string>
     <string name="snooze_two_days_default">Monday</string>
     <string name="snooze_this_weekend">This Weekend</string>
