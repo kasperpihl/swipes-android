@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.swipesapp.android.ui.fragments.TasksListFragment;
 import com.swipesapp.android.util.DeviceUtils;
@@ -41,6 +42,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return Sections.getSectionsCount();
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        // Do nothing.
     }
 
     @Override
