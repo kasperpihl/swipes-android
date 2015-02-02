@@ -476,6 +476,22 @@ public class EvernoteSyncHandler {
         return false;
     }
 
+    protected boolean hasLocalChanges(final GsonTask todoWithEvernote) {
+        if (null != mLastUpdated) {
+            if (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+                return true;
+            }
+            final TasksService tasksService = TasksService.getInstance(mContext.get());
+            List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(todoWithEvernote.getTempId()));
+            for (GsonTask subtask : subtasks) {
+                if (subtask.getLocalUpdatedAt() != null && subtask.getLocalUpdatedAt().after(mLastUpdated)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     protected void finalizeSync(final Date date, int targetCount, final Exception ex, final OnEvernoteCallback<Void> callback) {
         mReturnCount++;
         if (mReturnCount == targetCount) {
@@ -506,7 +522,7 @@ public class EvernoteSyncHandler {
             GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
 
             if (attachment != null) {
-                final boolean hasLocalChanges = /*(mLastUpdated == null) ||*/ (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
+                final boolean hasLocalChanges = hasLocalChanges(todoWithEvernote);
                 final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
                 if (!hasLocalChanges && !hasChangesFromEvernote) {
                     finalizeSync(date, targetCount, runningError[0], callback);

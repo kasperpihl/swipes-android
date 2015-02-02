@@ -650,7 +650,8 @@ public class TasksService {
                 if (attachment.getSync() == attachmentSync) {
                     // Add associated task to the list of matches.
                     GsonTask match = loadTask(attachment.getTaskId());
-                    matches.add(match);
+                    if (!match.getDeleted())
+                        matches.add(match);
                 }
             }
         }
@@ -675,8 +676,10 @@ public class TasksService {
             for (Attachment attachment : attachments) {
                 // Check for sync property.
                 if (attachment.getSync() == attachmentSync) {
-                    // Add associated task to the list of matches.
-                    matches.add(attachment.getIdentifier());
+                    // check if the task for attachment is not deleted
+                    GsonTask matchingTask = loadTask(attachment.getTaskId());
+                    if (!matchingTask.getDeleted())
+                        matches.add(attachment.getIdentifier());
                 }
             }
         }

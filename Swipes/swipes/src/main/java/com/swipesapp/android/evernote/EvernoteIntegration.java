@@ -27,6 +27,7 @@ import com.evernote.edam.type.Tag;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EvernoteIntegration {
@@ -279,10 +280,14 @@ public class EvernoteIntegration {
         filter.setOrder(NoteSortOrder.UPDATED.getValue());
         filter.setWords(query);
 
+        //final List<Note> results = new ArrayList<Note>();
+
         try {
             mEvernoteSession.getClientFactory().createNoteStoreClient().findNotes(filter, 0, sMaxNotes, new OnClientCallback<NoteList>() {
                 public void onSuccess(NoteList data) {
                     callback.onSuccess(data.getNotes());
+                    //results.addAll(data.getNotes());
+                    //mEvernoteSession.getClientFactory().
                     // TODO use update count and so on
                 }
 
@@ -352,14 +357,15 @@ public class EvernoteIntegration {
 
     public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note>callback) {
         final Note note = EvernoteIntegration.noteFromJson(noteRefString);
+        if (null == note) {
+            callback.onException(new Exception("Invalid EN reference: " + noteRefString));
+            return;
+        }
 
         provideAsyncNoteStoreClientForNote(note, new OnEvernoteCallback<AsyncNoteStoreClient>() {
             public void onSuccess(AsyncNoteStoreClient client) {
                 client.getNote(note.getGuid(), true, false, false, false, new OnClientCallback<Note>() {
                     public void onSuccess(Note data) {
-//                        if (null != note.getNotebookGuid() && (!note.getNotebookGuid().equalsIgnoreCase(mUserNoteStoreGuid))) {
-//                            data.setNotebookGuid(note.getNotebookGuid()); // daf*ck is it different?
-//                        }
                         callback.onSuccess(data);
                     }
 
@@ -395,20 +401,5 @@ public class EvernoteIntegration {
                 callback.onException(e);
             }
         });
-
-//        try {
-//            mEvernoteSession.getClientFactory().createNoteStoreClient().updateNote(note, new OnClientCallback<Note>() {
-//
-//                public void onSuccess(Note data) {
-//                    callback.onSuccess(data);
-//                }
-//
-//                public void onException(Exception e) {
-//                    callback.onException(e);
-//                }
-//            });
-//        } catch (Exception e) {
-//            callback.onException(e);
-//        }
     }
 }
