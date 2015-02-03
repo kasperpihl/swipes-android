@@ -1,11 +1,14 @@
 package com.swipesapp.android.ui.activity;
 
-import android.app.Activity;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Window;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
@@ -14,18 +17,19 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.PreferenceUtils;
+import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.RepeatOptions;
+import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-public class SplashActivity extends Activity {
-
-    private static final int SPLASH_TIMEOUT = 100;
+public class SplashActivity extends BaseActivity {
 
     private WeakReference<Context> mContext;
 
@@ -34,32 +38,38 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.activity_splash);
 
         mContext = new WeakReference<Context>(this);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Perform migrations when needed.
-                MigrationAssistant.performUpgrades(mContext.get());
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View actionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
 
-                // Show welcome screen only once.
-                if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
-                    // Show welcome screen.
-                    Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
-                    startActivityForResult(intent, Constants.WELCOME_REQUEST_CODE);
-                } else {
-                    // Show tasks activity.
-                    Intent intent = new Intent(SplashActivity.this, TasksActivity.class);
-                    startActivity(intent);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setCustomView(actionBarView);
 
-                    finish();
-                }
+        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
+        themeActionBar(ThemeUtils.getSectionColor(Sections.FOCUS, this));
+
+        // Perform migrations when needed.
+        MigrationAssistant.performUpgrades(mContext.get());
+
+        // Show welcome screen only once.
+        if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
+            // Show welcome screen.
+            Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
+            startActivityForResult(intent, Constants.WELCOME_REQUEST_CODE);
+        } else {
+            if (ThemeUtils.isLightTheme(this)) {
+                // Show tasks without transition.
+                showTasks();
+            } else {
+                // Start transition to tasks screen.
+                transitionBackground();
             }
-        }, SPLASH_TIMEOUT);
+        }
     }
 
     @Override
@@ -82,6 +92,48 @@ public class SplashActivity extends Activity {
                     break;
             }
         }
+
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        overridePendingTransition(0, 0);
+    }
+
+    private void transitionBackground() {
+        final int fromColor = getResources().getColor(R.color.light_neutral_background);
+        final int toColor = ThemeUtils.getNeutralBackgroundColor(this);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Blend colors according to position.
+                float position = animation.getAnimatedFraction();
+                int blended = ColorUtils.blendColors(fromColor, toColor, position);
+
+                // Adjust background color.
+                getWindow().setBackgroundDrawable(new ColorDrawable(blended));
+            }
+        });
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Show tasks activity.
+                showTasks();
+            }
+        });
+
+        anim.setDuration(Constants.ANIMATION_DURATION_LONG).start();
+    }
+
+    private void showTasks() {
+        Intent intent = new Intent(SplashActivity.this, TasksActivity.class);
+        startActivity(intent);
 
         finish();
     }
