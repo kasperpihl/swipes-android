@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.R;
@@ -17,8 +18,10 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.RepeatOptions;
@@ -50,8 +53,7 @@ public class SplashActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setCustomView(actionBarView);
 
-        themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
-        themeActionBar(ThemeUtils.getSectionColor(Sections.FOCUS, this));
+        setupSystemBars(actionBarView);
 
         // Perform migrations when needed.
         MigrationAssistant.performUpgrades(mContext.get());
@@ -101,6 +103,22 @@ public class SplashActivity extends BaseActivity {
         super.finish();
 
         overridePendingTransition(0, 0);
+    }
+
+    private void setupSystemBars(View actionBarView) {
+        if (DeviceUtils.isLandscape(this)) {
+            themeActionBar(getResources().getColor(R.color.neutral_accent));
+            themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
+
+            TextView title = (TextView) actionBarView.findViewById(R.id.action_bar_title);
+            title.setText(getString(R.string.overview_title));
+
+            SwipesTextView icon = (SwipesTextView) actionBarView.findViewById(R.id.action_bar_icon);
+            icon.setText(getString(R.string.schedule_logbook));
+        } else {
+            themeActionBar(ThemeUtils.getSectionColor(Sections.FOCUS, this));
+            themeStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
+        }
     }
 
     private void transitionBackground() {

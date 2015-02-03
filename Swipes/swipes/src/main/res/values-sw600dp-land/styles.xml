@@ -1,0 +1,10 @@
+<resources>
+
+    <!-- Splash screen theme. -->
+    <style name="Splash_Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="colorPrimary">@color/neutral_accent</item>
+        <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
+    </style>
+
+</resources>
