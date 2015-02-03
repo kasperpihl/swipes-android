@@ -247,11 +247,27 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void setupSystemBars(Sections section) {
-        // Apply colors.
-        themeActionBar(ThemeUtils.getSectionColor(section, this));
-        themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
+        // Set toolbar title and icon.
+        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
+        SwipesTextView icon = (SwipesTextView) mActionBarView.findViewById(R.id.action_bar_icon);
 
-        // TODO: Set section title and icon.
+        if (DeviceUtils.isLandscape(this)) {
+            // Replace colors on landscape.
+            themeActionBar(getResources().getColor(R.color.neutral_accent));
+            themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
+
+            // Replace title and text.
+            title.setText(getString(R.string.overview_title));
+            icon.setText(getString(R.string.schedule_logbook));
+        } else {
+            // Apply regular colors.
+            themeActionBar(ThemeUtils.getSectionColor(section, this));
+            themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
+
+            // Apply regular title and text.
+            title.setText(section.getSectionTitle(this));
+            icon.setText(section.getSectionIcon(this));
+        }
     }
 
     private void createSnoozeAlarm() {

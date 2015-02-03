@@ -50,6 +50,7 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
+import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
@@ -129,6 +130,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
+
+    @InjectView(R.id.landscape_header)
+    LinearLayout mLandscapeHeader;
+
+    @InjectView(R.id.action_bar_title)
+    TextView mLandscapeHeaderTitle;
+
+    @InjectView(R.id.action_bar_icon)
+    SwipesTextView mLandscapeHeaderIcon;
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
@@ -260,6 +270,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (!tasks.isEmpty() && mSection == Sections.LATER) {
             sNextTask = tasks.get(0);
         }
+
+        // Setup landscape header.
+        mLandscapeHeader.setVisibility(DeviceUtils.isLandscape(getActivity()) ? View.VISIBLE : View.GONE);
+        mLandscapeHeader.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+        mLandscapeHeaderTitle.setText(mSection.getSectionTitle(getActivity()));
+        mLandscapeHeaderIcon.setText(mSection.getSectionIcon(getActivity()));
+        mLandscapeHeaderIcon.setLayoutParams(mLandscapeHeaderTitle.getLayoutParams());
     }
 
     private void setupFiltersArea() {
@@ -324,6 +341,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             int sidePadding = mListView.getPaddingLeft();
 
             mListView.setPadding(sidePadding, topPadding, Math.round(sidePadding / 2), bottomPadding);
+
+            // Setup landscape margin.
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mLandscapeHeader.getLayoutParams();
+            params.setMargins(sidePadding, params.topMargin, Math.round(sidePadding / 2), 0);
+            mLandscapeHeader.setLayoutParams(params);
         }
     }
 
@@ -357,6 +379,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             int sidePadding = Math.round(mListView.getPaddingLeft() / 2);
 
             mListView.setPadding(sidePadding, topPadding, sidePadding, bottomPadding);
+
+            // Setup landscape margin.
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mLandscapeHeader.getLayoutParams();
+            params.setMargins(sidePadding, params.topMargin, sidePadding, 0);
+            mLandscapeHeader.setLayoutParams(params);
         }
     }
 
@@ -393,6 +420,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             int sidePadding = mListView.getPaddingLeft();
 
             mListView.setPadding(Math.round(sidePadding / 2), topPadding, sidePadding, bottomPadding);
+
+            // Setup landscape margin.
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mLandscapeHeader.getLayoutParams();
+            params.setMargins(Math.round(sidePadding / 2), params.topMargin, sidePadding, 0);
+            mLandscapeHeader.setLayoutParams(params);
         }
     }
 

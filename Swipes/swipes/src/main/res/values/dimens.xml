@@ -17,6 +17,8 @@
     <dimen name="list_padding_sides">25dp</dimen>
     <dimen name="pager_padding_sides">0dp</dimen>
     <dimen name="pager_margin_sides">-25dp</dimen>
+    <dimen name="landscape_header_height">56dp</dimen>
+    <dimen name="landscape_header_margin_top">25dp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

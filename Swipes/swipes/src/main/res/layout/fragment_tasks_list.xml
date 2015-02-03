@@ -6,6 +6,16 @@
     android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
+    <!-- Landscape header -->
+    <include
+        android:id="@+id/landscape_header"
+        layout="@layout/action_bar_custom_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/landscape_header_height"
+        android:layout_marginLeft="@dimen/list_padding_sides"
+        android:layout_marginRight="@dimen/list_padding_sides"
+        android:layout_marginTop="@dimen/landscape_header_margin_top" />
+
     <!-- List view area -->
     <LinearLayout
         android:id="@+id/list_area"
