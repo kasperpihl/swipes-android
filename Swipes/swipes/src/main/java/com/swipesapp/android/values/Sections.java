@@ -1,6 +1,9 @@
 package com.swipesapp.android.values;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.swipesapp.android.R;
 
 /**
  * Holds the possible sections.
@@ -25,6 +28,34 @@ public enum Sections {
 
     public int getSectionNumber() {
         return mSectionNumber;
+    }
+
+    public String getSectionTitle(Context context) {
+        switch (mSectionNumber) {
+            case 0:
+                return context.getString(R.string.later_title);
+            case 1:
+                return context.getString(R.string.focus_title);
+            case 2:
+                return context.getString(R.string.done_title);
+            default:
+                Log.wtf(TAG, "Section does not exist.");
+                return null;
+        }
+    }
+
+    public String getSectionIcon(Context context) {
+        switch (mSectionNumber) {
+            case 0:
+                return context.getString(R.string.later_full);
+            case 1:
+                return context.getString(R.string.focus_full);
+            case 2:
+                return context.getString(R.string.done_full);
+            default:
+                Log.wtf(TAG, "Section does not exist.");
+                return null;
+        }
     }
 
     public static Sections getSectionByNumber(int sectionNumber) {

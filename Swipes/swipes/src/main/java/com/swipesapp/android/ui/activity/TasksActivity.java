@@ -41,6 +41,7 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
+import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DeviceUtils;
@@ -271,7 +272,6 @@ public class TasksActivity extends BaseActivity {
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin_sides));
         mViewPager.setCurrentItem(sCurrentSection.getSectionNumber());
 
-        // TODO: Find out why over scroll is buggy on tablets and turn it back on.
         if (DeviceUtils.isTablet(this)) mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
@@ -326,14 +326,14 @@ public class TasksActivity extends BaseActivity {
             if (!mIsAddingTask) themeStatusBar(blended);
 
             // Fade ActionBar content gradually.
-            fadeActionBar(positionOffset);
+            fadeActionBar(positionOffset, from, to);
         }
     };
 
-    private void fadeActionBar(float positionOffset) {
-        // TODO: Set text and icons properly.
-//        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-//        title.setText(from.getSectionNumber() != 1 ? "LATER" : "TODAY");
+    private void fadeActionBar(float positionOffset, Sections from, Sections to) {
+        // Load toolbar title and icon.
+        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
+        SwipesTextView icon = (SwipesTextView) mActionBarView.findViewById(R.id.action_bar_icon);
 
         if (mPreviousOffset > 0) {
             if (positionOffset > mPreviousOffset) {
@@ -344,6 +344,10 @@ public class TasksActivity extends BaseActivity {
                 } else {
                     // Fade in from half to the the end.
                     mActionBarView.setAlpha((positionOffset - 0.5f) * 2);
+
+                    // Set next title and icon.
+                    title.setText(to.getSectionTitle(this));
+                    icon.setText(to.getSectionIcon(this));
                 }
             } else {
                 // Swiping to the left of the ViewPager.
@@ -353,6 +357,10 @@ public class TasksActivity extends BaseActivity {
                 } else {
                     // Fade in from half to the the end.
                     mActionBarView.setAlpha((0.5f - positionOffset) * 2);
+
+                    // Set next title and icon.
+                    title.setText(from.getSectionTitle(this));
+                    icon.setText(from.getSectionIcon(this));
                 }
             }
         }
