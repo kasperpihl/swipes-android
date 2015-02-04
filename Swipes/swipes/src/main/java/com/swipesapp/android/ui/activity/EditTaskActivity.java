@@ -396,7 +396,7 @@ public class EditTaskActivity extends BaseActivity {
 
         mTitle.setText(mTask.getTitle());
 
-        mPriority.setChecked(mTask.getPriority() == 1);
+        if (mTask.getPriority() != null) mPriority.setChecked(mTask.getPriority() == 1);
 
         mSchedule.setText(DateUtils.formatToRecent(mTask.getLocalSchedule(), this, true));
 
@@ -900,7 +900,7 @@ public class EditTaskActivity extends BaseActivity {
         String repeatOption = mTask.getRepeatOption();
 
         // Set selected option.
-        if (repeatOption.equals(RepeatOptions.NEVER.getValue())) {
+        if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER.getValue())) {
             mRepeatNever.select();
         } else if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
             mRepeatDay.select();
@@ -919,7 +919,7 @@ public class EditTaskActivity extends BaseActivity {
         String repeatOption = mTask.getRepeatOption();
 
         // Set friendly description.
-        if (repeatOption.equals(RepeatOptions.NEVER.getValue())) {
+        if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER.getValue())) {
             // Option is set to never.
             mRepeat.setText(getString(R.string.repeat_never_description));
         } else {

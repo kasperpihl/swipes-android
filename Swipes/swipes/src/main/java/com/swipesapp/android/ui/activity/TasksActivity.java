@@ -127,6 +127,8 @@ public class TasksActivity extends BaseActivity {
 
     private String mShareMessage;
 
+    private boolean mWasRestored;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,7 +197,18 @@ public class TasksActivity extends BaseActivity {
         // Restore section colors.
         setupSystemBars(sCurrentSection);
 
+        // Clear restoration flag.
+        mWasRestored = false;
+
         super.onResume();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Mark activity as being restored.
+        mWasRestored = true;
     }
 
     @Override
@@ -539,7 +552,7 @@ public class TasksActivity extends BaseActivity {
 
         // Fade out the tasks.
         mTasksArea.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(getWindow().getStatusBarColor(), ThemeUtils.getStatusBarColor(this));
+        transitionStatusBar(ThemeUtils.getSectionColorDark(sCurrentSection, this), ThemeUtils.getStatusBarColor(this));
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);

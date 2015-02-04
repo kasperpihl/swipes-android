@@ -29,8 +29,6 @@ public class BaseActivity extends ActionBarActivity {
 
     private Window mWindow;
 
-    protected boolean mWasRestored;
-
     /**
      * Default constructor. Enables Status Bar tint.
      *
@@ -52,22 +50,6 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
-    }
-
-    @Override
-    public void onResume() {
-        // Clear restoration flag.
-        mWasRestored = false;
-
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Mark activity as being restored.
-        mWasRestored = true;
     }
 
     /**
