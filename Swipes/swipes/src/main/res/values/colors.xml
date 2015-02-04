@@ -40,5 +40,6 @@
     <item name="evernote_gray_background" type="color">#E1E1E1</item>
     <item name="light_status_bar" type="color">#CECECE</item>
     <item name="dark_status_bar" type="color">#121720</item>
+    <item name="elevation_shadow" type="color">#33333333</item>
 
 </resources>

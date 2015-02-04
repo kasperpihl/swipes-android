@@ -12,6 +12,10 @@
         android:id="@+id/integrations_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/toolbar">
+
+        <include layout="@layout/toolbar_shadow" />
+
+    </FrameLayout>
 
 </RelativeLayout>

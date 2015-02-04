@@ -14,29 +14,46 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
 
-        <com.fortysevendeg.swipelistview.DynamicViewPager
-            android:id="@+id/pager"
+        <!-- Shadow and content area -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar"
-            android:clipToPadding="false"
-            android:paddingLeft="@dimen/pager_padding_sides"
-            android:paddingRight="@dimen/pager_padding_sides" />
+            android:layout_below="@id/toolbar">
 
-        <LinearLayout
-            android:id="@+id/action_buttons_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <!-- Add task button -->
-            <include layout="@layout/add_task_button" />
+                <!-- Fragments area -->
+                <com.fortysevendeg.swipelistview.DynamicViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingLeft="@dimen/pager_padding_sides"
+                    android:paddingRight="@dimen/pager_padding_sides" />
 
-            <!-- Edit bar -->
-            <include layout="@layout/edit_bar" />
+                <LinearLayout
+                    android:id="@+id/action_buttons_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical">
 
-        </LinearLayout>
+                    <!-- Add task button -->
+                    <include layout="@layout/add_task_button" />
+
+                    <!-- Edit bar -->
+                    <include layout="@layout/edit_bar" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <!-- Toolbar shadow -->
+            <include layout="@layout/toolbar_shadow" />
+
+        </FrameLayout>
 
     </RelativeLayout>
 

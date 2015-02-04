@@ -9,43 +9,51 @@
 
     <include layout="@layout/evernote_learn_header" />
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:weightSum="1">
+                android:orientation="vertical">
 
-                <include
-                    layout="@layout/evernote_learn_what"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
-                    android:layout_weight="0.5" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:weightSum="1">
 
-                <include
-                    layout="@layout/evernote_learn_how"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_weight="0.5" />
+                    <include
+                        layout="@layout/evernote_learn_what"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:layout_weight="0.5" />
+
+                    <include
+                        layout="@layout/evernote_learn_how"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_weight="0.5" />
+
+                </LinearLayout>
+
+                <include layout="@layout/evernote_get_started_button" />
 
             </LinearLayout>
 
-            <include layout="@layout/evernote_get_started_button" />
+        </ScrollView>
 
-        </LinearLayout>
+        <include layout="@layout/toolbar_shadow" />
 
-    </ScrollView>
+    </FrameLayout>
 
 </LinearLayout>

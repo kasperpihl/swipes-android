@@ -72,10 +72,11 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">22sp</dimen>
-    <dimen name="toolbar_elevation">3dp</dimen>
+    <dimen name="toolbar_elevation">0dp</dimen>
     <dimen name="flat_button_height">36dp</dimen>
     <dimen name="flat_button_padding">8dp</dimen>
     <dimen name="flat_button_text_size">14sp</dimen>
     <dimen name="floating_button_margin">16dp</dimen>
+    <dimen name="toolbar_shadow_height">4dp</dimen>
 
 </resources>
