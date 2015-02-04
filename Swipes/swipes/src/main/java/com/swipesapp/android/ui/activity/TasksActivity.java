@@ -110,7 +110,7 @@ public class TasksActivity extends BaseActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static Sections sCurrentSection;
+    private static Sections sCurrentSection = Sections.FOCUS;
 
     private List<GsonTag> mSelectedTags;
 
@@ -149,11 +149,7 @@ public class TasksActivity extends BaseActivity {
 
         createSnoozeAlarm();
 
-        if (sCurrentSection == null) sCurrentSection = Sections.FOCUS;
-
         setupViewPager();
-
-        setupSystemBars(sCurrentSection);
 
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
@@ -188,6 +184,14 @@ public class TasksActivity extends BaseActivity {
         // Sync only changes after initial sync has been performed.
         boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
         SyncService.getInstance(this).performSync(changesOnly);
+
+        if (mWasRestored) {
+            // Reset section.
+            mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        }
+
+        // Restore section colors.
+        setupSystemBars(sCurrentSection);
 
         super.onResume();
     }
@@ -533,7 +537,7 @@ public class TasksActivity extends BaseActivity {
 
         // Fade out the tasks.
         mTasksArea.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(ThemeUtils.getStatusBarColor(this));
+        transitionStatusBar(getWindow().getStatusBarColor(), ThemeUtils.getStatusBarColor(this));
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -582,7 +586,7 @@ public class TasksActivity extends BaseActivity {
 
         // Fade in the tasks.
         mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
+        transitionStatusBar(getWindow().getStatusBarColor(), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
 
         // Broadcast changes.
         mTasksService.sendBroadcast(Actions.TASKS_CHANGED);

@@ -24,14 +24,17 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <style name="Dark_Theme_Activity_Overlay" parent="android:Theme.NoTitleBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@color/dark_background</item>
+    <!-- Preview themes. -->
+    <style name="Tasks_Preview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/preview_tasks</item>
+        <item name="colorPrimary">@color/focus_accent</item>
+        <item name="colorPrimaryDark">@color/focus_accent_dark</item>
     </style>
 
-    <style name="Light_Theme_Activity_Overlay" parent="android:Theme.NoTitleBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@color/light_background</item>
+    <style name="Settings_Preview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/preview_settings</item>
+        <item name="colorPrimary">@color/neutral_accent</item>
+        <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
     </style>
 
     <!-- Toolbar themes. -->
@@ -41,13 +44,6 @@
 
     <style name="Dark_Theme_Popup_Menu" parent="Dark_Theme">
         <item name="android:colorBackground">@color/dark_neutral_background</item>
-    </style>
-
-    <!-- Splash screen theme. -->
-    <style name="Splash_Theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash</item>
-        <item name="colorPrimary">@color/focus_accent</item>
-        <item name="colorPrimaryDark">@color/focus_accent_dark</item>
     </style>
 
     <!-- Login screen theme. -->

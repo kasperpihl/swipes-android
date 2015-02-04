@@ -12,11 +12,9 @@ import android.support.v4.app.NotificationCompat;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
-import com.swipesapp.android.ui.activity.BlankActivityDark;
-import com.swipesapp.android.ui.activity.BlankActivityLight;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
+import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.PreferenceUtils;
-import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 
 import java.util.ArrayList;
@@ -80,8 +78,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             }
 
             // Intent to open app.
-            Class intentTarget = ThemeUtils.isLightTheme(context) ? BlankActivityLight.class : BlankActivityDark.class;
-            Intent tasksIntent = new Intent(context, intentTarget);
+            Intent tasksIntent = new Intent(context, TasksActivity.class);
             PendingIntent tasksPendingIntent = PendingIntent.getActivity(context, 0, tasksIntent, 0);
             builder.setContentIntent(tasksPendingIntent);
 

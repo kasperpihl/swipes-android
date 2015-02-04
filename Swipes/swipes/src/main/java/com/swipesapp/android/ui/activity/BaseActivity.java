@@ -1,7 +1,6 @@
 package com.swipesapp.android.ui.activity;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.ActivityManager.TaskDescription;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -30,6 +29,8 @@ public class BaseActivity extends ActionBarActivity {
 
     private Window mWindow;
 
+    protected boolean mWasRestored;
+
     /**
      * Default constructor. Enables Status Bar tint.
      *
@@ -51,6 +52,22 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
+    }
+
+    @Override
+    public void onResume() {
+        // Clear restoration flag.
+        mWasRestored = false;
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Mark activity as being restored.
+        mWasRestored = true;
     }
 
     /**
@@ -121,20 +138,20 @@ public class BaseActivity extends ActionBarActivity {
 
             // Adjust header properties.
             TaskDescription description = new TaskDescription(getString(R.string.app_name), icon, color);
-            ((Activity) this).setTaskDescription(description);
+            setTaskDescription(description);
         }
     }
 
     /**
      * Applies a given color to the Status Bar with a smooth transition.
      *
-     * @param toColor Color to apply.
+     * @param fromColor Current color.
+     * @param toColor   Color to apply.
      */
-    protected void transitionStatusBar(final int toColor) {
+    protected void transitionStatusBar(final int fromColor, final int toColor) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final int fromColor = getWindow().getStatusBarColor();
-
             ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {

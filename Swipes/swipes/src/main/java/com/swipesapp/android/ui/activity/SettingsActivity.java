@@ -27,7 +27,7 @@ import com.swipesapp.android.util.ThemeUtils;
 
 public class SettingsActivity extends BaseActivity {
 
-    private static boolean mHasChangedTheme;
+    private static boolean sHasChangedTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +40,10 @@ public class SettingsActivity extends BaseActivity {
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
-        if (mHasChangedTheme) {
+        if (sHasChangedTheme) {
             // Theme has changed. Set result code.
             setResult(Constants.THEME_CHANGED_RESULT_CODE);
-            mHasChangedTheme = false;
+            sHasChangedTheme = false;
         }
     }
 
@@ -131,7 +131,7 @@ public class SettingsActivity extends BaseActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equalsIgnoreCase(PreferenceUtils.THEME_KEY)) {
                 // Theme has changed. Save state.
-                mHasChangedTheme = true;
+                sHasChangedTheme = true;
 
                 // Reload activity.
                 getActivity().recreate();
