@@ -37,6 +37,12 @@
         <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
     </style>
 
+    <style name="Evernote_Preview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/preview_evernote</item>
+        <item name="colorPrimary">@color/evernote_brand</item>
+        <item name="colorPrimaryDark">@color/evernote_brand_dark</item>
+    </style>
+
     <!-- Toolbar themes. -->
     <style name="Light_Theme_Popup_Menu" parent="Light_Theme">
         <item name="android:colorBackground">@color/light_neutral_background</item>

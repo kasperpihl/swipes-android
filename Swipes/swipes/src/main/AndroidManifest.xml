@@ -119,7 +119,8 @@
 
         <activity
             android:name="com.swipesapp.android.ui.activity.EvernoteLearnActivity"
-            android:label="@string/title_activity_evernote_learn">
+            android:label="@string/title_activity_evernote_learn"
+            android:theme="@style/Evernote_Preview">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.IntegrationsActivity" />
