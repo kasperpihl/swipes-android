@@ -36,11 +36,6 @@ public class Constants {
     public static final String EXTRA_TASK_ID = "TASK_ID";
 
     /**
-     * Intent extra for section number.
-     */
-    public static final String EXTRA_SECTION_NUMBER = "SECTION_NUMBER";
-
-    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;

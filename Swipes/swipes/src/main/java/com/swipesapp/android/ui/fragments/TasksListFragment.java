@@ -41,6 +41,8 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.EditDoneTaskActivity;
+import com.swipesapp.android.ui.activity.EditLaterTaskActivity;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
@@ -555,11 +557,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Filter actions intended only for this section.
             if (isCurrentSection()) {
                 if (intent.getAction().equals(Actions.EDIT_TASK)) {
-                    // Call task edit activity, passing the tempId of the selected task as parameter.
-                    Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
-                    editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, sSelectedTasks.get(0).getId());
-                    editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
-                    startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
+                    // Call edit task activity.
+                    startEditTask();
 
                     // Clear selected tasks.
                     sSelectedTasks.clear();
@@ -891,6 +890,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+    }
+
+    private void startEditTask() {
+        // Initialize intent passing the tempId of the selected task as parameter.
+        Intent editTaskIntent = new Intent();
+        editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, sSelectedTasks.get(0).getId());
+
+        // Decide which variation to call.
+        if (mSection == Sections.LATER) {
+            editTaskIntent.setClass(getActivity(), EditLaterTaskActivity.class);
+        } else if (mSection == Sections.DONE) {
+            editTaskIntent.setClass(getActivity(), EditDoneTaskActivity.class);
+        } else {
+            editTaskIntent.setClass(getActivity(), EditTaskActivity.class);
+        }
+
+        // Call activity.
+        startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
     }
 
     private void showTags() {

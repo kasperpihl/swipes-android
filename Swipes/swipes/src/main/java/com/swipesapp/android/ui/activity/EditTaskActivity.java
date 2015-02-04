@@ -171,7 +171,7 @@ public class EditTaskActivity extends BaseActivity {
     private ListView mListView;
     private List<GsonTask> mSubtasks;
 
-    private Sections mSection;
+    protected Sections mSection = Sections.FOCUS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,9 +181,6 @@ public class EditTaskActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
-        mSection = Sections.getSectionByNumber(sectionNumber);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 

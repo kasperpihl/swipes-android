@@ -68,11 +68,24 @@
         <activity
             android:name="com.swipesapp.android.ui.activity.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
+            android:theme="@style/Edit_Preview"
             android:windowSoftInputMode="stateHidden|adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.swipesapp.android.ui.activity.TasksActivity" />
         </activity>
+
+        <activity
+            android:name="com.swipesapp.android.ui.activity.EditLaterTaskActivity"
+            android:label="@string/title_activity_edit_task"
+            android:theme="@style/Edit_Later_Preview"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+
+        <activity
+            android:name="com.swipesapp.android.ui.activity.EditDoneTaskActivity"
+            android:label="@string/title_activity_edit_task"
+            android:theme="@style/Edit_Done_Preview"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <activity
             android:name="com.swipesapp.android.ui.activity.SnoozeActivity"
