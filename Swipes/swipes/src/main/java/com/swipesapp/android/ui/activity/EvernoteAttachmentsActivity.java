@@ -134,11 +134,18 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     }
 
     private void loadResults() {
+        String query = mQuery;
+
+        // user entered text should end with *
+        if (query.length() > 0)
+            query = query.trim() + "*";
+
         // Filter notes with tasks by adding prefix.
-        if (mCheckbox.isChecked()) mQuery = FILTER_PREFIX + mQuery;
+        if (mCheckbox.isChecked())
+            query = FILTER_PREFIX + query;
 
         // Load search results.
-        mEvernoteIntegration.findNotes(mQuery, mEvernoteCallback);
+        mEvernoteIntegration.findNotes(query, mEvernoteCallback);
     }
 
     private OnEvernoteCallback<List<Note>> mEvernoteCallback = new OnEvernoteCallback<List<Note>>() {

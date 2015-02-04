@@ -18,6 +18,9 @@ import com.evernote.client.android.InvalidAuthenticationException;
 import com.evernote.client.android.OnClientCallback;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
+import com.evernote.edam.notestore.NoteMetadata;
+import com.evernote.edam.notestore.NotesMetadataList;
+import com.evernote.edam.notestore.NotesMetadataResultSpec;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
@@ -409,7 +412,7 @@ public class EvernoteIntegration {
     }
 
     private void reportFoundNotes(final List<Note> results, final OnEvernoteCallback<List<Note>> callback) {
-        // TODO sort outside of main thread
+        // TODO sort outside of main thread?
         Collections.sort(results, new Comparator<Note>() {
             @Override
             public int compare(Note lhs, Note rhs) {
@@ -425,10 +428,6 @@ public class EvernoteIntegration {
     }
 
     public void findNotes(final String query, final OnEvernoteCallback<List<Note>> callback) {
-        final NoteFilter filter = new NoteFilter();
-        filter.setOrder(NoteSortOrder.UPDATED.getValue());
-        filter.setWords(query);
-
         final List<Note> results = new ArrayList<Note>();
 
         getClients(new OnEvernoteCallback<List<AsyncNoteStoreClient>>() {
@@ -438,6 +437,10 @@ public class EvernoteIntegration {
                 final int[] askedClients = {0};
 
                 for (int i = 0; i < data.size(); i++) {
+                    final NoteFilter filter = new NoteFilter();
+                    filter.setOrder(NoteSortOrder.UPDATED.getValue());
+                    filter.setWords(query);
+
                     final AsyncNoteStoreClient client = data.get(i);
                     client.findNotes(filter, 0, sMaxNotes, new OnClientCallback<NoteList>() {
                         public void onSuccess(NoteList data) {
@@ -463,18 +466,10 @@ public class EvernoteIntegration {
         });
     }
 
-    private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<LinkedNotebook>callback) {
+    private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<Boolean>callback) {
         getNoteStoreGuids(new OnEvernoteCallback<Void>() {
             public void onSuccess(Void data) {
-                String guid = mBusinessNotebookGuids.contains(notebookGuid) ? notebookGuid : null;
-                if (guid != null) {
-                    guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
-                    LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
-                    if (linkedNotebook != null) {
-                        callback.onSuccess(linkedNotebook);
-                    }
-                }
-                callback.onSuccess(null);
+                callback.onSuccess(mBusinessNotebookGuids.contains(notebookGuid));
             }
 
             public void onException(Exception e) {
@@ -494,9 +489,9 @@ public class EvernoteIntegration {
         }
         else {
             // business or linked note
-            checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<LinkedNotebook>() {
-                public void onSuccess(final LinkedNotebook linkedNotebook) {
-//                    if (null != linkedNotebook) {
+            checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<Boolean>() {
+                public void onSuccess(final Boolean isBusinessNotebook) {
+                    if (isBusinessNotebook) {
                         mEvernoteSession.getClientFactory().createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
                             public void onSuccess(AsyncBusinessNoteStoreClient client) {
                                 callback.onSuccess(client.getAsyncClient());
@@ -506,7 +501,7 @@ public class EvernoteIntegration {
                                 callback.onException(e);
                             }
                         });
-//                    }
+                    }
 //                    else {
 //                        int i = 5;
 //                    }
