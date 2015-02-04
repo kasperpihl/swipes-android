@@ -18,12 +18,11 @@ import com.evernote.client.android.InvalidAuthenticationException;
 import com.evernote.client.android.OnClientCallback;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
-import com.evernote.edam.notestore.NotesMetadataList;
-import com.evernote.edam.notestore.NotesMetadataResultSpec;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import com.evernote.edam.type.Notebook;
+import com.evernote.edam.type.SharedNotebook;
 import com.evernote.edam.type.Tag;
 
 import org.json.JSONException;
@@ -32,6 +31,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class EvernoteIntegration {
@@ -80,8 +81,11 @@ public class EvernoteIntegration {
     protected EvernoteSession mEvernoteSession;
 
     protected String mSwipesTagGuid;
-    protected String mUserNoteStoreGuid;
-    protected List<LinkedNotebook> mBusinessNoteStoreNotebooks;
+    protected String mUserNotebookGuid;
+    protected HashMap<String, LinkedNotebook> mLinkedPersonalNotebooks;
+    protected HashMap<String, LinkedNotebook> mBusinessNotebooks;
+    protected HashMap<String, String> mSharedToBusiness;
+    protected HashSet<String> mBusinessNotebookGuids;
     //protected List<LinkedNotebook> mSharedNoteStoreNotebooks;
 
     protected List<AsyncNoteStoreClient> mClients;
@@ -99,26 +103,25 @@ public class EvernoteIntegration {
                 public void onSuccess(Void data) {
                     // find out type
                     try {
-                        if (note.getNotebookGuid().equalsIgnoreCase(mUserNoteStoreGuid)) {
+                        if (note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
                             json.put(sKeyJsonType, sKeyJsonTypePersonal);
                         }
                         else {
-                            if (mBusinessNoteStoreNotebooks != null) {
-                                boolean found = false;
-                                for (LinkedNotebook linkedNotebook : mBusinessNoteStoreNotebooks) {
-                                    if (note.getNotebookGuid().equalsIgnoreCase(linkedNotebook.getGuid())) {
-                                        json.put(sKeyJsonType, sKeyJsonTypeBusiness);
-                                        JSONObject jsonLinkedNotebook = new JSONObject();
-                                        jsonLinkedNotebook.put(sKeyJsonNotebookGuid, linkedNotebook.getGuid());
-                                        jsonLinkedNotebook.put(sKeyJsonNotebookNoteStoreUrl, linkedNotebook.getNoteStoreUrl());
-                                        jsonLinkedNotebook.put(sKeyJsonNotebookShardId, linkedNotebook.getShardId());
-                                        jsonLinkedNotebook.put(sKeyJsonNotebookSharedNotebookGlobalId, linkedNotebook.getShareKey());
-                                        json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
-                                        found = true;
-                                        break;
-                                    }
+                            String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
+                            if (guid != null) {
+                                guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
+                                LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
+                                if (linkedNotebook != null) {
+                                    json.put(sKeyJsonType, sKeyJsonTypeBusiness);
+                                    JSONObject jsonLinkedNotebook = new JSONObject();
+                                    jsonLinkedNotebook.put(sKeyJsonNotebookGuid, linkedNotebook.getGuid());
+                                    jsonLinkedNotebook.put(sKeyJsonNotebookNoteStoreUrl, linkedNotebook.getNoteStoreUrl());
+                                    jsonLinkedNotebook.put(sKeyJsonNotebookShardId, linkedNotebook.getShardId());
+                                    jsonLinkedNotebook.put(sKeyJsonNotebookSharedNotebookGlobalId, linkedNotebook.getShareKey());
+                                    json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
                                 }
-                                if (!found) {
+                                else {
+                                    // TODO this is not enough
                                     json.put(sKeyJsonType, sKeyJsonTypeShared);
                                 }
                             }
@@ -182,59 +185,124 @@ public class EvernoteIntegration {
         mEvernoteSession = EvernoteSession.getInstance(context, sConsumerKey, sConsumerSecret, sEvernoteService, sSupportAppLinkedNotebooks);
     }
 
+    private void getPersonalDefaultNotebookGuid(final AsyncNoteStoreClient personalNoteStore, final OnEvernoteCallback<Void> callback) {
+        personalNoteStore.getDefaultNotebook(new OnClientCallback<Notebook>() {
+            @Override
+            public void onSuccess(Notebook data) {
+                mUserNotebookGuid = data.getGuid();
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onException(Exception exception) {
+                callback.onException(exception);
+            }
+        });
+    }
+
+    private void getPersonalLinkedNotebooks(final AsyncNoteStoreClient personalNoteStore, final OnEvernoteCallback<Void> callback) {
+        personalNoteStore.listLinkedNotebooks(new OnClientCallback<List<LinkedNotebook>>() {
+            @Override
+            public void onSuccess(List<LinkedNotebook> data) {
+                mLinkedPersonalNotebooks = new HashMap<String, LinkedNotebook>();
+                for (LinkedNotebook linkedNotebook : data) {
+                    mLinkedPersonalNotebooks.put(linkedNotebook.getGuid(), linkedNotebook);
+                }
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onException(Exception exception) {
+                callback.onException(exception);
+            }
+        });
+    }
+
+    private void getBusinessSharedNotebooks(final ClientFactory clientFactory, final OnEvernoteCallback<Void> callback) {
+        clientFactory.createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
+
+            @Override
+            public void onSuccess(final AsyncBusinessNoteStoreClient client) {
+                client.getAsyncClient().listSharedNotebooks(new OnClientCallback<List<SharedNotebook>>() {
+                    @Override
+                    public void onSuccess(List<SharedNotebook> data) {
+                        mBusinessNotebookGuids = new HashSet<String>();
+                        mSharedToBusiness = new HashMap<String, String>();
+                        mBusinessNotebooks = new HashMap<String, LinkedNotebook>();
+
+                        // prepare a quick hashmap for searching
+                        HashMap<String, String> shareKeyMap = new HashMap<String, String>();
+                        for (LinkedNotebook linkedNotebook : mLinkedPersonalNotebooks.values()) {
+                            shareKeyMap.put(linkedNotebook.getShareKey(), linkedNotebook.getGuid());
+                        }
+
+                        // store the guids only
+                        for (SharedNotebook sharedNotebook : data) {
+                            mBusinessNotebookGuids.add(sharedNotebook.getNotebookGuid());
+                            // remove from personal linked if there and create a business to shared key
+                            if (shareKeyMap.containsKey(sharedNotebook.getShareKey())) {
+                                String linkedGuid = shareKeyMap.get(sharedNotebook.getShareKey());
+                                mSharedToBusiness.put(sharedNotebook.getNotebookGuid(), linkedGuid);
+                                mBusinessNotebookGuids.add(linkedGuid);
+                                mBusinessNotebooks.put(linkedGuid, mLinkedPersonalNotebooks.get(linkedGuid));
+                                mLinkedPersonalNotebooks.remove(linkedGuid);
+                            }
+                        }
+                        callback.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onException(Exception exception) {
+                        callback.onException(exception);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onException(Exception exception) {
+                callback.onException(exception);
+            }
+        });
+
+    }
+
     synchronized private void getNoteStoreGuids(final OnEvernoteCallback<Void> callback) {
-        if ((null != mEvernoteSession) && (null == mUserNoteStoreGuid)) {
+        if ((null != mEvernoteSession) && (null == mUserNotebookGuid)) {
             final ClientFactory clientFactory = mEvernoteSession.getClientFactory();
             try {
                 final AsyncNoteStoreClient personalNoteStore = clientFactory.createNoteStoreClient();
-                personalNoteStore.getDefaultNotebook(new OnClientCallback<Notebook>() {
 
-                    public void onSuccess(Notebook data) {
-                        mUserNoteStoreGuid = data.getGuid();
-                        clientFactory.createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
+                getPersonalLinkedNotebooks(personalNoteStore, new OnEvernoteCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        getPersonalDefaultNotebookGuid(personalNoteStore, new OnEvernoteCallback<Void>() {
                             @Override
-                            public void onSuccess(final AsyncBusinessNoteStoreClient client) {
-                                try {
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                mBusinessNoteStoreNotebooks = client.listNotebooks();
-                                                callback.onSuccess(null);
-                                            } catch (Exception ex) {
-                                                callback.onException(ex);
-                                            }
-                                        }
-                                    }).start();
+                            public void onSuccess(Void data) {
+                                getBusinessSharedNotebooks(clientFactory, new OnEvernoteCallback<Void>() {
+                                    @Override
+                                    public void onSuccess(Void data) {
+                                        callback.onSuccess(null);
+                                    }
 
-                                }
-                                catch (Exception ex) {
-                                    callback.onException(ex);
-                                }
+                                    @Override
+                                    public void onException(Exception e) {
+                                        // it is OK if no business notebooks there
+                                        callback.onSuccess(null);
+                                    }
+                                });
                             }
 
                             @Override
-                            public void onException(Exception exception) {
-                                callback.onException(exception);
+                            public void onException(Exception e) {
+                                callback.onException(e);
                             }
                         });
-//                        new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                final AsyncBusinessNoteStoreClient asyncBusinessNoteStoreClient;
-//                                try {
-//                                    asyncBusinessNoteStoreClient = clientFactory.createBusinessNoteStoreClient();
-//                                    mBusinessNoteStoreNotebooks = asyncBusinessNoteStoreClient.listNotebooks();
-//                                    callback.onSuccess(null);
-//                                } catch (Exception ex) {
-//                                    callback.onException(ex);
-//                                }
-//                            }
-//                        }).start();
                     }
 
-                    public void onException(Exception ex) {
-                        callback.onException(ex);
+                    @Override
+                    public void onException(Exception e) {
+                        callback.onException(e);
                     }
                 });
             } catch (Exception ex) {
@@ -398,11 +466,12 @@ public class EvernoteIntegration {
     private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<LinkedNotebook>callback) {
         getNoteStoreGuids(new OnEvernoteCallback<Void>() {
             public void onSuccess(Void data) {
-                if (null != mBusinessNoteStoreNotebooks) {
-                    for (LinkedNotebook notebook : mBusinessNoteStoreNotebooks) {
-                        if (notebook.getGuid().equalsIgnoreCase(notebookGuid)) {
-                            callback.onSuccess(notebook);
-                        }
+                String guid = mBusinessNotebookGuids.contains(notebookGuid) ? notebookGuid : null;
+                if (guid != null) {
+                    guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
+                    LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
+                    if (linkedNotebook != null) {
+                        callback.onSuccess(linkedNotebook);
                     }
                 }
                 callback.onSuccess(null);
@@ -415,7 +484,7 @@ public class EvernoteIntegration {
     }
 
     void provideAsyncNoteStoreClientForNote(final Note note, final OnEvernoteCallback<AsyncNoteStoreClient>callback) {
-        if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNoteStoreGuid)) {
+        if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
             try {
                 callback.onSuccess(mEvernoteSession.getClientFactory().createNoteStoreClient());
             }
