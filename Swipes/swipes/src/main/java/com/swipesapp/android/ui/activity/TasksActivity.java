@@ -110,7 +110,7 @@ public class TasksActivity extends BaseActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static Sections sCurrentSection = Sections.FOCUS;
+    private static Sections sCurrentSection;
 
     private List<GsonTag> mSelectedTags;
 
@@ -148,6 +148,8 @@ public class TasksActivity extends BaseActivity {
         getSupportActionBar().setCustomView(mActionBarView);
 
         createSnoozeAlarm();
+
+        if (sCurrentSection == null) sCurrentSection = Sections.FOCUS;
 
         setupViewPager();
 
