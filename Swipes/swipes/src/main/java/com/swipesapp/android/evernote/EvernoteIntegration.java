@@ -2,8 +2,7 @@ package com.swipesapp.android.evernote;
 
 /**
  * TODO:
- *  - request and update counters
- *  - caching
+ *  - request and update counters?
  *  - logout stuff
  */
 
@@ -34,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,6 +63,7 @@ public class EvernoteIntegration {
 
     // Maximum number of notes to search
     private static final int sMaxNotes = 100;
+    private static final long sSearchCacheTimeout = 300 * 1000;
 
     private static final String sKeyNoteGuid = "noteguid";
     private static final String sKeyNotebookGuid = "notebookguid";
@@ -89,13 +90,23 @@ public class EvernoteIntegration {
     protected HashMap<String, LinkedNotebook> mBusinessNotebooks;
     protected HashMap<String, String> mSharedToBusiness;
     protected HashSet<String> mBusinessNotebookGuids;
-    //protected List<LinkedNotebook> mSharedNoteStoreNotebooks;
+    protected HashMap<String, CacheData<List<Note>>> mSearchCache;
 
     protected List<AsyncNoteStoreClient> mClients;
 
-
     public static EvernoteIntegration getInstance() {
         return sInstance;
+    }
+
+    private JSONObject getJSONForLinkedNotebook(final LinkedNotebook linkedNotebook) throws JSONException {
+        final JSONObject jsonLinkedNotebook = new JSONObject();
+
+        jsonLinkedNotebook.put(sKeyJsonNotebookGuid, linkedNotebook.getGuid());
+        jsonLinkedNotebook.put(sKeyJsonNotebookNoteStoreUrl, linkedNotebook.getNoteStoreUrl());
+        jsonLinkedNotebook.put(sKeyJsonNotebookShardId, linkedNotebook.getShardId());
+        jsonLinkedNotebook.put(sKeyJsonNotebookSharedNotebookGlobalId, linkedNotebook.getShareKey());
+
+        return jsonLinkedNotebook;
     }
 
     public void asyncJsonFromNote(final Note note, final OnEvernoteCallback<String> callback) {
@@ -113,19 +124,22 @@ public class EvernoteIntegration {
                             String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
                             if (guid != null) {
                                 guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
-                                LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
+                                final LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
                                 if (linkedNotebook != null) {
                                     json.put(sKeyJsonType, sKeyJsonTypeBusiness);
-                                    JSONObject jsonLinkedNotebook = new JSONObject();
-                                    jsonLinkedNotebook.put(sKeyJsonNotebookGuid, linkedNotebook.getGuid());
-                                    jsonLinkedNotebook.put(sKeyJsonNotebookNoteStoreUrl, linkedNotebook.getNoteStoreUrl());
-                                    jsonLinkedNotebook.put(sKeyJsonNotebookShardId, linkedNotebook.getShardId());
-                                    jsonLinkedNotebook.put(sKeyJsonNotebookSharedNotebookGlobalId, linkedNotebook.getShareKey());
+                                    final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(linkedNotebook);
                                     json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
                                 }
                                 else {
-                                    // TODO this is not enough
-                                    json.put(sKeyJsonType, sKeyJsonTypeShared);
+                                    final LinkedNotebook sharedNotebook = mLinkedPersonalNotebooks.get(note.getNotebookGuid());
+                                    if (null != sharedNotebook) {
+                                        json.put(sKeyJsonType, sKeyJsonTypeShared);
+                                        final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(sharedNotebook);
+                                        json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
+                                    }
+                                    else {
+                                        callback.onException(new Exception("Cannot find LinkedNotebook for guid" + note.getNotebookGuid()));
+                                    }
                                 }
                             }
                         }
@@ -411,7 +425,7 @@ public class EvernoteIntegration {
 
     }
 
-    private void reportFoundNotes(final List<Note> results, final OnEvernoteCallback<List<Note>> callback) {
+    private void reportFoundNotes(final String query, final List<Note> results, final OnEvernoteCallback<List<Note>> callback, boolean addToCache) {
         // TODO sort outside of main thread?
         Collections.sort(results, new Comparator<Note>() {
             @Override
@@ -424,10 +438,18 @@ public class EvernoteIntegration {
                 return 0;
             }
         });
+        if (addToCache)
+            cacheAddSearchResults(query, results);
         callback.onSuccess(results);
     }
 
     public void findNotes(final String query, final OnEvernoteCallback<List<Note>> callback) {
+        final List<Note> cacheResults = cacheGetSearchResult(query);
+        if (null != cacheResults) {
+            callback.onSuccess(cacheResults);
+            return;
+        }
+
         final List<Note> results = new ArrayList<Note>();
 
         getClients(new OnEvernoteCallback<List<AsyncNoteStoreClient>>() {
@@ -435,6 +457,7 @@ public class EvernoteIntegration {
             public void onSuccess(List<AsyncNoteStoreClient> data) {
                 final int totalClients = data.size();
                 final int[] askedClients = {0};
+                final boolean[] hasErrors = {false};
 
                 for (int i = 0; i < data.size(); i++) {
                     final NoteFilter filter = new NoteFilter();
@@ -446,13 +469,14 @@ public class EvernoteIntegration {
                         public void onSuccess(NoteList data) {
                             results.addAll(data.getNotes());
                             if (++askedClients[0] >= totalClients) {
-                                reportFoundNotes(results, callback);
+                                reportFoundNotes(query, results, callback, !hasErrors[0]);
                             }
                         }
 
                         public void onException(Exception e) {
                             if (++askedClients[0] >= totalClients) {
-                                reportFoundNotes(results, callback);
+                                hasErrors[0] = true;
+                                reportFoundNotes(query, results, callback, !hasErrors[0]);
                             }
                         }
                     });
@@ -560,5 +584,42 @@ public class EvernoteIntegration {
                 callback.onException(e);
             }
         });
+    }
+
+    private List<Note> cacheGetSearchResult(final String query) {
+        if (null != mSearchCache) {
+            // remove old entries
+            final long time = new Date().getTime();
+            final HashMap<String, CacheData<List<Note>>> searchCacheCopy = new HashMap<String, CacheData<List<Note>>>(mSearchCache);
+            for (String key : searchCacheCopy.keySet()) {
+                final CacheData<List<Note>> data = searchCacheCopy.get(key);
+                if (data.time + sSearchCacheTimeout < time) {
+                    mSearchCache.remove(key);
+                }
+            }
+
+            final CacheData<List<Note>> cacheData = mSearchCache.get(query);
+            if (null != cacheData) {
+                return cacheData.data;
+            }
+        }
+        return null;
+    }
+
+    private void cacheAddSearchResults(final String query, List<Note> notes) {
+        if (null == mSearchCache) {
+            mSearchCache = new HashMap<String, CacheData<List<Note>>>();
+        }
+        mSearchCache.put(query, new CacheData<List<Note>>(notes));
+    }
+
+    private class CacheData<T> {
+        T data;
+        long time;
+
+        private CacheData(T data) {
+            this.data = data;
+            this.time = new Date().getTime();
+        }
     }
 }
