@@ -601,7 +601,7 @@ public class TasksActivity extends BaseActivity {
 
         // Fade in the tasks.
         mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(getWindow().getStatusBarColor(), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
+        transitionStatusBar(ThemeUtils.getStatusBarColor(this), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
 
         // Broadcast changes.
         mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
