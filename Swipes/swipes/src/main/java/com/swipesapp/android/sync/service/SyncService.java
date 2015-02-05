@@ -448,7 +448,8 @@ public class SyncService {
             new Gson().fromJson(response, GsonSync.class);
             return !response.isEmpty();
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" + e.getMessage());
+            Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" +
+                    e.getMessage() + "\n" + response);
             return false;
         }
     }
