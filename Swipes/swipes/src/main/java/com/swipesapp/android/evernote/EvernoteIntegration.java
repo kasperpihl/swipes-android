@@ -2,8 +2,10 @@ package com.swipesapp.android.evernote;
 
 /**
  * TODO:
+ *  - convert old to new
+ *  - test with no business account
+ *  - logout remove all attachments?
  *  - request and update counters?
- *  - logout stuff
  */
 
 import android.content.Context;
@@ -388,7 +390,16 @@ public class EvernoteIntegration {
     public void logoutInContext(final Context ctx) {
         try {
             mEvernoteSession.logOut(ctx);
+
+            // invalidate all data
             EvernoteSyncHandler.getInstance().setUpdatedAt(null);
+            mSwipesTagGuid = null;
+            mUserNotebookGuid = null;
+            mLinkedPersonalNotebooks = null;
+            mBusinessNotebooks = null;
+            mSharedToBusiness = null;
+            mBusinessNotebookGuids = null;
+            mSearchCache = null;
         } catch (InvalidAuthenticationException e) {
             Log.e(sTag, e.getMessage(), e);
         }
@@ -613,6 +624,7 @@ public class EvernoteIntegration {
         mSearchCache.put(query, new CacheData<List<Note>>(notes));
     }
 
+    // container for cache data + creation time
     private class CacheData<T> {
         T data;
         long time;
