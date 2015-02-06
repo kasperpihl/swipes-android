@@ -99,7 +99,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        syncService.saveTaskChangesForSync(task);
+        syncService.saveTaskChangesForSync(task, null);
         tasksService.saveTask(task, false);
 
         // Save second task.
@@ -108,7 +108,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        syncService.saveTaskChangesForSync(task);
+        syncService.saveTaskChangesForSync(task, null);
         tasksService.saveTask(task, false);
 
         // Save third task.
@@ -117,7 +117,7 @@ public class SplashActivity extends Activity {
         task.setTitle(title);
         task.setTempId(tempId);
 
-        syncService.saveTaskChangesForSync(task);
+        syncService.saveTaskChangesForSync(task, null);
         tasksService.saveTask(task, false);
     }
 

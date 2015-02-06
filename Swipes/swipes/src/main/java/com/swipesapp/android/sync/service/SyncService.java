@@ -322,35 +322,38 @@ public class SyncService {
         }
     }
 
-    public void saveTaskChangesForSync(GsonTask task) {
+    public void saveTaskChangesForSync(GsonTask current, GsonTask old) {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
         TaskSync taskSync = new TaskSync();
 
-        if (task.getId() == null) {
+        if (current.getId() == null) {
             // Save entire task for sync.
-            taskSync = taskSyncFromGson(task);
+            taskSync = taskSyncFromGson(current);
             mExtTaskSyncDao.getDao().insert(taskSync);
         } else {
-            GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getId());
+            // Load old task if not provided.
+            if (old == null) {
+                old = TasksService.getInstance(mContext.get()).loadTask(current.getId());
+            }
 
             // Save only changed attributes.
-            taskSync.setObjectId(task.getObjectId());
-            taskSync.setTempId(task.getTempId());
-            taskSync.setUpdatedAt(DateUtils.dateToSync(task.getLocalUpdatedAt()));
-            taskSync.setDeleted(hasObjectChanged(old.getDeleted(), task.getDeleted()) ? task.getDeleted() : null);
-            taskSync.setTitle(hasObjectChanged(old.getTitle(), task.getTitle()) ? task.getTitle() : null);
-            taskSync.setNotes(hasObjectChanged(old.getNotes(), task.getNotes()) ? task.getNotes() : null);
-            taskSync.setOrder(hasObjectChanged(old.getOrder(), task.getOrder()) ? task.getOrder() : null);
-            taskSync.setPriority(hasObjectChanged(old.getPriority(), task.getPriority()) ? task.getPriority() : null);
-            taskSync.setCompletionDate(hasObjectChanged(old.getLocalCompletionDate(), task.getLocalCompletionDate()) ? DateUtils.dateToSync(task.getLocalCompletionDate()) : null);
-            taskSync.setSchedule(hasObjectChanged(old.getLocalSchedule(), task.getLocalSchedule()) ? DateUtils.dateToSync(task.getLocalSchedule()) : null);
-            taskSync.setLocation(hasObjectChanged(old.getLocation(), task.getLocation()) ? task.getLocation() : null);
-            taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), task.getLocalRepeatDate()) ? DateUtils.dateToSync(task.getLocalRepeatDate()) : null);
-            taskSync.setRepeatOption(task.getRepeatOption().equals(old.getRepeatOption()) ? null : task.getRepeatOption());
-            taskSync.setTags(hasObjectChanged(old.getTags(), task.getTags()) ? tagsToString(task.getTags()) : null);
-            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), task.getAttachments()) ? attachmentsToString(task.getAttachments()) : null);
+            taskSync.setObjectId(current.getObjectId());
+            taskSync.setTempId(current.getTempId());
+            taskSync.setUpdatedAt(DateUtils.dateToSync(current.getLocalUpdatedAt()));
+            taskSync.setDeleted(hasObjectChanged(old.getDeleted(), current.getDeleted()) ? current.getDeleted() : null);
+            taskSync.setTitle(hasObjectChanged(old.getTitle(), current.getTitle()) ? current.getTitle() : null);
+            taskSync.setNotes(hasObjectChanged(old.getNotes(), current.getNotes()) ? current.getNotes() : null);
+            taskSync.setOrder(hasObjectChanged(old.getOrder(), current.getOrder()) ? current.getOrder() : null);
+            taskSync.setPriority(hasObjectChanged(old.getPriority(), current.getPriority()) ? current.getPriority() : null);
+            taskSync.setCompletionDate(hasObjectChanged(old.getLocalCompletionDate(), current.getLocalCompletionDate()) ? DateUtils.dateToSync(current.getLocalCompletionDate()) : null);
+            taskSync.setSchedule(hasObjectChanged(old.getLocalSchedule(), current.getLocalSchedule()) ? DateUtils.dateToSync(current.getLocalSchedule()) : null);
+            taskSync.setLocation(hasObjectChanged(old.getLocation(), current.getLocation()) ? current.getLocation() : null);
+            taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), current.getLocalRepeatDate()) ? DateUtils.dateToSync(current.getLocalRepeatDate()) : null);
+            taskSync.setRepeatOption(hasObjectChanged(old.getRepeatOption(), current.getRepeatOption()) ? null : current.getRepeatOption());
+            taskSync.setTags(hasObjectChanged(old.getTags(), current.getTags()) ? tagsToString(current.getTags()) : null);
+            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), current.getAttachments()) ? attachmentsToString(current.getAttachments()) : null);
 
             mExtTaskSyncDao.getDao().insert(taskSync);
         }

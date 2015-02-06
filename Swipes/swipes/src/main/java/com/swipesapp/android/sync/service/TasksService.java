@@ -103,7 +103,7 @@ public class TasksService {
         Long id = gsonTask.getId();
         String parentId = gsonTask.getParentLocalId();
 
-        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonTask);
+        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonTask, null);
 
         if (id == null) {
             createTask(gsonTask);
@@ -129,7 +129,7 @@ public class TasksService {
         GsonTask gsonParent = loadTask(subtask.getParentLocalId());
         gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
 
-        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonParent);
+        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonParent, null);
 
         Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
 
@@ -333,7 +333,7 @@ public class TasksService {
         TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
         mExtTaskTagDao.getDao().delete(assignment);
 
-        SyncService.getInstance(mContext.get()).saveTaskChangesForSync(loadTask(taskId));
+        SyncService.getInstance(mContext.get()).saveTaskChangesForSync(loadTask(taskId), null);
     }
 
     /**
@@ -428,8 +428,15 @@ public class TasksService {
 
         if (attachments != null) {
             for (Attachment attachment : attachments) {
+                // Load task with attachment.
+                GsonTask old = loadTask(attachment.getTaskId());
+
                 // Delete from database.
                 mExtAttachmentDao.getDao().delete(attachment);
+
+                // Update task with removed attachment.
+                GsonTask updated = loadTask(old.getId());
+                SyncService.getInstance(mContext.get()).saveTaskChangesForSync(updated, old);
             }
         }
     }

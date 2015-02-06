@@ -113,7 +113,7 @@ public class WelcomeActivity extends Activity {
         for (GsonTask task : TasksService.getInstance(this).loadAllTasks()) {
             if (!task.getDeleted()) {
                 task.setId(null);
-                SyncService.getInstance(this).saveTaskChangesForSync(task);
+                SyncService.getInstance(this).saveTaskChangesForSync(task, null);
             }
         }
     }

@@ -244,7 +244,7 @@ public class SettingsActivity extends AccentActivity {
             for (GsonTask task : TasksService.getInstance(getActivity()).loadAllTasks()) {
                 if (!task.getDeleted()) {
                     task.setId(null);
-                    SyncService.getInstance(getActivity()).saveTaskChangesForSync(task);
+                    SyncService.getInstance(getActivity()).saveTaskChangesForSync(task, null);
                 }
             }
         }
