@@ -356,12 +356,12 @@ public class EvernoteSyncHandler {
         boolean updated = false;
 
         // Match and clean all direct matches
-        for (EvernoteToDo evernoteToDo : processor.getToDos()) {
-            GsonTask matchingSubtask = null;
+        for (EvernoteToDo evernoteToDo : evernoteToDos) {
+//            GsonTask matchingSubtask = null;
 
             for (GsonTask subtask : subtasks) {
                 if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier())) {
-                    matchingSubtask = subtask;
+//                    matchingSubtask = subtask;
                     subtasksLeftToBeFound.remove(subtask);
                     evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
@@ -371,9 +371,51 @@ public class EvernoteSyncHandler {
                         subtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
                         tasksService.saveTask(subtask, true);
                     }
+                    if (handleEvernoteToDo(evernoteToDo, subtask, processor, false, tasksService)) {
+                        updated = true;
+                    }
                     break;
                 }
             }
+
+//            if (null == matchingSubtask) {
+//                Date currentDate = new Date();
+//                String tempId = UUID.randomUUID().toString();
+//                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
+//                        evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
+//                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
+//                tasksService.saveTask(matchingSubtask, true);
+//                updated = true;
+//                isNew = true;
+//            }
+
+
+            subtasks.clear();
+            subtasks.addAll(subtasksLeftToBeFound);
+        }
+
+        evernoteToDos.clear();
+        evernoteToDos.addAll(evernoteToDosLeftToBeFound);
+
+        // Match and clean all indirect matches
+        for (EvernoteToDo evernoteToDo : evernoteToDos) {
+            GsonTask matchingSubtask = null;
+
+            int bestScore = Integer.MAX_VALUE;
+            GsonTask bestMatch = null;
+
+            for (GsonTask subtask : subtasks) {
+                if (null == subtask.getOriginIdentifier())
+                    continue;
+                int match = LevenshteinDistance.computeEditDistance(evernoteToDo.getTitle(), subtask.getOriginIdentifier());
+                if (match < bestScore) {
+                    bestScore = match;
+                    bestMatch = subtask;
+                }
+            }
+
+            if (bestScore <= 5)
+                matchingSubtask = bestMatch;
 
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
@@ -384,49 +426,7 @@ public class EvernoteSyncHandler {
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
-            }
-
-            if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, false, tasksService)) {
-                updated = true;
-            }
-
-            subtasks.clear();
-            subtasks.addAll(subtasksLeftToBeFound);
-        }
-
-        evernoteToDos.clear();
-        evernoteToDos.addAll(evernoteToDosLeftToBeFound);
-
-        // Match and clean all indirect matches
-        for (EvernoteToDo evernoteToDo : processor.getToDos()) {
-            GsonTask matchingSubtask = null;
-
-            int bestScore = 0;
-            GsonTask bestMatch = null;
-
-            for (GsonTask subtask : subtasks) {
-                if (null == subtask.getOriginIdentifier())
-                    continue;
-                int match = LevenshteinDistance.computeEditDistance(evernoteToDo.getTitle(), subtask.getOriginIdentifier());
-                if (match > bestScore) {
-                    bestScore = match;
-                    bestMatch = subtask;
-                }
-            }
-
-            if (bestScore >= 120) // TODO check score (might be wrong for java implementation)
-                matchingSubtask = bestMatch;
-
-            if (null == matchingSubtask && !subtasks.isEmpty()) {
-                Date currentDate = new Date();
-                String tempId = UUID.randomUUID().toString();
-                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
-                        evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
-                tasksService.saveTask(matchingSubtask, true);
-                updated = true;
-                isNew = true;
-            } else if (matchingSubtask != null && null == matchingSubtask.getOrigin()) {
+            } else if (null == matchingSubtask.getOrigin()) {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
                 matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);

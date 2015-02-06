@@ -2,10 +2,9 @@ package com.swipesapp.android.evernote;
 
 /**
  * TODO:
- *  - test Levenshtein values (we need subtask rename)
+ *  - test Levenshtein values
  *  - convert old to new (test)
  *  - test with no business account
- *  - logout remove all attachments
  *  - request and update counters?
  */
 
@@ -20,15 +19,15 @@ import com.evernote.client.android.InvalidAuthenticationException;
 import com.evernote.client.android.OnClientCallback;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
-import com.evernote.edam.notestore.NoteMetadata;
-import com.evernote.edam.notestore.NotesMetadataList;
-import com.evernote.edam.notestore.NotesMetadataResultSpec;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import com.evernote.edam.type.Notebook;
 import com.evernote.edam.type.SharedNotebook;
 import com.evernote.edam.type.Tag;
+import com.swipesapp.android.sync.service.SyncService;
+import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.values.Services;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -405,6 +404,11 @@ public class EvernoteIntegration {
             mSharedToBusiness = null;
             mBusinessNotebookGuids = null;
             mSearchCache = null;
+
+            // remove all attachments and sync
+            TasksService.getInstance(ctx).deleteAttachmentsForService(Services.EVERNOTE);
+            SyncService.getInstance(ctx).performSync(true);
+
         } catch (InvalidAuthenticationException e) {
             Log.e(sTag, e.getMessage(), e);
         }
@@ -509,7 +513,7 @@ public class EvernoteIntegration {
     private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<Boolean>callback) {
         getNoteStoreGuids(new OnEvernoteCallback<Void>() {
             public void onSuccess(Void data) {
-                callback.onSuccess(mBusinessNotebookGuids.contains(notebookGuid));
+                callback.onSuccess(null != mBusinessNotebooks ? mBusinessNotebookGuids.contains(notebookGuid) : false);
             }
 
             public void onException(Exception e) {
