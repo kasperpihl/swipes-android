@@ -2,9 +2,10 @@ package com.swipesapp.android.evernote;
 
 /**
  * TODO:
- *  - convert old to new
+ *  - test Levenshtein values (we need subtask rename)
+ *  - convert old to new (test)
  *  - test with no business account
- *  - logout remove all attachments?
+ *  - logout remove all attachments
  *  - request and update counters?
  */
 
@@ -100,6 +101,49 @@ public class EvernoteIntegration {
         return sInstance;
     }
 
+    public static boolean isJSONFormat(String identifier) {
+        return identifier.startsWith(sKeyJson);
+    }
+
+    public static Note noteFromJson(String jsonString) {
+        Note note;
+        if (jsonString.startsWith(sKeyJson)) {
+            try {
+                final JSONObject json = new JSONObject(jsonString.substring(sKeyJson.length(), jsonString.length()));
+                note = new Note();
+                note.setGuid(json.getString(sKeyJsonGuid));
+
+                String type = json.getString(sKeyJsonType);
+                if (null != type && !sKeyJsonTypePersonal.equalsIgnoreCase(type)) {
+                    JSONObject jsonLinkedNotebook = json.getJSONObject(sKeyJsonLinkedNotebook);
+                    if (null != jsonLinkedNotebook) {
+                        note.setNotebookGuid(jsonLinkedNotebook.getString(sKeyJsonNotebookGuid));
+                    }
+                }
+
+            } catch (Exception ex) {
+                note = null;
+                Log.e(sTag, ex.getMessage(), ex);
+            }
+        }
+        else {
+            try {
+                final JSONObject json = new JSONObject(jsonString);
+                note = new Note();
+                note.setGuid(json.getString(sKeyNoteGuid));
+                note.setNotebookGuid(json.optString(sKeyNotebookGuid));
+            } catch (Exception e) {
+                note = null;
+                Log.e(sTag, e.getMessage(), e);
+            }
+        }
+        return note;
+    }
+
+    protected EvernoteIntegration() {
+        //Set up the Evernote Singleton Session
+    }
+
     private JSONObject getJSONForLinkedNotebook(final LinkedNotebook linkedNotebook) throws JSONException {
         final JSONObject jsonLinkedNotebook = new JSONObject();
 
@@ -159,45 +203,6 @@ public class EvernoteIntegration {
             Log.e(sTag, ex.getMessage(), ex);
             callback.onException(ex);
         }
-    }
-
-    public static Note noteFromJson(String jsonString) {
-        Note note;
-        if (jsonString.startsWith(sKeyJson)) {
-            try {
-                final JSONObject json = new JSONObject(jsonString.substring(sKeyJson.length(), jsonString.length()));
-                note = new Note();
-                note.setGuid(json.getString(sKeyJsonGuid));
-
-                String type = json.getString(sKeyJsonType);
-                if (null != type && !sKeyJsonTypePersonal.equalsIgnoreCase(type)) {
-                    JSONObject jsonLinkedNotebook = json.getJSONObject(sKeyJsonLinkedNotebook);
-                    if (null != jsonLinkedNotebook) {
-                        note.setNotebookGuid(jsonLinkedNotebook.getString(sKeyJsonNotebookGuid));
-                    }
-                }
-
-            } catch (Exception ex) {
-                note = null;
-                Log.e(sTag, ex.getMessage(), ex);
-            }
-        }
-        else {
-            try {
-                final JSONObject json = new JSONObject(jsonString);
-                note = new Note();
-                note.setGuid(json.getString(sKeyNoteGuid));
-                note.setNotebookGuid(json.optString(sKeyNotebookGuid));
-            } catch (Exception e) {
-                note = null;
-                Log.e(sTag, e.getMessage(), e);
-            }
-        }
-        return note;
-    }
-
-    protected EvernoteIntegration() {
-        //Set up the Evernote Singleton Session
     }
 
     public void setContext(final Context context) {

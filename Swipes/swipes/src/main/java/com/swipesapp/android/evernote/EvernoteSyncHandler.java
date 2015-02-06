@@ -31,6 +31,7 @@ public class EvernoteSyncHandler {
     protected final static String TAG = "EvernoteSyncHandler";
     protected final static String PREFS_NAME = "EvernoteSyncHandler";
     protected final static String KEY_LAST_UPDATED = "lastUpdated";
+    protected final static String KEY_EVERNOTE_JSON_CONVERTED = "evernoteJsonConverted";
     protected final static int TITLE_MAX_LENGTH = 255;
     protected final static long FETCH_CHANGES_TIMEOUT = 30 * 1000; // 30 seconds
 
@@ -41,9 +42,10 @@ public class EvernoteSyncHandler {
     protected WeakReference<Context> mContext;
     protected List<Note> mKnownNotes;
     protected Integer mReturnCount = 0;
-    protected int totalNoteCount;
-    protected int currentNoteCount;
-    protected Exception runningError;
+    protected int mTotalNoteCount;
+    protected int mCurrentNoteCount;
+    protected Exception mRunningError;
+    protected boolean mConvertedToJson;
 
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
@@ -52,6 +54,7 @@ public class EvernoteSyncHandler {
     protected EvernoteSyncHandler() {
         // Setup sync handler
         mChangedNotes = new LinkedHashSet<Note>();
+        mConvertedToJson = false;
     }
 
     public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback) {
@@ -63,6 +66,10 @@ public class EvernoteSyncHandler {
         mKnownNotes = null;
         mChangedNotes.clear();
         mContext = new WeakReference<Context>(context);
+
+        if (!mConvertedToJson)
+            convertToJSONIdentifiers();
+
         // retrieve last update time
         if (null == mLastUpdated) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -105,13 +112,13 @@ public class EvernoteSyncHandler {
     }
 
     protected void addAndSyncNewTasksFromNotes(List<Note> notes, final OnEvernoteCallback<Void> callback) {
-        totalNoteCount = notes.size();
-        if (totalNoteCount == 0) {
+        mTotalNoteCount = notes.size();
+        if (mTotalNoteCount == 0) {
             callback.onSuccess(null);
             return;
         }
-        currentNoteCount = 0;
-        runningError = null;
+        mCurrentNoteCount = 0;
+        mRunningError = null;
 
         for (final Note note : notes) {
             String title = note.getTitle();
@@ -134,19 +141,19 @@ public class EvernoteSyncHandler {
                             fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
                             null, null, null, Arrays.asList(attachment), 0);
                     TasksService.getInstance(mContext.get()).saveTask(newTodo, true);
-                    if (++currentNoteCount >= totalNoteCount) {
-                        if (null == runningError)
+                    if (++mCurrentNoteCount >= mTotalNoteCount) {
+                        if (null == mRunningError)
                             callback.onSuccess(null);
                         else
-                            callback.onException(runningError);
+                            callback.onException(mRunningError);
                     }
                 }
 
                 public void onException(Exception ex) {
-                    if (null == runningError)
-                        runningError = ex;
-                    if (++currentNoteCount >= totalNoteCount) {
-                        callback.onException(runningError);
+                    if (null == mRunningError)
+                        mRunningError = ex;
+                    if (++mCurrentNoteCount >= mTotalNoteCount) {
+                        callback.onException(mRunningError);
                     }
                 }
             });
@@ -569,6 +576,40 @@ public class EvernoteSyncHandler {
 
         if (!syncedAnything) {
             callback.onSuccess(null);
+        }
+    }
+
+    // converts from the old format to the new (universal) JSON format
+    synchronized protected void convertToJSONIdentifiers() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext.get());
+        mConvertedToJson = settings.getBoolean(KEY_EVERNOTE_JSON_CONVERTED, false);
+        if (!mConvertedToJson) {
+            mConvertedToJson = true;
+            settings.edit().putBoolean(KEY_EVERNOTE_JSON_CONVERTED, true).apply();
+            final List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
+            for (final GsonTask todoWithEvernote : objectsWithEvernote) {
+                final GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
+
+                if (attachment != null) {
+                    final String identifier = attachment.getIdentifier();
+                    if (!EvernoteIntegration.isJSONFormat(identifier)) {
+                        final Note note = EvernoteIntegration.noteFromJson(identifier);
+                        EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+                            @Override
+                            public void onSuccess(String data) {
+                                todoWithEvernote.removeAttachment(attachment);
+                                todoWithEvernote.addAttachment(new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, attachment.getTitle(), true));
+                                TasksService.getInstance(mContext.get()).saveTask(todoWithEvernote, true);
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                Log.e(TAG, "Error: " + e.getMessage(), e);
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 }
