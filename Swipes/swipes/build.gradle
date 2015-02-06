@@ -72,5 +72,5 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.0.4'
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'com.melnykov:floatingactionbutton:1.1.0'
-    compile 'com.afollestad:material-dialogs:0.6.2.1'
+    compile 'com.afollestad:material-dialogs:0.6.2.3'
 }

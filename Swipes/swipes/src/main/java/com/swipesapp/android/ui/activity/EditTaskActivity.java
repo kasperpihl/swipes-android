@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -25,7 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.negusoft.holoaccent.dialog.AccentAlertDialog;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -39,6 +38,7 @@ import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.RepeatOption;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
@@ -565,23 +565,21 @@ public class EditTaskActivity extends BaseActivity {
 
     private void deleteTask() {
         // Display confirmation dialog.
-        new AccentAlertDialog.Builder(this)
-                .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, 1, 1))
-                .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, 1))
-                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(this)
+                .title(getResources().getQuantityString(R.plurals.delete_task_dialog_title, 1, 1))
+                .content(R.string.delete_task_dialog_text)
+                .positiveText(R.string.delete_task_dialog_yes)
+                .negativeText(R.string.delete_task_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(Arrays.asList(mTask));
                         // Close activity.
                         finish();
                     }
                 })
-                .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing.
-                    }
-                })
-                .create()
                 .show();
     }
 
@@ -638,12 +636,17 @@ public class EditTaskActivity extends BaseActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         // Display dialog to save new tag.
-        new AccentAlertDialog.Builder(this)
-                .setTitle(getString(R.string.add_tag_dialog_title))
-                .setPositiveButton(getString(R.string.add_tag_dialog_yes), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(this)
+                .title(R.string.add_tag_dialog_title)
+                .positiveText(R.string.add_tag_dialog_yes)
+                .negativeText(R.string.add_tag_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
+                .customView(customizeAddTagInput(input), false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         String title = input.getText().toString();
+
                         if (!title.isEmpty()) {
                             // Save new tag to database.
                             mTasksService.createTag(title);
@@ -653,9 +656,6 @@ public class EditTaskActivity extends BaseActivity {
                         }
                     }
                 })
-                .setNegativeButton(getString(R.string.add_tag_dialog_cancel), null)
-                .setView(customizeAddTagInput(input))
-                .create()
                 .show();
     }
 
@@ -718,12 +718,15 @@ public class EditTaskActivity extends BaseActivity {
             final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Display dialog to delete tag.
-            new AccentAlertDialog.Builder(mContext.get())
-                    .setTitle(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
-                    .setMessage(getString(R.string.delete_tag_dialog_message))
-                    .setPositiveButton(getString(R.string.delete_tag_dialog_yes), new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+            new SwipesDialog.Builder(mContext.get())
+                    .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
+                    .content(R.string.delete_tag_dialog_message)
+                    .positiveText(R.string.delete_tag_dialog_yes)
+                    .negativeText(R.string.delete_tag_dialog_no)
+                    .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
                             // Delete tag and unassign it from all tasks.
                             mTasksService.deleteTag(selectedTag.getId());
 
@@ -731,8 +734,6 @@ public class EditTaskActivity extends BaseActivity {
                             loadTags();
                         }
                     })
-                    .setNegativeButton(getString(R.string.delete_tag_dialog_cancel), null)
-                    .create()
                     .show();
 
             return true;
@@ -966,12 +967,15 @@ public class EditTaskActivity extends BaseActivity {
         @Override
         public void deleteSubtask(final GsonTask task) {
             // Display dialog to delete subtask.
-            new AccentAlertDialog.Builder(mContext.get())
-                    .setTitle(getString(R.string.delete_subtask_dialog_title))
-                    .setMessage(getString(R.string.delete_subtask_dialog_message))
-                    .setPositiveButton(getString(R.string.delete_subtask_dialog_yes), new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+            new SwipesDialog.Builder(mContext.get())
+                    .title(R.string.delete_subtask_dialog_title)
+                    .content(R.string.delete_subtask_dialog_message)
+                    .positiveText(R.string.delete_subtask_dialog_yes)
+                    .negativeText(R.string.delete_subtask_dialog_no)
+                    .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
                             // Delete subtask.
                             task.setDeleted(true);
                             saveSubtask(task);
@@ -980,8 +984,6 @@ public class EditTaskActivity extends BaseActivity {
                                 hideSubtasks();
                         }
                     })
-                    .setNegativeButton(getString(R.string.delete_subtask_dialog_cancel), null)
-                    .create()
                     .show();
         }
     };

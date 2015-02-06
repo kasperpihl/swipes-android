@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -31,10 +30,10 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -52,6 +51,7 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
@@ -816,19 +816,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void deleteSelectedTasks() {
         // Display confirmation dialog.
-        new AccentAlertDialog.Builder(getActivity())
-                .setTitle(getResources().getQuantityString(R.plurals.delete_task_dialog_title, sSelectedTasks.size(), sSelectedTasks.size()))
-                .setMessage(getResources().getQuantityString(R.plurals.delete_task_dialog_text, sSelectedTasks.size()))
-                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(getActivity())
+                .title(getResources().getQuantityString(R.plurals.delete_task_dialog_title, sSelectedTasks.size(), sSelectedTasks.size()))
+                .content(R.string.delete_task_dialog_text)
+                .positiveText(R.string.delete_task_dialog_yes)
+                .negativeText(R.string.delete_task_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(sSelectedTasks);
                         refreshTaskList(false);
                     }
                 })
-                .setNegativeButton(getString(R.string.dialog_no), null)
-                .create()
                 .show();
     }
 
@@ -855,12 +856,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @OnClick(R.id.button_clear_old)
     protected void clearOldTasks() {
         // Display confirmation dialog.
-        new AccentAlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.clear_old_dialog_title))
-                .setMessage(getString(R.string.clear_old_dialog_text))
-                .setPositiveButton(getString(R.string.clear_old_dialog_yes), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(getActivity())
+                .title(R.string.clear_old_dialog_title)
+                .content(R.string.clear_old_dialog_text)
+                .positiveText(R.string.clear_old_dialog_yes)
+                .negativeText(R.string.clear_old_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         // List of old tasks to delete.
                         List<GsonTask> oldTasks = new ArrayList<GsonTask>();
 
@@ -880,8 +884,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mHeaderView.setVisibility(View.GONE);
                     }
                 })
-                .setNegativeButton(getString(R.string.clear_old_dialog_no), null)
-                .create()
                 .show();
     }
 
@@ -963,12 +965,17 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         // Display dialog to save new tag.
-        new AccentAlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.add_tag_dialog_title))
-                .setPositiveButton(getString(R.string.add_tag_dialog_yes), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(getActivity())
+                .title(R.string.add_tag_dialog_title)
+                .positiveText(R.string.add_tag_dialog_yes)
+                .negativeText(R.string.add_tag_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
+                .customView(customizeAddTagInput(input), false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         String title = input.getText().toString();
+
                         if (!title.isEmpty()) {
                             // Save new tag to database.
                             mTasksService.createTag(title);
@@ -978,9 +985,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         }
                     }
                 })
-                .setNegativeButton(getString(R.string.add_tag_dialog_cancel), null)
-                .setView(customizeAddTagInput(input))
-                .create()
                 .show();
     }
 
@@ -1043,12 +1047,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Display dialog to delete tag.
-            new AccentAlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
-                    .setMessage(getString(R.string.delete_tag_dialog_message))
-                    .setPositiveButton(getString(R.string.delete_tag_dialog_yes), new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+            new SwipesDialog.Builder(getActivity())
+                    .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
+                    .content(R.string.delete_tag_dialog_message)
+                    .positiveText(R.string.delete_tag_dialog_yes)
+                    .negativeText(R.string.delete_tag_dialog_no)
+                    .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
                             // Delete tag and unassign it from all tasks.
                             mTasksService.deleteTag(selectedTag.getId());
 
@@ -1056,8 +1063,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             loadTags();
                         }
                     })
-                    .setNegativeButton(getString(R.string.delete_tag_dialog_cancel), null)
-                    .create()
                     .show();
 
             return true;

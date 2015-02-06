@@ -1,16 +1,16 @@
 package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.client.android.EvernoteSession;
-import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.ThemeUtils;
 
 public class IntegrationsActivity extends BaseActivity {
@@ -61,19 +61,22 @@ public class IntegrationsActivity extends BaseActivity {
             evernoteUnlink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     // Show confirmation dialog.
-                    new AccentAlertDialog.Builder(getActivity())
-                            .setTitle(getString(R.string.evernote_unlink_dialog_title))
-                            .setMessage(R.string.evernote_unlink_dialog_message)
-                            .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                    new SwipesDialog.Builder(getActivity())
+                            .title(R.string.evernote_unlink_dialog_title)
+                            .content(R.string.evernote_unlink_dialog_message)
+                            .positiveText(R.string.evernote_unlink_dialog_yes)
+                            .negativeText(R.string.evernote_unlink_dialog_no)
+                            .actionsColorRes(R.color.neutral_accent)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
                                     // Unlink Evernote account.
                                     EvernoteIntegration.getInstance().logoutInContext(getActivity());
+
                                     // Reload activity.
                                     getActivity().recreate();
                                 }
                             })
-                            .setNegativeButton(getString(R.string.dialog_no), null)
-                            .create()
                             .show();
 
                     return true;

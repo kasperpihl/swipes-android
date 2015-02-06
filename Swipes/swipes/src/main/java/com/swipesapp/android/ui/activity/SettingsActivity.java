@@ -2,7 +2,6 @@ package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -12,7 +11,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import com.negusoft.holoaccent.dialog.AccentAlertDialog;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
@@ -20,6 +19,7 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -186,12 +186,15 @@ public class SettingsActivity extends BaseActivity {
 
         private void performLogout() {
             // Display confirmation dialog.
-            new AccentAlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.logout_dialog_title))
-                    .setMessage(getString(R.string.logout_dialog_message))
-                    .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+            new SwipesDialog.Builder(getActivity())
+                    .title(R.string.logout_dialog_title)
+                    .content(R.string.logout_dialog_message)
+                    .positiveText(R.string.logout_dialog_yes)
+                    .negativeText(R.string.logout_dialog_no)
+                    .actionsColorRes(R.color.neutral_accent)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
                             // Logout Parse user.
                             ParseUser.logOut();
 
@@ -203,8 +206,6 @@ public class SettingsActivity extends BaseActivity {
                             startActivityForResult(intent, Constants.WELCOME_REQUEST_CODE);
                         }
                     })
-                    .setNegativeButton(getString(R.string.dialog_no), null)
-                    .create()
                     .show();
         }
 
@@ -222,28 +223,30 @@ public class SettingsActivity extends BaseActivity {
 
         private void askToKeepData() {
             // Display confirmation dialog.
-            new AccentAlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.keep_data_dialog_title))
-                    .setMessage(getString(R.string.keep_data_dialog_message))
-                    .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+            new SwipesDialog.Builder(getActivity())
+                    .title(R.string.keep_data_dialog_title)
+                    .content(R.string.keep_data_dialog_message)
+                    .positiveText(R.string.keep_data_dialog_yes)
+                    .negativeText(R.string.keep_data_dialog_no)
+                    .actionsColorRes(R.color.neutral_accent)
+                    .cancelable(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
                             // Save data from test period for sync.
                             saveDataForSync();
 
                             finishLogin();
                         }
-                    })
-                    .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
                             // Clear data from test period.
                             TasksService.getInstance(getActivity()).clearAllData();
 
                             finishLogin();
                         }
                     })
-                    .create()
                     .show();
         }
 

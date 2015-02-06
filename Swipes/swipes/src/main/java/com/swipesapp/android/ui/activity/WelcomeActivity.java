@@ -1,19 +1,19 @@
 package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.negusoft.holoaccent.dialog.AccentAlertDialog;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 
@@ -78,28 +78,30 @@ public class WelcomeActivity extends ActionBarActivity {
 
     private void askToKeepData() {
         // Display confirmation dialog.
-        new AccentAlertDialog.Builder(this)
-                .setTitle(getString(R.string.keep_data_dialog_title))
-                .setMessage(getString(R.string.keep_data_dialog_message))
-                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
+        new SwipesDialog.Builder(this)
+                .title(R.string.keep_data_dialog_title)
+                .content(R.string.keep_data_dialog_message)
+                .positiveText(R.string.keep_data_dialog_yes)
+                .negativeText(R.string.keep_data_dialog_no)
+                .actionsColorRes(R.color.neutral_accent)
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         // Save data from test period for sync.
                         saveDataForSync();
 
                         showTasks();
                     }
-                })
-                .setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
                         // Clear data from test period.
                         mTasksService.clearAllData();
 
                         showTasks();
                     }
                 })
-                .create()
                 .show();
     }
 

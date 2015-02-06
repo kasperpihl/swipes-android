@@ -34,7 +34,6 @@ public class FlatButton extends Button {
 
         int textColor = array.getColor(R.styleable.FlatButton_textColor, Color.BLACK);
         int background = ThemeUtils.isLightTheme(context) ? R.drawable.flat_button_light : R.drawable.flat_button_dark;
-        int padding = getResources().getDimensionPixelSize(R.dimen.flat_button_padding);
         float textSize = context.getResources().getDimension(R.dimen.flat_button_text_size);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -42,7 +41,6 @@ public class FlatButton extends Button {
         }
 
         setBackgroundResource(background);
-        setPadding(padding, padding, padding, padding);
         setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         setTypeface(null, Typeface.BOLD);
         setTextColor(textColor);

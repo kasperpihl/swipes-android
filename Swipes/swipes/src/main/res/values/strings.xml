@@ -14,7 +14,7 @@
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>
     <string name="welcome_task_three">Tap to show more actions</string>
-    <string name="welcome_login_button">LOGIN OR SIGN UP</string>
+    <string name="welcome_login_button">LOG IN OR SIGN UP</string>
     <string name="welcome_try_button"><u>Keep trying Swipes</u></string>
     <string name="welcome_first_branding">Focus. Swipe. Achieve.</string>
     <string name="welcome_second_branding">Task list made for High Achievers</string>
@@ -76,8 +76,8 @@
     <string name="day_start">Day start</string>
     <string name="weekend_day_start">Weekend day start</string>
     <string name="evening_start">Evening start</string>
-    <string name="settings_login">Login</string>
-    <string name="settings_logout">Logout</string>
+    <string name="settings_login">Log in or create account</string>
+    <string name="settings_logout">Log out</string>
     <string name="settings_integrations">Integrations</string>
     <string name="settings_sync">Synchronize</string>
     <string name="settings_sync_summary">Last sync: %s</string>
@@ -102,8 +102,10 @@
     <string name="evernote_how_it_works">HOW IT WORKS</string>
     <string name="evernote_how_it_works_detail">Assign the \"swipes\" tag to a note in Evernote. We\'ll add it as a task in Swipes and sync all its checkmarks.</string>
     <string name="evernote_get_started">GET STARTED</string>
-    <string name="evernote_unlink_dialog_title">Unlink Evernote</string>
-    <string name="evernote_unlink_dialog_message">All tasks will be unlinked, are you sure?</string>
+    <string name="evernote_unlink_dialog_title">Unlink Evernote?</string>
+    <string name="evernote_unlink_dialog_message">All tasks will be unlinked.</string>
+    <string name="evernote_unlink_dialog_yes">Unlink</string>
+    <string name="evernote_unlink_dialog_no">Cancel</string>
     <string name="evernote_untitled_note">Untitled note</string>
 
     <!-- Attachments -->
@@ -136,18 +138,25 @@
     <!-- Actions -->
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="delete_task_dialog_text">This cannot be undone.</string>
+    <string name="delete_task_dialog_yes">Delete</string>
+    <string name="delete_task_dialog_no">Cancel</string>
     <string name="add_task_hint">Add a new task</string>
     <string name="show_old">SHOW OLD TASKS</string>
     <string name="clear_old">CLEAR OLD TASKS</string>
-    <string name="clear_old_dialog_title">Are you sure?</string>
-    <string name="clear_old_dialog_text">Deleting old completed tasks can\'t be undone</string>
-    <string name="clear_old_dialog_yes">Delete them</string>
+    <string name="clear_old_dialog_title">Delete old tasks?</string>
+    <string name="clear_old_dialog_text">This cannot be undone.</string>
+    <string name="clear_old_dialog_yes">Delete</string>
     <string name="clear_old_dialog_no">Cancel</string>
     <string name="search_hint">Search</string>
-    <string name="logout_dialog_title">Log out</string>
-    <string name="logout_dialog_message">Are you sure you want to log out of your account?</string>
-    <string name="keep_data_dialog_title">Keep data</string>
-    <string name="keep_data_dialog_message">Do you want to keep the data from the test period?</string>
+    <string name="logout_dialog_title">Log out of your account?</string>
+    <string name="logout_dialog_message">Swipes will stop syncing your data with this device.</string>
+    <string name="logout_dialog_yes">Log out</string>
+    <string name="logout_dialog_no">Cancel</string>
+    <string name="keep_data_dialog_title">Keep data from test period?</string>
+    <string name="keep_data_dialog_message">Swipes will retain your data from the test period and sync it to the cloud.</string>
+    <string name="keep_data_dialog_yes">Keep data</string>
+    <string name="keep_data_dialog_no">Clear data</string>
 
     <!-- Scheduler -->
     <string name="date_today">today,&#160;</string>
@@ -213,10 +222,10 @@
 
     <!-- Action steps -->
     <string name="edit_task_add_subtask_hint">Add action step</string>
-    <string name="delete_subtask_dialog_title">Delete action step</string>
-    <string name="delete_subtask_dialog_message">This can\'t be undone</string>
-    <string name="delete_subtask_dialog_yes">Yes</string>
-    <string name="delete_subtask_dialog_cancel">No</string>
+    <string name="delete_subtask_dialog_title">Delete action step?</string>
+    <string name="delete_subtask_dialog_message">This cannot be undone.</string>
+    <string name="delete_subtask_dialog_yes">Delete</string>
+    <string name="delete_subtask_dialog_no">Cancel</string>
 
     <!-- Repeating -->
     <string name="repeat_option_never">never</string>
@@ -234,21 +243,17 @@
     <string name="add_tag_dialog_title">Add new tag</string>
     <string name="add_tag_dialog_hint">Tag title</string>
     <string name="add_tag_dialog_yes">Save</string>
-    <string name="add_tag_dialog_cancel">Cancel</string>
-    <string name="delete_tag_dialog_title">Delete tag: %s</string>
-    <string name="delete_tag_dialog_message">This can\'t be undone</string>
-    <string name="delete_tag_dialog_yes">Yes</string>
-    <string name="delete_tag_dialog_cancel">No</string>
+    <string name="add_tag_dialog_no">Cancel</string>
+    <string name="delete_tag_dialog_title">Delete tag \"%s\"?</string>
+    <string name="delete_tag_dialog_message">This cannot be undone.</string>
+    <string name="delete_tag_dialog_yes">Delete</string>
+    <string name="delete_tag_dialog_no">Cancel</string>
     <string name="empty_tags_hint">No tags assigned</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
-        <item quantity="one">Delete task</item>
-        <item quantity="other">Delete %d tasks</item>
-    </plurals>
-    <plurals name="delete_task_dialog_text">
-        <item quantity="one">Are you sure you want to permanently delete this task?</item>
-        <item quantity="other">Are you sure you want to permanently delete these tasks?</item>
+        <item quantity="one">Delete task?</item>
+        <item quantity="other">Delete %d tasks?</item>
     </plurals>
     <plurals name="notification_title">
         <item quantity="one">%s</item>
