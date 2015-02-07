@@ -43,9 +43,6 @@ public class SwipesDialog extends MaterialDialog {
 
         getWindow().getAttributes().dimAmount = lightTheme ? 0.2f : 0.4f;
         getWindow().setWindowAnimations(R.style.Dialog_Animation);
-
-        int background = lightTheme ? R.drawable.dialog_light : R.drawable.dialog_dark;
-        getWindow().setBackgroundDrawableResource(background);
     }
 
     /**
@@ -61,6 +58,7 @@ public class SwipesDialog extends MaterialDialog {
 
             boolean lightTheme = ThemeUtils.isLightTheme(context);
             int selector = lightTheme ? R.drawable.flat_button_light : R.drawable.flat_button_dark;
+            int background = ThemeUtils.getNeutralBackgroundColor(context);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 selector = lightTheme ? R.drawable.flat_button_ripple_light : R.drawable.flat_button_ripple_dark;
@@ -68,6 +66,7 @@ public class SwipesDialog extends MaterialDialog {
 
             theme(lightTheme ? Theme.LIGHT : Theme.DARK);
             btnSelector(selector);
+            backgroundColor(background);
         }
 
         @Override
