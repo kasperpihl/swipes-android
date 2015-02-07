@@ -63,19 +63,12 @@
     <string name="vibration">Vibration</string>
     <string name="location">Location</string>
     <string name="theme">Theme</string>
-    <string name="settings_theme_chooser_dialog_title">Choose a theme</string>
+    <string name="settings_theme_dialog_title">Theme</string>
     <string name="settings_plus">Plus</string>
     <string name="policies">Policies</string>
     <string name="snoozes">Snoozes</string>
-    <string name="weekend_start">Weekend start</string>
-    <string name="settings_snoozes_weekend_start_dialog_title">Weekend start</string>
-    <string name="settings_snoozes_week_start_dialog_title">Week start</string>
-    <string name="week_start">Week start</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
-    <string name="day_start">Day start</string>
-    <string name="weekend_day_start">Weekend day start</string>
-    <string name="evening_start">Evening start</string>
     <string name="settings_login">Log in or create account</string>
     <string name="settings_logout">Log out</string>
     <string name="settings_integrations">Integrations</string>
@@ -83,6 +76,27 @@
     <string name="settings_sync_summary">Last sync: %s</string>
     <string name="switch_on">YES</string>
     <string name="switch_off">NO</string>
+    <string name="preference_yes">Choose</string>
+    <string name="preference_no">Cancel</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- Snooze settings -->
+    <string name="day_start">Day start</string>
+    <string name="evening_start">Evening start</string>
+    <string name="weekend_day_start">Weekend day start</string>
+    <string name="week_start">Week start</string>
+    <string name="weekend_start">Weekend start</string>
+    <string name="settings_weekend_start_dialog_title">Weekend start</string>
+    <string name="settings_week_start_dialog_title">Week start</string>
+    <string name="settings_later_today">Later today</string>
+    <string name="settings_later_today_dialog_title">Later today</string>
+    <string name="later_today_1h">+1 hour</string>
+    <string name="later_today_2h">+2 hours</string>
+    <string name="later_today_3h">+3 hours</string>
+    <string name="later_today_4h">+4 hours</string>
+    <string name="later_today_5h">+5 hours</string>
+    <string name="later_today_6h">+6 hours</string>
 
     <!-- Evernote -->
     <string name="evernote_link_account">Evernote</string>

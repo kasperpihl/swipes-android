@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="theme_list">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
     </string-array>
 
     <string-array name="theme_values_list">
@@ -11,13 +11,13 @@
     </string-array>
 
     <string-array name="days_of_week_list">
-        <item>Sunday</item>
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Saturday</item>
+        <item>@string/sunday_full</item>
+        <item>@string/monday_full</item>
+        <item>@string/tuesday_full</item>
+        <item>@string/wednesday_full</item>
+        <item>@string/thursday_full</item>
+        <item>@string/friday_full</item>
+        <item>@string/saturday_full</item>
     </string-array>
 
     <string-array name="days_of_week_values_list">
@@ -28,5 +28,23 @@
         <item>thursday</item>
         <item>friday</item>
         <item>saturday</item>
+    </string-array>
+
+    <string-array name="later_today_list">
+        <item>@string/later_today_1h</item>
+        <item>@string/later_today_2h</item>
+        <item>@string/later_today_3h</item>
+        <item>@string/later_today_4h</item>
+        <item>@string/later_today_5h</item>
+        <item>@string/later_today_6h</item>
+    </string-array>
+
+    <string-array name="later_today_values_list">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
     </string-array>
 </resources>

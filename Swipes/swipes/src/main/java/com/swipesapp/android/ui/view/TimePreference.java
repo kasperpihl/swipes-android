@@ -1,18 +1,20 @@
 package com.swipesapp.android.ui.view;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 
-import com.negusoft.holoaccent.dialog.AccentTimePickerDialog;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
+import com.swipesapp.android.R;
+import com.swipesapp.android.util.ThemeUtils;
 
-/**
- * Created by douglasdrumond on 4/27/14.
- */
 public class TimePreference extends Preference {
+
+    private static final String TIME_PICKER_TAG = "SETTINGS_TIME_PICKER";
+
     private int mLastHour;
     private int mLastMinute;
 
@@ -28,34 +30,41 @@ public class TimePreference extends Preference {
         return Integer.parseInt(pieces[1]);
     }
 
-    public TimePreference(Context context, AttributeSet attrs) {
+    public TimePreference(final Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
-                        mLastHour = timePicker.getCurrentHour();
-                        mLastMinute = timePicker.getCurrentMinute();
+        if (context instanceof ActionBarActivity) {
+            setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ActionBarActivity activity = (ActionBarActivity) context;
 
-                        String time = String.valueOf(mLastHour) + ":" + String.valueOf(mLastMinute);
+                    RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(RadialTimePickerDialog dialog, int hourOfDay, int minute) {
+                            mLastHour = hourOfDay;
+                            mLastMinute = minute;
 
-                        if (callChangeListener(time)) {
-                            persistString(time);
+                            String time = String.valueOf(mLastHour) + ":" + String.valueOf(mLastMinute);
+
+                            if (callChangeListener(time)) {
+                                persistString(time);
+                            }
                         }
-                    }
-                };
+                    };
 
-                AccentTimePickerDialog dialog = new AccentTimePickerDialog(getContext(), listener, mLastHour, mLastMinute,
-                        DateFormat.is24HourFormat(getContext()));
-                dialog.setTitle(getTitle());
-                dialog.show();
+                    RadialTimePickerDialog dialog = new RadialTimePickerDialog();
+                    dialog.setStartTime(mLastHour, mLastMinute);
+                    dialog.setOnTimeSetListener(timeSetListener);
+                    dialog.setDoneText(getContext().getString(R.string.preference_yes));
+                    dialog.setThemeDark(!ThemeUtils.isLightTheme(getContext()));
+                    dialog.set24HourMode(DateFormat.is24HourFormat(getContext()));
+                    dialog.show(activity.getSupportFragmentManager(), TIME_PICKER_TAG);
 
-                return true;
-            }
-        });
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
@@ -80,4 +89,5 @@ public class TimePreference extends Preference {
         mLastHour = getHour(time);
         mLastMinute = getMinute(time);
     }
+
 }
