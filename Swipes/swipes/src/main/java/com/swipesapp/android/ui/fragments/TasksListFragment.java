@@ -751,22 +751,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             TextView nextTaskText = (TextView) mEmptyView.findViewById(R.id.text_next_task);
             TextView allDoneMessage = (TextView) mEmptyView.findViewById(R.id.text_all_done_message);
 
-            if (sNextTask != null) {
+            if (sNextTask != null && sNextTask.getLocalSchedule() != null) {
                 Date nextSchedule = sNextTask.getLocalSchedule();
 
-                if (nextSchedule != null) {
-                    // Set text according to the next scheduled task.
-                    if (DateUtils.isToday(nextSchedule)) {
-                        allDoneText.setText(getString(R.string.all_done_now));
-                        String nextDate = DateUtils.getTimeAsString(getActivity(), nextSchedule);
-                        nextTaskText.setText(getString(R.string.all_done_now_next, nextDate));
-                        allDoneMessage.setText(getString(R.string.all_done_now_message));
-                    } else {
-                        allDoneText.setText(getString(R.string.all_done_today));
-                        String nextDate = DateUtils.formatToRecent(nextSchedule, getActivity(), false);
-                        nextTaskText.setText(getString(R.string.all_done_today_next, nextDate));
-                        allDoneMessage.setText(getString(R.string.all_done_today_message));
-                    }
+                // Set text according to the next scheduled task.
+                if (DateUtils.isToday(nextSchedule)) {
+                    allDoneText.setText(getString(R.string.all_done_now));
+                    String nextDate = DateUtils.getTimeAsString(getActivity(), nextSchedule);
+                    nextTaskText.setText(getString(R.string.all_done_now_next, nextDate));
+                    allDoneMessage.setText(getString(R.string.all_done_now_message));
+                } else {
+                    allDoneText.setText(getString(R.string.all_done_today));
+                    String nextDate = DateUtils.formatToRecent(nextSchedule, getActivity(), false);
+                    nextTaskText.setText(getString(R.string.all_done_today_next, nextDate));
+                    allDoneMessage.setText(getString(R.string.all_done_today_message));
                 }
             } else {
                 // Show default message.
