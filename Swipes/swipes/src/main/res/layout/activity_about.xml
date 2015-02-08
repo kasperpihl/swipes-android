@@ -88,13 +88,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:text="@string/about_oss"
-                    android:textSize="@dimen/text_size_medium" />
+                    android:textSize="@dimen/text_size_medium"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/about_oss_licenses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/about_oss_licenses" />
+                    android:text="@string/about_oss_licenses"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 

@@ -1,6 +1,5 @@
 package com.swipesapp.android.ui.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,11 +16,12 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
+import com.swipesapp.android.ui.view.TimePreference;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -95,11 +95,30 @@ public class SnoozeActivity extends FragmentActivity {
     private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
     private static final String DATE_PICKER_TAG = "SNOOZE_DATE_PICKER";
 
+    private static final String PREF_DAY_START = "settings_day_start";
+    private static final String PREF_EVENING_START = "settings_evening_start";
+    private static final String PREF_WEEKEND_DAY_START = "settings_weekend_day_start";
+    private static final String PREF_WEEK_START = "settings_snoozes_week_start_dow";
+    private static final String PREF_WEEKEND_START = "settings_snoozes_weekend_start_dow";
+    private static final String PREF_LATER_TODAY = "settings_snoozes_later_today_value";
+
     private TasksService mTasksService;
 
     private GsonTask mTask;
 
-    private WeakReference<Context> mContext;
+    private int mDayStartHour;
+    private int mDayStartMinute;
+
+    private int mEveningStartHour;
+    private int mEveningStartMinute;
+
+    private int mWeekendDayStartHour;
+    private int mWeekendDayStartMinute;
+
+    private int mWeekStartDay;
+    private int mWeekendStartDay;
+
+    private int mLaterTodayDelay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,13 +129,13 @@ public class SnoozeActivity extends FragmentActivity {
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        mContext = new WeakReference<Context>(this);
-
         mTasksService = TasksService.getInstance(this);
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
         mTask = mTasksService.loadTask(id);
+
+        loadPreferences();
 
         customizeViews();
     }
@@ -126,6 +145,29 @@ public class SnoozeActivity extends FragmentActivity {
         super.finish();
 
         overridePendingTransition(0, 0);
+    }
+
+    private void loadPreferences() {
+        String prefDayStart = PreferenceUtils.readStringPreference(PREF_DAY_START, this);
+        mDayStartHour = TimePreference.getHour(prefDayStart);
+        mDayStartMinute = TimePreference.getMinute(prefDayStart);
+
+        String prefEveningStart = PreferenceUtils.readStringPreference(PREF_EVENING_START, this);
+        mEveningStartHour = TimePreference.getHour(prefEveningStart);
+        mEveningStartMinute = TimePreference.getMinute(prefEveningStart);
+
+        String prefWeekendDayStart = PreferenceUtils.readStringPreference(PREF_WEEKEND_DAY_START, this);
+        mWeekendDayStartHour = TimePreference.getHour(prefWeekendDayStart);
+        mWeekendDayStartMinute = TimePreference.getMinute(prefWeekendDayStart);
+
+        String prefWeekStart = PreferenceUtils.readStringPreference(PREF_WEEK_START, this);
+        mWeekStartDay = weekdayFromPrefValue(prefWeekStart);
+
+        String prefWeekendStart = PreferenceUtils.readStringPreference(PREF_WEEKEND_START, this);
+        mWeekendStartDay = weekdayFromPrefValue(prefWeekendStart);
+
+        String prefLaterToday = PreferenceUtils.readStringPreference(PREF_LATER_TODAY, this);
+        mLaterTodayDelay = Integer.valueOf(prefLaterToday);
     }
 
     private void customizeViews() {
@@ -214,7 +256,7 @@ public class SnoozeActivity extends FragmentActivity {
     protected void laterToday() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
         int minutes = snooze.get(Calendar.MINUTE);
         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
         snooze.set(Calendar.MINUTE, roundMinutes(minutes));
@@ -228,7 +270,7 @@ public class SnoozeActivity extends FragmentActivity {
     protected boolean laterTodayAdjust() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
         int currentMinute = snooze.get(Calendar.MINUTE);
 
         // Show time picker.
@@ -241,8 +283,8 @@ public class SnoozeActivity extends FragmentActivity {
     protected void thisEvening() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        snooze.set(Calendar.HOUR_OF_DAY, 19);
-        snooze.set(Calendar.MINUTE, 0);
+        snooze.set(Calendar.HOUR_OF_DAY, mEveningStartHour);
+        snooze.set(Calendar.MINUTE, mEveningStartMinute);
 
         applyNextDayTreatment(snooze);
 
@@ -255,7 +297,7 @@ public class SnoozeActivity extends FragmentActivity {
         Calendar snooze = Calendar.getInstance();
 
         // Show time picker.
-        adjustSnoozeTime(snooze, 19, 0);
+        adjustSnoozeTime(snooze, mEveningStartHour, mEveningStartMinute);
 
         return true;
     }
@@ -265,8 +307,8 @@ public class SnoozeActivity extends FragmentActivity {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
-        snooze.set(Calendar.HOUR_OF_DAY, 9);
-        snooze.set(Calendar.MINUTE, 0);
+        snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
+        snooze.set(Calendar.MINUTE, mDayStartMinute);
 
         performChanges(snooze.getTime());
     }
@@ -278,7 +320,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
 
         // Show time picker.
-        adjustSnoozeTime(snooze, 9, 0);
+        adjustSnoozeTime(snooze, mDayStartHour, mDayStartMinute);
 
         return true;
     }
@@ -288,8 +330,8 @@ public class SnoozeActivity extends FragmentActivity {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
-        snooze.set(Calendar.HOUR_OF_DAY, 9);
-        snooze.set(Calendar.MINUTE, 0);
+        snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
+        snooze.set(Calendar.MINUTE, mDayStartMinute);
 
         performChanges(snooze.getTime());
     }
@@ -301,7 +343,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
 
         // Show time picker.
-        adjustSnoozeTime(snooze, 9, 0);
+        adjustSnoozeTime(snooze, mDayStartHour, mDayStartMinute);
 
         return true;
     }
@@ -310,9 +352,9 @@ public class SnoozeActivity extends FragmentActivity {
     protected void thisWeekend() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        snooze.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        snooze.set(Calendar.HOUR_OF_DAY, 9);
-        snooze.set(Calendar.MINUTE, 0);
+        snooze.set(Calendar.DAY_OF_WEEK, mWeekendStartDay);
+        snooze.set(Calendar.HOUR_OF_DAY, mWeekendDayStartHour);
+        snooze.set(Calendar.MINUTE, mWeekendDayStartMinute);
 
         applyNextWeekTreatment(snooze);
 
@@ -323,12 +365,12 @@ public class SnoozeActivity extends FragmentActivity {
     protected boolean thisWeekendAdjust() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        snooze.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        snooze.set(Calendar.DAY_OF_WEEK, mWeekendStartDay);
 
         applyNextWeekTreatment(snooze);
 
         // Show time picker.
-        adjustSnoozeTime(snooze, 9, 0);
+        adjustSnoozeTime(snooze, mWeekendDayStartHour, mWeekendDayStartMinute);
 
         return true;
     }
@@ -337,9 +379,9 @@ public class SnoozeActivity extends FragmentActivity {
     protected void nextWeek() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        snooze.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        snooze.set(Calendar.HOUR_OF_DAY, 9);
-        snooze.set(Calendar.MINUTE, 0);
+        snooze.set(Calendar.DAY_OF_WEEK, mWeekStartDay);
+        snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
+        snooze.set(Calendar.MINUTE, mDayStartMinute);
 
         applyNextWeekTreatment(snooze);
 
@@ -350,12 +392,12 @@ public class SnoozeActivity extends FragmentActivity {
     protected boolean nextWeekAdjust() {
         // Set snooze time.
         Calendar snooze = Calendar.getInstance();
-        snooze.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        snooze.set(Calendar.DAY_OF_WEEK, mWeekStartDay);
 
         applyNextWeekTreatment(snooze);
 
         // Show time picker.
-        adjustSnoozeTime(snooze, 9, 0);
+        adjustSnoozeTime(snooze, mDayStartHour, mDayStartMinute);
 
         return true;
     }
@@ -530,6 +572,27 @@ public class SnoozeActivity extends FragmentActivity {
             minutes += add;
         }
         return minutes;
+    }
+
+    private int weekdayFromPrefValue(String prefValue) {
+        switch (prefValue.toLowerCase()) {
+            case "sunday":
+                return Calendar.SUNDAY;
+            case "monday":
+                return Calendar.MONDAY;
+            case "tuesday":
+                return Calendar.TUESDAY;
+            case "wednesday":
+                return Calendar.WEDNESDAY;
+            case "thursday":
+                return Calendar.THURSDAY;
+            case "friday":
+                return Calendar.FRIDAY;
+            case "saturday":
+                return Calendar.SATURDAY;
+            default:
+                return 0;
+        }
     }
 
 }

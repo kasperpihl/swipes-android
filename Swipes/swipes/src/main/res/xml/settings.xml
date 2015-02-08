@@ -28,28 +28,28 @@
         android:title="@string/group_preferences">
 
         <com.swipesapp.android.ui.view.SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="@bool/default_enable_notifications"
             android:key="settings_enable_notifications"
             android:switchTextOff="@string/switch_off"
             android:switchTextOn="@string/switch_on"
             android:title="@string/notifications" />
 
         <com.swipesapp.android.ui.view.SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="@bool/default_enable_vibration"
             android:key="settings_enable_vibration"
             android:switchTextOff="@string/switch_off"
             android:switchTextOn="@string/switch_on"
             android:title="@string/vibration" />
 
         <com.swipesapp.android.ui.view.SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="@bool/default_enable_location"
             android:key="settings_enable_location"
             android:switchTextOff="@string/switch_off"
             android:switchTextOn="@string/switch_on"
             android:title="@string/location" />
 
         <com.swipesapp.android.ui.view.SwipesListPreference
-            android:defaultValue="light"
+            android:defaultValue="@string/default_theme_setting"
             android:dialogTitle="@string/settings_theme_dialog_title"
             android:entries="@array/theme_list"
             android:entryValues="@array/theme_values_list"

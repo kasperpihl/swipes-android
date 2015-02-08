@@ -213,6 +213,8 @@ public class SettingsActivity extends BaseActivity {
             // Reset user preferences.
             PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().commit();
             PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
+            PreferenceManager.setDefaultValues(getActivity(), R.xml.snooze_settings, true);
+            PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
 
             // Set welcome screen as not shown.
             PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_SCREEN, "", getActivity());

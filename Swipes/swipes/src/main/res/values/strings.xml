@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- API keys -->
-    <string name="application_id">nf9lMphPOh3jZivxqQaMAg6YLtzlfvRjExUEKST3</string>
-    <string name="client_key">SrkvKzFm51nbKZ3hzuwnFxPPz24I9erkjvkf0XzS</string>
-    <string name="facebook_app_id">531435630236702</string>
-
-    <!-- Test API keys -->
-    <string name="test_application_id">0qD3LLZIOwLOPRwbwLia9GJXTEUnEsSlBCufqDvr</string>
-    <string name="test_client_key">zkaCbiWV0ieyDq5pinRuzclnaeLZG9G6GFJkmXMB</string>
-
     <!-- Welcome -->
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>
@@ -112,9 +103,12 @@
     <string name="evernote_learn_more_title_left">EVERNOTE</string>
     <string name="evernote_learn_more_title_right">INTEGRATION</string>
     <string name="evernote_what_it_is">WHAT IT IS</string>
-    <string name="evernote_what_it_is_description">This integration lets you sync notes with checkmarks from Evernote into Swipes.</string>
+    <string name="evernote_what_it_is_description">
+        This integration lets you sync notes with checkmarks from Evernote into Swipes.</string>
     <string name="evernote_how_it_works">HOW IT WORKS</string>
-    <string name="evernote_how_it_works_detail">Assign the \"swipes\" tag to a note in Evernote. We\'ll add it as a task in Swipes and sync all its checkmarks.</string>
+    <string name="evernote_how_it_works_detail">
+        Assign the \"swipes\" tag to a note in Evernote.
+        We\'ll add it as a task in Swipes and sync all its checkmarks.</string>
     <string name="evernote_get_started">GET STARTED</string>
     <string name="evernote_unlink_dialog_title">Unlink Evernote?</string>
     <string name="evernote_unlink_dialog_message">All tasks will be unlinked.</string>
@@ -139,13 +133,27 @@
     <!-- Invite -->
     <string name="settings_invite">Invite friends to Swipes</string>
     <string name="invite_subject">Check out this new cool app</string>
-    <string name="invite_body">Hey,\n\nI\'m trying this new app - Swipes, for organizing my day. \n\nIt makes it easy to plan the day, snooze tasks for later or complete them with just a swipe. It\'s in BETA test now but I can invite you to join in. I thought it\'s really something you\'d like.\n\nCheck it out here:\n\n1. Press this link - http://plus.google.com/communities/110833959414105515907 and join the community of Google Play testers with your Google+ account.\n\n2. Once you\'ve joined, click this link - http://play.google.com/apps/testing/com.swipesapp.android and join the Swipes Test Group.\n\n3. Finally, press this link - http://play.google.com/store/apps/details?id=com.swipesapp.android and download the Swipes BETA.\n\nEnjoy!</string>
+    <string name="invite_body">
+        Hey,\n\n
+        I\'m trying this new app - Swipes, for organizing my day. \n\n
+        It makes it easy to plan the day, snooze tasks for later or complete them with just a swipe.
+        It\'s in BETA test now but I can invite you to join in. I thought it\'s really something you\'d like.\n\n
+        Check it out here:\n\n
+        1. Press this link - http://plus.google.com/communities/110833959414105515907 and join the community of
+        Google Play testers with your Google+ account.\n\n
+        2. Once you\'ve joined,
+        click this link - http://play.google.com/apps/testing/com.swipesapp.android and join the Swipes Test Group.\n\n
+        3. Finally, press this link - http://play.google.com/store/apps/details?id=com.swipesapp.android
+        and download the Swipes BETA.\n\n
+        Enjoy!</string>
     <string name="invite_chooser_title">Invite with:</string>
 
     <!-- Share -->
     <string name="share_message_subject">Tasks to complete</string>
     <string name="share_message_header">Tasks:\n\n</string>
-    <string name="share_message_footer">Sent with my Swipes – Task list made for High Achievers\n\nFree iPhone and Android app - http://swipesapp.com</string>
+    <string name="share_message_footer">
+        Sent with my Swipes – Task list made for High Achievers\n\n
+        Free iPhone and Android app - http://swipesapp.com</string>
     <string name="share_message_circle">◯&#160;</string>
     <string name="share_chooser_title">Share with:</string>
 
@@ -164,11 +172,11 @@
     <string name="clear_old_dialog_no">Cancel</string>
     <string name="search_hint">Search</string>
     <string name="logout_dialog_title">Log out of your account?</string>
-    <string name="logout_dialog_message">Swipes will stop syncing your data with this device.</string>
+    <string name="logout_dialog_message">Swipes would stop syncing your data with this device.</string>
     <string name="logout_dialog_yes">Log out</string>
     <string name="logout_dialog_no">Cancel</string>
     <string name="keep_data_dialog_title">Keep data from test period?</string>
-    <string name="keep_data_dialog_message">Swipes will retain your data from the test period and sync it to the cloud.</string>
+    <string name="keep_data_dialog_message">Swipes can sync your data from the test period to the cloud.</string>
     <string name="keep_data_dialog_yes">Keep data</string>
     <string name="keep_data_dialog_no">Clear data</string>
 
@@ -277,42 +285,5 @@
         <item quantity="one">See 1 action</item>
         <item quantity="other">See all %s actions</item>
     </plurals>
-
-    <!-- Section icons -->
-    <string name="swipes_logo">&#xe600;</string>
-    <string name="later_full">&#xe604;</string>
-    <string name="focus_full">&#xe603;</string>
-    <string name="done_full">&#xe602;</string>
-    <string name="settings_full">&#xe605;</string>
-    <string name="swipes_signature">&#xe623;</string>
-
-    <!-- Action icons -->
-    <string name="round_add">&#xe62f;</string>
-    <string name="left_arrow">&#xe63f;</string>
-    <string name="plus_sign">&#xe626;</string>
-    <string name="round_close">&#xe62e;</string>
-    <string name="menu_search">&#xe656;</string>
-
-    <!-- Edit task icons -->
-    <string name="edit_location">&#xe647;</string>
-    <string name="edit_notes">&#xe609;</string>
-    <string name="edit_repeat">&#xe60a;</string>
-    <string name="action_tag">&#xe63a;</string>
-    <string name="action_share">&#xe639;</string>
-    <string name="action_delete">&#xe63b;</string>
-    <string name="action_edit">&#xe63c;</string>
-    <string name="edit_schedule">&#xe60c;</string>
-    <string name="round_back">&#xe630;</string>
-
-    <!-- Scheduler icons -->
-    <string name="schedule_coffee">&#xe64e;</string>
-    <string name="schedule_moon">&#xe61c;</string>
-    <string name="schedule_sun">&#xe64c;</string>
-    <string name="schedule_logbook">&#xe64b;</string>
-    <string name="schedule_glass">&#xe64a;</string>
-    <string name="schedule_circle">&#xe649;</string>
-    <string name="schedule_cloud">&#xe614;</string>
-    <string name="schedule_location">&#xe647;</string>
-    <string name="schedule_calendar">&#xe646;</string>
 
 </resources>

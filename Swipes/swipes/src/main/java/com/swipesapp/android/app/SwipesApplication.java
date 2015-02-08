@@ -1,6 +1,7 @@
 package com.swipesapp.android.app;
 
 import android.app.Application;
+import android.preference.PreferenceManager;
 
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
@@ -35,6 +36,11 @@ public class SwipesApplication extends Application {
 
         // Provide initial context for Evernote integration.
         EvernoteIntegration.getInstance().setContext(getApplicationContext());
+
+        // Load default user preferences.
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.snooze_settings, true);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.integrations, true);
     }
 
     public static DaoSession getDaoSession() {

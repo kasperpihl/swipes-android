@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- API keys -->
+    <string name="application_id">nf9lMphPOh3jZivxqQaMAg6YLtzlfvRjExUEKST3</string>
+    <string name="client_key">SrkvKzFm51nbKZ3hzuwnFxPPz24I9erkjvkf0XzS</string>
+    <string name="facebook_app_id">531435630236702</string>
+
+    <!-- Test API keys -->
+    <string name="test_application_id">0qD3LLZIOwLOPRwbwLia9GJXTEUnEsSlBCufqDvr</string>
+    <string name="test_client_key">zkaCbiWV0ieyDq5pinRuzclnaeLZG9G6GFJkmXMB</string>
+
+    <!-- Device info -->
+    <bool name="tablet">false</bool>
+
+    <!-- Animation durations -->
+    <integer name="animation_duration_short">200</integer>
+    <integer name="animation_duration_medium">400</integer>
+    <integer name="animation_duration_long">500</integer>
+
+</resources>

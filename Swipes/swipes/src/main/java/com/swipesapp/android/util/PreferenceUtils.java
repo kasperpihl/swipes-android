@@ -77,6 +77,18 @@ public class PreferenceUtils {
     }
 
     /**
+     * Reads a string preference.
+     *
+     * @param context    Context instance.
+     * @param preference Preference to read.
+     * @return String value.
+     */
+    public static String readStringPreference(String preference, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(preference, null);
+    }
+
+    /**
      * Reads theme setting.
      *
      * @param context Context instance.

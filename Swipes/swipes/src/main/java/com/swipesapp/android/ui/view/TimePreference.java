@@ -15,20 +15,7 @@ public class TimePreference extends Preference {
 
     private static final String TIME_PICKER_TAG = "SETTINGS_TIME_PICKER";
 
-    private int mLastHour;
-    private int mLastMinute;
-
-    public static int getHour(String time) {
-        String[] pieces = time.split(":");
-
-        return Integer.parseInt(pieces[0]);
-    }
-
-    public static int getMinute(String time) {
-        String[] pieces = time.split(":");
-
-        return Integer.parseInt(pieces[1]);
-    }
+    private String mTime;
 
     public TimePreference(final Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,19 +29,16 @@ public class TimePreference extends Preference {
                     RadialTimePickerDialog.OnTimeSetListener timeSetListener = new RadialTimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(RadialTimePickerDialog dialog, int hourOfDay, int minute) {
-                            mLastHour = hourOfDay;
-                            mLastMinute = minute;
+                            mTime = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
 
-                            String time = String.valueOf(mLastHour) + ":" + String.valueOf(mLastMinute);
-
-                            if (callChangeListener(time)) {
-                                persistString(time);
+                            if (callChangeListener(mTime)) {
+                                persistString(mTime);
                             }
                         }
                     };
 
                     RadialTimePickerDialog dialog = new RadialTimePickerDialog();
-                    dialog.setStartTime(mLastHour, mLastMinute);
+                    dialog.setStartTime(getHour(mTime), getMinute(mTime));
                     dialog.setOnTimeSetListener(timeSetListener);
                     dialog.setDoneText(getContext().getString(R.string.preference_yes));
                     dialog.setThemeDark(!ThemeUtils.isLightTheme(getContext()));
@@ -74,20 +58,25 @@ public class TimePreference extends Preference {
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        String time;
-
         if (restoreValue) {
-            if (defaultValue == null) {
-                time = getPersistedString("00:00");
-            } else {
-                time = getPersistedString(defaultValue.toString());
-            }
+            mTime = getPersistedString(null);
         } else {
-            time = defaultValue.toString();
-        }
+            mTime = String.valueOf(defaultValue);
 
-        mLastHour = getHour(time);
-        mLastMinute = getMinute(time);
+            persistString(mTime);
+        }
+    }
+
+    public static int getHour(String time) {
+        String hour = time.split(":")[0];
+
+        return Integer.parseInt(hour);
+    }
+
+    public static int getMinute(String time) {
+        String minute = time.split(":")[1];
+
+        return Integer.parseInt(minute);
     }
 
 }

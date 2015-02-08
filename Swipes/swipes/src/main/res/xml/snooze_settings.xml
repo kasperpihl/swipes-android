@@ -2,22 +2,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.swipesapp.android.ui.view.TimePreference
-        android:defaultValue="09:00"
+        android:defaultValue="@string/default_day_start"
         android:key="settings_day_start"
         android:title="@string/day_start" />
 
     <com.swipesapp.android.ui.view.TimePreference
-        android:defaultValue="19:00"
+        android:defaultValue="@string/default_evening_start"
         android:key="settings_evening_start"
         android:title="@string/evening_start" />
 
     <com.swipesapp.android.ui.view.TimePreference
-        android:defaultValue="10:00"
+        android:defaultValue="@string/default_weekend_day_start"
         android:key="settings_weekend_day_start"
         android:title="@string/weekend_day_start" />
 
     <com.swipesapp.android.ui.view.SwipesListPreference
-        android:defaultValue="monday"
+        android:defaultValue="@string/default_week_start"
         android:dialogTitle="@string/settings_week_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"
@@ -25,7 +25,7 @@
         android:title="@string/week_start" />
 
     <com.swipesapp.android.ui.view.SwipesListPreference
-        android:defaultValue="saturday"
+        android:defaultValue="@string/default_weekend_start"
         android:dialogTitle="@string/settings_weekend_start_dialog_title"
         android:entries="@array/days_of_week_list"
         android:entryValues="@array/days_of_week_values_list"
@@ -33,7 +33,7 @@
         android:title="@string/weekend_start" />
 
     <com.swipesapp.android.ui.view.SwipesListPreference
-        android:defaultValue="3"
+        android:defaultValue="@string/default_later_today"
         android:dialogTitle="@string/settings_later_today_dialog_title"
         android:entries="@array/later_today_list"
         android:entryValues="@array/later_today_values_list"

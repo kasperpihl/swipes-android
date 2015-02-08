@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Preferences -->
+    <bool name="default_enable_notifications">true</bool>
+    <bool name="default_enable_vibration">true</bool>
+    <bool name="default_enable_location">true</bool>
+    <string name="default_theme_setting">light</string>
+
+    <!-- Snooze preferences -->
+    <string name="default_day_start">09:00</string>
+    <string name="default_evening_start">19:00</string>
+    <string name="default_weekend_day_start">10:00</string>
+    <string name="default_week_start">monday</string>
+    <string name="default_weekend_start">saturday</string>
+    <string name="default_later_today">3</string>
+
+    <!-- Integrations preferences -->
+    <bool name="default_evernote_sync_device">true</bool>
+    <bool name="default_evernote_auto_import">true</bool>
+    <bool name="default_evernote_sync_personal">true</bool>
+    <bool name="default_evernote_sync_business">true</bool>
+
+</resources>
