@@ -6,4 +6,4 @@
     android:layout_height="wrap_content"
     android:background="@color/neutral_accent"
     android:elevation="@dimen/toolbar_elevation"
-    app:theme="@style/Theme.AppCompat" />
+    app:theme="@style/Dark_Theme" />

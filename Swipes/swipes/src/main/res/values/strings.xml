@@ -41,6 +41,7 @@
     <string name="all_done_share_url">swipesapp.com</string>
 
     <!-- Tasks list -->
+    <string name="tasks_list_login_action">Login or Create Account</string>
     <string name="tasks_list_multi_select_action">Multi Select</string>
     <string name="tasks_list_search_action">Search</string>
     <string name="tasks_list_workspaces_action">Workspaces</string>

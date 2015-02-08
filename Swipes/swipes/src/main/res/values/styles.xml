@@ -11,6 +11,7 @@
         <item name="colorAccent">@color/neutral_accent_light</item>
         <item name="colorControlHighlight">@color/light_highlight</item>
         <item name="android:colorEdgeEffect" tools:targetApi="21">@color/light_highlight</item>
+        <item name="android:actionOverflowButtonStyle">@style/Overflow_Menu</item>
     </style>
 
     <style name="Dark_Theme" parent="Theme.AppCompat.NoActionBar">
@@ -20,6 +21,7 @@
         <item name="colorAccent">@color/neutral_accent_light</item>
         <item name="colorControlHighlight">@color/dark_highlight</item>
         <item name="android:colorEdgeEffect" tools:targetApi="21">@color/dark_highlight</item>
+        <item name="android:actionOverflowButtonStyle">@style/Overflow_Menu</item>
     </style>
 
     <!-- Toolbar themes. -->
@@ -29,6 +31,10 @@
 
     <style name="Dark_Theme_Popup_Menu" parent="Dark_Theme">
         <item name="android:colorBackground">@color/dark_neutral_background</item>
+    </style>
+
+    <style name="Overflow_Menu" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_dark</item>
     </style>
 
     <!-- Login screen theme. -->

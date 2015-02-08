@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.ParseUser;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -55,6 +57,7 @@ import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,10 +101,11 @@ public class TasksActivity extends BaseActivity {
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
 
-    private static final int ACTION_MULTI_SELECT = 0;
-    private static final int ACTION_SEARCH = 1;
-    private static final int ACTION_WORKSPACES = 2;
-    private static final int ACTION_SETTINGS = 3;
+    private static final int ACTION_LOGIN = 0;
+    private static final int ACTION_MULTI_SELECT = 1;
+    private static final int ACTION_SEARCH = 2;
+    private static final int ACTION_WORKSPACES = 3;
+    private static final int ACTION_SETTINGS = 4;
 
     private WeakReference<Context> mContext;
 
@@ -243,24 +247,58 @@ public class TasksActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO: Show standard actions.
-        menu.add(Menu.NONE, ACTION_MULTI_SELECT, Menu.NONE, getResources().getString(R.string.tasks_list_multi_select_action))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, ACTION_SEARCH, Menu.NONE, getResources().getString(R.string.tasks_list_search_action))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, ACTION_WORKSPACES, Menu.NONE, getResources().getString(R.string.tasks_list_workspaces_action))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, ACTION_SETTINGS, Menu.NONE, getResources().getString(R.string.tasks_list_settings_action))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        // Login.
+        menu.add(Menu.NONE, ACTION_LOGIN, Menu.NONE, getResources().getString(R.string.tasks_list_login_action))
+                .setVisible(ParseUser.getCurrentUser() == null).setIcon(R.drawable.ic_account_dark)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        // TODO: Show icons.
+        // Multi select.
+        int multiSelIcon = ThemeUtils.isLightTheme(this) ? R.drawable.ic_multi_select_light : R.drawable.ic_multi_select_dark;
+        menu.add(Menu.NONE, ACTION_MULTI_SELECT, Menu.NONE, getResources().getString(R.string.tasks_list_multi_select_action))
+                .setIcon(multiSelIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // Search.
+        int searchIcon = ThemeUtils.isLightTheme(this) ? R.drawable.ic_search_light : R.drawable.ic_search_dark;
+        menu.add(Menu.NONE, ACTION_SEARCH, Menu.NONE, getResources().getString(R.string.tasks_list_search_action))
+                .setIcon(searchIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // Workspaces.
+        int workspacesIcon = ThemeUtils.isLightTheme(this) ? R.drawable.ic_workspaces_light : R.drawable.ic_workspaces_dark;
+        menu.add(Menu.NONE, ACTION_WORKSPACES, Menu.NONE, getResources().getString(R.string.tasks_list_workspaces_action))
+                .setIcon(workspacesIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // Settings.
+        int settingsIcon = ThemeUtils.isLightTheme(this) ? R.drawable.ic_settings_light : R.drawable.ic_settings_dark;
+        menu.add(Menu.NONE, ACTION_SETTINGS, Menu.NONE, getResources().getString(R.string.tasks_list_settings_action))
+                .setIcon(settingsIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        // HACK: Show action icons.
+        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "Error setting menu icons.", e);
+                }
+            }
+        }
+
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case ACTION_LOGIN:
+                // TODO: Call login.
+                break;
             case ACTION_MULTI_SELECT:
                 // TODO: New selection UI.
                 break;
@@ -275,6 +313,7 @@ public class TasksActivity extends BaseActivity {
                 startActivityForResult(intent, Constants.SETTINGS_REQUEST_CODE);
                 break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -526,7 +565,8 @@ public class TasksActivity extends BaseActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, null, 0, priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, null, 0);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, null, 0,
+                    priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, null, 0);
             mTasksService.saveTask(task, true);
         }
 

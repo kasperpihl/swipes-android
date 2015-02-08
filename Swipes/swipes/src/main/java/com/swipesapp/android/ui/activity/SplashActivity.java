@@ -161,7 +161,8 @@ public class SplashActivity extends BaseActivity {
         SyncService syncService = SyncService.getInstance(this);
         Date currentDate = new Date();
 
-        GsonTask task = GsonTask.gsonForLocal(null, null, null, null, currentDate, currentDate, false, null, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), null, 0);
+        GsonTask task = GsonTask.gsonForLocal(null, null, null, null, currentDate, currentDate, false, null, null, 0, 0,
+                null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), null, 0);
 
         // Save first task.
         String title = getString(R.string.welcome_task_one);

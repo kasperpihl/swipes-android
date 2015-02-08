@@ -22,7 +22,7 @@
     <item name="dark_neutral_background" type="color">#24282e</item>
 
     <!-- Text colors -->
-    <item name="light_text" type="color">#1F1F1F</item>
+    <item name="light_text" type="color">#1B1E23</item>
     <item name="dark_text" type="color">#FFFFFF</item>
     <item name="light_secondary_text" type="color">#676767</item>
     <item name="dark_secondary_text" type="color">#BBBCBD</item>

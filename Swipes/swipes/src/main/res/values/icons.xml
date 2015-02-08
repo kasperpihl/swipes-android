@@ -14,6 +14,7 @@
     <string name="left_arrow">&#xe618;</string>
     <string name="cross_sign">&#xe619;</string>
     <string name="menu_search">&#xe605;</string>
+    <string name="spinner_arrow">&#xe61e;</string>
 
     <!-- Edit task icons -->
     <string name="edit_location">&#xe61d;</string>
