@@ -62,8 +62,8 @@ public class TasksListAdapter extends BaseAdapter {
     private int mListViewHeight;
     private int mVisibleAreaHeight;
 
-    public TasksListAdapter(Context context, int layoutResourceId, List<GsonTask> data, Sections section) {
-        mData = data;
+    public TasksListAdapter(Context context, int layoutResourceId, Sections section) {
+        mData = new ArrayList();
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
         mSection = section;

@@ -172,17 +172,17 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Setup view for current section.
         switch (mSection) {
             case LATER:
-                setupView(rootView, mTasksService.loadScheduledTasks(), R.layout.tasks_later_empty_view);
+                setupView(rootView, R.layout.tasks_later_empty_view);
                 configureLaterView(mAdapter);
                 break;
             case FOCUS:
-                setupView(rootView, mTasksService.loadFocusedTasks(), R.layout.tasks_focus_empty_view);
+                setupView(rootView, R.layout.tasks_focus_empty_view);
                 configureFocusView(mAdapter);
                 configureEmptyView();
                 updateEmptyView();
                 break;
             case DONE:
-                setupView(rootView, mTasksService.loadCompletedTasks(), R.layout.tasks_done_empty_view);
+                setupView(rootView, R.layout.tasks_done_empty_view);
                 configureDoneView(mAdapter);
                 handleDoneButtons();
                 break;
@@ -191,6 +191,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         measureListView(mListView);
 
         hideFilters();
+
+        refreshTaskList(false);
 
         return rootView;
     }
@@ -250,9 +252,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         return mSection == TasksActivity.getCurrentSection();
     }
 
-    private void setupView(View rootView, List<GsonTask> tasks, int emptyView) {
+    private void setupView(View rootView, int emptyView) {
         // Initialize adapter.
-        mAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, tasks, mSection);
+        mAdapter = new TasksListAdapter(getActivity(), R.layout.swipeable_cell, mSection);
         mAdapter.setListContentsListener(this);
 
         // Initialize list view.
@@ -265,11 +267,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mViewStub.setLayoutResource(emptyView);
         mEmptyView = mViewStub.inflate();
         mListView.setEmptyView(mEmptyView);
-
-        // Set next snoozed task.
-        if (!tasks.isEmpty() && mSection == Sections.LATER) {
-            sNextTask = tasks.get(0);
-        }
 
         // Setup landscape header.
         mLandscapeHeader.setVisibility(DeviceUtils.isLandscape(getActivity()) ? View.VISIBLE : View.GONE);
