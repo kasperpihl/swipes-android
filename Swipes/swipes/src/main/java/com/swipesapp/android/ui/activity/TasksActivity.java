@@ -3,8 +3,10 @@ package com.swipesapp.android.ui.activity;
 import android.animation.ObjectAnimator;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -182,6 +184,12 @@ public class TasksActivity extends BaseActivity {
 
     @Override
     public void onResume() {
+        // Create filter and start receiver.
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Actions.TASKS_CHANGED);
+
+        registerReceiver(mTasksReceiver, filter);
+
         // Sync only changes after initial sync has been performed.
         boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
         SyncService.getInstance(this).performSync(changesOnly);
@@ -198,6 +206,14 @@ public class TasksActivity extends BaseActivity {
         mWasRestored = false;
 
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        // Stop receiver.
+        unregisterReceiver(mTasksReceiver);
+
+        super.onPause();
     }
 
     @Override
@@ -300,7 +316,6 @@ public class TasksActivity extends BaseActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
-        mViewPager.setOffscreenPageLimit(Sections.getSectionsCount());
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin_sides));
         mViewPager.setCurrentItem(sCurrentSection.getSectionNumber());
 
@@ -400,25 +415,32 @@ public class TasksActivity extends BaseActivity {
         mPreviousOffset = positionOffset;
     }
 
-    /**
-     * Returns the current section being displayed.
-     *
-     * @return Current section.
-     */
+    private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Filter intent actions.
+            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
+                // Perform refresh of all sections.
+                refreshSections();
+            }
+        }
+    };
+
+    public void refreshSections() {
+        for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
+            // Refresh list without animation.
+            fragment.refreshTaskList(false);
+        }
+    }
+
     public static Sections getCurrentSection() {
         return sCurrentSection;
     }
 
-    /**
-     * Clears the current section being displayed.
-     */
     public static void clearCurrentSection() {
         sCurrentSection = null;
     }
 
-    /**
-     * @return The ViewPager being used.
-     */
     public DynamicViewPager getViewPager() {
         return mViewPager;
     }
@@ -434,9 +456,6 @@ public class TasksActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Shows the task edit bar.
-     */
     public void showEditBar() {
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {

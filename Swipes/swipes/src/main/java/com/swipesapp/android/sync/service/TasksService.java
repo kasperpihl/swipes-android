@@ -16,6 +16,7 @@ import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
 
@@ -117,6 +118,8 @@ public class TasksService {
         }
 
         if (sync) SyncService.getInstance(mContext.get()).performSync(true);
+
+        sendBroadcast(Actions.TASKS_CHANGED);
     }
 
     /**

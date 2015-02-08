@@ -12,41 +12,54 @@ import com.swipesapp.android.values.Sections;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
- * one of the sections/tabs/pages.
+ * A {@link FragmentPagerAdapter} to handle section fragments.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private List<TasksListFragment> mFragments = new ArrayList<TasksListFragment>();
-
     private WeakReference<Context> mContext;
+
+    private Map<Integer, String> mFragmentTags;
+    private FragmentManager mFragmentManager;
 
     public SectionsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        mContext = new WeakReference<Context>(context);
 
-        // Pre-load fragments.
-        for (int x = 0; x < getCount(); x++) {
-            mFragments.add(TasksListFragment.newInstance(x));
-        }
+        mContext = new WeakReference<>(context);
+
+        mFragmentManager = fm;
+        mFragmentTags = new HashMap<>();
     }
 
     @Override
     public Fragment getItem(int position) {
-        return mFragments.get(position);
+        Fragment fragment = getFragment(position);
+
+        if (fragment == null) {
+            fragment = TasksListFragment.newInstance(position);
+        }
+
+        return fragment;
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Object object = super.instantiateItem(container, position);
+
+        if (object instanceof Fragment) {
+            mFragmentTags.put(position, ((Fragment) object).getTag());
+        }
+
+        return object;
     }
 
     @Override
     public int getCount() {
         return Sections.getSectionsCount();
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // Do nothing.
     }
 
     @Override
@@ -57,6 +70,22 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         } else {
             return 1f;
         }
+    }
+
+    private Fragment getFragment(int position) {
+        String tag = mFragmentTags.get(position);
+
+        return tag != null ? mFragmentManager.findFragmentByTag(tag) : null;
+    }
+
+    public List<TasksListFragment> getFragments() {
+        List<TasksListFragment> fragments = new ArrayList<>();
+
+        for (int i = 0; i < getCount(); i++) {
+            fragments.add((TasksListFragment) getFragment(i));
+        }
+
+        return fragments;
     }
 
 }

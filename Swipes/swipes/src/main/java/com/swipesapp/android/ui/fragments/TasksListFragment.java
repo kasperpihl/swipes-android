@@ -206,7 +206,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mTasksService = TasksService.getInstance(getActivity());
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Actions.TASKS_CHANGED);
         filter.addAction(Actions.TAB_CHANGED);
         filter.addAction(Actions.ASSIGN_TAGS);
         filter.addAction(Actions.DELETE_TASKS);
@@ -232,8 +231,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
-                    // Task has been snoozed. Refresh tasks list.
-                    refreshTaskList(false);
+                    // Task has been snoozed. Refresh all task lists.
+                    ((TasksActivity) getActivity()).refreshSections();
                     break;
                 case Activity.RESULT_CANCELED:
                     // Snooze has been canceled. Refresh tasks with animation.
@@ -241,8 +240,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     break;
             }
         } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
-            // Refresh tasks after editing.
-            refreshTaskList(false);
+            // Refresh all tasks after editing.
+            ((TasksActivity) getActivity()).refreshSections();
         }
     }
 
@@ -489,7 +488,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void refreshTaskList(boolean animateRefresh) {
+    public void refreshTaskList(boolean animateRefresh) {
         // Block refresh while swiping.
         if (!mListView.isSwiping()) {
             List<GsonTask> tasks;
@@ -541,10 +540,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         @Override
         public void onReceive(Context context, Intent intent) {
             // Filter intent actions.
-            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                // Perform refresh.
-                refreshTaskList(false);
-            } else if (intent.getAction().equals(Actions.TAB_CHANGED)) {
+            if (intent.getAction().equals(Actions.TAB_CHANGED)) {
                 // Enable or disable swiping.
                 boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
                 mListView.setSwipeEnabled(enabled);
