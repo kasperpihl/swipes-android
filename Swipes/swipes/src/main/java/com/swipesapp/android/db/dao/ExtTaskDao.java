@@ -62,7 +62,8 @@ public class ExtTaskDao {
 
     public List<Task> listScheduledTasks() {
         List<Task> tasks = mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.gt(new Date()),
-                TaskDao.Properties.Schedule.isNull()), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
+                        TaskDao.Properties.Schedule.isNull()), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
                 .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
 
         Collections.sort(tasks, new Comparator<Task>() {
