@@ -11,15 +11,6 @@
     android:weightSum="1">
 
     <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_edit_task"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.25"
-        android:background="@android:color/transparent"
-        android:text="@string/action_edit"
-        android:textSize="@dimen/action_buttons_size" />
-
-    <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/button_assign_tags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

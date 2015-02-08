@@ -2,40 +2,36 @@
 <resources>
 
     <!-- Section icons -->
-    <string name="swipes_logo">&#xe600;</string>
-    <string name="later_full">&#xe604;</string>
-    <string name="focus_full">&#xe603;</string>
+    <string name="swipes_logo">&#xe61c;</string>
+    <string name="later_full">&#xe603;</string>
+    <string name="focus_full">&#xe601;</string>
     <string name="done_full">&#xe602;</string>
-    <string name="settings_full">&#xe605;</string>
-    <string name="swipes_signature">&#xe623;</string>
+    <string name="settings_full">&#xe604;</string>
+    <string name="swipes_signature">&#xe61b;</string>
 
     <!-- Action icons -->
-    <string name="round_add">&#xe62f;</string>
-    <string name="left_arrow">&#xe63f;</string>
-    <string name="plus_sign">&#xe626;</string>
-    <string name="round_close">&#xe62e;</string>
-    <string name="menu_search">&#xe656;</string>
+    <string name="plus_sign">&#xe600;</string>
+    <string name="left_arrow">&#xe618;</string>
+    <string name="cross_sign">&#xe619;</string>
+    <string name="menu_search">&#xe605;</string>
 
     <!-- Edit task icons -->
-    <string name="edit_location">&#xe647;</string>
-    <string name="edit_notes">&#xe609;</string>
-    <string name="edit_repeat">&#xe60a;</string>
-    <string name="action_tag">&#xe63a;</string>
-    <string name="action_share">&#xe639;</string>
-    <string name="action_delete">&#xe63b;</string>
-    <string name="action_edit">&#xe63c;</string>
-    <string name="edit_schedule">&#xe60c;</string>
-    <string name="round_back">&#xe630;</string>
+    <string name="edit_location">&#xe61d;</string>
+    <string name="edit_notes">&#xe60a;</string>
+    <string name="edit_repeat">&#xe60b;</string>
+    <string name="action_tag">&#xe609;</string>
+    <string name="action_share">&#xe617;</string>
+    <string name="action_delete">&#xe616;</string>
 
     <!-- Scheduler icons -->
-    <string name="schedule_coffee">&#xe64e;</string>
-    <string name="schedule_moon">&#xe61c;</string>
-    <string name="schedule_sun">&#xe64c;</string>
-    <string name="schedule_logbook">&#xe64b;</string>
-    <string name="schedule_glass">&#xe64a;</string>
-    <string name="schedule_circle">&#xe649;</string>
-    <string name="schedule_cloud">&#xe614;</string>
-    <string name="schedule_location">&#xe647;</string>
-    <string name="schedule_calendar">&#xe646;</string>
+    <string name="schedule_coffee">&#xe610;</string>
+    <string name="schedule_moon">&#xe612;</string>
+    <string name="schedule_sun">&#xe60d;</string>
+    <string name="schedule_logbook">&#xe60f;</string>
+    <string name="schedule_glass">&#xe60c;</string>
+    <string name="schedule_circle">&#xe611;</string>
+    <string name="schedule_cloud">&#xe60e;</string>
+    <string name="schedule_location">&#xe61d;</string>
+    <string name="schedule_calendar">&#xe613;</string>
 
 </resources>

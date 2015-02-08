@@ -88,9 +88,6 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.edit_tasks_bar)
     LinearLayout mEditTasksBar;
 
-    @InjectView(R.id.button_edit_task)
-    SwipesButton mButtonEditTask;
-
     @InjectView(R.id.add_task_tag_container)
     FlowLayout mAddTaskTagContainer;
 
@@ -439,10 +436,8 @@ public class TasksActivity extends BaseActivity {
 
     /**
      * Shows the task edit bar.
-     *
-     * @param isBatchOperation True when multiple tasks are selected.
      */
-    public void showEditBar(boolean isBatchOperation) {
+    public void showEditBar() {
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -451,27 +446,6 @@ public class TasksActivity extends BaseActivity {
 
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
             mEditTasksBar.startAnimation(slideUp);
-        }
-
-        // The edit button shouldn't be used for multiple tasks at once.
-        if (isBatchOperation && mButtonEditTask.isEnabled()) {
-            // Animate view.
-            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
-            slideDown.setFillAfter(true);
-            slideDown.setDuration(Constants.ANIMATION_DURATION_SHORT);
-            mButtonEditTask.startAnimation(slideDown);
-
-            // Disable button.
-            mButtonEditTask.setEnabled(false);
-        } else if (!isBatchOperation && !mButtonEditTask.isEnabled()) {
-            // Animate view.
-            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-            slideUp.setFillAfter(true);
-            slideUp.setDuration(Constants.ANIMATION_DURATION_SHORT);
-            mButtonEditTask.startAnimation(slideUp);
-
-            // Enable button.
-            mButtonEditTask.setEnabled(true);
         }
     }
 
@@ -616,14 +590,6 @@ public class TasksActivity extends BaseActivity {
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(mAddTaskTagContainer, "translationY", fromY, toY);
         animator.setDuration(Constants.ANIMATION_DURATION_LONG).start();
-    }
-
-    @OnClick(R.id.button_edit_task)
-    protected void editTask() {
-        // Send a broadcast to edit the currently selected task. The fragment should handle it.
-        mTasksService.sendBroadcast(Actions.EDIT_TASK);
-        // Close edit bar.
-        hideEditBar();
     }
 
     @OnClick(R.id.button_assign_tags)

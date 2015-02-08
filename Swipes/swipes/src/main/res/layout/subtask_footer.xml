@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@color/transparent"
-            android:text="@string/round_back"
+            android:text="@string/left_arrow"
             android:textSize="25sp" />
 
         <TextView

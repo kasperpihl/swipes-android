@@ -20,7 +20,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="-40dp"
             android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/task_back_icon_size" />
 
         <com.swipesapp.android.ui.view.SwipesTextView
             android:id="@+id/swipe_back_icon_right"
@@ -29,7 +29,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="-40dp"
             android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/task_back_icon_size" />
     </RelativeLayout>
 
     <!-- Front view -->

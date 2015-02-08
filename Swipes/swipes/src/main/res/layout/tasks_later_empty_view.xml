@@ -13,5 +13,5 @@
         android:background="@android:color/transparent"
         android:text="@string/later_full"
         android:textColor="@color/later_accent"
-        android:textSize="70sp" />
+        android:textSize="@dimen/empty_view_icon_size" />
 </RelativeLayout>

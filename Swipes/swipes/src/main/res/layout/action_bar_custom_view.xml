@@ -12,7 +12,7 @@
         android:layout_marginLeft="10dp"
         android:text="@string/focus_full"
         android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:textSize="@dimen/toolbar_icon_size" />
 
     <TextView
         android:id="@+id/action_bar_title"

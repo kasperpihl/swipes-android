@@ -94,7 +94,7 @@
                         android:layout_marginLeft="17dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="20dp"
-                        android:text="@string/edit_schedule"
+                        android:text="@string/later_full"
                         android:textSize="17sp" />
 
                     <TextView

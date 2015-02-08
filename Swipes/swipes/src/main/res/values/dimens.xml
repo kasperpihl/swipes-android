@@ -19,6 +19,7 @@
     <dimen name="pager_margin_sides">-25dp</dimen>
     <dimen name="landscape_header_height">56dp</dimen>
     <dimen name="landscape_header_margin_top">25dp</dimen>
+    <dimen name="task_back_icon_size">27sp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -27,6 +28,7 @@
     <dimen name="date_stamp_margin_top">40dp</dimen>
     <dimen name="social_buttons_diameter">40dp</dimen>
     <dimen name="social_buttons_margin">14dp</dimen>
+    <dimen name="empty_view_icon_size">85sp</dimen>
 
     <!-- Edit -->
     <dimen name="action_buttons_size">23sp</dimen>
@@ -51,7 +53,7 @@
     <dimen name="subtask_counter_height">21dp</dimen>
 
     <!-- Scheduler -->
-    <dimen name="snooze_options_icon_size">35sp</dimen>
+    <dimen name="snooze_options_icon_size">44sp</dimen>
     <dimen name="snooze_options_margin_vertical">20dp</dimen>
     <dimen name="snooze_options_margin_middle">10dp</dimen>
     <dimen name="snooze_options_margin_sides">10dp</dimen>
@@ -80,5 +82,6 @@
     <dimen name="flat_button_text_size">14sp</dimen>
     <dimen name="floating_button_margin">16dp</dimen>
     <dimen name="toolbar_shadow_height">4dp</dimen>
+    <dimen name="toolbar_icon_size">27sp</dimen>
 
 </resources>
