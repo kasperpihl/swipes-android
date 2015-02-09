@@ -2,9 +2,7 @@ package com.swipesapp.android.evernote;
 
 /**
  * TODO:
- *  - test Levenshtein values
  *  - convert old to new (test)
- *  - test with no business account
  *  - request and update counters?
  */
 
@@ -393,8 +391,6 @@ public class EvernoteIntegration {
 
     public void logoutInContext(final Context ctx) {
         try {
-            mEvernoteSession.logOut(ctx);
-
             // invalidate all data
             EvernoteSyncHandler.getInstance().setUpdatedAt(null);
             mSwipesTagGuid = null;
@@ -405,11 +401,12 @@ public class EvernoteIntegration {
             mBusinessNotebookGuids = null;
             mSearchCache = null;
 
+            mEvernoteSession.logOut(ctx);
+
             // remove all attachments and sync
             TasksService.getInstance(ctx).deleteAttachmentsForService(Services.EVERNOTE);
             SyncService.getInstance(ctx).performSync(true);
-
-        } catch (InvalidAuthenticationException e) {
+        } catch (Exception e) {
             Log.e(sTag, e.getMessage(), e);
         }
     }

@@ -352,16 +352,13 @@ public class EvernoteSyncHandler {
         List<GsonTask> subtasksLeftToBeFound = new ArrayList<GsonTask>(subtasks);
         List<EvernoteToDo> evernoteToDosLeftToBeFound = new ArrayList<EvernoteToDo>(evernoteToDos);
 
-        boolean isNew = false;
         boolean updated = false;
 
         // Match and clean all direct matches
         for (EvernoteToDo evernoteToDo : evernoteToDos) {
-//            GsonTask matchingSubtask = null;
 
             for (GsonTask subtask : subtasks) {
                 if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier())) {
-//                    matchingSubtask = subtask;
                     subtasksLeftToBeFound.remove(subtask);
                     evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
@@ -378,20 +375,10 @@ public class EvernoteSyncHandler {
                 }
             }
 
-//            if (null == matchingSubtask) {
-//                Date currentDate = new Date();
-//                String tempId = UUID.randomUUID().toString();
-//                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
-//                        evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-//                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
-//                tasksService.saveTask(matchingSubtask, true);
-//                updated = true;
-//                isNew = true;
-//            }
-
-
-            subtasks.clear();
-            subtasks.addAll(subtasksLeftToBeFound);
+            if (subtasks.size() != subtasksLeftToBeFound.size()) {
+                subtasks.clear();
+                subtasks.addAll(subtasksLeftToBeFound);
+            }
         }
 
         evernoteToDos.clear();
@@ -417,6 +404,7 @@ public class EvernoteSyncHandler {
             if (bestScore <= 5)
                 matchingSubtask = bestMatch;
 
+            boolean isNew = false;
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
                 String tempId = UUID.randomUUID().toString();
@@ -426,7 +414,8 @@ public class EvernoteSyncHandler {
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
-            } else if (null == matchingSubtask.getOrigin()) {
+            }
+            else if (null == matchingSubtask.getOrigin()) {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
                 matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
@@ -434,13 +423,12 @@ public class EvernoteSyncHandler {
             }
 
             subtasksLeftToBeFound.remove(matchingSubtask);
+            subtasks.clear();
+            subtasks.addAll(subtasksLeftToBeFound);
             evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
             if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, tasksService))
                 updated = true;
-
-            subtasks.clear();
-            subtasks.addAll(subtasksLeftToBeFound);
         }
 
         // remove evernote subtasks not found in the evernote from our task
