@@ -23,6 +23,7 @@
     <string name="action_tag">&#xe609;</string>
     <string name="action_share">&#xe617;</string>
     <string name="action_delete">&#xe616;</string>
+    <string name="action_evernote">&#xe615;</string>
 
     <!-- Scheduler icons -->
     <string name="schedule_coffee">&#xe610;</string>

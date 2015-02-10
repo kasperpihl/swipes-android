@@ -4,24 +4,26 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.text.util.Linkify;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -38,10 +40,12 @@ import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.RepeatOption;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.RepeatOptions;
@@ -61,16 +65,22 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class EditTaskActivity extends BaseActivity {
+public class EditTaskActivity extends FragmentActivity {
 
     @InjectView(R.id.main_layout)
     LinearLayout mLayout;
 
-    @InjectView(R.id.edit_task_container)
-    LinearLayout mContainer;
+    @InjectView(R.id.edit_task_button_header)
+    RelativeLayout mButtonHeader;
+    @InjectView(R.id.edit_task_evernote_button)
+    SwipesButton mEvernoteButton;
+    @InjectView(R.id.edit_task_delete_button)
+    SwipesButton mDeleteButton;
+    @InjectView(R.id.edit_task_share_button)
+    SwipesButton mShareButton;
 
     @InjectView(R.id.properties_view)
-    LinearLayout mPropertiesView;
+    ScrollView mPropertiesView;
 
     @InjectView(R.id.button_edit_task_priority)
     CheckBox mPriority;
@@ -110,7 +120,7 @@ public class EditTaskActivity extends BaseActivity {
     @InjectView(R.id.evernote_attachment_container)
     RelativeLayout mEvernoteAttachmentContainer;
     @InjectView(R.id.evernote_attachment_icon)
-    ImageView mEvernoteAttachmentIcon;
+    SwipesTextView mEvernoteAttachmentIcon;
     @InjectView(R.id.evernote_attachment_title)
     TextView mEvernoteAttachmentTitle;
     @InjectView(R.id.evernote_attached_view)
@@ -123,17 +133,14 @@ public class EditTaskActivity extends BaseActivity {
 
     @InjectView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
-
     @InjectView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
     @InjectView(R.id.subtask_footer)
     LinearLayout mSubtaskFooter;
 
-    @InjectView(R.id.subtask_add_circle_container)
-    FrameLayout mSubtaskAddCircleContainer;
-    @InjectView(R.id.subtask_add_circle)
-    View mSubtaskAddCircle;
+    @InjectView(R.id.subtask_add_icon)
+    SwipesTextView mSubtaskAddIcon;
     @InjectView(R.id.subtask_add_title)
     ActionEditText mSubtaskAddTitle;
 
@@ -149,13 +156,11 @@ public class EditTaskActivity extends BaseActivity {
     @InjectView(R.id.subtask_first_item)
     RelativeLayout mSubtaskFirstItem;
     @InjectView(R.id.subtask_first_item_title)
-    TextView mSubtaskFirstTitle;
+    ActionEditText mSubtaskFirstTitle;
+    @InjectView(R.id.subtask_first_button)
+    CheckBox mSubtaskFirstButton;
 
     private static final String TAG_SEPARATOR = ", ";
-
-    private static final int ACTION_EVERNOTE = 0;
-    private static final int ACTION_SHARE = 1;
-    private static final int ACTION_DELETE = 2;
 
     private WeakReference<Context> mContext;
 
@@ -171,24 +176,23 @@ public class EditTaskActivity extends BaseActivity {
     private ListView mListView;
     private List<GsonTask> mSubtasks;
 
-    protected Sections mSection = Sections.FOCUS;
+    private Sections mSection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_edit_task);
         ButterKnife.inject(this);
 
-        getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        setupSystemBars(mSection);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mContext = new WeakReference<Context>(this);
 
         mTasksService = TasksService.getInstance(this);
+
+        int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
+        mSection = Sections.getSectionByNumber(sectionNumber);
 
         mId = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
@@ -202,44 +206,10 @@ public class EditTaskActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Load icons for current theme. TODO: Change to correct icons with transparency.
-        int evernoteIcon = ThemeUtils.isLightTheme(this) ? R.drawable.evernote_light : R.drawable.evernote_dark;
-        int shareIcon = ThemeUtils.isLightTheme(this) ? R.drawable.share_light : R.drawable.share_dark;
-        int deleteIcon = ThemeUtils.isLightTheme(this) ? R.drawable.delete_light : R.drawable.delete_dark;
+    public void finish() {
+        super.finish();
 
-        // Show Evernote action only when logged in.
-        if (EvernoteIntegration.getInstance().isAuthenticated()) {
-            menu.add(Menu.NONE, ACTION_EVERNOTE, Menu.NONE, getResources().getString(R.string.edit_task_evernote_action))
-                    .setIcon(evernoteIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        // Show standard actions.
-        menu.add(Menu.NONE, ACTION_SHARE, Menu.NONE, getResources().getString(R.string.edit_task_share_action))
-                .setIcon(shareIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(Menu.NONE, ACTION_DELETE, Menu.NONE, getResources().getString(R.string.edit_task_delete_action))
-                .setIcon(deleteIcon).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case ACTION_EVERNOTE:
-                attachEvernote();
-                break;
-            case ACTION_SHARE:
-                shareTask();
-                break;
-            case ACTION_DELETE:
-                deleteTask();
-                break;
-            case android.R.id.home:
-                performChanges(false);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -248,10 +218,8 @@ public class EditTaskActivity extends BaseActivity {
             switch (resultCode) {
                 case RESULT_OK:
                     // Task has been snoozed. Update views.
+                    mSection = Sections.LATER;
                     updateViews();
-
-                    // Change bar colors for a clear visual hint.
-                    setupSystemBars(Sections.LATER);
                     break;
             }
         } else if (requestCode == Constants.EVERNOTE_ATTACHMENTS_REQUEST_CODE) {
@@ -293,23 +261,32 @@ public class EditTaskActivity extends BaseActivity {
         super.onPause();
     }
 
-    private void setupSystemBars(Sections section) {
-        // Apply ActionBar color.
-        themeActionBar(ThemeUtils.getSectionColor(section, this));
-
-        // Apply StatusBar color.
-        themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
-
-        // Apply recents header color.
-        themeRecentsHeader(ThemeUtils.getSectionColor(section, this));
-    }
-
     private void setupViews() {
         mLayout.requestFocus();
+
+        boolean lightTheme = ThemeUtils.isLightTheme(this);
+
+        int background = lightTheme ? R.drawable.edit_dialog_light : R.drawable.edit_dialog_dark;
+        mLayout.setBackgroundResource(background);
+
+        int headerColor = lightTheme ? R.color.neutral_header_light : R.color.neutral_header_dark;
+        mButtonHeader.setBackgroundColor(getResources().getColor(headerColor));
+
+        int secondaryColor = lightTheme ? R.color.light_hint : R.color.dark_hint;
+        mEvernoteButton.setTextColor(getResources().getColor(secondaryColor));
+        mDeleteButton.setTextColor(getResources().getColor(secondaryColor));
+        mShareButton.setTextColor(getResources().getColor(secondaryColor));
+
+        if (!EvernoteIntegration.getInstance().isAuthenticated() ||
+                !PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
+            mEvernoteButton.setVisibility(View.GONE);
+        }
 
         mTitle.setTextColor(ThemeUtils.getTextColor(this));
         mTitle.setOnEditorActionListener(mEnterListener);
         mTitle.setListener(mKeyboardBackListener);
+
+        mPropertiesView.setOnTouchListener(mPropertiesTouchListener);
 
         mScheduleIcon.setTextColor(ThemeUtils.getTextColor(this));
         mSchedule.setTextColor(ThemeUtils.getTextColor(this));
@@ -322,11 +299,10 @@ public class EditTaskActivity extends BaseActivity {
         mTags.setTextColor(ThemeUtils.getTextColor(this));
         mTags.setHintTextColor(ThemeUtils.getTextColor(this));
 
-        int icon = ThemeUtils.isLightTheme(this) ? R.drawable.evernote_light : R.drawable.evernote_dark;
-        int reverseColor = ThemeUtils.isLightTheme(this) ? R.color.dark_text : R.color.light_text;
-        mEvernoteAttachmentIcon.setImageDrawable(getResources().getDrawable(icon));
+        int reverseColor = lightTheme ? R.color.dark_text : R.color.light_text;
+        mEvernoteAttachmentIcon.setTextColor(ThemeUtils.getTextColor(this));
         mEvernoteAttachmentTitle.setTextColor(ThemeUtils.getTextColor(this));
-        mEvernoteAttachedView.setBackgroundResource(ThemeUtils.isLightTheme(this) ? R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark);
+        mEvernoteAttachedView.setBackgroundResource(lightTheme ? R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark);
         mEvernoteAttachedView.setTextColor(getResources().getColor(reverseColor));
 
         mNotesIcon.setTextColor(ThemeUtils.getTextColor(this));
@@ -335,9 +311,9 @@ public class EditTaskActivity extends BaseActivity {
         mNotes.setLinkTextColor(ThemeUtils.getSectionColor(mSection, this));
         mNotes.setOnEditorActionListener(mEnterListener);
         mNotes.setListener(mKeyboardBackListener);
+        mNotes.setOnTouchListener(mNotesTouchListener);
 
-        int circle = ThemeUtils.isLightTheme(this) ? R.drawable.black_circle : R.drawable.white_circle;
-        mSubtaskAddCircle.setBackgroundResource(circle);
+        mSubtaskAddIcon.setTextColor(ThemeUtils.getTextColor(this));
 
         mSubtaskAddTitle.setTextColor(ThemeUtils.getTextColor(this));
         mSubtaskAddTitle.setHintTextColor(ThemeUtils.getTextColor(this));
@@ -362,7 +338,7 @@ public class EditTaskActivity extends BaseActivity {
 
         // Setup adapter.
         mSubtasks = mTasksService.loadSubtasksForTask(mTask.getTempId());
-        mAdapter = new SubtasksAdapter(this, mSubtasks, mSubtaskListener);
+        mAdapter = new SubtasksAdapter(this, mSubtasks, mSubtaskListener, mLayout);
         mListView.setAdapter(mAdapter);
     }
 
@@ -370,12 +346,8 @@ public class EditTaskActivity extends BaseActivity {
         LinearLayout container = (LinearLayout) footer.findViewById(R.id.subtask_visibility_container);
         container.setOnClickListener(mHideSubtasksClick);
 
-        FrameLayout circleContainer = (FrameLayout) footer.findViewById(R.id.subtask_add_circle_container);
-        changeFooterCircleMargin(circleContainer, true);
-
-        View addCircle = footer.findViewById(R.id.subtask_add_circle);
-        int circle = ThemeUtils.isLightTheme(this) ? R.drawable.black_circle : R.drawable.white_circle;
-        addCircle.setBackgroundResource(circle);
+        SwipesTextView addIcon = (SwipesTextView) footer.findViewById(R.id.subtask_add_icon);
+        addIcon.setTextColor(ThemeUtils.getTextColor(this));
 
         ActionEditText addTitle = (ActionEditText) footer.findViewById(R.id.subtask_add_title);
         addTitle.setTextColor(ThemeUtils.getTextColor(this));
@@ -388,7 +360,8 @@ public class EditTaskActivity extends BaseActivity {
         visibilityIcon.setTextColor(ThemeUtils.getTextColor(this));
 
         TextView visibilityCaption = (TextView) footer.findViewById(R.id.subtask_visibility_caption);
-        visibilityCaption.setVisibility(View.GONE);
+        visibilityCaption.setText(getString(R.string.subtask_hide_caption));
+        visibilityCaption.setTextColor(ThemeUtils.getTextColor(this));
     }
 
     private void updateViews() {
@@ -411,13 +384,29 @@ public class EditTaskActivity extends BaseActivity {
         mNotes.setText(mTask.getNotes());
         Linkify.addLinks(mNotes, Linkify.ALL);
 
-        mSubtaskVisibilityCaption.setText(getResources().getQuantityString(R.plurals.subtask_show_caption, mSubtasks.size(), mSubtasks.size()));
+        mSubtaskVisibilityCaption.setText(getString(R.string.subtask_show_caption));
 
         mSubtaskVisibilityContainer.setVisibility(mSubtasks.isEmpty() ? View.GONE : View.VISIBLE);
 
         mSubtaskFirstItem.setAlpha(1f);
 
         loadFirstSubtask();
+
+        updateViewsForSection();
+    }
+
+    private void updateViewsForSection() {
+        switch (mSection) {
+            case LATER:
+                mPriority.setBackgroundResource(R.drawable.later_circle_selector);
+                break;
+            case FOCUS:
+                mPriority.setBackgroundResource(R.drawable.focus_circle_selector);
+                break;
+            case DONE:
+                mPriority.setBackgroundResource(R.drawable.done_circle_selector);
+                break;
+        }
     }
 
     private void loadEvernoteAttachment() {
@@ -436,19 +425,49 @@ public class EditTaskActivity extends BaseActivity {
     private void loadFirstSubtask() {
         boolean allCompleted = true;
 
-        for (GsonTask subtask : mSubtasks) {
+        for (final GsonTask subtask : mSubtasks) {
             // Display for first uncompleted task.
             if (subtask.getLocalCompletionDate() == null) {
+                // Setup properties.
                 mSubtaskFirstTitle.setText(subtask.getTitle());
-
-                int gray = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
                 mSubtaskFirstTitle.setTextColor(ThemeUtils.getTextColor(this));
 
-                // Change add subtask view margin when needed.
-                changeFooterCircleMargin(mSubtaskAddCircleContainer, mSubtasks.size() == 1);
+                mSubtaskFirstButton.setChecked(false);
+                int background = ThemeUtils.isLightTheme(mContext.get()) ? R.drawable.checkbox_selector_light : R.drawable.checkbox_selector_dark;
+                mSubtaskFirstButton.setBackgroundResource(background);
 
-                // Change visibility of buttons.
-                mSubtaskFirstButtonsContainer.setVisibility(mSubtasks.size() > 1 ? View.GONE : View.VISIBLE);
+                // Edit confirmation listener.
+                mSubtaskFirstTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            // If the action is a key-up event on the return key, save changes.
+                            if (v.getText().length() > 0) {
+                                subtask.setTitle(v.getText().toString());
+                                saveSubtask(subtask);
+                            } else {
+                                v.setText(subtask.getTitle());
+                            }
+
+                            hideKeyboard();
+                        }
+                        return true;
+                    }
+                });
+
+                // Edit cancel listener.
+                mSubtaskFirstTitle.setListener(new KeyboardBackListener() {
+                    @Override
+                    public void onKeyboardBackPressed() {
+                        hideKeyboard();
+
+                        if (mSubtaskFirstTitle.getText().length() <= 0) {
+                            mSubtaskFirstTitle.setText(subtask.getTitle());
+                        }
+                    }
+                });
+
+                // Change button visibility.
                 mSubtaskVisibilityContainer.setVisibility(mSubtasks.size() == 1 ? View.GONE : View.VISIBLE);
 
                 allCompleted = false;
@@ -490,7 +509,12 @@ public class EditTaskActivity extends BaseActivity {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // If the action is a key-up event on the return key, save task changes.
-                        performChanges(true);
+                        if (v.getText().length() > 0) {
+                            performChanges(true);
+                        } else {
+                            v.setText(mTask.getTitle());
+                            hideKeyboard();
+                        }
                     }
                     return true;
                 }
@@ -500,8 +524,17 @@ public class EditTaskActivity extends BaseActivity {
         @Override
         public void onKeyboardBackPressed() {
             hideKeyboard();
+
+            if (mTitle.getText().length() <= 0) {
+                mTitle.setText(mTask.getTitle());
+            }
         }
     };
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, 0);
+    }
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -509,6 +542,17 @@ public class EditTaskActivity extends BaseActivity {
 
         // Remove focus from text views by focusing on main layout.
         mLayout.requestFocus();
+    }
+
+    @OnClick(R.id.main_layout)
+    protected void cancel() {
+        performChanges(false);
+        finish();
+    }
+
+    @OnClick(R.id.edit_task_container)
+    protected void ignore() {
+        // Do nothing.
     }
 
     @OnClick(R.id.button_edit_task_priority)
@@ -538,15 +582,12 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.tags_container)
     protected void setTags() {
         mTagsArea.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
-        mContainer.setVisibility(View.GONE);
+        mPropertiesView.setVisibility(View.GONE);
 
         // Show tags area with fade animation.
         mTagsArea.setVisibility(View.VISIBLE);
         mTagsArea.setAlpha(0f);
         mTagsArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
-
-        // Hide action bar.
-        getSupportActionBar().hide();
 
         loadTags();
     }
@@ -563,7 +604,8 @@ public class EditTaskActivity extends BaseActivity {
         updateViews();
     }
 
-    private void deleteTask() {
+    @OnClick(R.id.edit_task_delete_button)
+    protected void deleteTask() {
         // Display confirmation dialog.
         new SwipesDialog.Builder(this)
                 .title(getResources().getQuantityString(R.plurals.delete_task_dialog_title, 1, 1))
@@ -583,7 +625,8 @@ public class EditTaskActivity extends BaseActivity {
                 .show();
     }
 
-    private void attachEvernote() {
+    @OnClick(R.id.edit_task_evernote_button)
+    protected void attachEvernote() {
         // Call attachments activity.
         Intent intent = new Intent(this, EvernoteAttachmentsActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
@@ -604,12 +647,9 @@ public class EditTaskActivity extends BaseActivity {
         mTagsArea.setVisibility(View.GONE);
 
         // Show edit task area with fade animation.
-        mContainer.setVisibility(View.VISIBLE);
-        mContainer.setAlpha(0f);
-        mContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
-
-        // Hide action bar.
-        getSupportActionBar().show();
+        mPropertiesView.setVisibility(View.VISIBLE);
+        mPropertiesView.setAlpha(0f);
+        mPropertiesView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         updateViews();
 
@@ -624,19 +664,21 @@ public class EditTaskActivity extends BaseActivity {
 
     @OnClick(R.id.assign_tags_area)
     protected void tagsAreaClick() {
-        // Close tags area with animation.
-        closeTags();
+        // Do nothing.
     }
 
     @OnClick(R.id.assign_tags_add_button)
     protected void addTag() {
         // Create tag title input.
-        final EditText input = new EditText(this);
+        final ActionEditText input = new ActionEditText(this);
         input.setHint(getString(R.string.add_tag_dialog_hint));
+        input.setHintTextColor(ThemeUtils.getHintColor(this));
+        input.setTextColor(ThemeUtils.getTextColor(this));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.requestFocus();
 
         // Display dialog to save new tag.
-        new SwipesDialog.Builder(this)
+        final SwipesDialog dialog = new SwipesDialog.Builder(this)
                 .title(R.string.add_tag_dialog_title)
                 .positiveText(R.string.add_tag_dialog_yes)
                 .negativeText(R.string.add_tag_dialog_no)
@@ -653,10 +695,54 @@ public class EditTaskActivity extends BaseActivity {
 
                             // Refresh displayed tags.
                             loadTags();
+
+                            hideKeyboard();
                         }
                     }
                 })
+                .showListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Show keyboard automatically.
+                        showKeyboard();
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        hideKeyboard();
+                    }
+                })
                 .show();
+
+        // Dismiss dialog on back press.
+        input.setListener(new KeyboardBackListener() {
+            @Override
+            public void onKeyboardBackPressed() {
+                dialog.dismiss();
+            }
+        });
+
+        input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // If the action is a key-up event on the return key, save changes.
+                    String title = v.getText().toString();
+
+                    if (!title.isEmpty()) {
+                        // Save new tag to database.
+                        mTasksService.createTag(title);
+
+                        // Refresh displayed tags.
+                        loadTags();
+                    }
+
+                    dialog.dismiss();
+                }
+                return true;
+            }
+        });
     }
 
     private LinearLayout customizeAddTagInput(EditText input) {
@@ -772,7 +858,8 @@ public class EditTaskActivity extends BaseActivity {
         }
     }
 
-    private void shareTask() {
+    @OnClick(R.id.edit_task_share_button)
+    protected void shareTask() {
         String content = getString(R.string.share_message_header);
         content += getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
 
@@ -812,7 +899,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_never)
     protected void repeatNever() {
         clearRepeatSelections();
-        mRepeatNever.select();
+        mRepeatNever.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.NEVER.getValue());
         mTask.setLocalRepeatDate(null);
@@ -825,7 +912,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_day)
     protected void repeatDay() {
         clearRepeatSelections();
-        mRepeatDay.select();
+        mRepeatDay.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_DAY.getValue());
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
@@ -838,7 +925,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_mon_fri)
     protected void repeatMonFri() {
         clearRepeatSelections();
-        mRepeatMonFri.select();
+        mRepeatMonFri.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY.getValue());
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
@@ -851,7 +938,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_week)
     protected void repeatWeek() {
         clearRepeatSelections();
-        mRepeatWeek.select();
+        mRepeatWeek.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_WEEK.getValue());
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
@@ -864,7 +951,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_month)
     protected void repeatMonth() {
         clearRepeatSelections();
-        mRepeatMonth.select();
+        mRepeatMonth.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_MONTH.getValue());
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
@@ -877,7 +964,7 @@ public class EditTaskActivity extends BaseActivity {
     @OnClick(R.id.repeat_option_year)
     protected void repeatYear() {
         clearRepeatSelections();
-        mRepeatYear.select();
+        mRepeatYear.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_YEAR.getValue());
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
@@ -902,17 +989,17 @@ public class EditTaskActivity extends BaseActivity {
 
         // Set selected option.
         if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER.getValue())) {
-            mRepeatNever.select();
+            mRepeatNever.select(mSection);
         } else if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
-            mRepeatDay.select();
+            mRepeatDay.select(mSection);
         } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
-            mRepeatMonFri.select();
+            mRepeatMonFri.select(mSection);
         } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK.getValue())) {
-            mRepeatWeek.select();
+            mRepeatWeek.select(mSection);
         } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH.getValue())) {
-            mRepeatMonth.select();
+            mRepeatMonth.select(mSection);
         } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR.getValue())) {
-            mRepeatYear.select();
+            mRepeatYear.select(mSection);
         }
     }
 
@@ -985,6 +1072,11 @@ public class EditTaskActivity extends BaseActivity {
                         }
                     })
                     .show();
+        }
+
+        @Override
+        public void editSubtask(GsonTask task) {
+            saveSubtask(task);
         }
     };
 
@@ -1069,8 +1161,6 @@ public class EditTaskActivity extends BaseActivity {
 
                 mSubtaskFooter.setAlpha(0f);
                 mSubtaskFooter.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
-
-                changeFooterCircleMargin(mSubtaskAddCircleContainer, false);
             }
         });
     }
@@ -1110,14 +1200,20 @@ public class EditTaskActivity extends BaseActivity {
         return null;
     }
 
-    private void changeFooterCircleMargin(FrameLayout container, boolean isLarge) {
-        int left = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_left);
-        int leftLarge = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_left_large);
-        int right = getResources().getDimensionPixelSize(R.dimen.subtask_circle_margin_right);
+    private View.OnTouchListener mPropertiesTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mNotes.getParent().requestDisallowInterceptTouchEvent(false);
+            return false;
+        }
+    };
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
-        params.setMargins(isLarge ? leftLarge : left, 0, right, 0);
-        container.setLayoutParams(params);
-    }
+    private View.OnTouchListener mNotesTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mNotes.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        }
+    };
 
 }

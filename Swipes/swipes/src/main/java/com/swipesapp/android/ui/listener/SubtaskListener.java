@@ -30,4 +30,11 @@ public interface SubtaskListener {
      */
     void deleteSubtask(GsonTask task);
 
+    /**
+     * Edit a subtask.
+     *
+     * @param task Subtask to edit.
+     */
+    void editSubtask(GsonTask task);
+
 }

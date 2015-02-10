@@ -89,6 +89,15 @@ public class ThemeUtils {
 
     /**
      * @param context Context to use.
+     * @return Current theme's hint color.
+     */
+    public static int getHintColor(Context context) {
+        int color = isLightTheme(context) ? R.color.light_hint : R.color.dark_hint;
+        return context.getResources().getColor(color);
+    }
+
+    /**
+     * @param context Context to use.
      * @return Accent color for the chosen section.
      */
     public static int getSectionColor(Sections section, Context context) {

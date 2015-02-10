@@ -49,6 +49,11 @@
         <item name="android:backgroundDimAmount">0.2</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
+
+        <item name="android:textColor">@color/light_text</item>
+        <item name="colorAccent">@color/light_text</item>
+        <item name="colorControlHighlight">@color/light_highlight</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/light_highlight</item>
     </style>
 
     <style name="Dialog_Theme_Dark" parent="Theme.AppCompat.Dialog">
@@ -56,6 +61,11 @@
         <item name="android:backgroundDimAmount">0.4</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
+
+        <item name="android:textColor">@color/dark_text</item>
+        <item name="colorAccent">@color/dark_text</item>
+        <item name="colorControlHighlight">@color/dark_highlight</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/dark_highlight</item>
     </style>
 
     <!-- Dialog animation style. -->
@@ -81,24 +91,6 @@
         <item name="android:windowBackground">@drawable/preview_evernote</item>
         <item name="colorPrimary">@color/evernote_brand</item>
         <item name="colorPrimaryDark">@color/evernote_brand_dark</item>
-    </style>
-
-    <style name="Edit_Preview" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/preview_edit_focus</item>
-        <item name="colorPrimary">@color/focus_accent</item>
-        <item name="colorPrimaryDark">@color/focus_accent_dark</item>
-    </style>
-
-    <style name="Edit_Later_Preview" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/preview_edit_later</item>
-        <item name="colorPrimary">@color/later_accent</item>
-        <item name="colorPrimaryDark">@color/later_accent_dark</item>
-    </style>
-
-    <style name="Edit_Done_Preview" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/preview_edit_done</item>
-        <item name="colorPrimary">@color/done_accent</item>
-        <item name="colorPrimaryDark">@color/done_accent_dark</item>
     </style>
 
 </resources>

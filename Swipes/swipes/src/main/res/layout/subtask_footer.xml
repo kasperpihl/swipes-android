@@ -22,10 +22,12 @@
             android:id="@+id/subtask_visibility_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="@dimen/subtask_margin_sides"
+            android:layout_marginTop="15dp"
             android:background="@color/transparent"
             android:text="@string/left_arrow"
-            android:textSize="25sp" />
+            android:textSize="@dimen/subtask_footer_icon_size" />
 
         <TextView
             android:id="@+id/subtask_visibility_caption"

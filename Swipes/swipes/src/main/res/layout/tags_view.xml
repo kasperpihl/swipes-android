@@ -13,10 +13,10 @@
         android:id="@+id/assign_tags_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/tags_margin_sides"
+        android:layout_marginRight="@dimen/tags_margin_sides"
+        android:layout_marginTop="15dp" />
 
     <!-- Tag management buttons -->
     <RelativeLayout
@@ -29,22 +29,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginLeft="@dimen/tags_margin_sides"
+            android:layout_marginRight="@dimen/tags_margin_sides"
             android:background="@android:color/transparent"
             android:text="@string/left_arrow"
-            android:textSize="25sp" />
+            android:textSize="@dimen/tags_back_icon_size" />
 
         <com.swipesapp.android.ui.view.SwipesButton
             android:id="@+id/assign_tags_add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginLeft="@dimen/tags_margin_sides"
+            android:layout_marginRight="@dimen/tags_margin_sides"
             android:background="@android:color/transparent"
             android:text="@string/plus_sign"
-            android:textSize="25sp" />
+            android:textSize="@dimen/tags_add_icon_size" />
     </RelativeLayout>
 
 </LinearLayout>

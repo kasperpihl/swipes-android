@@ -5,6 +5,8 @@
     <string name="welcome_task_one">Swipe right to complete</string>
     <string name="welcome_task_two">Swipe left to snooze</string>
     <string name="welcome_task_three">Tap to show more actions</string>
+    <string name="welcome_tag_one">home</string>
+    <string name="welcome_tag_two">shopping</string>
     <string name="welcome_login_button">LOG IN OR SIGN UP</string>
     <string name="welcome_try_button"><u>Keep trying Swipes</u></string>
     <string name="welcome_first_branding">Focus. Swipe. Achieve.</string>
@@ -25,6 +27,7 @@
     <string name="title_activity_snooze_settings">Snoozes</string>
     <string name="title_activity_add_task">Add Task</string>
     <string name="title_activity_edit_task">Edit task</string>
+    <string name="title_activity_snooze_task">Snooze task</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_evernote_learn">Evernote Integration</string>
     <string name="title_activity_evernote_attachments">Evernote Attachments</string>
@@ -244,7 +247,9 @@
     <string name="edit_task_evernote_attached">ATTACHED</string>
 
     <!-- Action steps -->
-    <string name="edit_task_add_subtask_hint">Add action step</string>
+    <string name="edit_task_add_subtask_hint">Add an action step</string>
+    <string name="subtask_hide_caption">Show less action steps</string>
+    <string name="subtask_show_caption">Show all action steps</string>
     <string name="delete_subtask_dialog_title">Delete action step?</string>
     <string name="delete_subtask_dialog_message">This cannot be undone.</string>
     <string name="delete_subtask_dialog_yes">Delete</string>
@@ -281,10 +286,6 @@
     <plurals name="notification_title">
         <item quantity="one">%s</item>
         <item quantity="other">You have %d new tasks</item>
-    </plurals>
-    <plurals name="subtask_show_caption">
-        <item quantity="one">See 1 action</item>
-        <item quantity="other">See all %s actions</item>
     </plurals>
 
 </resources>

@@ -31,6 +31,11 @@ public class Constants {
     public static final int ANIMATION_DURATION_LONG = 500;
 
     /**
+     * Intent extra for section number.
+     */
+    public static final String EXTRA_SECTION_NUMBER = "SECTION_NUMBER";
+
+    /**
      * Intent extra for task ID.
      */
     public static final String EXTRA_TASK_ID = "TASK_ID";

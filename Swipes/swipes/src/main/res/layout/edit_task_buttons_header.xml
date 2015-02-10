@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_task_button_header"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/edit_task_header_height"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/edit_task_buttons_bar_padding">
+
+    <com.swipesapp.android.ui.view.SwipesButton
+        android:id="@+id/edit_task_share_button"
+        android:layout_width="@dimen/edit_task_buttons_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/edit_task_buttons_margin"
+        android:layout_marginRight="@dimen/edit_task_buttons_margin"
+        android:background="@color/transparent"
+        android:text="@string/action_share"
+        android:textSize="@dimen/toolbar_icon_size" />
+
+    <com.swipesapp.android.ui.view.SwipesButton
+        android:id="@+id/edit_task_delete_button"
+        android:layout_width="@dimen/edit_task_buttons_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@id/edit_task_share_button"
+        android:background="@color/transparent"
+        android:text="@string/action_delete"
+        android:textSize="@dimen/toolbar_icon_size" />
+
+    <com.swipesapp.android.ui.view.SwipesButton
+        android:id="@+id/edit_task_evernote_button"
+        android:layout_width="@dimen/edit_task_buttons_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/edit_task_buttons_margin"
+        android:layout_marginRight="@dimen/edit_task_buttons_margin"
+        android:layout_toLeftOf="@id/edit_task_delete_button"
+        android:background="@color/transparent"
+        android:text="@string/action_evernote"
+        android:textSize="@dimen/toolbar_icon_size" />
+
+</RelativeLayout>

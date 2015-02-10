@@ -190,6 +190,26 @@ public class SplashActivity extends BaseActivity {
 
         syncService.saveTaskChangesForSync(task);
         tasksService.saveTask(task, false);
+
+        GsonTag tag = GsonTag.gsonForLocal(null, null, null, currentDate, currentDate, null);
+
+        // Save first tag.
+        title = getString(R.string.welcome_tag_one);
+        tempId = UUID.randomUUID().toString();
+        tag.setTitle(title);
+        tag.setTempId(tempId);
+
+        syncService.saveTagForSync(tag);
+        tasksService.saveTag(tag);
+
+        // Save second tag.
+        title = getString(R.string.welcome_tag_two);
+        tempId = UUID.randomUUID().toString();
+        tag.setTitle(title);
+        tag.setTempId(tempId);
+
+        syncService.saveTagForSync(tag);
+        tasksService.saveTag(tag);
     }
 
 }

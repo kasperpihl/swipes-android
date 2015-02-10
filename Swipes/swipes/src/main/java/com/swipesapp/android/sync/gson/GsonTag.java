@@ -78,6 +78,10 @@ public class GsonTag {
         return tempId;
     }
 
+    public void setTempId(String tempId) {
+        this.tempId = tempId;
+    }
+
     public void setLocalCreatedAt(Date localCreatedAt) {
         this.localCreatedAt = localCreatedAt;
     }
@@ -96,6 +100,10 @@ public class GsonTag {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Boolean getDeleted() {

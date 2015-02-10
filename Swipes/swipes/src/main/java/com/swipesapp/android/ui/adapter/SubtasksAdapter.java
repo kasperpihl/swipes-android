@@ -1,23 +1,25 @@
 package com.swipesapp.android.ui.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.SubtaskListener;
-import com.swipesapp.android.ui.view.SwipesTextView;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
 
@@ -33,12 +35,14 @@ public class SubtasksAdapter extends BaseAdapter {
     private WeakReference<Context> mContext;
     private SubtaskListener mListener;
     private Resources mResources;
+    private View mMainLayout;
 
-    public SubtasksAdapter(Context context, List<GsonTask> data, SubtaskListener listener) {
+    public SubtasksAdapter(Context context, List<GsonTask> data, SubtaskListener listener, View mainLayout) {
         mData = data;
         mContext = new WeakReference<Context>(context);
         mListener = listener;
         mResources = context.getResources();
+        mMainLayout = mainLayout;
     }
 
     @Override
@@ -65,12 +69,7 @@ public class SubtasksAdapter extends BaseAdapter {
         GsonTask task = mData.get(position);
         LayoutInflater inflater = ((Activity) mContext.get()).getLayoutInflater();
 
-        // Inflate layout according to completion.
-        if (task.getLocalCompletionDate() != null) {
-            convertView = inflater.inflate(R.layout.subtask_completed, parent, false);
-        } else {
-            convertView = inflater.inflate(R.layout.subtask_default, parent, false);
-        }
+        convertView = inflater.inflate(R.layout.subtask_cell, parent, false);
 
         holder = new SubtaskHolder();
 
@@ -79,8 +78,8 @@ public class SubtasksAdapter extends BaseAdapter {
         holder.circleContainer = (FrameLayout) convertView.findViewById(R.id.subtask_circle_container);
         holder.buttonContainer = (FrameLayout) convertView.findViewById(R.id.subtask_buttons_container);
         holder.circle = convertView.findViewById(R.id.subtask_circle);
-        holder.title = (TextView) convertView.findViewById(R.id.subtask_title);
-        holder.button = (SwipesTextView) convertView.findViewById(R.id.subtask_button);
+        holder.title = (ActionEditText) convertView.findViewById(R.id.subtask_title);
+        holder.button = (CheckBox) convertView.findViewById(R.id.subtask_button);
 
         convertView.setTag(holder);
 
@@ -93,22 +92,17 @@ public class SubtasksAdapter extends BaseAdapter {
         // Setup properties.
         holder.title.setText(task.getTitle());
         final boolean isCompleted = task.getLocalCompletionDate() != null;
+        holder.button.setChecked(isCompleted);
 
         // Setup action.
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Quickly fade cell then trigger action.
-                holder.container.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (!isCompleted) {
-                            mListener.completeSubtask(task);
-                        } else {
-                            mListener.uncompleteSubtask(task);
-                        }
-                    }
-                });
+                if (holder.button.isChecked()) {
+                    mListener.completeSubtask(task);
+                } else {
+                    mListener.uncompleteSubtask(task);
+                }
             }
         });
 
@@ -116,17 +110,47 @@ public class SubtasksAdapter extends BaseAdapter {
         holder.container.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mListener.deleteSubtask(task);
+//                mListener.deleteSubtask(task);
                 return true;
+            }
+        });
+
+        // Setup edit.
+        holder.title.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // If the action is a key-up event on the return key, save changes.
+                    if (v.getText().length() > 0) {
+                        task.setTitle(v.getText().toString());
+                        mListener.editSubtask(task);
+                    } else {
+                        v.setText(task.getTitle());
+                    }
+
+                    hideKeyboard();
+                }
+                return true;
+            }
+        });
+
+        holder.title.setListener(new KeyboardBackListener() {
+            @Override
+            public void onKeyboardBackPressed() {
+                hideKeyboard();
+
+                if (holder.title.getText().length() <= 0) {
+                    holder.title.setText(task.getTitle());
+                }
             }
         });
 
         // Customize colors.
         int lightGray = ThemeUtils.isLightTheme(mContext.get()) ? R.color.light_hint : R.color.dark_hint;
-        holder.button.setTextColor(mResources.getColor(lightGray));
         holder.title.setTextColor(isCompleted ? mResources.getColor(lightGray) : ThemeUtils.getTextColor(mContext.get()));
 
-        // TODO: Set button selector.
+        int background = ThemeUtils.isLightTheme(mContext.get()) ? R.drawable.checkbox_selector_light : R.drawable.checkbox_selector_dark;
+        holder.button.setBackgroundResource(background);
     }
 
     public void update(List<GsonTask> data) {
@@ -138,6 +162,13 @@ public class SubtasksAdapter extends BaseAdapter {
         super.notifyDataSetChanged();
     }
 
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) mContext.get().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
+
+        mMainLayout.requestFocus();
+    }
+
     private static class SubtaskHolder {
 
         // Containers.
@@ -147,8 +178,8 @@ public class SubtasksAdapter extends BaseAdapter {
 
         // Views.
         View circle;
-        TextView title;
-        SwipesTextView button;
+        ActionEditText title;
+        CheckBox button;
     }
 
 }

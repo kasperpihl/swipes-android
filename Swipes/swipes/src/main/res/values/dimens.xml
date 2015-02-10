@@ -39,18 +39,31 @@
     <dimen name="repeat_options_margin">5dp</dimen>
     <dimen name="repeat_options_separator_width">1dp</dimen>
     <dimen name="repeat_options_margin_top">15dp</dimen>
+    <dimen name="edit_task_buttons_width">50dp</dimen>
+    <dimen name="edit_task_buttons_margin">4dp</dimen>
+    <dimen name="edit_task_buttons_bar_padding">4dp</dimen>
+    <dimen name="edit_task_header_height">56dp</dimen>
+    <dimen name="edit_task_margin_sides">16dp</dimen>
+    <dimen name="edit_task_icon_size">22sp</dimen>
+    <dimen name="edit_task_margin_vertical">30dp</dimen>
 
     <!-- Subtasks -->
     <dimen name="subtask_cell_height">40dp</dimen>
-    <dimen name="subtask_circle_margin_left">11dp</dimen>
-    <dimen name="subtask_circle_margin_left_large">49dp</dimen>
-    <dimen name="subtask_circle_margin_right">7dp</dimen>
-    <dimen name="subtask_margin_left">22dp</dimen>
     <dimen name="subtask_circle_size">10dp</dimen>
     <dimen name="subtask_circle_thickness">2dp</dimen>
     <dimen name="subtask_counter_margin">12dp</dimen>
     <dimen name="subtask_counter_width">24dp</dimen>
     <dimen name="subtask_counter_height">21dp</dimen>
+    <dimen name="subtask_margin_sides">16dp</dimen>
+    <dimen name="subtask_icon_size">22sp</dimen>
+    <dimen name="subtask_footer_icon_size">27sp</dimen>
+    <dimen name="subtask_add_icon_size">37sp</dimen>
+    <dimen name="subtask_add_icon_margin_sides">8dp</dimen>
+
+    <!-- Tags -->
+    <dimen name="tags_back_icon_size">27sp</dimen>
+    <dimen name="tags_add_icon_size">37sp</dimen>
+    <dimen name="tags_margin_sides">16dp</dimen>
 
     <!-- Scheduler -->
     <dimen name="snooze_options_icon_size">44sp</dimen>
@@ -73,6 +86,7 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_subtasks">16sp</dimen>
     <dimen name="toolbar_elevation">0dp</dimen>
     <dimen name="flat_button_height">48dp</dimen>
     <dimen name="flat_button_padding_horizontal">8dp</dimen>

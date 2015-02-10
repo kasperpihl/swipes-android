@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -40,8 +41,6 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
-import com.swipesapp.android.ui.activity.EditDoneTaskActivity;
-import com.swipesapp.android.ui.activity.EditLaterTaskActivity;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
@@ -882,20 +881,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void startEditTask(Long taskId) {
-        // Initialize intent passing the tempId of the selected task as parameter.
-        Intent editTaskIntent = new Intent();
+        // Call task edit activity, passing the tempId of the selected task as parameter.
+        Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
         editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
+        editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
 
-        // Decide which variation to call.
-        if (mSection == Sections.LATER) {
-            editTaskIntent.setClass(getActivity(), EditLaterTaskActivity.class);
-        } else if (mSection == Sections.DONE) {
-            editTaskIntent.setClass(getActivity(), EditDoneTaskActivity.class);
-        } else {
-            editTaskIntent.setClass(getActivity(), EditTaskActivity.class);
-        }
-
-        // Call activity.
         startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
     }
 
@@ -947,12 +937,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @OnClick(R.id.assign_tags_add_button)
     protected void addTag() {
         // Create tag title input.
-        final EditText input = new EditText(getActivity());
+        final ActionEditText input = new ActionEditText(getActivity());
         input.setHint(getString(R.string.add_tag_dialog_hint));
+        input.setHintTextColor(ThemeUtils.getHintColor(getActivity()));
+        input.setTextColor(ThemeUtils.getTextColor(getActivity()));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.requestFocus();
 
         // Display dialog to save new tag.
-        new SwipesDialog.Builder(getActivity())
+        final SwipesDialog dialog = new SwipesDialog.Builder(getActivity())
                 .title(R.string.add_tag_dialog_title)
                 .positiveText(R.string.add_tag_dialog_yes)
                 .negativeText(R.string.add_tag_dialog_no)
@@ -969,10 +962,54 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                             // Refresh displayed tags.
                             loadTags();
+
+                            hideKeyboard();
                         }
                     }
                 })
+                .showListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Show keyboard automatically.
+                        showKeyboard();
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        hideKeyboard();
+                    }
+                })
                 .show();
+
+        // Dismiss dialog on back press.
+        input.setListener(new KeyboardBackListener() {
+            @Override
+            public void onKeyboardBackPressed() {
+                dialog.dismiss();
+            }
+        });
+
+        input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // If the action is a key-up event on the return key, save changes.
+                    String title = v.getText().toString();
+
+                    if (!title.isEmpty()) {
+                        // Save new tag to database.
+                        mTasksService.createTag(title);
+
+                        // Refresh displayed tags.
+                        loadTags();
+                    }
+
+                    dialog.dismiss();
+                }
+                return true;
+            }
+        });
     }
 
     private LinearLayout customizeAddTagInput(EditText input) {
@@ -1013,6 +1050,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mTaskTagsContainer.addView(tagBox);
         }
     }
+
 
     private View.OnClickListener mTagClickListener = new View.OnClickListener() {
         @Override
@@ -1282,6 +1320,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             hideKeyboard();
         }
     };
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, 0);
+    }
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

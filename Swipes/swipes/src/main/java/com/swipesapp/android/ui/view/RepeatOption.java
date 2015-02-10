@@ -1,9 +1,13 @@
 package com.swipesapp.android.ui.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.swipesapp.android.util.ColorUtils;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 
@@ -35,12 +39,39 @@ public class RepeatOption extends TextView {
         mContext = context;
     }
 
-    public void select() {
-        setBackgroundColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext));
+    public void select(Sections section) {
+        int sectionColor = ThemeUtils.getSectionColor(section, mContext);
+        int backgroundColor = ThemeUtils.getBackgroundColor(mContext);
+
+        transitionBackground(backgroundColor, sectionColor);
     }
 
     public void clearSelection() {
         setBackgroundColor(0);
+        setTextColor(ThemeUtils.getTextColor(mContext));
+    }
+
+    private void transitionBackground(final int fromColor, final int toColor) {
+        final int fromText = ThemeUtils.getTextColor(mContext);
+        final int toText = Color.WHITE;
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Blend colors according to position.
+                float position = animation.getAnimatedFraction();
+                int background = ColorUtils.blendColors(fromColor, toColor, position);
+                int textColor = ColorUtils.blendColors(fromText, toText, position);
+
+                // Adjust background and text colors.
+                setBackgroundColor(background);
+                setTextColor(textColor);
+            }
+        });
+
+        anim.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
     }
 
 }

@@ -12,15 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/subtask_margin_left">
+        android:layout_marginLeft="@dimen/subtask_margin_sides"
+        android:layout_marginRight="@dimen/subtask_margin_sides">
 
-        <com.swipesapp.android.ui.view.SwipesTextView
+        <CheckBox
             android:id="@+id/subtask_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="@string/done_full"
-            android:textSize="17sp" />
+            android:layout_width="@dimen/task_circles_size"
+            android:layout_height="@dimen/task_circles_size"
+            android:button="@null" />
     </FrameLayout>
 
     <!-- Circle container -->
@@ -29,10 +28,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/subtask_circle_margin_left"
-        android:layout_marginRight="@dimen/subtask_circle_margin_right"
+        android:layout_marginLeft="@dimen/subtask_margin_sides"
+        android:layout_marginRight="@dimen/subtask_margin_sides"
         android:layout_toRightOf="@id/subtask_buttons_container"
-        android:padding="10dp">
+        android:visibility="gone">
 
         <View
             android:id="@+id/subtask_circle"
@@ -42,15 +41,20 @@
     </FrameLayout>
 
     <!-- Task title -->
-    <TextView
+    <com.swipesapp.android.ui.view.ActionEditText
         android:id="@+id/subtask_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/subtask_margin_sides"
         android:layout_toRightOf="@id/subtask_circle_container"
+        android:background="@color/transparent"
         android:ellipsize="end"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:inputType="textMultiLine|textCapSentences"
         android:maxLines="2"
-        android:textSize="@dimen/text_size_small" />
+        android:scrollHorizontally="false"
+        android:textSize="@dimen/text_size_subtasks" />
 
 </RelativeLayout>

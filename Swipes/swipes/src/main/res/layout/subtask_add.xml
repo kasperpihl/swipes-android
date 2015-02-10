@@ -12,14 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/subtask_circle_margin_left"
-        android:layout_marginRight="@dimen/subtask_circle_margin_right"
-        android:padding="10dp">
+        android:layout_marginLeft="@dimen/subtask_add_icon_margin_sides"
+        android:layout_marginRight="@dimen/subtask_add_icon_margin_sides">
 
-        <View
-            android:id="@+id/subtask_add_circle"
-            android:layout_width="@dimen/subtask_circle_size"
-            android:layout_height="@dimen/subtask_circle_size" />
+        <com.swipesapp.android.ui.view.SwipesTextView
+            android:id="@+id/subtask_add_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:text="@string/plus_sign"
+            android:textSize="@dimen/subtask_add_icon_size" />
     </FrameLayout>
 
     <!-- Add subtask view -->
