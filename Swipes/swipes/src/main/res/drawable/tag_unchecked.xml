@@ -4,7 +4,7 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <corners android:radius="@dimen/tags_corner_radius" />
-            <solid android:color="@color/dark_hint" />
+            <solid android:color="@color/tag_unselected" />
         </shape>
     </item>
 </layer-list>

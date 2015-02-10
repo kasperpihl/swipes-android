@@ -581,7 +581,6 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.tags_container)
     protected void setTags() {
-        mTagsArea.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
         mPropertiesView.setVisibility(View.GONE);
 
         // Show tags area with fade animation.

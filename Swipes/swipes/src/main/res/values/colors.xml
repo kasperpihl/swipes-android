@@ -43,5 +43,6 @@
     <item name="elevation_shadow" type="color">#33333333</item>
     <item name="neutral_header_light" type="color">#FAFAFA</item>
     <item name="neutral_header_dark" type="color">#2B3139</item>
+    <item name="tag_unselected" type="color">#9E9E9E</item>
 
 </resources>
