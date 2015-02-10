@@ -37,6 +37,15 @@
         <item name="android:src">@drawable/ic_more_dark</item>
     </style>
 
+    <!-- Tasks screen themes. -->
+    <style name="Tasks_Theme_Light" parent="Light_Theme">
+        <item name="colorAccent">@color/light_text</item>
+    </style>
+
+    <style name="Tasks_Theme_Dark" parent="Dark_Theme">
+        <item name="colorAccent">@color/dark_text</item>
+    </style>
+
     <!-- Login screen theme. -->
     <style name="Login_Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/light_text</item>

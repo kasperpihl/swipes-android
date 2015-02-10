@@ -64,6 +64,9 @@
     <dimen name="tags_back_icon_size">27sp</dimen>
     <dimen name="tags_add_icon_size">37sp</dimen>
     <dimen name="tags_margin_sides">16dp</dimen>
+    <dimen name="tags_padding_sides">16dp</dimen>
+    <dimen name="tags_padding_vertical">4dp</dimen>
+    <dimen name="tags_corner_radius">20dp</dimen>
 
     <!-- Scheduler -->
     <dimen name="snooze_options_icon_size">44sp</dimen>

@@ -5,6 +5,8 @@
     android:layout_centerVertical="true"
     android:background="@drawable/tag_selector_dark"
     android:button="@null"
-    android:padding="7dp"
-    android:text="swipes"
+    android:paddingBottom="@dimen/tags_padding_vertical"
+    android:paddingLeft="@dimen/tags_padding_sides"
+    android:paddingRight="@dimen/tags_padding_sides"
+    android:paddingTop="@dimen/tags_padding_vertical"
     android:textColor="@color/tag_text_color_selector_dark" />

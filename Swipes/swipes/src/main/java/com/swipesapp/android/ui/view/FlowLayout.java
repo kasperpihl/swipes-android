@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FlowLayout extends ViewGroup {
-    public static final int DEFAULT_HORIZONTAL_SPACING = 15;
-    public static final int DEFAULT_VERTICAL_SPACING = 15;
+    public static final int DEFAULT_HORIZONTAL_SPACING = 16;
+    public static final int DEFAULT_VERTICAL_SPACING = 16;
     private final int horizontalSpacing;
     private final int verticalSpacing;
     private List<RowMeasurement> currentRows = Collections.emptyList();

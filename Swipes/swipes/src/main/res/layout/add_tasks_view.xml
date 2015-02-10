@@ -20,8 +20,8 @@
             android:layout_height="@dimen/task_circles_size"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/focus_circle_selector"
             android:button="@null" />
 
@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@android:color/transparent"
             android:text="@string/left_arrow"
             android:textSize="25sp" />
@@ -52,12 +52,11 @@
     <!-- Tags area -->
     <com.swipesapp.android.ui.view.FlowLayout
         android:id="@+id/add_task_tag_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/add_task_fields_container"
-        android:layout_marginBottom="17dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

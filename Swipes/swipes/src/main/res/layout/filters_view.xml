@@ -59,10 +59,11 @@
             android:id="@+id/filters_tags_area"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="@dimen/tags_margin_sides"
+            android:layout_marginRight="@dimen/tags_margin_sides"
+            android:layout_marginTop="15dp"
             android:layout_weight="1" />
 
         <TextView

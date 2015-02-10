@@ -135,7 +135,7 @@ public class TasksActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        setTheme(ThemeUtils.isLightTheme(this) ? R.style.Tasks_Theme_Light : R.style.Tasks_Theme_Dark);
         setContentView(R.layout.activity_tasks);
         ButterKnife.inject(this);
 
@@ -165,8 +165,8 @@ public class TasksActivity extends BaseActivity {
 
         mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
 
-        // HACK: Flip add task confirm button, so the arrow points to the right.
-        mButtonConfirmAddTask.setScaleX(-mButtonConfirmAddTask.getScaleX());
+        // HACK: Rotate view, so the arrow points down.
+        mButtonConfirmAddTask.setRotation(270f);
 
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
