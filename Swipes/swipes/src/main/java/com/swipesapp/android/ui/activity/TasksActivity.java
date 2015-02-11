@@ -384,6 +384,7 @@ public class TasksActivity extends BaseActivity {
         mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin_sides));
         mViewPager.setCurrentItem(mCurrentSection.getSectionNumber());
+        mViewPager.setOffscreenPageLimit(2);
 
         if (DeviceUtils.isTablet(this)) mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
