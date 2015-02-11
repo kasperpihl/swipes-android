@@ -92,7 +92,9 @@ public class TasksActivity extends BaseActivity {
     CheckBox mButtonAddTaskPriority;
 
     @InjectView(R.id.edit_tasks_bar)
-    LinearLayout mEditTasksBar;
+    RelativeLayout mEditTasksBar;
+    @InjectView(R.id.edit_bar_selection_count)
+    TextView mEditBarCount;
 
     @InjectView(R.id.add_task_tag_container)
     FlowLayout mAddTaskTagContainer;
@@ -135,6 +137,8 @@ public class TasksActivity extends BaseActivity {
 
     private String[] mIntentData;
 
+    private boolean mIsSelectionMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +179,8 @@ public class TasksActivity extends BaseActivity {
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
+
+        customizeSelectionColors();
 
         handleShareIntent();
     }
@@ -305,7 +311,8 @@ public class TasksActivity extends BaseActivity {
                 // TODO: Call login.
                 break;
             case ACTION_MULTI_SELECT:
-                // TODO: New selection UI.
+                // Enable selection UI.
+                enableSelection();
                 break;
             case ACTION_SEARCH:
                 // TODO: New search UI.
@@ -544,6 +551,9 @@ public class TasksActivity extends BaseActivity {
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
             mButtonAddTask.startAnimation(slideUp);
         }
+
+        // Hide selection count.
+        mEditBarCount.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT);
     }
 
     Animation.AnimationListener mShowEditBarListener = new Animation.AnimationListener() {
@@ -855,6 +865,43 @@ public class TasksActivity extends BaseActivity {
         int focusIndex = Sections.FOCUS.getSectionNumber();
         TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusIndex);
         focusFragment.updateEmptyView();
+    }
+
+    private void customizeSelectionColors() {
+        int background = ThemeUtils.isLightTheme(mContext.get()) ?
+                R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark;
+        mEditBarCount.setBackgroundResource(background);
+
+        int textColor = ThemeUtils.isLightTheme(mContext.get()) ? R.color.dark_text : R.color.light_text;
+        mEditBarCount.setTextColor(getResources().getColor(textColor));
+    }
+
+    @OnClick(R.id.button_close_selection)
+    protected void closeSelection() {
+        mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
+    }
+
+    private void enableSelection() {
+        mIsSelectionMode = true;
+
+        showEditBar();
+    }
+
+    public void cancelSelection() {
+        mIsSelectionMode = false;
+
+        hideEditBar();
+    }
+
+    public void updateSelectionCount(int count) {
+        mEditBarCount.setText(String.valueOf(count));
+
+        float alpha = count > 0 ? 1f : 0f;
+        mEditBarCount.animate().alpha(alpha).setDuration(Constants.ANIMATION_DURATION_SHORT);
+    }
+
+    public boolean isSelectionMode() {
+        return mIsSelectionMode;
     }
 
 }

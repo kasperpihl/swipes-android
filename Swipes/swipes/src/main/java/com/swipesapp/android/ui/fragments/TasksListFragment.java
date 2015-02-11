@@ -547,6 +547,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
                 mListView.setSwipeEnabled(enabled);
             } else if (intent.getAction().equals(Actions.SELECTION_CLEARED)) {
+                // Clear selected tasks and stop selection mode.
+                sSelectedTasks.clear();
+                ((TasksActivity) getActivity()).cancelSelection();
+
                 // Refresh all sections.
                 refreshTaskList(false);
             }
@@ -562,20 +566,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 } else if (intent.getAction().equals(Actions.SHARE_TASKS)) {
                     // Send intent to share selected tasks by email.
                     shareTasks();
-
-                    // Hide bar and clear selection.
-                    ((TasksActivity) getActivity()).hideEditBar();
-                    sSelectedTasks.clear();
                 } else if (intent.getAction().equals(Actions.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
                         closeTags();
-                    } else if (!sSelectedTasks.isEmpty()) {
-                        // Clear selected tasks and hide edit bar.
-                        sSelectedTasks.clear();
-                        ((TasksActivity) getActivity()).hideEditBar();
-
-                        // Send broadcast to update UI.
+                    } else if (((TasksActivity) getActivity()).isSelectionMode()) {
+                        // Send broadcast to update selection UI.
                         mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
                     } else {
                         sIsShowingOld = false;
@@ -661,23 +657,26 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         public void onClickFrontView(View view, int position) {
             GsonTask task = getTask(position);
 
-            startEditTask(task.getId());
+            // Start selection or edit task.
+            if (((TasksActivity) getActivity()).isSelectionMode()) {
+                View selectedIndicator = view.findViewById(R.id.selected_indicator);
 
-//            View selectedIndicator = view.findViewById(R.id.selected_indicator);
-//
-//            if (task.isSelected()) {
-//                // Deselect task.
-//                task.setSelected(false);
-//                selectedIndicator.setBackgroundColor(0);
-//                sSelectedTasks.remove(task);
-//            } else {
-//                // Select task.
-//                task.setSelected(true);
-//                selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
-//                sSelectedTasks.add(task);
-//            }
-//
-//            handleEditBar();
+                if (task.isSelected()) {
+                    // Deselect task.
+                    task.setSelected(false);
+                    selectedIndicator.setBackgroundColor(0);
+                    sSelectedTasks.remove(task);
+                } else {
+                    // Select task.
+                    task.setSelected(true);
+                    selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+                    sSelectedTasks.add(task);
+                }
+
+                ((TasksActivity) getActivity()).updateSelectionCount(sSelectedTasks.size());
+            } else {
+                startEditTask(task.getId());
+            }
         }
 
         @Override
@@ -702,7 +701,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Clear selected tasks and hide edit bar.
             sSelectedTasks.clear();
-            ((TasksActivity) getActivity()).hideEditBar();
+            ((TasksActivity) getActivity()).cancelSelection();
 
             refreshTaskList(false);
         }
@@ -737,8 +736,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (focusEmptyView.getAlpha() == 0f) {
                 focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
             }
-
-            ((TasksActivity) getActivity()).hideEditBar();
         }
     }
 
@@ -779,16 +776,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Refresh sharing message.
             ((TasksActivity) getActivity()).setShareMessage(allDoneMessage.getText().toString());
-        }
-    }
-
-    private void handleEditBar() {
-        if (!sSelectedTasks.isEmpty()) {
-            // Display bar.
-            ((TasksActivity) getActivity()).showEditBar();
-        } else {
-            // Hide bar.
-            ((TasksActivity) getActivity()).hideEditBar();
         }
     }
 
@@ -919,8 +906,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Show main activity content.
         ((TasksActivity) getActivity()).showActionButtons();
-
-        sSelectedTasks.clear();
 
         refreshTaskList(false);
 
