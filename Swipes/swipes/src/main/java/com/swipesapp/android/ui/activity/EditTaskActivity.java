@@ -859,17 +859,26 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.edit_task_share_button)
     protected void shareTask() {
-        String content = getString(R.string.share_message_header);
-        content += getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
+        String content = getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
 
+        // Append subtask titles.
         for (GsonTask subtask : mTasksService.loadSubtasksForTask(mTask.getTempId())) {
             content += "\t\t" + getString(R.string.share_message_circle) + subtask.getTitle() + "\n";
         }
 
-        content += "\n" + getString(R.string.share_message_footer);
+        // Append notes.
+        content += "\n Notes: \n\n" + mTask.getNotes();
+
+        // Append basic footer.
+        content += "\n\n" + getString(R.string.share_message_footer_sent_from);
+
+        // Use only basic footer when sharing URLs.
+        if (!mTask.getNotes().startsWith("http")) {
+            content += "\n" + getString(R.string.share_message_footer_get_swipes);
+        }
 
         Intent inviteIntent = new Intent(Intent.ACTION_SEND);
-        inviteIntent.setType("text/html");
+        inviteIntent.setType("text/plain");
         inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 

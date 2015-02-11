@@ -29,6 +29,8 @@ public class PreferenceUtils {
 
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
 
+    public static final String TASKS_ADDED_FROM_INTENT = "tasks_added_from_intent";
+
     /**
      * Saves a boolean preference.
      *
@@ -203,6 +205,17 @@ public class PreferenceUtils {
     public static boolean isEvernoteSyncEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(EVERNOTE_SYNC_KEY, true);
+    }
+
+    /**
+     * Check if tasks were added from ACTION_SEND intent.
+     *
+     * @param context Context instance.
+     * @return True if tasks were added.
+     */
+    public static boolean hasAddedTasksFromIntent(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(TASKS_ADDED_FROM_INTENT, false);
     }
 
 }

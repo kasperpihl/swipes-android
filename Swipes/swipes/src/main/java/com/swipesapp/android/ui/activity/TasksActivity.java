@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
@@ -113,7 +114,7 @@ public class TasksActivity extends BaseActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static Sections sCurrentSection;
+    private Sections mCurrentSection;
 
     private List<GsonTag> mSelectedTags;
 
@@ -131,6 +132,8 @@ public class TasksActivity extends BaseActivity {
     private String mShareMessage;
 
     private boolean mWasRestored;
+
+    private String[] mIntentData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +157,7 @@ public class TasksActivity extends BaseActivity {
 
         createSnoozeAlarm();
 
-        if (sCurrentSection == null) sCurrentSection = Sections.FOCUS;
+        if (mCurrentSection == null) mCurrentSection = Sections.FOCUS;
 
         setupViewPager();
 
@@ -172,6 +175,8 @@ public class TasksActivity extends BaseActivity {
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
+
+        handleShareIntent();
     }
 
     @Override
@@ -204,7 +209,7 @@ public class TasksActivity extends BaseActivity {
         }
 
         // Restore section colors.
-        setupSystemBars(sCurrentSection);
+        setupSystemBars(mCurrentSection);
 
         // Clear restoration flag.
         mWasRestored = false;
@@ -317,6 +322,28 @@ public class TasksActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void handleShareIntent() {
+        // Handle intent from other apps.
+        Intent intent = getIntent();
+        String action = intent.getAction();
+
+        if (action != null && (action.equals(Intent.ACTION_SEND) || action.equals(Intent.ACTION_SEND_MULTIPLE))) {
+
+            String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+            String notes = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+            if (title == null || title.isEmpty()) title = "";
+
+            if (notes != null && !notes.startsWith("http")) {
+                notes = notes.replaceAll("http[^ ]+$", "");
+            }
+
+            mIntentData = new String[]{title, notes};
+
+            startAddTaskWorkflow();
+        }
+    }
+
     private void setupSystemBars(Sections section) {
         // Set toolbar title and icon.
         TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
@@ -356,7 +383,7 @@ public class TasksActivity extends BaseActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOnPageChangeListener(mSimpleOnPageChangeListener);
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin_sides));
-        mViewPager.setCurrentItem(sCurrentSection.getSectionNumber());
+        mViewPager.setCurrentItem(mCurrentSection.getSectionNumber());
 
         if (DeviceUtils.isTablet(this)) mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
@@ -364,9 +391,9 @@ public class TasksActivity extends BaseActivity {
     private ViewPager.SimpleOnPageChangeListener mSimpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            sCurrentSection = Sections.getSectionByNumber(position);
+            mCurrentSection = Sections.getSectionByNumber(position);
 
-            themeRecentsHeader(ThemeUtils.getSectionColor(sCurrentSection, mContext.get()));
+            themeRecentsHeader(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()));
 
             mHasChangedTab = true;
         }
@@ -472,12 +499,8 @@ public class TasksActivity extends BaseActivity {
         }
     }
 
-    public static Sections getCurrentSection() {
-        return sCurrentSection;
-    }
-
-    public static void clearCurrentSection() {
-        sCurrentSection = null;
+    public Sections getCurrentSection() {
+        return mCurrentSection;
     }
 
     public DynamicViewPager getViewPager() {
@@ -563,11 +586,21 @@ public class TasksActivity extends BaseActivity {
         String title = mEditTextAddNewTask.getText().toString();
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
         String tempId = UUID.randomUUID().toString();
+        String notes = null;
+
+        if (mIntentData != null) {
+            notes = mIntentData[1];
+        }
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, null, 0,
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
                     priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, null, 0);
             mTasksService.saveTask(task, true);
+        }
+
+        if (mIntentData != null) {
+            Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
+            PreferenceUtils.saveBooleanPreference(PreferenceUtils.TASKS_ADDED_FROM_INTENT, true, this);
         }
 
         endAddTaskWorkflow(true);
@@ -579,13 +612,13 @@ public class TasksActivity extends BaseActivity {
         mIsAddingTask = true;
 
         // Go to main fragment if needed.
-        if (sCurrentSection != Sections.FOCUS) {
+        if (mCurrentSection != Sections.FOCUS) {
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
         // Fade out the tasks.
         mTasksArea.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(ThemeUtils.getSectionColorDark(sCurrentSection, this), ThemeUtils.getStatusBarColor(this));
+        transitionStatusBar(ThemeUtils.getSectionColorDark(mCurrentSection, this), ThemeUtils.getStatusBarColor(this));
 
         // Show and hide keyboard automatically.
         mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
@@ -604,14 +637,23 @@ public class TasksActivity extends BaseActivity {
         // Display tags area.
         animateTags(false);
         loadTags();
+
+        // Load title from other apps.
+        if (mIntentData != null) {
+            String title = mIntentData[0];
+            mEditTextAddNewTask.setText(title);
+        }
     }
 
     @OnClick(R.id.add_task_container)
     protected void addTaskAreaClick() {
-        endAddTaskWorkflow(false);
+        if (mIntentData == null) endAddTaskWorkflow(false);
     }
 
     private void endAddTaskWorkflow(boolean resetFields) {
+        // Finish if coming from another app.
+        if (mIntentData != null) finish();
+
         // Reset flag.
         mIsAddingTask = false;
 

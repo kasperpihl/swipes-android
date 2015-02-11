@@ -55,6 +55,7 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
@@ -216,6 +217,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         getActivity().registerReceiver(mTasksReceiver, filter);
 
+        // Refresh if tasks were added from intent.
+        if (mSection == Sections.FOCUS && PreferenceUtils.hasAddedTasksFromIntent(getActivity())) {
+            refreshTaskList(false);
+        }
+
         super.onResume();
     }
 
@@ -248,7 +254,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private boolean isCurrentSection() {
         // Retrieve current section being displayed and compare with this fragment's section.
-        return mSection == TasksActivity.getCurrentSection();
+        return mSection == ((TasksActivity) getActivity()).getCurrentSection();
     }
 
     private void setupView(View rootView, int emptyView) {
@@ -572,7 +578,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Send broadcast to update UI.
                         mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
                     } else {
-                        TasksActivity.clearCurrentSection();
                         sIsShowingOld = false;
                         getActivity().finish();
                     }
@@ -1346,10 +1351,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             }
         }
 
-        content += "\n" + getString(R.string.share_message_footer);
+        content += "\n" + getString(R.string.share_message_footer_sent_from);
+        content += "\n" + getString(R.string.share_message_footer_get_swipes);
 
         Intent inviteIntent = new Intent(Intent.ACTION_SEND);
-        inviteIntent.setType("text/html");
+        inviteIntent.setType("text/plain");
         inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_message_subject));
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 

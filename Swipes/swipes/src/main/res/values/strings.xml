@@ -155,8 +155,9 @@
     <!-- Share -->
     <string name="share_message_subject">Tasks to complete</string>
     <string name="share_message_header">Tasks:\n\n</string>
-    <string name="share_message_footer">
-        Sent with my Swipes – Task list made for High Achievers\n\n
+    <string name="share_message_footer_sent_from">
+        Sent with my Swipes – Task list made for High Achievers</string>
+    <string name="share_message_footer_get_swipes">
         Free iPhone and Android app - http://swipesapp.com</string>
     <string name="share_message_circle">◯&#160;</string>
     <string name="share_chooser_title">Share with:</string>
@@ -183,6 +184,7 @@
     <string name="keep_data_dialog_message">Swipes can sync your data from the test period to the cloud.</string>
     <string name="keep_data_dialog_yes">Keep data</string>
     <string name="keep_data_dialog_no">Clear data</string>
+    <string name="share_intent_add_confirm">Task created!</string>
 
     <!-- Scheduler -->
     <string name="date_today">today,&#160;</string>
