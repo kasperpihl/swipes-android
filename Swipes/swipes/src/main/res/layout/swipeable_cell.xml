@@ -87,7 +87,7 @@
                 android:visibility="gone" />
 
             <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_evernote_icon"
+                android:id="@+id/task_icons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/task_title"
@@ -100,69 +100,13 @@
                 android:textSize="@dimen/task_icons_size"
                 android:visibility="gone" />
 
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_location_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:layout_marginTop="@dimen/task_icons_margin_top"
-                android:layout_toRightOf="@id/task_evernote_icon"
-                android:text="@string/edit_location"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/task_icons_size"
-                android:visibility="gone" />
-
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_notes_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:layout_marginTop="@dimen/task_icons_margin_top"
-                android:layout_toRightOf="@id/task_location_icon"
-                android:text="@string/edit_notes"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/task_icons_size"
-                android:visibility="gone" />
-
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_repeat_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:layout_marginTop="@dimen/task_icons_margin_top"
-                android:layout_toRightOf="@id/task_notes_icon"
-                android:text="@string/edit_repeat"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/task_icons_size"
-                android:visibility="gone" />
-
-            <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_tags_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:layout_marginTop="@dimen/task_icons_margin_top"
-                android:layout_toRightOf="@id/task_repeat_icon"
-                android:text="@string/action_tag"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/task_icons_size"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/task_tags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/task_title"
                 android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_toRightOf="@id/task_tags_icon"
+                android:layout_toRightOf="@id/task_icons"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/neutral_gray"

@@ -39,6 +39,7 @@ import java.util.List;
 public class TasksListAdapter extends BaseAdapter {
 
     private static final String TAG_SEPARATOR = ", ";
+    private static final String ICON_SEPARATOR = " ";
 
     private List mData;
     private WeakReference<Context> mContext;
@@ -46,6 +47,12 @@ public class TasksListAdapter extends BaseAdapter {
     private Sections mSection;
 
     private ListContentsListener mListContentsListener;
+
+    private String mEvernoteIcon;
+    private String mLocationIcon;
+    private String mNotesIcon;
+    private String mRepeatIcon;
+    private String mTagsIcon;
 
     private boolean mResetCells;
     private boolean mIsShowingOld;
@@ -64,6 +71,12 @@ public class TasksListAdapter extends BaseAdapter {
         mContext = new WeakReference<Context>(context);
         mLayoutResID = layoutResourceId;
         mSection = section;
+
+        mLocationIcon = mContext.get().getString(R.string.edit_location);
+        mEvernoteIcon = mContext.get().getString(R.string.action_evernote);
+        mNotesIcon = mContext.get().getString(R.string.edit_notes);
+        mRepeatIcon = mContext.get().getString(R.string.edit_repeat);
+        mTagsIcon = mContext.get().getString(R.string.action_tag);
     }
 
     @Override
@@ -108,12 +121,8 @@ public class TasksListAdapter extends BaseAdapter {
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
             holder.time = (TextView) row.findViewById(R.id.task_time);
-            holder.evernoteIcon = (SwipesTextView) row.findViewById(R.id.task_evernote_icon);
-            holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
-            holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
-            holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
+            holder.icons = (SwipesTextView) row.findViewById(R.id.task_icons);
             holder.subtasksCount = (TextView) row.findViewById(R.id.task_subtask_count);
-            holder.tagsIcon = (SwipesTextView) row.findViewById(R.id.task_tags_icon);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
 
             row.setTag(holder);
@@ -170,6 +179,31 @@ public class TasksListAdapter extends BaseAdapter {
             holder.selectedIndicator.setBackgroundColor(0);
         }
 
+        // Specific rules for each section.
+        customizeViewForSection(holder, position, tasks);
+
+        // Display Evernote icon.
+        if (attachments != null) {
+            for (GsonAttachment attachment : attachments) {
+                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
+                    holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mEvernoteIcon);
+                    holder.icons.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        // Display notes icon.
+        if (notes != null && !notes.isEmpty()) {
+            holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mNotesIcon);
+            holder.icons.setVisibility(View.VISIBLE);
+        }
+
+        // Display repeat icon.
+        if (repeatDate != null) {
+            holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mRepeatIcon);
+            holder.icons.setVisibility(View.VISIBLE);
+        }
+
         // Build the formatted tags.
         for (GsonTag tag : tagList) {
             if (tags == null) {
@@ -181,32 +215,18 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Display formatted tags.
         if (tags != null && !tags.isEmpty()) {
-            holder.tagsIcon.setVisibility(View.VISIBLE);
+            // Tags icon.
+            holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mTagsIcon);
+            holder.icons.setVisibility(View.VISIBLE);
+
+            // Tags description.
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
         }
 
-        // Display Evernote icon.
-        if (attachments != null) {
-            for (GsonAttachment attachment : attachments) {
-                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
-                    holder.evernoteIcon.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-
-        // Display notes icon.
-        if (notes != null && !notes.isEmpty()) {
-            holder.notesIcon.setVisibility(View.VISIBLE);
-        }
-
-        // Display repeat icon.
-        if (repeatDate != null) {
-            holder.repeatIcon.setVisibility(View.VISIBLE);
-        }
-
-        // Specific rules for each section.
-        customizeViewForSection(holder, position, tasks);
+        // Trim starting space from icons.
+        String iconsText = holder.icons.getText().toString();
+        holder.icons.setText(iconsText.trim());
 
         // Display subtasks count.
         if (subtasks != null && !subtasks.isEmpty()) {
@@ -231,7 +251,8 @@ public class TasksListAdapter extends BaseAdapter {
                 String location = tasks.get(position).getLocation();
 
                 if (location != null && !location.isEmpty()) {
-                    holder.locationIcon.setVisibility(View.VISIBLE);
+                    holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mLocationIcon);
+                    holder.icons.setVisibility(View.VISIBLE);
                 } else {
                     holder.time.setVisibility(View.VISIBLE);
                     // TODO: When dividers are done, change this to show time only.
@@ -257,7 +278,11 @@ public class TasksListAdapter extends BaseAdapter {
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.DONE, mContext.get()));
                 }
 
-                holder.repeatIcon.setVisibility(View.GONE);
+                String repeatIcon = mContext.get().getString(R.string.edit_repeat);
+                String textIcons = holder.icons.getText().toString();
+                textIcons = textIcons.replace(ICON_SEPARATOR + repeatIcon, "");
+                holder.icons.setText(textIcons);
+
                 break;
         }
     }
@@ -276,12 +301,9 @@ public class TasksListAdapter extends BaseAdapter {
         holder.containerView.setVisibility(View.VISIBLE);
 
         // Reset properties.
-        holder.tagsIcon.setVisibility(View.GONE);
         holder.tags.setVisibility(View.GONE);
-        holder.evernoteIcon.setVisibility(View.GONE);
-        holder.notesIcon.setVisibility(View.GONE);
-        holder.repeatIcon.setVisibility(View.GONE);
-        holder.locationIcon.setVisibility(View.GONE);
+        holder.icons.setText("");
+        holder.icons.setVisibility(View.GONE);
         holder.subtasksCount.setVisibility(View.GONE);
 
         // Reset translation.
@@ -429,14 +451,10 @@ public class TasksListAdapter extends BaseAdapter {
         TextView time;
 
         // Properties.
-        SwipesTextView evernoteIcon;
-        SwipesTextView locationIcon;
-        SwipesTextView notesIcon;
-        SwipesTextView repeatIcon;
+        SwipesTextView icons;
         TextView subtasksCount;
 
         // Tags.
-        SwipesTextView tagsIcon;
         TextView tags;
     }
 
