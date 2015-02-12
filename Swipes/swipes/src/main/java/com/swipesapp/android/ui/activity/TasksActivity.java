@@ -591,6 +591,12 @@ public class TasksActivity extends BaseActivity {
         }
     };
 
+    @OnClick(R.id.add_task_priority_container)
+    protected void togglePriority() {
+        boolean checked = mButtonAddTaskPriority.isChecked();
+        mButtonAddTaskPriority.setChecked(!checked);
+    }
+
     @OnClick(R.id.button_confirm_add_task)
     protected void confirmAddTask() {
         Date currentDate = new Date();

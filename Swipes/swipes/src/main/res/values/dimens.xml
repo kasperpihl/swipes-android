@@ -5,21 +5,30 @@
     <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_height_large">80dp</dimen>
+    <dimen name="task_priority_padding">16dp</dimen>
     <dimen name="task_circles_size">20dp</dimen>
     <dimen name="task_properties_margin">5dp</dimen>
-    <dimen name="task_icons_size">11sp</dimen>
-    <dimen name="task_icons_margin_top">5dp</dimen>
+    <dimen name="task_icons_size">14sp</dimen>
+    <dimen name="task_icons_margin_top">3dp</dimen>
     <dimen name="add_task_button_size">60sp</dimen>
     <dimen name="gradient_height">35dp</dimen>
-    <dimen name="button_container_height">56dp</dimen>
+    <dimen name="button_container_height">@dimen/toolbar_height</dimen>
     <dimen name="list_padding_bottom">88dp</dimen>
     <dimen name="list_padding_top">25dp</dimen>
     <dimen name="list_padding_sides">25dp</dimen>
     <dimen name="pager_padding_sides">0dp</dimen>
     <dimen name="pager_margin_sides">-25dp</dimen>
-    <dimen name="landscape_header_height">56dp</dimen>
+    <dimen name="landscape_header_height">@dimen/toolbar_height</dimen>
     <dimen name="landscape_header_margin_top">25dp</dimen>
-    <dimen name="task_back_icon_size">27sp</dimen>
+    <dimen name="task_back_icon_size">@dimen/action_buttons_size</dimen>
+
+    <!-- Add task -->
+    <dimen name="add_task_confirm_size">@dimen/action_buttons_size</dimen>
+    <dimen name="add_task_confirm_width">52dp</dimen>
+    <dimen name="add_task_priority_padding">16dp</dimen>
+    <dimen name="add_task_fields_height">48dp</dimen>
+    <dimen name="add_task_tags_margin_bottom">30dp</dimen>
+    <dimen name="add_task_tags_margin_top">20dp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -31,8 +40,8 @@
     <dimen name="empty_view_icon_size">85sp</dimen>
 
     <!-- Edit -->
-    <dimen name="action_buttons_size">27sp</dimen>
-    <dimen name="edit_bar_height">56dp</dimen>
+    <dimen name="edit_bar_buttons_size">@dimen/action_buttons_size</dimen>
+    <dimen name="edit_bar_height">@dimen/toolbar_height</dimen>
     <dimen name="edit_bar_buttons_width">50dp</dimen>
     <dimen name="edit_bar_buttons_margin">4dp</dimen>
     <dimen name="edit_bar_margin_edges">10dp</dimen>
@@ -45,7 +54,7 @@
     <dimen name="edit_task_buttons_width">50dp</dimen>
     <dimen name="edit_task_buttons_margin">4dp</dimen>
     <dimen name="edit_task_buttons_bar_padding">4dp</dimen>
-    <dimen name="edit_task_header_height">56dp</dimen>
+    <dimen name="edit_task_header_height">@dimen/toolbar_height</dimen>
     <dimen name="edit_task_margin_sides">16dp</dimen>
     <dimen name="edit_task_icon_size">22sp</dimen>
     <dimen name="edit_task_margin_vertical">30dp</dimen>
@@ -54,17 +63,17 @@
     <dimen name="subtask_cell_height">40dp</dimen>
     <dimen name="subtask_circle_size">10dp</dimen>
     <dimen name="subtask_circle_thickness">2dp</dimen>
-    <dimen name="subtask_counter_margin">12dp</dimen>
+    <dimen name="subtask_counter_margin">16dp</dimen>
     <dimen name="subtask_counter_width">24dp</dimen>
     <dimen name="subtask_counter_height">21dp</dimen>
     <dimen name="subtask_margin_sides">16dp</dimen>
     <dimen name="subtask_icon_size">22sp</dimen>
-    <dimen name="subtask_footer_icon_size">27sp</dimen>
+    <dimen name="subtask_footer_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="subtask_add_icon_size">37sp</dimen>
     <dimen name="subtask_add_icon_margin_sides">8dp</dimen>
 
     <!-- Tags -->
-    <dimen name="tags_back_icon_size">27sp</dimen>
+    <dimen name="tags_back_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="tags_add_icon_size">37sp</dimen>
     <dimen name="tags_margin_sides">16dp</dimen>
     <dimen name="tags_padding_sides">16dp</dimen>
@@ -93,7 +102,7 @@
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">22sp</dimen>
     <dimen name="text_size_subtasks">16sp</dimen>
-    <dimen name="toolbar_elevation">0dp</dimen>
+    <dimen name="action_buttons_size">27sp</dimen>
     <dimen name="flat_button_height">48dp</dimen>
     <dimen name="flat_button_padding_horizontal">8dp</dimen>
     <dimen name="flat_button_padding_vertical">4dp</dimen>
@@ -101,7 +110,9 @@
     <dimen name="flat_button_inset_vertical">6dp</dimen>
     <dimen name="flat_button_text_size">14sp</dimen>
     <dimen name="floating_button_margin">16dp</dimen>
+    <dimen name="toolbar_elevation">0dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
     <dimen name="toolbar_shadow_height">4dp</dimen>
-    <dimen name="toolbar_icon_size">27sp</dimen>
+    <dimen name="toolbar_icon_size">@dimen/action_buttons_size</dimen>
 
 </resources>

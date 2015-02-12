@@ -33,7 +33,7 @@
             android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:text="@string/action_tag"
-            android:textSize="@dimen/action_buttons_size" />
+            android:textSize="@dimen/edit_bar_buttons_size" />
 
         <com.swipesapp.android.ui.view.SwipesButton
             android:id="@+id/filters_close_search_button"
@@ -42,7 +42,7 @@
             android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:text="@string/cross_sign"
-            android:textSize="@dimen/action_buttons_size"
+            android:textSize="@dimen/edit_bar_buttons_size"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -87,7 +87,7 @@
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:text="@string/cross_sign"
-            android:textSize="@dimen/action_buttons_size" />
+            android:textSize="@dimen/edit_bar_buttons_size" />
     </LinearLayout>
 
 </LinearLayout>

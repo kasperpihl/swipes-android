@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,9 +46,6 @@ public class TasksListAdapter extends BaseAdapter {
     private Sections mSection;
 
     private ListContentsListener mListContentsListener;
-
-    // Controls the display of properties line below task title.
-    private boolean mDisplayProperties;
 
     private boolean mResetCells;
     private boolean mIsShowingOld;
@@ -105,15 +102,13 @@ public class TasksListAdapter extends BaseAdapter {
             holder = new TaskHolder();
 
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
-            holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
+            holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
-            holder.priorityContainer = (FrameLayout) row.findViewById(R.id.task_priority_container);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
             holder.time = (TextView) row.findViewById(R.id.task_time);
-            holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties_container);
-            holder.evernoteIcon = (ImageView) row.findViewById(R.id.task_evernote_icon);
+            holder.evernoteIcon = (SwipesTextView) row.findViewById(R.id.task_evernote_icon);
             holder.locationIcon = (SwipesTextView) row.findViewById(R.id.task_location_icon);
             holder.notesIcon = (SwipesTextView) row.findViewById(R.id.task_notes_icon);
             holder.repeatIcon = (SwipesTextView) row.findViewById(R.id.task_repeat_icon);
@@ -189,19 +184,13 @@ public class TasksListAdapter extends BaseAdapter {
             holder.tagsIcon.setVisibility(View.VISIBLE);
             holder.tags.setVisibility(View.VISIBLE);
             holder.tags.setText(tags);
-            mDisplayProperties = true;
         }
-
-        // Set Evernote icon according to theme.
-        int icon = ThemeUtils.isLightTheme(mContext.get()) ? R.drawable.evernote_light : R.drawable.evernote_dark;
-        holder.evernoteIcon.setImageDrawable(mContext.get().getResources().getDrawable(icon));
 
         // Display Evernote icon.
         if (attachments != null) {
             for (GsonAttachment attachment : attachments) {
                 if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
                     holder.evernoteIcon.setVisibility(View.VISIBLE);
-                    mDisplayProperties = true;
                 }
             }
         }
@@ -209,22 +198,15 @@ public class TasksListAdapter extends BaseAdapter {
         // Display notes icon.
         if (notes != null && !notes.isEmpty()) {
             holder.notesIcon.setVisibility(View.VISIBLE);
-            mDisplayProperties = true;
         }
 
         // Display repeat icon.
         if (repeatDate != null) {
             holder.repeatIcon.setVisibility(View.VISIBLE);
-            mDisplayProperties = true;
         }
 
         // Specific rules for each section.
         customizeViewForSection(holder, position, tasks);
-
-        // Display properties line.
-        if (mDisplayProperties) {
-            holder.propertiesContainer.setVisibility(View.VISIBLE);
-        }
 
         // Display subtasks count.
         if (subtasks != null && !subtasks.isEmpty()) {
@@ -234,7 +216,7 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Sets colors for cell, matching the current theme.
         holder.title.setTextColor(ThemeUtils.getTextColor(mContext.get()));
-        holder.subtasksCount.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+        holder.subtasksCount.setTextColor(mContext.get().getResources().getColor(R.color.neutral_gray));
         holder.frontView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
     }
 
@@ -257,7 +239,6 @@ public class TasksListAdapter extends BaseAdapter {
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
                 }
 
-                mDisplayProperties = true;
                 break;
             case FOCUS:
                 // Set priority button color.
@@ -277,7 +258,6 @@ public class TasksListAdapter extends BaseAdapter {
                 }
 
                 holder.repeatIcon.setVisibility(View.GONE);
-                mDisplayProperties = true;
                 break;
         }
     }
@@ -437,11 +417,10 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Containers.
         FrameLayout containerView;
-        RelativeLayout frontView;
+        LinearLayout frontView;
         RelativeLayout backView;
 
         // Priority and selection.
-        FrameLayout priorityContainer;
         CheckBox priorityButton;
         View selectedIndicator;
 
@@ -450,8 +429,7 @@ public class TasksListAdapter extends BaseAdapter {
         TextView time;
 
         // Properties.
-        RelativeLayout propertiesContainer;
-        ImageView evernoteIcon;
+        SwipesTextView evernoteIcon;
         SwipesTextView locationIcon;
         SwipesTextView notesIcon;
         SwipesTextView repeatIcon;

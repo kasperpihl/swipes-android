@@ -16,12 +16,12 @@
         android:layout_marginLeft="@dimen/edit_bar_margin_edges"
         android:background="@android:color/transparent"
         android:text="@string/cross_sign"
-        android:textSize="@dimen/action_buttons_size" />
+        android:textSize="@dimen/edit_bar_buttons_size" />
 
     <TextView
         android:id="@+id/edit_bar_selection_count"
-        android:layout_width="@dimen/action_buttons_size"
-        android:layout_height="@dimen/action_buttons_size"
+        android:layout_width="@dimen/edit_bar_buttons_size"
+        android:layout_height="@dimen/edit_bar_buttons_size"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/edit_bar_margin_edges"
         android:layout_toRightOf="@id/button_close_selection"
@@ -39,7 +39,7 @@
         android:layout_marginRight="@dimen/edit_bar_margin_edges"
         android:background="@android:color/transparent"
         android:text="@string/action_share"
-        android:textSize="@dimen/action_buttons_size" />
+        android:textSize="@dimen/edit_bar_buttons_size" />
 
     <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/button_delete_tasks"
@@ -51,7 +51,7 @@
         android:layout_toLeftOf="@id/button_share_tasks"
         android:background="@android:color/transparent"
         android:text="@string/action_delete"
-        android:textSize="@dimen/action_buttons_size" />
+        android:textSize="@dimen/edit_bar_buttons_size" />
 
     <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/button_assign_tags"
@@ -63,6 +63,6 @@
         android:layout_toLeftOf="@id/button_delete_tasks"
         android:background="@android:color/transparent"
         android:text="@string/action_tag"
-        android:textSize="@dimen/action_buttons_size" />
+        android:textSize="@dimen/edit_bar_buttons_size" />
 
 </RelativeLayout>

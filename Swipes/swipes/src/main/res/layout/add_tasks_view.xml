@@ -11,39 +11,43 @@
     <RelativeLayout
         android:id="@+id/add_task_fields_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/add_task_fields_height"
         android:layout_alignParentBottom="true">
 
-        <CheckBox
-            android:id="@+id/button_add_task_priority"
-            android:layout_width="@dimen/task_circles_size"
-            android:layout_height="@dimen/task_circles_size"
+        <LinearLayout
+            android:id="@+id/add_task_priority_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/focus_circle_selector"
-            android:button="@null" />
+            android:paddingLeft="@dimen/add_task_priority_padding"
+            android:paddingRight="@dimen/add_task_priority_padding">
+
+            <CheckBox
+                android:id="@+id/button_add_task_priority"
+                android:layout_width="@dimen/task_circles_size"
+                android:layout_height="@dimen/task_circles_size"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/focus_circle_selector"
+                android:button="@null"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
 
         <com.swipesapp.android.ui.view.SwipesButton
             android:id="@+id/button_confirm_add_task"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/add_task_confirm_width"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:background="@android:color/transparent"
             android:text="@string/left_arrow"
-            android:textSize="25sp" />
+            android:textSize="@dimen/add_task_confirm_size" />
 
         <com.swipesapp.android.ui.view.ActionEditText
             android:id="@+id/edit_text_add_task_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_height="match_parent"
             android:layout_toLeftOf="@id/button_confirm_add_task"
-            android:layout_toRightOf="@id/button_add_task_priority"
+            android:layout_toRightOf="@id/add_task_priority_container"
             android:background="@color/transparent"
             android:hint="@string/add_task_hint"
             android:imeOptions="actionDone"
@@ -58,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/add_task_fields_container"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginBottom="@dimen/add_task_tags_margin_bottom"
+        android:layout_marginTop="@dimen/add_task_tags_margin_top" />
 
 </RelativeLayout>
