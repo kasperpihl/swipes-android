@@ -39,6 +39,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
+            android:rotation="270"
             android:text="@string/left_arrow"
             android:textSize="@dimen/add_task_confirm_size" />
 

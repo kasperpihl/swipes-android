@@ -5,20 +5,19 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.swipesapp.android.ui.view.SwipesTextView
+    <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/action_bar_icon"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/toolbar_buttons_width"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:background="@color/transparent"
         android:text="@string/focus_full"
-        android:textColor="@android:color/white"
         android:textSize="@dimen/toolbar_icon_size" />
 
     <TextView
         android:id="@+id/action_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="15dp"
         android:text="@string/focus_title"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_medium"

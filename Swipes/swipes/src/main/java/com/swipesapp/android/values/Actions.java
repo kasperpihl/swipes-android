@@ -53,8 +53,23 @@ public class Actions {
     public static final String BACK_PRESSED = "com.swipesapp.android.ACTION_BACK_PRESSED";
 
     /**
+     * Notifies listeners that selection has started.
+     */
+    public static final String SELECTION_STARTED = "com.swipesapp.android.SELECTION_STARTED";
+
+    /**
      * Notifies listeners that selection has been cleared.
      */
     public static final String SELECTION_CLEARED = "com.swipesapp.android.SELECTION_CLEARED";
+
+    /**
+     * Notifies listeners to filter list by tags.
+     */
+    public static final String FILTER_BY_TAGS = "com.swipesapp.android.FILTER_BY_TAGS";
+
+    /**
+     * Notifies listeners to perform search.
+     */
+    public static final String PERFORM_SEARCH = "com.swipesapp.android.ACTION_PERFORM_SEARCH";
 
 }

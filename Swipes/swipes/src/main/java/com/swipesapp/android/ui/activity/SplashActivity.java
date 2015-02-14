@@ -18,7 +18,7 @@ import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
-import com.swipesapp.android.ui.view.SwipesTextView;
+import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DeviceUtils;
@@ -113,7 +113,7 @@ public class SplashActivity extends BaseActivity {
             TextView title = (TextView) actionBarView.findViewById(R.id.action_bar_title);
             title.setText(getString(R.string.overview_title));
 
-            SwipesTextView icon = (SwipesTextView) actionBarView.findViewById(R.id.action_bar_icon);
+            SwipesButton icon = (SwipesButton) actionBarView.findViewById(R.id.action_bar_icon);
             icon.setText(getString(R.string.schedule_logbook));
         } else {
             themeActionBar(ThemeUtils.getSectionColor(Sections.FOCUS, this));

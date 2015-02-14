@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,7 +49,6 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
-import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DeviceUtils;
@@ -76,6 +78,9 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.pager)
     DynamicViewPager mViewPager;
 
+    @InjectView(R.id.toolbar_area)
+    FrameLayout mToolbarArea;
+
     @InjectView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
 
@@ -84,9 +89,6 @@ public class TasksActivity extends BaseActivity {
 
     @InjectView(R.id.edit_text_add_task_content)
     ActionEditText mEditTextAddNewTask;
-
-    @InjectView(R.id.button_confirm_add_task)
-    SwipesButton mButtonConfirmAddTask;
 
     @InjectView(R.id.button_add_task_priority)
     CheckBox mButtonAddTaskPriority;
@@ -101,6 +103,21 @@ public class TasksActivity extends BaseActivity {
 
     @InjectView(R.id.action_buttons_container)
     LinearLayout mActionButtonsContainer;
+
+    @InjectView(R.id.workspaces_area)
+    LinearLayout mWorkspacesArea;
+
+    @InjectView(R.id.workspaces_tags)
+    FlowLayout mWorkspacesTags;
+    @InjectView(R.id.workspaces_empty_tags)
+    TextView mWorkspacesEmptyTags;
+
+    @InjectView(R.id.action_bar_search)
+    LinearLayout mSearchBar;
+    @InjectView(R.id.action_bar_close_search)
+    SwipesButton mSearchClose;
+    @InjectView(R.id.action_bar_search_field)
+    ActionEditText mSearchField;
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
 
@@ -139,6 +156,11 @@ public class TasksActivity extends BaseActivity {
 
     private boolean mIsSelectionMode;
 
+    private List<Long> mSelectedFilterTags;
+
+    private boolean mIsSearchActive;
+    private String mSearchQuery;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,15 +194,14 @@ public class TasksActivity extends BaseActivity {
 
         mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
 
-        // HACK: Rotate view, so the arrow points down.
-        mButtonConfirmAddTask.setRotation(270f);
-
         int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
         mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
 
         mEditTextAddNewTask.setListener(mKeyboardBackListener);
 
         customizeSelectionColors();
+
+        loadSearchBar();
 
         handleShareIntent();
     }
@@ -315,10 +336,12 @@ public class TasksActivity extends BaseActivity {
                 enableSelection();
                 break;
             case ACTION_SEARCH:
-                // TODO: New search UI.
+                // Show search bar.
+                showSearch();
                 break;
             case ACTION_WORKSPACES:
-                // TODO: Implement workspaces.
+                // Open workspaces.
+                showWorkspaces();
                 break;
             case ACTION_SETTINGS:
                 Intent intent = new Intent(this, SettingsActivity.class);
@@ -354,11 +377,15 @@ public class TasksActivity extends BaseActivity {
     private void setupSystemBars(Sections section) {
         // Set toolbar title and icon.
         TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        SwipesTextView icon = (SwipesTextView) mActionBarView.findViewById(R.id.action_bar_icon);
+        SwipesButton icon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
+        icon.setTextColor(Color.WHITE);
+
+        // Make ActionBar transparent.
+        themeActionBar(Color.TRANSPARENT);
 
         if (DeviceUtils.isLandscape(this)) {
             // Replace colors on landscape.
-            themeActionBar(getResources().getColor(R.color.neutral_accent));
+            mToolbarArea.setBackgroundColor(getResources().getColor(R.color.neutral_accent));
             themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
 
             // Replace title and text.
@@ -366,7 +393,7 @@ public class TasksActivity extends BaseActivity {
             icon.setText(getString(R.string.schedule_logbook));
         } else {
             // Apply regular colors.
-            themeActionBar(ThemeUtils.getSectionColor(section, this));
+            mToolbarArea.setBackgroundColor(ThemeUtils.getSectionColor(mCurrentSection, this));
             themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
 
             // Apply regular title and text.
@@ -436,7 +463,7 @@ public class TasksActivity extends BaseActivity {
 
             // Blend the colors and adjust the ActionBar.
             int blended = ColorUtils.blendColors(fromColor, toColor, positionOffset);
-            themeActionBar(blended);
+            mToolbarArea.setBackgroundColor(blended);
 
             // Load dark colors for sections.
             fromColor = ThemeUtils.getSectionColorDark(from, mContext.get());
@@ -454,7 +481,7 @@ public class TasksActivity extends BaseActivity {
     private void fadeActionBar(float positionOffset, Sections from, Sections to) {
         // Load toolbar title and icon.
         TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        SwipesTextView icon = (SwipesTextView) mActionBarView.findViewById(R.id.action_bar_icon);
+        SwipesButton icon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
 
         if (mPreviousOffset > 0) {
             if (positionOffset > mPreviousOffset) {
@@ -793,9 +820,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void showActionButtons() {
-        mActionButtonsContainer.setVisibility(View.VISIBLE);
-        mButtonAddTask.setVisibility(View.VISIBLE);
-        mEditTasksBar.setVisibility(View.GONE);
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideUp.setAnimationListener(mShowButtonsListener);
+        mActionButtonsContainer.startAnimation(slideUp);
     }
 
     private Animation.AnimationListener mHideButtonsListener = new Animation.AnimationListener() {
@@ -806,6 +833,21 @@ public class TasksActivity extends BaseActivity {
         @Override
         public void onAnimationEnd(Animation animation) {
             mActionButtonsContainer.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    private Animation.AnimationListener mShowButtonsListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mActionButtonsContainer.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
         }
 
         @Override
@@ -891,6 +933,8 @@ public class TasksActivity extends BaseActivity {
         mIsSelectionMode = true;
 
         showEditBar();
+
+        mTasksService.sendBroadcast(Actions.SELECTION_STARTED);
     }
 
     public void cancelSelection() {
@@ -908,6 +952,260 @@ public class TasksActivity extends BaseActivity {
 
     public boolean isSelectionMode() {
         return mIsSelectionMode;
+    }
+
+    @OnClick(R.id.button_close_workspaces)
+    protected void closeWorkspaces() {
+        hideWorkspaces();
+
+        // Clear selected tags.
+        mSelectedFilterTags.clear();
+
+        // Update lists.
+        mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
+    }
+
+    @OnClick(R.id.button_confirm_workspace)
+    protected void confirmWorkspace() {
+        hideWorkspaces();
+    }
+
+    public void showWorkspaces() {
+        // Animate views only when necessary.
+        if (mWorkspacesArea.getVisibility() == View.GONE) {
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            slideDown.setAnimationListener(mShowWorkspacesListener);
+            mButtonAddTask.startAnimation(slideDown);
+
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            mWorkspacesArea.startAnimation(slideUp);
+        }
+
+        // Load tags.
+        loadWorkspacesTags();
+    }
+
+    public void hideWorkspaces() {
+        // Clear container color.
+        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
+
+        // Animate views only when necessary.
+        if (mWorkspacesArea.isShown()) {
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            slideDown.setAnimationListener(mHideWorkspacesListener);
+            mWorkspacesArea.startAnimation(slideDown);
+
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            mButtonAddTask.startAnimation(slideUp);
+        }
+    }
+
+    Animation.AnimationListener mShowWorkspacesListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mWorkspacesArea.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mButtonAddTask.setVisibility(View.GONE);
+
+            // Apply container color.
+            mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    Animation.AnimationListener mHideWorkspacesListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mButtonAddTask.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mWorkspacesArea.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    private void loadWorkspacesTags() {
+        List<GsonTag> tags = mTasksService.loadAllAssignedTags();
+        mSelectedFilterTags = new ArrayList<Long>();
+
+        mWorkspacesTags.removeAllViews();
+        mWorkspacesTags.setVisibility(View.VISIBLE);
+        mWorkspacesEmptyTags.setVisibility(View.GONE);
+
+        // For each tag, add a checkbox as child view.
+        for (GsonTag tag : tags) {
+            int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
+            CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
+            tagBox.setText(tag.getTitle());
+            tagBox.setId(tag.getId().intValue());
+
+            // Set listener to apply filter.
+            tagBox.setOnClickListener(mFilterTagListener);
+
+            // Add child view.
+            mWorkspacesTags.addView(tagBox);
+        }
+
+        // If the list is empty, show empty view.
+        if (tags.isEmpty()) {
+            mWorkspacesTags.setVisibility(View.GONE);
+            mWorkspacesEmptyTags.setVisibility(View.VISIBLE);
+
+            int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
+            mWorkspacesEmptyTags.setTextColor(getResources().getColor(hintColor));
+        }
+    }
+
+    private View.OnClickListener mFilterTagListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+
+            // Add or remove tag from selected filters.
+            if (isFilterTagSelected(selectedTag.getId())) {
+                removeSelectedFilterTag(selectedTag.getId());
+            } else {
+                mSelectedFilterTags.add(selectedTag.getId());
+            }
+
+            mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
+        }
+    };
+
+    private boolean isFilterTagSelected(Long selectedTagId) {
+        // Check if tag is in the selected filters.
+        for (Long tagId : mSelectedFilterTags) {
+            if (tagId.equals(selectedTagId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeSelectedFilterTag(Long selectedTagId) {
+        // Find and remove filter from the list of selected.
+        List<Long> selected = new ArrayList<Long>(mSelectedFilterTags);
+        for (Long tagId : selected) {
+            if (tagId.equals(selectedTagId)) {
+                mSelectedFilterTags.remove(tagId);
+            }
+        }
+    }
+
+    public List<Long> getSelectedFilterTags() {
+        return mSelectedFilterTags;
+    }
+
+    private void loadSearchBar() {
+        mSearchClose.setOnClickListener(mCloseSearchListener);
+        mSearchClose.setTextColor(Color.WHITE);
+
+        mSearchField.setOnFocusChangeListener(mSearchFocusListener);
+        mSearchField.addTextChangedListener(mSearchTypeListener);
+        mSearchField.setOnEditorActionListener(mSearchDoneListener);
+    }
+
+    private View.OnClickListener mCloseSearchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Hide search bar.
+            hideSearch();
+        }
+    };
+
+    private View.OnFocusChangeListener mSearchFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (hasFocus) {
+                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            } else {
+                imm.hideSoftInputFromWindow(mSearchField.getWindowToken(), 0);
+            }
+        }
+    };
+
+    private TextWatcher mSearchTypeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            mSearchQuery = mSearchField.getText().toString().toLowerCase();
+
+            mTasksService.sendBroadcast(Actions.PERFORM_SEARCH);
+        }
+    };
+
+    private TextView.OnEditorActionListener mSearchDoneListener =
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // Close keyboard on done key pressed.
+                        mTasksArea.requestFocus();
+                    }
+                    return true;
+                }
+            };
+
+    private void showSearch() {
+        // Fade in search bar.
+        mSearchBar.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mToolbar.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mButtonAddTask.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).start();
+
+        // Show search field.
+        mSearchField.setVisibility(View.VISIBLE);
+        mSearchField.requestFocus();
+
+        // Enable close button.
+        mSearchClose.setEnabled(true);
+
+        // Set flag.
+        mIsSearchActive = true;
+    }
+
+    public void hideSearch() {
+        // Fade out search bar.
+        mSearchBar.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mToolbar.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mButtonAddTask.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT).start();
+
+        // Clear and hide search field.
+        mSearchField.setText("");
+        mSearchField.setVisibility(View.GONE);
+        mSearchField.clearFocus();
+
+        // Disable close button.
+        mSearchClose.setEnabled(false);
+
+        // Reset flag.
+        mIsSearchActive = false;
+    }
+
+    public boolean isSearchActive() {
+        return mIsSearchActive;
+    }
+
+    public String getSearchQuery() {
+        return mSearchQuery;
     }
 
 }

@@ -279,6 +279,7 @@
     <string name="delete_tag_dialog_yes">Delete</string>
     <string name="delete_tag_dialog_no">Cancel</string>
     <string name="empty_tags_hint">No tags assigned</string>
+    <string name="set_workspaces_hint">SET WORKSPACE</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

@@ -28,6 +28,7 @@ import com.swipesapp.android.util.ThemeUtils;
 public class BaseActivity extends ActionBarActivity {
 
     private Window mWindow;
+    protected Toolbar mToolbar;
 
     /**
      * Default constructor. Enables Status Bar tint.
@@ -79,9 +80,9 @@ public class BaseActivity extends ActionBarActivity {
         super.setContentView(layoutResID);
 
         // Set the ToolBar as activity's ActionBar.
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setPopupTheme(ThemeUtils.getToolbarPopupTheme(this));
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setPopupTheme(ThemeUtils.getToolbarPopupTheme(this));
+        setSupportActionBar(mToolbar);
 
         // Enable ActionBar up navigation.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -15,6 +15,7 @@
     <string name="cross_sign">&#xe619;</string>
     <string name="menu_search">&#xe605;</string>
     <string name="spinner_arrow">&#xe61e;</string>
+    <string name="workspaces_priority">&#xe614;</string>
 
     <!-- Edit task icons -->
     <string name="edit_location">&#xe61d;</string>

@@ -8,17 +8,27 @@
     <RelativeLayout
         android:id="@+id/tasks_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Toolbar -->
+            <include layout="@layout/toolbar" />
+
+            <!-- Search bar -->
+            <include layout="@layout/search_bar" />
+
+        </FrameLayout>
 
         <!-- Shadow and content area -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar">
+            android:layout_below="@id/toolbar_area">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -33,6 +43,7 @@
                     android:paddingLeft="@dimen/pager_padding_sides"
                     android:paddingRight="@dimen/pager_padding_sides" />
 
+                <!-- Buttons area -->
                 <LinearLayout
                     android:id="@+id/action_buttons_container"
                     android:layout_width="match_parent"
@@ -40,11 +51,20 @@
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical">
 
-                    <!-- Add task button -->
-                    <include layout="@layout/add_task_button" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <!-- Edit bar -->
-                    <include layout="@layout/edit_bar" />
+                        <!-- Add task button -->
+                        <include layout="@layout/add_task_button" />
+
+                        <!-- Edit bar -->
+                        <include layout="@layout/edit_bar" />
+
+                        <!-- Workspace area -->
+                        <include layout="@layout/workspaces_view" />
+
+                    </FrameLayout>
 
                 </LinearLayout>
 

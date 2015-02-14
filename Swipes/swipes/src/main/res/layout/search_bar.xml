@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_bar_search"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_bar_height"
+    android:alpha="0"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.swipesapp.android.ui.view.SwipesButton
+        android:id="@+id/action_bar_close_search"
+        android:layout_width="@dimen/toolbar_buttons_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:background="@color/transparent"
+        android:enabled="false"
+        android:text="@string/left_arrow"
+        android:textSize="@dimen/toolbar_icon_size" />
+
+    <com.swipesapp.android.ui.view.ActionEditText
+        android:id="@+id/action_bar_search_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:background="@color/transparent"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</LinearLayout>
