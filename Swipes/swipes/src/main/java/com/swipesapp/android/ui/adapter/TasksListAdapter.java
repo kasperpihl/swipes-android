@@ -157,7 +157,7 @@ public class TasksListAdapter extends BaseAdapter {
         List<GsonTask> subtasks = TasksService.getInstance(mContext.get()).loadSubtasksForTask(taskId);
 
         // Reset cell attributes to avoid recycling misbehavior.
-        if (mResetCells) resetCellState(holder);
+        resetCellState(holder);
 
         // Set task title.
         holder.title.setText(title);
@@ -296,9 +296,11 @@ public class TasksListAdapter extends BaseAdapter {
 
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
-        holder.frontView.setVisibility(View.VISIBLE);
-        holder.backView.setVisibility(View.GONE);
-        holder.containerView.setVisibility(View.VISIBLE);
+        if (mResetCells) {
+            holder.frontView.setVisibility(View.VISIBLE);
+            holder.backView.setVisibility(View.GONE);
+            holder.containerView.setVisibility(View.VISIBLE);
+        }
 
         // Reset properties.
         holder.tags.setVisibility(View.GONE);
@@ -307,11 +309,13 @@ public class TasksListAdapter extends BaseAdapter {
         holder.subtasksCount.setVisibility(View.GONE);
 
         // Reset translation.
-        if (mAnimateRefresh) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
-            animator.start();
-        } else {
-            holder.frontView.setTranslationX(0);
+        if (mResetCells) {
+            if (mAnimateRefresh) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
+                animator.start();
+            } else {
+                holder.frontView.setTranslationX(0);
+            }
         }
     }
 

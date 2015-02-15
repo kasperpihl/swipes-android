@@ -106,7 +106,6 @@ public class TasksActivity extends BaseActivity {
 
     @InjectView(R.id.workspaces_area)
     LinearLayout mWorkspacesArea;
-
     @InjectView(R.id.workspaces_tags)
     FlowLayout mWorkspacesTags;
     @InjectView(R.id.workspaces_empty_tags)
@@ -554,6 +553,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void showEditBar() {
+        // Apply container color.
+        mEditTasksBar.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -566,9 +568,6 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void hideEditBar() {
-        // Clear container color.
-        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
-
         // Animate views only when necessary.
         if (mEditTasksBar.isShown()) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -592,9 +591,6 @@ public class TasksActivity extends BaseActivity {
         @Override
         public void onAnimationEnd(Animation animation) {
             mButtonAddTask.setVisibility(View.GONE);
-
-            // Apply container color.
-            mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
         }
 
         @Override
@@ -971,6 +967,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void showWorkspaces() {
+        // Apply container color.
+        mWorkspacesArea.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+
         // Animate views only when necessary.
         if (mWorkspacesArea.getVisibility() == View.GONE) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -986,9 +985,6 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void hideWorkspaces() {
-        // Clear container color.
-        mActionButtonsContainer.setBackgroundColor(Color.TRANSPARENT);
-
         // Animate views only when necessary.
         if (mWorkspacesArea.isShown()) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -1009,9 +1005,6 @@ public class TasksActivity extends BaseActivity {
         @Override
         public void onAnimationEnd(Animation animation) {
             mButtonAddTask.setVisibility(View.GONE);
-
-            // Apply container color.
-            mActionButtonsContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
         }
 
         @Override

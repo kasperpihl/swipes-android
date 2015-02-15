@@ -11,9 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -102,18 +100,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private List<GsonTag> mAssignedTags;
     private List<Long> mSelectedFilterTags;
 
-    // Filters containers.
-    private LinearLayout mFiltersContainer;
-    private LinearLayout mFiltersTagsContainer;
-    private LinearLayout mFiltersSearchContainer;
-    private FlowLayout mFiltersTagsArea;
-
-    // Filters views.
-    private ActionEditText mSearchEditText;
-    private SwipesButton mFiltersTagsButton;
-    private TextView mFiltersEmptyTags;
-    private SwipesButton mCloseSearchButton;
-
     // Empty view.
     private View mEmptyView;
 
@@ -194,8 +180,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         measureListView(mListView);
 
-        hideFilters();
-
         refreshTaskList(false);
 
         return rootView;
@@ -227,6 +211,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Refresh if tasks were added from intent.
         if (mSection == Sections.FOCUS && PreferenceUtils.hasAddedTasksFromIntent(getActivity())) {
             refreshTaskList(false);
+
+            // Reset preference.
+            PreferenceUtils.saveBooleanPreference(PreferenceUtils.TASKS_ADDED_FROM_INTENT, false, getActivity());
         }
 
         super.onResume();
@@ -273,7 +260,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
         // Setup filters.
-        setupFiltersArea();
+        setupResultsArea();
 
         // Setup empty view.
         mViewStub.setLayoutResource(emptyView);
@@ -288,32 +275,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mLandscapeHeaderIcon.setLayoutParams(mLandscapeHeaderTitle.getLayoutParams());
     }
 
-    private void setupFiltersArea() {
+    private void setupResultsArea() {
         // Add filter views.
-        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
-        mFiltersTagsContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_tags_container);
-        mFiltersSearchContainer = (LinearLayout) mFiltersContainer.findViewById(R.id.filters_search_container);
-        mFiltersTagsArea = (FlowLayout) mFiltersContainer.findViewById(R.id.filters_tags_area);
-        mFiltersEmptyTags = (TextView) mFiltersContainer.findViewById(R.id.filter_empty_tags);
-        mListView.addHeaderView(mFiltersContainer);
-
-        // Add listeners and customize buttons.
-        mFiltersTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_tags_button);
-        mFiltersTagsButton.setOnClickListener(mShowTagsFilterListener);
-
-        SwipesButton filtersCloseTagsButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_tags_button);
-        filtersCloseTagsButton.setOnClickListener(mCloseTagsFilterListener);
-
-        mSearchEditText = (ActionEditText) mFiltersContainer.findViewById(R.id.filters_search_edit_text);
-        mSearchEditText.setOnFocusChangeListener(mSearchFocusListener);
-        mSearchEditText.addTextChangedListener(mSearchTypeListener);
-        mSearchEditText.setOnEditorActionListener(mSearchDoneListener);
-        mSearchEditText.setListener(mKeyboardBackListener);
-
-        mCloseSearchButton = (SwipesButton) mFiltersContainer.findViewById(R.id.filters_close_search_button);
-        mCloseSearchButton.setOnClickListener(mSearchCloseListener);
-
-        mFiltersContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
+//        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
+//        mListView.addHeaderView(mFiltersContainer);
     }
 
     private void configureLaterView(TasksListAdapter adapter) {
@@ -541,8 +506,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private GsonTask getTask(int position) {
-        // Reduce position by -1 to account for the header.
-        return (GsonTask) mAdapter.getItem(position - 1);
+        // TODO: Ignore last position to account for the footer.
+        return (GsonTask) mAdapter.getItem(position);
     }
 
     private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
@@ -1164,113 +1129,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void hideFilters() {
-        // Hide tag filters.
-        mFiltersTagsContainer.setVisibility(View.GONE);
-        mFiltersSearchContainer.setVisibility(View.VISIBLE);
-    }
-
-    private View.OnClickListener mShowTagsFilterListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mFiltersSearchContainer.setVisibility(View.GONE);
-
-            // Show tag filters with fade animation.
-            mFiltersTagsContainer.setVisibility(View.VISIBLE);
-            mFiltersTagsContainer.setAlpha(0f);
-            mFiltersTagsContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
-
-            loadFilterTags();
-        }
-    };
-
-    private View.OnClickListener mCloseTagsFilterListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mFiltersTagsContainer.setVisibility(View.GONE);
-
-            // Show search view with fade animation.
-            mFiltersSearchContainer.setVisibility(View.VISIBLE);
-            mFiltersSearchContainer.setAlpha(0f);
-            mFiltersSearchContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
-
-            refreshTaskList(false);
-        }
-    };
-
-    private void loadFilterTags() {
-        List<GsonTag> tags = mTasksService.loadAllAssignedTags();
-        mSelectedFilterTags = new ArrayList<Long>();
-
-        mFiltersTagsArea.removeAllViews();
-        mFiltersTagsArea.setVisibility(View.VISIBLE);
-        mFiltersEmptyTags.setVisibility(View.GONE);
-
-        // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
-            int resource = ThemeUtils.isLightTheme(getActivity()) ? R.layout.tag_box_light : R.layout.tag_box_dark;
-            CheckBox tagBox = (CheckBox) getActivity().getLayoutInflater().inflate(resource, null);
-            tagBox.setText(tag.getTitle());
-            tagBox.setId(tag.getId().intValue());
-
-            // Set listener to apply filter.
-            tagBox.setOnClickListener(mFilterTagListener);
-
-            // Add child view.
-            mFiltersTagsArea.addView(tagBox);
-        }
-
-        // If the list is empty, show empty view.
-        if (tags.isEmpty()) {
-            mFiltersTagsArea.setVisibility(View.GONE);
-            mFiltersEmptyTags.setVisibility(View.VISIBLE);
-
-            int hintColor = ThemeUtils.isLightTheme(getActivity()) ? R.color.light_hint : R.color.dark_hint;
-            mFiltersEmptyTags.setTextColor(getResources().getColor(hintColor));
-        }
-    }
-
-    private View.OnClickListener mFilterTagListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
-
-            // Add or remove tag from selected filters.
-            if (isFilterTagSelected(selectedTag.getId())) {
-                removeSelectedFilterTag(selectedTag.getId());
-            } else {
-                mSelectedFilterTags.add(selectedTag.getId());
-            }
-
-            // Filter by tags or clear results.
-            if (!mSelectedFilterTags.isEmpty()) {
-                filterByTags();
-            } else {
-                refreshTaskList(false);
-            }
-        }
-    };
-
-    private boolean isFilterTagSelected(Long selectedTagId) {
-        // Check if tag is in the selected filters.
-        for (Long tagId : mSelectedFilterTags) {
-            if (tagId.equals(selectedTagId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void removeSelectedFilterTag(Long selectedTagId) {
-        // Find and remove filter from the list of selected.
-        List<Long> selected = new ArrayList<Long>(mSelectedFilterTags);
-        for (Long tagId : selected) {
-            if (tagId.equals(selectedTagId)) {
-                mSelectedFilterTags.remove(tagId);
-            }
-        }
-    }
-
     private void filterByTags() {
         // Load tasks for each selected tag.
         List<GsonTask> filteredTasks = new ArrayList<GsonTask>();
@@ -1282,71 +1140,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setContentList(filteredTasks);
         mAdapter.update(filteredTasks, false);
     }
-
-    private View.OnFocusChangeListener mSearchFocusListener = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View view, boolean hasFocus) {
-            if (hasFocus) {
-                // Show close search button.
-                mCloseSearchButton.setVisibility(View.VISIBLE);
-                mFiltersTagsButton.setVisibility(View.GONE);
-            }
-        }
-    };
-
-    private View.OnClickListener mSearchCloseListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // Hide close search button and clear search query.
-            mCloseSearchButton.setVisibility(View.GONE);
-            mFiltersTagsButton.setVisibility(View.VISIBLE);
-            mSearchEditText.getText().clear();
-
-            refreshTaskList(false);
-        }
-    };
-
-    private TextWatcher mSearchTypeListener = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            String query = mSearchEditText.getText().toString().toLowerCase();
-            List<GsonTask> results = mTasksService.searchTasks(query, mSection);
-
-            // Refresh list with results.
-            if (!results.isEmpty()) {
-                mListView.setContentList(results);
-                mAdapter.update(results, false);
-            }
-        }
-    };
-
-    private TextView.OnEditorActionListener mSearchDoneListener =
-            new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // If the action is a key-up event on the return key, close keyboard.
-                        hideKeyboard();
-                    }
-                    return true;
-                }
-            };
-
-    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
-        @Override
-        public void onKeyboardBackPressed() {
-            // Back button has been pressed, close keyboard.
-            hideKeyboard();
-        }
-    };
 
     private void showKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
