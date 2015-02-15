@@ -155,7 +155,7 @@ public class TasksActivity extends BaseActivity {
 
     private boolean mIsSelectionMode;
 
-    private List<Long> mSelectedFilterTags;
+    private List<GsonTag> mSelectedFilterTags;
 
     private boolean mIsSearchActive;
     private String mSearchQuery;
@@ -951,7 +951,7 @@ public class TasksActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_close_workspaces)
-    protected void closeWorkspaces() {
+    public void closeWorkspaces() {
         hideWorkspaces();
 
         // Clear selected tags.
@@ -1030,7 +1030,7 @@ public class TasksActivity extends BaseActivity {
 
     private void loadWorkspacesTags() {
         List<GsonTag> tags = mTasksService.loadAllAssignedTags();
-        mSelectedFilterTags = new ArrayList<Long>();
+        mSelectedFilterTags = new ArrayList<GsonTag>();
 
         mWorkspacesTags.removeAllViews();
         mWorkspacesTags.setVisibility(View.VISIBLE);
@@ -1069,7 +1069,7 @@ public class TasksActivity extends BaseActivity {
             if (isFilterTagSelected(selectedTag.getId())) {
                 removeSelectedFilterTag(selectedTag.getId());
             } else {
-                mSelectedFilterTags.add(selectedTag.getId());
+                mSelectedFilterTags.add(selectedTag);
             }
 
             mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
@@ -1078,8 +1078,8 @@ public class TasksActivity extends BaseActivity {
 
     private boolean isFilterTagSelected(Long selectedTagId) {
         // Check if tag is in the selected filters.
-        for (Long tagId : mSelectedFilterTags) {
-            if (tagId.equals(selectedTagId)) {
+        for (GsonTag tag : mSelectedFilterTags) {
+            if (tag.getId().equals(selectedTagId)) {
                 return true;
             }
         }
@@ -1088,15 +1088,15 @@ public class TasksActivity extends BaseActivity {
 
     private void removeSelectedFilterTag(Long selectedTagId) {
         // Find and remove filter from the list of selected.
-        List<Long> selected = new ArrayList<Long>(mSelectedFilterTags);
-        for (Long tagId : selected) {
-            if (tagId.equals(selectedTagId)) {
-                mSelectedFilterTags.remove(tagId);
+        List<GsonTag> selected = new ArrayList<GsonTag>(mSelectedFilterTags);
+        for (GsonTag tag : selected) {
+            if (tag.getId().equals(selectedTagId)) {
+                mSelectedFilterTags.remove(tag);
             }
         }
     }
 
-    public List<Long> getSelectedFilterTags() {
+    public List<GsonTag> getSelectedFilterTags() {
         return mSelectedFilterTags;
     }
 

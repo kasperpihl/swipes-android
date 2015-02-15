@@ -279,7 +279,13 @@
     <string name="delete_tag_dialog_yes">Delete</string>
     <string name="delete_tag_dialog_no">Cancel</string>
     <string name="empty_tags_hint">No tags assigned</string>
+
+    <!-- Workspaces -->
     <string name="set_workspaces_hint">SET WORKSPACE</string>
+    <string name="clear_workspace_button">CLEAR WORKSPACES</string>
+    <string name="later_results_description">scheduled</string>
+    <string name="focus_results_description">current</string>
+    <string name="done_results_description">completed</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
@@ -289,6 +295,10 @@
     <plurals name="notification_title">
         <item quantity="one">%s</item>
         <item quantity="other">You have %d new tasks</item>
+    </plurals>
+    <plurals name="workspace_results">
+        <item quantity="one">%1$s %2$s task with tags: &lt;b>%3$s&lt;/b></item>
+        <item quantity="other">%1$s %2$s tasks with tags: &lt;b>%3$s&lt;/b></item>
     </plurals>
 
 </resources>

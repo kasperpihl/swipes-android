@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -105,6 +106,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     // Controls the display of old tasks.
     private static boolean sIsShowingOld;
+
+    // Footer views.
+    private LinearLayout mResultsView;
+    private TextView mResultsText;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -260,7 +265,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
         // Setup filters.
-        setupResultsArea();
+        setupResultsFooter();
 
         // Setup empty view.
         mViewStub.setLayoutResource(emptyView);
@@ -275,10 +280,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mLandscapeHeaderIcon.setLayoutParams(mLandscapeHeaderTitle.getLayoutParams());
     }
 
-    private void setupResultsArea() {
+    private void setupResultsFooter() {
         // Add filter views.
-//        mFiltersContainer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.filters_view, null);
-//        mListView.addHeaderView(mFiltersContainer);
+        mResultsView = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.results_footer, null);
+        mResultsText = (TextView) mResultsView.findViewById(R.id.workspace_results);
+        mListView.addFooterView(mResultsView);
+
+        // Hide footer initially.
+        hideWorkspaceResults();
+
+        // Add clear listener.
+        TextView clearWorkspace = (TextView) mResultsView.findViewById(R.id.clear_workspace_button);
+        clearWorkspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Clear workspace.
+                mActivity.closeWorkspaces();
+            }
+        });
     }
 
     private void configureLaterView(TasksListAdapter adapter) {
@@ -545,6 +564,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mHeaderView.setVisibility(View.VISIBLE);
                         mAdapter.setShowingOld(false);
                     }
+
+                    // Hide results footer.
+                    hideWorkspaceResults();
 
                     refreshTaskList(false);
                 }
@@ -1138,8 +1160,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void filterByTags() {
         // Load tasks for each selected tag.
         List<GsonTask> filteredTasks = new ArrayList<GsonTask>();
-        for (Long taskId : mActivity.getSelectedFilterTags()) {
-            filteredTasks.addAll(mTasksService.loadTasksForTag(taskId, mSection));
+        for (GsonTag tag : mActivity.getSelectedFilterTags()) {
+            filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
         }
 
         // Make sure old tasks are shown.
@@ -1148,9 +1170,55 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mAdapter.setShowingOld(true);
         }
 
+        // Show results footer.
+        showWorkspaceResults();
+
+        // Update results count.
+        updateResultsDescription(filteredTasks.size());
+
         // Refresh list with filtered tasks.
         mListView.setContentList(filteredTasks);
         mAdapter.update(filteredTasks, false);
+    }
+
+    private void hideWorkspaceResults() {
+        mListView.removeFooterView(mResultsView);
+    }
+
+    private void showWorkspaceResults() {
+        if (mListView.getFooterViewsCount() == 0) {
+            mListView.addFooterView(mResultsView);
+        }
+    }
+
+    private void updateResultsDescription(int count) {
+        String session = "";
+
+        switch (mSection) {
+            case LATER:
+                session = getString(R.string.later_results_description);
+                break;
+            case FOCUS:
+                session = getString(R.string.focus_results_description);
+                break;
+            case DONE:
+                session = getString(R.string.done_results_description);
+                break;
+        }
+
+        String tags = null;
+        for (GsonTag tag : mActivity.getSelectedFilterTags()) {
+            if (tags == null) {
+                tags = tag.getTitle();
+            } else {
+                tags += ", " + tag.getTitle();
+            }
+        }
+
+        String description = getResources().getQuantityString(R.plurals.workspace_results, count, String.valueOf(count), session, tags);
+        CharSequence styledDescription = Html.fromHtml(description);
+
+        mResultsText.setText(styledDescription);
     }
 
     private void showKeyboard() {

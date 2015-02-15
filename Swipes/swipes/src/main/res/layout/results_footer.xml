@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/workspace_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2 current tasks with tags: swipes"
+        android:layout_marginLeft="@dimen/workspace_results_margin_sides"
+        android:layout_marginRight="@dimen/workspace_results_margin_sides"
+        android:layout_marginTop="@dimen/workspace_results_margin_top"
+        android:gravity="center"
         android:textSize="@dimen/text_size_small" />
 
-    <TextView
+    <com.swipesapp.android.ui.view.FlatButton
+        android:id="@+id/clear_workspace_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="CLEAR WORKSPACE"
-        android:textColor="@color/focus_accent"
-        android:textSize="@dimen/text_size_small" />
+        android:layout_height="@dimen/flat_button_height"
+        android:layout_marginBottom="@dimen/workspace_results_margin_bottom"
+        android:layout_marginTop="@dimen/workspace_results_button_margin_top"
+        android:text="@string/clear_workspace_button"
+        android:textSize="@dimen/text_size_small"
+        app:textColor="@color/focus_accent" />
 
 </LinearLayout>
