@@ -379,4 +379,19 @@ public class GsonTask {
         return match;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof GsonTask) {
+            if (((GsonTask) obj).getTempId().equals(tempId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
 }

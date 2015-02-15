@@ -60,7 +60,9 @@ import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -1159,7 +1161,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void filterByTags() {
         // Load tasks for each selected tag.
-        List<GsonTask> filteredTasks = new ArrayList<GsonTask>();
+        Set<GsonTask> filteredTasks = new LinkedHashSet<>();
         for (GsonTag tag : mActivity.getSelectedFilterTags()) {
             filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
         }
@@ -1177,8 +1179,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         updateResultsDescription(filteredTasks.size());
 
         // Refresh list with filtered tasks.
-        mListView.setContentList(filteredTasks);
-        mAdapter.update(filteredTasks, false);
+        List<GsonTask> list = new ArrayList<>(filteredTasks);
+        mListView.setContentList(list);
+        mAdapter.update(list, false);
     }
 
     private void hideWorkspaceResults() {
