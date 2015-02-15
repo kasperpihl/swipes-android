@@ -1271,4 +1271,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
     }
 
+    public void setDragAndDropEnabled(boolean enabled) {
+        if (mSection == Sections.FOCUS) {
+            mListView.setDragAndDropEnabled(enabled);
+        }
+    }
+
 }

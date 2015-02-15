@@ -982,6 +982,11 @@ public class TasksActivity extends BaseActivity {
 
         // Load tags.
         loadWorkspacesTags();
+
+        // Disable drag and drop.
+        int focusSection = Sections.FOCUS.getSectionNumber();
+        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusSection);
+        focusFragment.setDragAndDropEnabled(false);
     }
 
     public void hideWorkspaces() {
@@ -994,6 +999,11 @@ public class TasksActivity extends BaseActivity {
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
             mButtonAddTask.startAnimation(slideUp);
         }
+
+        // Enable drag and drop.
+        int focusSection = Sections.FOCUS.getSectionNumber();
+        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusSection);
+        focusFragment.setDragAndDropEnabled(true);
     }
 
     Animation.AnimationListener mShowWorkspacesListener = new Animation.AnimationListener() {
