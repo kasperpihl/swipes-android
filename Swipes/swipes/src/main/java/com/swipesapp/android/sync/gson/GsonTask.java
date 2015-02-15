@@ -391,7 +391,7 @@ public class GsonTask {
 
     @Override
     public int hashCode() {
-        return 0;
+        return tempId.hashCode();
     }
 
 }

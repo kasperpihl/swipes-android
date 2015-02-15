@@ -1066,8 +1066,8 @@ public class TasksActivity extends BaseActivity {
             GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Add or remove tag from selected filters.
-            if (isFilterTagSelected(selectedTag.getId())) {
-                removeSelectedFilterTag(selectedTag.getId());
+            if (mSelectedFilterTags.contains(selectedTag)) {
+                mSelectedFilterTags.remove(selectedTag);
             } else {
                 mSelectedFilterTags.add(selectedTag);
             }
@@ -1075,26 +1075,6 @@ public class TasksActivity extends BaseActivity {
             mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
         }
     };
-
-    private boolean isFilterTagSelected(Long selectedTagId) {
-        // Check if tag is in the selected filters.
-        for (GsonTag tag : mSelectedFilterTags) {
-            if (tag.getId().equals(selectedTagId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void removeSelectedFilterTag(Long selectedTagId) {
-        // Find and remove filter from the list of selected.
-        List<GsonTag> selected = new ArrayList<GsonTag>(mSelectedFilterTags);
-        for (GsonTag tag : selected) {
-            if (tag.getId().equals(selectedTagId)) {
-                mSelectedFilterTags.remove(tag);
-            }
-        }
-    }
 
     public List<GsonTag> getSelectedFilterTags() {
         return mSelectedFilterTags;

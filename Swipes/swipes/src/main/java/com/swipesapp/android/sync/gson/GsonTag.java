@@ -118,4 +118,19 @@ public class GsonTag {
         return updatedAt;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof GsonTag) {
+            if (((GsonTag) obj).getTempId().equals(tempId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return tempId.hashCode();
+    }
+
 }
