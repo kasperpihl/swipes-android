@@ -844,17 +844,7 @@ public class EditTaskActivity extends FragmentActivity {
     private void unassignTag(GsonTag tag) {
         // Unassign and update list.
         mTasksService.unassignTag(tag.getId(), mTask.getId());
-        removeSelectedTag(tag);
-    }
-
-    private void removeSelectedTag(GsonTag selectedTag) {
-        // Find and remove tag from the list of selected.
-        List<GsonTag> selected = new ArrayList<GsonTag>(mAssignedTags);
-        for (GsonTag tag : selected) {
-            if (tag.getId().equals(selectedTag.getId())) {
-                mAssignedTags.remove(tag);
-            }
-        }
+        mAssignedTags.remove(tag);
     }
 
     @OnClick(R.id.edit_task_share_button)

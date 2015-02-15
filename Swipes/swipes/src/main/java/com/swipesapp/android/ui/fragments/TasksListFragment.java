@@ -1146,17 +1146,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         // Remove from selected tags.
-        removeSelectedTag(tag);
-    }
-
-    private void removeSelectedTag(GsonTag selectedTag) {
-        // Find and remove tag from the list of selected.
-        List<GsonTag> selected = new ArrayList<GsonTag>(mAssignedTags);
-        for (GsonTag tag : selected) {
-            if (tag.getId().equals(selectedTag.getId())) {
-                mAssignedTags.remove(tag);
-            }
-        }
+        mAssignedTags.remove(tag);
     }
 
     private void filterByTags() {
