@@ -17,7 +17,7 @@ public class PreferenceUtils {
 
     public static final String FIRST_RUN = "app_first_run";
 
-    public static final String WELCOME_SCREEN = "shown_welcome_screen";
+    public static final String WELCOME_DIALOG = "shown_welcome_screen";
 
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
 
@@ -126,7 +126,7 @@ public class PreferenceUtils {
      */
     public static boolean hasShownWelcomeScreen(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return !settings.getString(WELCOME_SCREEN, "").isEmpty();
+        return !settings.getString(WELCOME_DIALOG, "").isEmpty();
     }
 
     /**

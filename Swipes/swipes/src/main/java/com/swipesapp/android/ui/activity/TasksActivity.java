@@ -37,6 +37,8 @@ import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.migration.MigrationAssistant;
+import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.receiver.SnoozeReceiver;
@@ -179,6 +181,8 @@ public class TasksActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setCustomView(mActionBarView);
+
+        performInitialSetup();
 
         createSnoozeAlarm();
 
@@ -349,6 +353,25 @@ public class TasksActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void performInitialSetup() {
+        // Perform migrations when needed.
+        MigrationAssistant.performUpgrades(mContext.get());
+
+        // Show welcome dialog only once.
+        if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
+            // TODO: Show welcome dialog.
+
+            // Set welcome dialog as shown.
+            PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", this);
+        }
+
+        // Save welcome tasks if the app is used for the first time.
+        if (PreferenceUtils.isFirstRun(mContext.get())) {
+            WelcomeHandler welcomeHandler = new WelcomeHandler(this);
+            welcomeHandler.addWelcomeTasks();
+        }
     }
 
     private void handleShareIntent() {

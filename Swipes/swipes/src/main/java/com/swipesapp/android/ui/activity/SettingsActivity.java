@@ -147,18 +147,6 @@ public class SettingsActivity extends BaseActivity {
                         askToKeepData();
                         break;
                 }
-            } else if (requestCode == Constants.WELCOME_REQUEST_CODE) {
-                switch (resultCode) {
-                    case RESULT_OK:
-                        // Set welcome screen as shown.
-                        PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_SCREEN, "YES", getActivity());
-
-                        // Show tasks activity.
-                        Intent intent = new Intent(getActivity(), TasksActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-                getActivity().finish();
             }
         }
 
@@ -200,10 +188,6 @@ public class SettingsActivity extends BaseActivity {
 
                             // Reset user preferences.
                             resetPreferences();
-
-                            // Show welcome screen.
-                            Intent intent = new Intent(getActivity(), WelcomeActivity.class);
-                            startActivityForResult(intent, Constants.WELCOME_REQUEST_CODE);
                         }
                     })
                     .show();
@@ -216,8 +200,8 @@ public class SettingsActivity extends BaseActivity {
             PreferenceManager.setDefaultValues(getActivity(), R.xml.snooze_settings, true);
             PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
 
-            // Set welcome screen as not shown.
-            PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_SCREEN, "", getActivity());
+            // Set welcome dialog as not shown.
+            PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "", getActivity());
 
             // Clear last sync date.
             PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, null, getActivity());
