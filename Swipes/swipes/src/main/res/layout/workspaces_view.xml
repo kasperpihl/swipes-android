@@ -50,7 +50,7 @@
         android:id="@+id/workspaces_tags_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="@dimen/tags_margin_sides"
         android:layout_marginRight="@dimen/tags_margin_sides"
         android:layout_marginTop="15dp"

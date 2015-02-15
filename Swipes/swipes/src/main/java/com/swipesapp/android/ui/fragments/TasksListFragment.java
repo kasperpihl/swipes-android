@@ -540,6 +540,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 if (!mActivity.getSelectedFilterTags().isEmpty()) {
                     filterByTags();
                 } else {
+                    // Hide old tasks before refreshing.
+                    if (mSection == Sections.DONE) {
+                        mHeaderView.setVisibility(View.VISIBLE);
+                        mAdapter.setShowingOld(false);
+                    }
+
                     refreshTaskList(false);
                 }
             } else if (action.equals(Actions.PERFORM_SEARCH)) {
@@ -1136,6 +1142,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             filteredTasks.addAll(mTasksService.loadTasksForTag(taskId, mSection));
         }
 
+        // Make sure old tasks are shown.
+        if (mSection == Sections.DONE) {
+            mHeaderView.setVisibility(View.GONE);
+            mAdapter.setShowingOld(true);
+        }
+
         // Refresh list with filtered tasks.
         mListView.setContentList(filteredTasks);
         mAdapter.update(filteredTasks, false);
@@ -1155,7 +1167,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void performSearch() {
-        List<GsonTask> results = mTasksService.searchTasks(mActivity.getSearchQuery(), mSection);
+        String query = mActivity.getSearchQuery();
+        List<GsonTask> results = mTasksService.searchTasks(query, mSection);
+
+        if (mSection == Sections.DONE) {
+            if (!query.isEmpty()) {
+                // Make sure old tasks are shown.
+                mHeaderView.setVisibility(View.GONE);
+                mAdapter.setShowingOld(true);
+            } else {
+                // Hide old tasks before clearing search.
+                mHeaderView.setVisibility(View.VISIBLE);
+                mAdapter.setShowingOld(false);
+            }
+        }
 
         // Refresh list with results.
         mListView.setContentList(results);
