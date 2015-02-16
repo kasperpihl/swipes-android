@@ -94,7 +94,7 @@
     <dimen name="snooze_adjust_hint_margin_bottom">15dp</dimen>
 
     <!-- Done -->
-    <dimen name="done_buttons_max_width">148dp</dimen>
+    <dimen name="done_buttons_max_width">148dp</dimen>icd
     <dimen name="done_buttons_margin_vertical">9dp</dimen>
     <dimen name="done_buttons_margin_sides">8dp</dimen>
 
