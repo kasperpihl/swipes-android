@@ -101,7 +101,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private static List<GsonTask> sSelectedTasks;
     private static GsonTask sNextTask;
     private List<GsonTag> mAssignedTags;
-    private List<Long> mSelectedFilterTags;
 
     // Empty view.
     private View mEmptyView;
@@ -941,7 +940,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         refreshTaskList(false);
 
-        SyncService.getInstance(getActivity()).performSync(true);
+        SyncService.getInstance(getActivity()).performSync(true, Constants.SYNC_DELAY);
     }
 
     @OnClick(R.id.assign_tags_back_button)

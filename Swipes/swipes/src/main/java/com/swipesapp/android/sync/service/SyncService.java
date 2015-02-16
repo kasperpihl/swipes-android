@@ -33,6 +33,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service for syncing operations.
@@ -104,23 +106,30 @@ public class SyncService {
      * Performs a sync operation.
      *
      * @param changesOnly True to sync only changes.
+     * @param delay       The delay in seconds before sync starts.
      */
-    public void performSync(final boolean changesOnly) {
-        // Create new thread for responsiveness.
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Start thread with low priority.
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+    public void performSync(final boolean changesOnly, int delay) {
+        // Skip sync if it's already running.
+        if (!isSyncing()) {
+            // Create new thread for responsiveness.
+            new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
+                @Override
+                public void run() {
+                    // Start thread with low priority.
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-                // Save date of last sync call.
-                String lastSync = DateUtils.dateToSync(new Date());
-                PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_CALL, lastSync, mContext.get());
+                    // Save date of last sync call.
+                    String lastSync = DateUtils.dateToSync(new Date());
+                    PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_CALL, lastSync, mContext.get());
 
-                // Forward call to internal sync method.
-                performSync(changesOnly, false);
-            }
-        }).start();
+                    // Forward call to internal sync method.
+                    performSync(changesOnly, false);
+
+                    // Forward call to Evernote sync.
+                    performEvernoteSync();
+                }
+            }, delay, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -131,7 +140,7 @@ public class SyncService {
      */
     private synchronized void performSync(final boolean changesOnly, boolean isRecursion) {
         // Skip sync when the user isn't logged in.
-        if (ParseUser.getCurrentUser() != null && !mIsSyncing) {
+        if (ParseUser.getCurrentUser() != null) {
 
             // Objects holding all local changes.
             List<TagSync> tagsChanged = mExtTagSyncDao.listTagsForSync();
@@ -172,16 +181,23 @@ public class SyncService {
                                 mIsSyncing = false;
                                 Log.d(LOG_TAG, "Sync done.");
 
+                                // Refresh local content.
+                                TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+
                                 // Call recursion to sync remaining objects.
                                 performSync(changesOnly, true);
                             }
                         });
             }
         }
+    }
 
+    /**
+     * Performs an Evernote sync operation.
+     */
+    private synchronized void performEvernoteSync() {
         // Skip sync when the user isn't authenticated or sync is disabled.
-        if (EvernoteIntegration.getInstance().isAuthenticated() &&
-                PreferenceUtils.isEvernoteSyncEnabled(mContext.get()) && !mIsSyncingEvernote) {
+        if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
 
             // Mark Evernote sync as in progress.
             mIsSyncingEvernote = true;
@@ -281,40 +297,28 @@ public class SyncService {
             }
         }
 
-        // Create another thread for processing tasks.
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Start thread with low priority.
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        // Process new tasks and changes.
+        if (response.getTasks() != null) {
+            for (GsonTask task : response.getTasks()) {
+                GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
+                task.setId(old != null ? old.getId() : null);
 
-                // Process new tasks and changes.
-                if (response.getTasks() != null) {
-                    for (GsonTask task : response.getTasks()) {
-                        GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
-                        task.setId(old != null ? old.getId() : null);
+                // Set dates to local format.
+                task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
+                task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
+                task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
+                task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
+                task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
 
-                        // Set dates to local format.
-                        task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
-                        task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
-                        task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
-                        task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
-                        task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
-
-                        // HACK: Fix bug causing other platforms to delete the attachments.
-                        if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
-                            task.setAttachments(old.getAttachments());
-                        }
-
-                        // Save or update task locally.
-                        TasksService.getInstance(mContext.get()).saveTask(task, false);
-                    }
+                // HACK: Fix bug causing other platforms to delete the attachments.
+                if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
+                    task.setAttachments(old.getAttachments());
                 }
 
-                // Refresh local content.
-                TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+                // Save or update task locally.
+                TasksService.getInstance(mContext.get()).saveTask(task, false);
             }
-        }).start();
+        }
 
         // Save last update time.
         if (response.getUpdateTime() != null) {
@@ -452,6 +456,10 @@ public class SyncService {
                     e.getMessage() + "\n" + response);
             return false;
         }
+    }
+
+    public boolean isSyncing() {
+        return mIsSyncing || mIsSyncingEvernote;
     }
 
 }

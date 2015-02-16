@@ -95,7 +95,7 @@ public class SettingsActivity extends BaseActivity {
             preferenceSync.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     // Force sync and refresh.
-                    SyncService.getInstance(getActivity()).performSync(true);
+                    SyncService.getInstance(getActivity()).performSync(true, Constants.SYNC_DELAY);
                     refreshSyncDate(preferenceSync);
                     return true;
                 }

@@ -16,6 +16,7 @@ import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.values.Actions;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
@@ -117,7 +118,7 @@ public class TasksService {
             updateParent(gsonTask, sync);
         }
 
-        if (sync) SyncService.getInstance(mContext.get()).performSync(true);
+        if (sync) SyncService.getInstance(mContext.get()).performSync(true, Constants.SYNC_DELAY);
 
         sendBroadcast(Actions.TASKS_CHANGED);
     }
@@ -155,7 +156,7 @@ public class TasksService {
             // Delete subtasks.
             deleteSubtasksForTask(task.getTempId());
 
-            SyncService.getInstance(mContext.get()).performSync(true);
+            SyncService.getInstance(mContext.get()).performSync(true, Constants.SYNC_DELAY);
         }
     }
 

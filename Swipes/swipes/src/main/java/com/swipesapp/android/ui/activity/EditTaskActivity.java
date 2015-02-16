@@ -482,9 +482,12 @@ public class EditTaskActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                // Refresh subtasks.
-                loadFirstSubtask();
-                refreshSubtasks();
+                // Skip refresh while syncing.
+                if (!SyncService.getInstance(mContext.get()).isSyncing()) {
+                    // Refresh subtasks.
+                    loadFirstSubtask();
+                    refreshSubtasks();
+                }
             }
         }
     };
@@ -652,7 +655,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         updateViews();
 
-        SyncService.getInstance(this).performSync(true);
+        SyncService.getInstance(this).performSync(true, Constants.SYNC_DELAY);
     }
 
     @OnClick(R.id.assign_tags_back_button)

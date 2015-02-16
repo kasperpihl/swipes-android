@@ -237,7 +237,7 @@ public class TasksActivity extends BaseActivity {
 
         // Sync only changes after initial sync has been performed.
         boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
-        mSyncService.performSync(changesOnly);
+        mSyncService.performSync(changesOnly, 0);
 
         if (mWasRestored) {
             // Reset section.
@@ -564,8 +564,11 @@ public class TasksActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             // Filter intent actions.
             if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                // Perform refresh of all sections.
-                refreshSections();
+                // Skip refresh while syncing.
+                if (!mSyncService.isSyncing()) {
+                    // Perform refresh of all sections.
+                    refreshSections();
+                }
             }
         }
     };
@@ -761,9 +764,6 @@ public class TasksActivity extends BaseActivity {
         // Fade in the tasks.
         mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
         transitionStatusBar(ThemeUtils.getStatusBarColor(this), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
-
-        // Broadcast changes.
-        mTasksService.sendBroadcast(Actions.TASKS_CHANGED);
     }
 
     private void animateTags(boolean isHiding) {

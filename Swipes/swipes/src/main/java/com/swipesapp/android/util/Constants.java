@@ -11,6 +11,11 @@ public class Constants {
     public static final String FONT_NAME = "swipes.ttf";
 
     /**
+     * Default sync delay.
+     */
+    public static final int SYNC_DELAY = 5;
+
+    /**
      * Alpha value for pressed buttons.
      */
     public static final float PRESSED_BUTTON_ALPHA = 0.6f;
