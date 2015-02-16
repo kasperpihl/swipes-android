@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,10 @@ public class EvernoteLearnActivity extends BaseActivity {
         themeStatusBar(getResources().getColor(R.color.evernote_brand_dark));
 
         mContext = new WeakReference<Context>(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mButtonGetStarted.setBackgroundResource(R.drawable.red_button_ripple);
+        }
 
         mButtonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override

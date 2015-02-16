@@ -33,8 +33,8 @@
 
     <!-- Component colors -->
     <item name="transparent" type="color">#00000000</item>
-    <item name="red_button" type="color">#CCfd4534</item>
-    <item name="red_button_push" type="color">#80fd4534</item>
+    <item name="red_button" type="color">#FC573F</item>
+    <item name="red_button_push" type="color">#B51E06</item>
     <item name="evernote_brand" type="color">#2DBE60</item>
     <item name="evernote_brand_dark" type="color">#07A949</item>
     <item name="evernote_gray_background" type="color">#E1E1E1</item>

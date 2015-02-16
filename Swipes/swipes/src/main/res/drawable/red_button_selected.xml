@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetBottom="@dimen/flat_button_inset_vertical"
+    android:insetLeft="@dimen/flat_button_inset_horizontal"
+    android:insetRight="@dimen/flat_button_inset_horizontal"
+    android:insetTop="@dimen/flat_button_inset_vertical">
+    <shape android:shape="rectangle">
+        <corners android:radius="2dp" />
+        <solid android:color="@color/red_button_push" />
+        <padding
+            android:bottom="@dimen/flat_button_padding_vertical"
+            android:left="@dimen/flat_button_padding_horizontal"
+            android:right="@dimen/flat_button_padding_horizontal"
+            android:top="@dimen/flat_button_padding_vertical" />
+    </shape>
+</inset>
