@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -33,9 +34,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
+import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
@@ -51,6 +54,7 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
+import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DeviceUtils;
@@ -131,6 +135,7 @@ public class TasksActivity extends BaseActivity {
     private WeakReference<Context> mContext;
 
     private TasksService mTasksService;
+    private SyncService mSyncService;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -173,6 +178,7 @@ public class TasksActivity extends BaseActivity {
 
         mContext = new WeakReference<Context>(this);
         mTasksService = TasksService.getInstance(this);
+        mSyncService = SyncService.getInstance(this);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
@@ -231,7 +237,7 @@ public class TasksActivity extends BaseActivity {
 
         // Sync only changes after initial sync has been performed.
         boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
-        SyncService.getInstance(this).performSync(changesOnly);
+        mSyncService.performSync(changesOnly);
 
         if (mWasRestored) {
             // Reset section.
@@ -275,6 +281,20 @@ public class TasksActivity extends BaseActivity {
                             recreate();
                         }
                     }, 1);
+                    break;
+                case Constants.ACCOUNT_CHANGED_RESULT_CODE:
+                    // Change visibility of login menu.
+                    invalidateOptionsMenu();
+                    break;
+            }
+        } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // Login successful. Ask to keep user data.
+                    askToKeepData();
+
+                    // Change visibility of login menu.
+                    invalidateOptionsMenu();
                     break;
             }
         }
@@ -332,7 +352,8 @@ public class TasksActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case ACTION_LOGIN:
-                // TODO: Call login.
+                // Call login.
+                startLogin();
                 break;
             case ACTION_MULTI_SELECT:
                 // Enable selection UI.
@@ -1212,6 +1233,52 @@ public class TasksActivity extends BaseActivity {
 
     public String getSearchQuery() {
         return mSearchQuery;
+    }
+
+    private void startLogin() {
+        // Call Parse login activity.
+        ParseLoginBuilder builder = new ParseLoginBuilder(this);
+        startActivityForResult(builder.build(), Constants.LOGIN_REQUEST_CODE);
+    }
+
+    private void askToKeepData() {
+        // Display confirmation dialog.
+        new SwipesDialog.Builder(this)
+                .title(R.string.keep_data_dialog_title)
+                .content(R.string.keep_data_dialog_message)
+                .positiveText(R.string.keep_data_dialog_yes)
+                .negativeText(R.string.keep_data_dialog_no)
+                .actionsColorRes(R.color.neutral_accent)
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        // Save data from test period for sync.
+                        saveDataForSync();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        // Clear data from test period.
+                        mTasksService.clearAllData();
+                    }
+                })
+                .show();
+    }
+
+    private void saveDataForSync() {
+        // Save all tags for syncing.
+        for (GsonTag tag : mTasksService.loadAllTags()) {
+            mSyncService.saveTagForSync(tag);
+        }
+
+        // Save all tasks for syncing.
+        for (GsonTask task : mTasksService.loadAllTasks()) {
+            if (!task.getDeleted()) {
+                task.setId(null);
+                mSyncService.saveTaskChangesForSync(task);
+            }
+        }
     }
 
 }

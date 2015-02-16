@@ -28,6 +28,7 @@ import com.swipesapp.android.util.ThemeUtils;
 public class SettingsActivity extends BaseActivity {
 
     private static boolean sHasChangedTheme;
+    private static boolean sHasChangedAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,10 @@ public class SettingsActivity extends BaseActivity {
             // Theme has changed. Set result code.
             setResult(Constants.THEME_CHANGED_RESULT_CODE);
             sHasChangedTheme = false;
+        } else if (sHasChangedAccount) {
+            // User has logged in or out. Set result code.
+            setResult(Constants.ACCOUNT_CHANGED_RESULT_CODE);
+            sHasChangedAccount = false;
         }
     }
 
@@ -188,6 +193,8 @@ public class SettingsActivity extends BaseActivity {
 
                             // Reset user preferences.
                             resetPreferences();
+
+                            finishAccountChange();
                         }
                     })
                     .show();
@@ -222,7 +229,7 @@ public class SettingsActivity extends BaseActivity {
                             // Save data from test period for sync.
                             saveDataForSync();
 
-                            finishLogin();
+                            finishAccountChange();
                         }
 
                         @Override
@@ -230,13 +237,17 @@ public class SettingsActivity extends BaseActivity {
                             // Clear data from test period.
                             TasksService.getInstance(getActivity()).clearAllData();
 
-                            finishLogin();
+                            finishAccountChange();
                         }
                     })
                     .show();
         }
 
-        private void finishLogin() {
+        private void finishAccountChange() {
+            // Account has changed. Save state.
+            sHasChangedAccount = true;
+
+            // Reload activity.
             getActivity().recreate();
         }
 

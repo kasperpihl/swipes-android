@@ -56,14 +56,14 @@ public class Constants {
     public static final int LOGIN_REQUEST_CODE = 3;
 
     /**
-     * Request code for welcome screen.
-     */
-    public static final int WELCOME_REQUEST_CODE = 4;
-
-    /**
      * Request code for settings screen.
      */
-    public static final int SETTINGS_REQUEST_CODE = 5;
+    public static final int SETTINGS_REQUEST_CODE = 4;
+
+    /**
+     * Request code for Evernote attachments.
+     */
+    public static final int EVERNOTE_ATTACHMENTS_REQUEST_CODE = 5;
 
     /**
      * Result code for theme changed.
@@ -71,8 +71,8 @@ public class Constants {
     public static final int THEME_CHANGED_RESULT_CODE = 1;
 
     /**
-     * Request code for Evernote attachments.
+     * Result code for account changed.
      */
-    public static final int EVERNOTE_ATTACHMENTS_REQUEST_CODE = 5;
+    public static final int ACCOUNT_CHANGED_RESULT_CODE = 2;
 
 }
