@@ -1,68 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Shadow and content area -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/edit_tasks_bar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/edit_bar_height"
+    android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:visibility="gone">
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_close_selection"
-        android:layout_width="@dimen/edit_task_buttons_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/edit_bar_margin_edges"
-        android:background="@android:color/transparent"
-        android:text="@string/cross_sign"
-        android:textSize="@dimen/edit_bar_buttons_size" />
+    <RelativeLayout
+        android:id="@+id/edit_bar_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_bar_height"
+        android:layout_marginTop="@dimen/toolbar_shadow_height">
 
-    <TextView
-        android:id="@+id/edit_bar_selection_count"
-        android:layout_width="@dimen/edit_bar_buttons_size"
-        android:layout_height="@dimen/edit_bar_buttons_size"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/edit_bar_margin_edges"
-        android:layout_toRightOf="@id/button_close_selection"
-        android:alpha="0"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_medium" />
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/button_close_selection"
+            android:layout_width="@dimen/edit_task_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/edit_bar_margin_edges"
+            android:background="@android:color/transparent"
+            android:text="@string/cross_sign"
+            android:textSize="@dimen/edit_bar_buttons_size" />
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_share_tasks"
-        android:layout_width="@dimen/edit_task_buttons_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
-        android:layout_marginRight="@dimen/edit_bar_margin_edges"
-        android:background="@android:color/transparent"
-        android:text="@string/action_share"
-        android:textSize="@dimen/edit_bar_buttons_size" />
+        <TextView
+            android:id="@+id/edit_bar_selection_count"
+            android:layout_width="@dimen/edit_bar_buttons_size"
+            android:layout_height="@dimen/edit_bar_buttons_size"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/edit_bar_margin_edges"
+            android:layout_toRightOf="@id/button_close_selection"
+            android:alpha="0"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_medium" />
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_delete_tasks"
-        android:layout_width="@dimen/edit_task_buttons_width"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
-        android:layout_marginRight="@dimen/edit_bar_buttons_margin"
-        android:layout_toLeftOf="@id/button_share_tasks"
-        android:background="@android:color/transparent"
-        android:text="@string/action_delete"
-        android:textSize="@dimen/edit_bar_buttons_size" />
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/button_share_tasks"
+            android:layout_width="@dimen/edit_task_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
+            android:layout_marginRight="@dimen/edit_bar_margin_edges"
+            android:background="@android:color/transparent"
+            android:text="@string/action_share"
+            android:textSize="@dimen/edit_bar_buttons_size" />
 
-    <com.swipesapp.android.ui.view.SwipesButton
-        android:id="@+id/button_assign_tags"
-        android:layout_width="@dimen/edit_task_buttons_width"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
-        android:layout_marginRight="@dimen/edit_bar_buttons_margin"
-        android:layout_toLeftOf="@id/button_delete_tasks"
-        android:background="@android:color/transparent"
-        android:text="@string/action_tag"
-        android:textSize="@dimen/edit_bar_buttons_size" />
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/button_delete_tasks"
+            android:layout_width="@dimen/edit_task_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
+            android:layout_marginRight="@dimen/edit_bar_buttons_margin"
+            android:layout_toLeftOf="@id/button_share_tasks"
+            android:background="@android:color/transparent"
+            android:text="@string/action_delete"
+            android:textSize="@dimen/edit_bar_buttons_size" />
 
-</RelativeLayout>
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/button_assign_tags"
+            android:layout_width="@dimen/edit_task_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/edit_bar_buttons_margin"
+            android:layout_marginRight="@dimen/edit_bar_buttons_margin"
+            android:layout_toLeftOf="@id/button_delete_tasks"
+            android:background="@android:color/transparent"
+            android:text="@string/action_tag"
+            android:textSize="@dimen/edit_bar_buttons_size" />
+
+    </RelativeLayout>
+
+    <!-- Toolbar shadow -->
+    <include layout="@layout/toolbar_shadow_reverse" />
+
+</FrameLayout>

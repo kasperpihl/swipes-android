@@ -1,117 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/workspaces_area"
+
+<!-- Shadow and content area -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/workspaces_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:visibility="gone"
-    tools:context="com.swipesapp.android.ui.fragments.TasksListFragment">
+    android:layout_gravity="bottom"
+    android:visibility="gone">
 
-    <!-- Set workspaces header -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_bar_height">
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_close_workspaces"
-            android:layout_width="@dimen/edit_task_buttons_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
-            android:background="@android:color/transparent"
-            android:text="@string/cross_sign"
-            android:textSize="@dimen/action_buttons_size" />
-
-        <TextView
-            android:id="@+id/set_workspaces_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/set_workspaces_hint"
-            android:textSize="@dimen/text_size_medium" />
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_confirm_workspace"
-            android:layout_width="@dimen/edit_task_buttons_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="4dp"
-            android:background="@android:color/transparent"
-            android:rotation="270"
-            android:text="@string/left_arrow"
-            android:textSize="@dimen/action_buttons_size" />
-    </RelativeLayout>
-
-    <!-- Tags area -->
     <LinearLayout
-        android:id="@+id/workspaces_tags_container"
+        android:id="@+id/workspaces_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="@dimen/tags_margin_sides"
-        android:layout_marginRight="@dimen/tags_margin_sides"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/toolbar_shadow_height"
+        android:orientation="vertical">
 
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/workspaces_tags"
+        <!-- Set workspaces header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_bar_height">
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_close_workspaces"
+                android:layout_width="@dimen/edit_task_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:background="@android:color/transparent"
+                android:text="@string/cross_sign"
+                android:textSize="@dimen/action_buttons_size" />
+
+            <TextView
+                android:id="@+id/set_workspaces_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/set_workspaces_hint"
+                android:textSize="@dimen/text_size_medium" />
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_confirm_workspace"
+                android:layout_width="@dimen/edit_task_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4dp"
+                android:background="@android:color/transparent"
+                android:rotation="270"
+                android:text="@string/left_arrow"
+                android:textSize="@dimen/action_buttons_size" />
+        </RelativeLayout>
+
+        <!-- Tags area -->
+        <LinearLayout
+            android:id="@+id/workspaces_tags_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="@dimen/tags_margin_sides"
+            android:layout_marginRight="@dimen/tags_margin_sides"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/workspaces_empty_tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="@string/empty_tags_hint"
-            android:textColor="@color/neutral_gray"
-            android:textSize="@dimen/text_size_medium" />
+            <com.swipesapp.android.ui.view.FlowLayout
+                android:id="@+id/workspaces_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/workspaces_empty_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/empty_tags_hint"
+                android:textColor="@color/neutral_gray"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+        <!-- Filter buttons area-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_bar_height"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <!-- TODO: Use checkboxes instead of buttons and perform filtering.-->
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_workspaces_priority"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_task_buttons_margin"
+                android:layout_marginRight="@dimen/edit_task_buttons_margin"
+                android:background="@android:color/transparent"
+                android:text="@string/workspaces_priority"
+                android:textSize="@dimen/action_buttons_size" />
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_workspaces_notes"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_task_buttons_margin"
+                android:layout_marginRight="@dimen/edit_task_buttons_margin"
+                android:layout_toRightOf="@id/button_workspaces_priority"
+                android:background="@android:color/transparent"
+                android:text="@string/edit_notes"
+                android:textSize="@dimen/action_buttons_size" />
+
+            <com.swipesapp.android.ui.view.SwipesButton
+                android:id="@+id/button_workspaces_repeat"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_task_buttons_margin"
+                android:layout_marginRight="@dimen/edit_task_buttons_margin"
+                android:layout_toRightOf="@id/button_workspaces_notes"
+                android:background="@android:color/transparent"
+                android:text="@string/edit_repeat"
+                android:textSize="@dimen/action_buttons_size" />
+        </RelativeLayout>
+
     </LinearLayout>
 
-    <!-- Filter buttons area-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_bar_height"
-        android:gravity="center"
-        android:visibility="gone">
+    <!-- Toolbar shadow -->
+    <include layout="@layout/toolbar_shadow_reverse" />
 
-        <!-- TODO: Use checkboxes instead of buttons and perform filtering.-->
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_workspaces_priority"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/edit_task_buttons_margin"
-            android:layout_marginRight="@dimen/edit_task_buttons_margin"
-            android:background="@android:color/transparent"
-            android:text="@string/workspaces_priority"
-            android:textSize="@dimen/action_buttons_size" />
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_workspaces_notes"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/edit_task_buttons_margin"
-            android:layout_marginRight="@dimen/edit_task_buttons_margin"
-            android:layout_toRightOf="@id/button_workspaces_priority"
-            android:background="@android:color/transparent"
-            android:text="@string/edit_notes"
-            android:textSize="@dimen/action_buttons_size" />
-
-        <com.swipesapp.android.ui.view.SwipesButton
-            android:id="@+id/button_workspaces_repeat"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/edit_task_buttons_margin"
-            android:layout_marginRight="@dimen/edit_task_buttons_margin"
-            android:layout_toRightOf="@id/button_workspaces_notes"
-            android:background="@android:color/transparent"
-            android:text="@string/edit_repeat"
-            android:textSize="@dimen/action_buttons_size" />
-    </RelativeLayout>
-
-</LinearLayout>
+</FrameLayout>

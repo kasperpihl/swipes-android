@@ -100,7 +100,9 @@ public class TasksActivity extends BaseActivity {
     CheckBox mButtonAddTaskPriority;
 
     @InjectView(R.id.edit_tasks_bar)
-    RelativeLayout mEditTasksBar;
+    FrameLayout mEditTasksBar;
+    @InjectView(R.id.edit_bar_area)
+    RelativeLayout mEditBarArea;
     @InjectView(R.id.edit_bar_selection_count)
     TextView mEditBarCount;
 
@@ -110,6 +112,8 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.action_buttons_container)
     LinearLayout mActionButtonsContainer;
 
+    @InjectView(R.id.workspaces_view)
+    FrameLayout mWorkspacesView;
     @InjectView(R.id.workspaces_area)
     LinearLayout mWorkspacesArea;
     @InjectView(R.id.workspaces_tags)
@@ -598,7 +602,7 @@ public class TasksActivity extends BaseActivity {
 
     public void showEditBar() {
         // Apply container color.
-        mEditTasksBar.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        mEditBarArea.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
 
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {
@@ -1015,13 +1019,13 @@ public class TasksActivity extends BaseActivity {
         mWorkspacesArea.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
 
         // Animate views only when necessary.
-        if (mWorkspacesArea.getVisibility() == View.GONE) {
+        if (mWorkspacesView.getVisibility() == View.GONE) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
             slideDown.setAnimationListener(mShowWorkspacesListener);
             mButtonAddTask.startAnimation(slideDown);
 
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-            mWorkspacesArea.startAnimation(slideUp);
+            mWorkspacesView.startAnimation(slideUp);
         }
 
         // Load tags.
@@ -1034,10 +1038,10 @@ public class TasksActivity extends BaseActivity {
 
     public void hideWorkspaces() {
         // Animate views only when necessary.
-        if (mWorkspacesArea.isShown()) {
+        if (mWorkspacesView.isShown()) {
             Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
             slideDown.setAnimationListener(mHideWorkspacesListener);
-            mWorkspacesArea.startAnimation(slideDown);
+            mWorkspacesView.startAnimation(slideDown);
 
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
             mButtonAddTask.startAnimation(slideUp);
@@ -1051,7 +1055,7 @@ public class TasksActivity extends BaseActivity {
     Animation.AnimationListener mShowWorkspacesListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-            mWorkspacesArea.setVisibility(View.VISIBLE);
+            mWorkspacesView.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -1072,7 +1076,7 @@ public class TasksActivity extends BaseActivity {
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            mWorkspacesArea.setVisibility(View.GONE);
+            mWorkspacesView.setVisibility(View.GONE);
         }
 
         @Override
