@@ -50,6 +50,7 @@
     <style name="Login_Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/light_text</item>
         <item name="android:windowBackground">@color/light_background</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <!-- Dialogs theme. -->
