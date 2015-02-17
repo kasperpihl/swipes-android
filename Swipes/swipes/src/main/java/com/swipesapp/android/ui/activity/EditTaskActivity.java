@@ -482,12 +482,9 @@ public class EditTaskActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                // Skip refresh while syncing.
-                if (!SyncService.getInstance(mContext.get()).isSyncing()) {
-                    // Refresh subtasks.
-                    loadFirstSubtask();
-                    refreshSubtasks();
-                }
+                // Refresh subtasks.
+                loadFirstSubtask();
+                refreshSubtasks();
             }
         }
     };

@@ -78,6 +78,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return tag != null ? mFragmentManager.findFragmentByTag(tag) : null;
     }
 
+    public TasksListFragment getFragment(Sections section) {
+        int position = section.getSectionNumber();
+
+        return (TasksListFragment) getFragment(position);
+    }
+
     public List<TasksListFragment> getFragments() {
         List<TasksListFragment> fragments = new ArrayList<>();
 

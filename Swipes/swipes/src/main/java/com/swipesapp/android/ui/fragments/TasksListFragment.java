@@ -615,7 +615,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Move task from Later to Focus.
                     getTask(position).setLocalSchedule(new Date());
                     mTasksService.saveTask(getTask(position), true);
-                    refreshTaskList(false);
+                    // Refresh all lists.
+                    mActivity.refreshSections();
                     break;
                 case FOCUS:
                     // Move task from Focus to Done.
@@ -623,7 +624,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
-                    refreshTaskList(false);
+                    // Refresh all lists.
+                    mActivity.refreshSections();
                     break;
             }
         }
@@ -643,7 +645,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Move task from Done to Focus.
                     getTask(position).setLocalCompletionDate(null);
                     mTasksService.saveTask(getTask(position), true);
-                    refreshTaskList(false);
+                    // Refresh all lists.
+                    mActivity.refreshSections();
                     break;
             }
         }
@@ -659,7 +662,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     mTasksService.saveTask(getTask(position), true);
                     // Handle repeat.
                     mRepeatHandler.handleRepeatedTask(getTask(position));
-                    refreshTaskList(false);
+                    // Refresh all lists.
+                    mActivity.refreshSections();
                     break;
             }
         }
@@ -715,7 +719,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             task.setPriority(priority);
 
             mTasksService.saveTask(task, true);
-            refreshTaskList(false);
         }
     };
 
@@ -830,7 +833,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     public void onPositive(MaterialDialog dialog) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(sSelectedTasks);
-                        refreshTaskList(false);
+
+                        // Refresh all task lists.
+                        mActivity.refreshSections();
                     }
                 })
                 .show();
@@ -938,7 +943,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Enable pager swiping.
         mActivity.getViewPager().setSwipeable(true);
 
-        refreshTaskList(false);
+        // Refresh all task lists.
+        mActivity.refreshSections();
 
         SyncService.getInstance(getActivity()).performSync(true, Constants.SYNC_DELAY);
     }

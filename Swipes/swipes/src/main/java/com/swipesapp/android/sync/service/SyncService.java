@@ -110,7 +110,7 @@ public class SyncService {
      */
     public void performSync(final boolean changesOnly, int delay) {
         // Skip sync if it's already running.
-        if (!isSyncing()) {
+        if (!mIsSyncing) {
             // Create new thread for responsiveness.
             new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
                 @Override
@@ -124,6 +124,18 @@ public class SyncService {
 
                     // Forward call to internal sync method.
                     performSync(changesOnly, false);
+                }
+            }, delay, TimeUnit.SECONDS);
+        }
+
+        // Skip Evernote sync if it's already running.
+        if (!mIsSyncingEvernote) {
+            // Create new thread for responsiveness.
+            new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
+                @Override
+                public void run() {
+                    // Start thread with low priority.
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
                     // Forward call to Evernote sync.
                     performEvernoteSync();
@@ -456,10 +468,6 @@ public class SyncService {
                     e.getMessage() + "\n" + response);
             return false;
         }
-    }
-
-    public boolean isSyncing() {
-        return mIsSyncing || mIsSyncingEvernote;
     }
 
 }

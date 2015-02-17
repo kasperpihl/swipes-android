@@ -564,11 +564,8 @@ public class TasksActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             // Filter intent actions.
             if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
-                // Skip refresh while syncing.
-                if (!mSyncService.isSyncing()) {
-                    // Perform refresh of all sections.
-                    refreshSections();
-                }
+                // Perform refresh of all sections.
+                refreshSections();
             }
         }
     };
@@ -764,6 +761,10 @@ public class TasksActivity extends BaseActivity {
         // Fade in the tasks.
         mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
         transitionStatusBar(ThemeUtils.getStatusBarColor(this), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
+
+        // Refresh main task list.
+        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
+        focusFragment.refreshTaskList(false);
     }
 
     private void animateTags(boolean isHiding) {
@@ -950,8 +951,7 @@ public class TasksActivity extends BaseActivity {
 
     // HACK: Use activity to notify the middle fragment.
     public void updateEmptyView() {
-        int focusIndex = Sections.FOCUS.getSectionNumber();
-        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusIndex);
+        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
         focusFragment.updateEmptyView();
     }
 
@@ -1028,8 +1028,7 @@ public class TasksActivity extends BaseActivity {
         loadWorkspacesTags();
 
         // Disable drag and drop.
-        int focusSection = Sections.FOCUS.getSectionNumber();
-        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusSection);
+        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
         focusFragment.setDragAndDropEnabled(false);
     }
 
@@ -1045,8 +1044,7 @@ public class TasksActivity extends BaseActivity {
         }
 
         // Enable drag and drop.
-        int focusSection = Sections.FOCUS.getSectionNumber();
-        TasksListFragment focusFragment = (TasksListFragment) mSectionsPagerAdapter.getItem(focusSection);
+        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
         focusFragment.setDragAndDropEnabled(true);
     }
 
