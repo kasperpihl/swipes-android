@@ -92,7 +92,10 @@ public class TasksService {
     public void sendBroadcast(String action) {
         Intent intent = new Intent();
         intent.setAction(action);
-        mContext.get().sendBroadcast(intent);
+
+        if (mContext.get() != null) {
+            mContext.get().sendBroadcast(intent);
+        }
     }
 
     /**

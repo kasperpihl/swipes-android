@@ -10,20 +10,19 @@
         android:id="@+id/attachment_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="@dimen/evernote_attachments_margin_sides"
+        android:layout_marginRight="@dimen/evernote_attachments_margin_sides"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/evernote_attachments_text_size" />
 
     <TextView
         android:id="@+id/attachment_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
-        android:textColor="@android:color/white"
+        android:layout_marginLeft="@dimen/evernote_attachments_margin_sides"
+        android:textColor="@color/neutral_gray"
         android:textSize="@dimen/text_size_small" />
 
 </LinearLayout>

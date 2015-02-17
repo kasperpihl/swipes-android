@@ -1,6 +1,5 @@
 package com.swipesapp.android.ui.activity;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,7 +26,6 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Services;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +48,6 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
     private static final String FILTER_PREFIX = "todo:* ";
 
-    private WeakReference<Context> mContext;
-
     private TasksService mTasksService;
     private EvernoteIntegration mEvernoteIntegration;
 
@@ -66,11 +63,11 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(ThemeUtils.getThemeResource(this));
+        setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_evernote_attachments);
         ButterKnife.inject(this);
 
-        mContext = new WeakReference<Context>(this);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mTasksService = TasksService.getInstance(this);
         mEvernoteIntegration = EvernoteIntegration.getInstance();
@@ -79,17 +76,9 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
         mTask = mTasksService.loadTask(id);
 
-        customizeViews();
-
         setupListView();
-    }
 
-    private void customizeViews() {
-        mView.setBackgroundColor(getResources().getColor(R.color.evernote_brand));
-
-        mSearchField.setTextColor(Color.WHITE);
-        mSearchField.setHintTextColor(Color.WHITE);
-        mSearchField.addTextChangedListener(mSearchTypeListener);
+        customizeViews();
     }
 
     private void setupListView() {
@@ -102,6 +91,20 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         // Setup adapter.
         mAdapter = new EvernoteAttachmentsAdapter(this, mNotes, mAttachmentsListener);
         listView.setAdapter(mAdapter);
+    }
+
+    private void customizeViews() {
+        boolean lightTheme = ThemeUtils.isLightTheme(this);
+
+        int background = lightTheme ? R.drawable.edit_dialog_light : R.drawable.edit_dialog_dark;
+        mView.setBackgroundResource(background);
+
+        mSearchField.setTextColor(Color.WHITE);
+        mSearchField.setHintTextColor(Color.WHITE);
+        mSearchField.addTextChangedListener(mSearchTypeListener);
+
+        int checkbox = lightTheme ? R.drawable.checkbox_square_selector_light : R.drawable.checkbox_square_selector_dark;
+        mCheckbox.setBackgroundResource(checkbox);
     }
 
     private void loadResults() {
@@ -122,6 +125,9 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
                 // Refresh adapter.
                 mAdapter.update(mNotes);
+
+                // Clear query.
+                mQuery = "";
             }
         }
 

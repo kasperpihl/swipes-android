@@ -102,6 +102,13 @@
     <dimen name="evernote_learn_margin_top">30dp</dimen>
     <dimen name="evernote_get_started_margin_bottom">40dp</dimen>
     <dimen name="evernote_get_started_margin_top">30dp</dimen>
+    <dimen name="evernote_attachments_dialog_height">420dp</dimen>
+    <dimen name="evernote_attachments_header_height">56dp</dimen>
+    <dimen name="evernote_attachments_checkbox_size">25dp</dimen>
+    <dimen name="evernote_attachments_text_size">16sp</dimen>
+    <dimen name="evernote_attachments_header_padding">24dp</dimen>
+    <dimen name="evernote_attachments_margin_sides">16dp</dimen>
+    <dimen name="evernote_attachments_icon_size">@dimen/action_buttons_size</dimen>
 
     <!-- Components -->
     <dimen name="text_size_small">14sp</dimen>

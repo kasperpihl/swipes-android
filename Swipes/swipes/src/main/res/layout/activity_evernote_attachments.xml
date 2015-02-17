@@ -12,9 +12,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/attachments_view"
         android:layout_width="match_parent"
-        android:layout_height="380dp"
-        android:layout_marginLeft="@dimen/snooze_options_margin_sides"
-        android:layout_marginRight="@dimen/snooze_options_margin_sides"
+        android:layout_height="@dimen/evernote_attachments_dialog_height"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:weightSum="1">
@@ -23,47 +21,47 @@
         <RelativeLayout
             android:id="@+id/search_area"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp">
+            android:layout_height="@dimen/evernote_attachments_header_height"
+            android:background="@color/evernote_brand"
+            android:paddingLeft="@dimen/evernote_attachments_header_padding"
+            android:paddingRight="@dimen/evernote_attachments_header_padding">
 
-            <ImageView
+            <com.swipesapp.android.ui.view.SwipesTextView
                 android:id="@+id/search_icon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="7dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/evernote_search" />
+                android:layout_marginRight="@dimen/evernote_attachments_margin_sides"
+                android:text="@string/menu_search"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/evernote_attachments_icon_size" />
 
-            <ImageView
+            <com.swipesapp.android.ui.view.SwipesTextView
                 android:id="@+id/evernote_logo"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/evernote_green" />
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/evernote_attachments_margin_sides"
+                android:text="@string/action_evernote"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/evernote_attachments_icon_size" />
 
             <com.swipesapp.android.ui.view.ActionEditText
                 android:id="@+id/search_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/evernote_logo"
                 android:layout_toRightOf="@id/search_icon"
+                android:background="@color/transparent"
                 android:hint="@string/evernote_search_hint"
                 android:imeOptions="actionDone"
                 android:inputType="textFilter"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/evernote_attachments_text_size" />
         </RelativeLayout>
-
-        <include
-            layout="@layout/horizontal_line_white"
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
 
         <!-- List area -->
         <ListView
@@ -78,10 +76,11 @@
 
         <!-- Footer with checkbox -->
         <RelativeLayout
-            android:id="@+id/footer_area"
+            android:id="@+id/evernote_footer_area"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_height="@dimen/evernote_attachments_header_height"
+            android:paddingLeft="@dimen/evernote_attachments_margin_sides"
+            android:paddingRight="@dimen/evernote_attachments_margin_sides">
 
             <FrameLayout
                 android:id="@+id/filter_checkbox_area"
@@ -89,14 +88,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="@dimen/evernote_attachments_margin_sides">
 
                 <CheckBox
                     android:id="@+id/filter_checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/evernote_check_selector"
+                    android:layout_width="@dimen/evernote_attachments_checkbox_size"
+                    android:layout_height="@dimen/evernote_attachments_checkbox_size"
                     android:button="@null"
                     android:checked="true" />
             </FrameLayout>
@@ -109,8 +106,7 @@
                 android:layout_toRightOf="@id/filter_checkbox_area"
                 android:ellipsize="end"
                 android:text="@string/evernote_filter_description"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_medium" />
+                android:textSize="@dimen/evernote_attachments_text_size" />
         </RelativeLayout>
 
     </LinearLayout>

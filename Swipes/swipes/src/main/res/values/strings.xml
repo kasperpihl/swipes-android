@@ -121,7 +121,7 @@
     <string name="evernote_untitled_note">Untitled note</string>
 
     <!-- Attachments -->
-    <string name="evernote_search_hint">Search</string>
+    <string name="evernote_search_hint">Search notes</string>
     <string name="evernote_filter_description">Only notes with tasks inside</string>
 
     <!-- About -->
