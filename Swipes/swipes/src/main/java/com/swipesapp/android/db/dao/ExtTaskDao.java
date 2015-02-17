@@ -92,4 +92,10 @@ public class ExtTaskDao {
                 .orderAsc(TaskDao.Properties.Order).orderAsc(TaskDao.Properties.CreatedAt).list();
     }
 
+    public long countUncompletedSubtasksForTask(String objectId) {
+        return mDao.queryBuilder().where(TaskDao.Properties.ParentLocalId.eq(objectId), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order)
+                .orderAsc(TaskDao.Properties.CreatedAt).buildCount().count();
+    }
+
 }

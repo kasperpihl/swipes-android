@@ -713,6 +713,16 @@ public class TasksService {
     }
 
     /**
+     * Count uncompleted subtasks for a given task.
+     *
+     * @param objectId Parent object ID.
+     * @return Number of uncompleted subtasks.
+     */
+    public int countUncompletedSubtasksForTask(String objectId) {
+        return (int) mExtTaskDao.countUncompletedSubtasksForTask(objectId);
+    }
+
+    /**
      * Deletes all subtasks for a given task.
      *
      * @param objectId Parent object ID.

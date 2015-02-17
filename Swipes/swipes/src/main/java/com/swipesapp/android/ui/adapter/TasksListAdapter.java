@@ -154,7 +154,7 @@ public class TasksListAdapter extends BaseAdapter {
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
-        List<GsonTask> subtasks = TasksService.getInstance(mContext.get()).loadSubtasksForTask(taskId);
+        int subtasksCount = TasksService.getInstance(mContext.get()).countUncompletedSubtasksForTask(taskId);
 
         // Reset cell attributes to avoid recycling misbehavior.
         resetCellState(holder);
@@ -229,8 +229,8 @@ public class TasksListAdapter extends BaseAdapter {
         holder.icons.setText(iconsText.trim());
 
         // Display subtasks count.
-        if (subtasks != null && !subtasks.isEmpty()) {
-            holder.subtasksCount.setText(String.valueOf(subtasks.size()));
+        if (subtasksCount > 0) {
+            holder.subtasksCount.setText(String.valueOf(subtasksCount));
             holder.subtasksCount.setVisibility(View.VISIBLE);
         }
 
