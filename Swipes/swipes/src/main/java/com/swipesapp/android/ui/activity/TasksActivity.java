@@ -956,7 +956,7 @@ public class TasksActivity extends BaseActivity {
     // HACK: Use activity to notify the middle fragment.
     public void updateEmptyView() {
         TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
-        focusFragment.updateEmptyView();
+        if (focusFragment != null) focusFragment.updateEmptyView();
     }
 
     private void customizeSelectionColors() {
