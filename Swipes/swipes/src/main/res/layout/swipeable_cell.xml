@@ -1,130 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_container"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cell_parent_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height">
+    android:layout_height="wrap_content">
 
-    <!-- Back view -->
-    <RelativeLayout
-        android:id="@+id/swipe_back"
+    <!-- Top shadow -->
+    <View
+        android:id="@+id/cell_top_shadow"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:layout_height="@dimen/list_item_shadow_size"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow_cell_top" />
 
-        <com.swipesapp.android.ui.view.SwipesTextView
-            android:id="@+id/swipe_back_icon_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="-40dp"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/task_back_icon_size" />
-
-        <com.swipesapp.android.ui.view.SwipesTextView
-            android:id="@+id/swipe_back_icon_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="-40dp"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/task_back_icon_size" />
-    </RelativeLayout>
-
-    <!-- Front view -->
-    <LinearLayout
-        android:id="@+id/swipe_front"
+    <!-- Bottom shadow -->
+    <View
+        android:id="@+id/cell_bottom_shadow"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_height="@dimen/list_item_shadow_size"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/list_item_margin_bottom"
+        android:background="@drawable/shadow_cell_bottom" />
 
-        <include layout="@layout/selected_indicator" />
+    <!-- Left shadow -->
+    <View
+        android:id="@+id/cell_left_shadow"
+        android:layout_width="@dimen/list_item_shadow_size"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_above="@id/cell_bottom_shadow"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/cell_top_shadow"
+        android:background="@drawable/shadow_cell_left" />
 
-        <!-- Priority container -->
-        <LinearLayout
-            android:id="@+id/task_priority_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/task_priority_padding"
-            android:paddingRight="@dimen/task_priority_padding">
+    <!-- Right shadow -->
+    <View
+        android:id="@+id/cell_right_shadow"
+        android:layout_width="@dimen/list_item_shadow_size"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_above="@id/cell_bottom_shadow"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/cell_top_shadow"
+        android:background="@drawable/shadow_cell_right" />
 
-            <CheckBox
-                android:id="@+id/button_task_priority"
-                android:layout_width="@dimen/task_circles_size"
-                android:layout_height="@dimen/task_circles_size"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:clickable="false"
-                android:focusable="false" />
-        </LinearLayout>
+    <!-- Front and back view container -->
+    <FrameLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_above="@id/cell_bottom_shadow"
+        android:layout_below="@id/cell_top_shadow"
+        android:layout_toLeftOf="@id/cell_right_shadow"
+        android:layout_toRightOf="@id/cell_left_shadow">
 
-        <!-- Task properties container -->
+        <!-- Back view -->
         <RelativeLayout
-            android:id="@+id/task_properties_container"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/task_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textSize="@dimen/text_size_medium" />
-
-            <TextView
-                android:id="@+id/task_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:textColor="@color/focus_accent"
-                android:textSize="@dimen/text_size_small"
-                android:visibility="gone" />
+            android:id="@+id/swipe_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.swipesapp.android.ui.view.SwipesTextView
-                android:id="@+id/task_icons"
+                android:id="@+id/swipe_back_icon_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_marginRight="@dimen/task_properties_margin"
-                android:layout_marginTop="@dimen/task_icons_margin_top"
-                android:layout_toRightOf="@id/task_time"
-                android:text="@string/edit_location"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/task_icons_size"
-                android:visibility="gone" />
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="-40dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/task_back_icon_size" />
 
-            <TextView
-                android:id="@+id/task_tags"
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/swipe_back_icon_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/task_title"
-                android:layout_marginLeft="@dimen/task_properties_margin"
-                android:layout_toRightOf="@id/task_icons"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/neutral_gray"
-                android:textSize="@dimen/text_size_small"
-                android:visibility="gone" />
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="-40dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/task_back_icon_size" />
         </RelativeLayout>
 
-        <!-- Subtasks counter -->
-        <TextView
-            android:id="@+id/task_subtask_count"
-            android:layout_width="@dimen/subtask_counter_width"
-            android:layout_height="@dimen/subtask_counter_width"
-            android:layout_marginLeft="@dimen/subtask_counter_margin"
-            android:layout_marginRight="@dimen/subtask_counter_margin"
-            android:gravity="center"
-            android:textSize="@dimen/text_size_small"
-            android:visibility="gone" />
+        <!-- Front view -->
+        <LinearLayout
+            android:id="@+id/swipe_front"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-    </LinearLayout>
+            <include layout="@layout/selected_indicator" />
 
-</FrameLayout>
+            <!-- Priority container -->
+            <LinearLayout
+                android:id="@+id/task_priority_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/task_priority_padding"
+                android:paddingRight="@dimen/task_priority_padding">
+
+                <CheckBox
+                    android:id="@+id/button_task_priority"
+                    android:layout_width="@dimen/task_circles_size"
+                    android:layout_height="@dimen/task_circles_size"
+                    android:layout_gravity="center_vertical"
+                    android:button="@null"
+                    android:clickable="false"
+                    android:focusable="false" />
+            </LinearLayout>
+
+            <!-- Task properties container -->
+            <RelativeLayout
+                android:id="@+id/task_properties_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/task_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <TextView
+                    android:id="@+id/task_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/task_title"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:textColor="@color/focus_accent"
+                    android:textSize="@dimen/text_size_small"
+                    android:visibility="gone" />
+
+                <com.swipesapp.android.ui.view.SwipesTextView
+                    android:id="@+id/task_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/task_title"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_marginRight="@dimen/task_properties_margin"
+                    android:layout_marginTop="@dimen/task_icons_margin_top"
+                    android:layout_toRightOf="@id/task_time"
+                    android:text="@string/edit_location"
+                    android:textColor="@color/neutral_gray"
+                    android:textSize="@dimen/task_icons_size"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/task_title"
+                    android:layout_marginLeft="@dimen/task_properties_margin"
+                    android:layout_toRightOf="@id/task_icons"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/neutral_gray"
+                    android:textSize="@dimen/text_size_small"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <!-- Subtasks counter -->
+            <TextView
+                android:id="@+id/task_subtask_count"
+                android:layout_width="@dimen/subtask_counter_width"
+                android:layout_height="@dimen/subtask_counter_width"
+                android:layout_marginLeft="@dimen/subtask_counter_margin"
+                android:layout_marginRight="@dimen/subtask_counter_margin"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_small"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

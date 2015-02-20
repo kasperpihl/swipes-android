@@ -5,6 +5,8 @@
     <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_height_large">80dp</dimen>
+    <dimen name="list_item_shadow_size">5dp</dimen>
+    <dimen name="list_item_margin_bottom">10dp</dimen>
     <dimen name="task_priority_padding">16dp</dimen>
     <dimen name="task_circles_size">20dp</dimen>
     <dimen name="task_properties_margin">5dp</dimen>

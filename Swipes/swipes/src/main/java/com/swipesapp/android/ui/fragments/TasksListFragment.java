@@ -265,6 +265,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
+        // Set background.
+        mListView.setContainerBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
+
         // Setup filters.
         setupResultsFooter();
 

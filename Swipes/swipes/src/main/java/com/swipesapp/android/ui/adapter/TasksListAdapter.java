@@ -3,6 +3,8 @@ package com.swipesapp.android.ui.adapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,6 +116,7 @@ public class TasksListAdapter extends BaseAdapter {
 
             holder = new TaskHolder();
 
+            holder.parentView = (RelativeLayout) row.findViewById(R.id.cell_parent_view);
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
             holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
@@ -124,6 +127,10 @@ public class TasksListAdapter extends BaseAdapter {
             holder.icons = (SwipesTextView) row.findViewById(R.id.task_icons);
             holder.subtasksCount = (TextView) row.findViewById(R.id.task_subtask_count);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
+            holder.bottomShadow = row.findViewById(R.id.cell_bottom_shadow);
+            holder.topShadow = row.findViewById(R.id.cell_top_shadow);
+            holder.leftShadow = row.findViewById(R.id.cell_left_shadow);
+            holder.rightShadow = row.findViewById(R.id.cell_right_shadow);
 
             row.setTag(holder);
         } else {
@@ -237,7 +244,10 @@ public class TasksListAdapter extends BaseAdapter {
         // Sets colors for cell, matching the current theme.
         holder.title.setTextColor(ThemeUtils.getTextColor(mContext.get()));
         holder.subtasksCount.setTextColor(mContext.get().getResources().getColor(R.color.neutral_gray));
-        holder.frontView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        holder.containerView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+
+        // Set shadowed background according to position.
+        setShadowBackground(holder, position);
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
@@ -287,19 +297,82 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
+    private void setShadowBackground(TaskHolder holder, int position) {
+        Resources res = mContext.get().getResources();
+
+        // Get component heights.
+        int cellHeight = holder.title.getLineCount() > 1 ?
+                R.dimen.list_item_height_large : R.dimen.list_item_height;
+        int shadowSize = R.dimen.list_item_shadow_size;
+
+        if (getCount() == 1) {
+            // List has one item. Calculate cell height with full shadow.
+            setParentHeight(holder, cellHeight, shadowSize, shadowSize);
+        } else if (position == 0) {
+            // First row. Hide bottom shadow.
+            holder.bottomShadow.setVisibility(View.GONE);
+
+            // Calculate cell height based on top shadow only.
+            setParentHeight(holder, cellHeight, shadowSize, 0);
+        } else if (position == getCount() - 1) {
+            // Last row. Hide top shadow.
+            holder.topShadow.setVisibility(View.GONE);
+
+            // Calculate cell height with bottom shadow and margin.
+            setParentHeight(holder, cellHeight, 0, shadowSize);
+        } else {
+            // Middle row. Hide top and bottom shadows.
+            holder.bottomShadow.setVisibility(View.GONE);
+            holder.topShadow.setVisibility(View.GONE);
+
+            // Use default cell height.
+            setParentHeight(holder, cellHeight, 0, 0);
+        }
+
+        // Apply side shadow heights.
+        ViewGroup.LayoutParams leftParams = holder.leftShadow.getLayoutParams();
+        leftParams.height = res.getDimensionPixelSize(cellHeight);
+        holder.leftShadow.setLayoutParams(leftParams);
+
+        ViewGroup.LayoutParams rightParams = holder.rightShadow.getLayoutParams();
+        rightParams.height = res.getDimensionPixelSize(cellHeight);
+        holder.rightShadow.setLayoutParams(rightParams);
+    }
+
     private void setCellHeight(TaskHolder holder, int dimension) {
         // Set cell container height.
-        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
-        layoutParams.height = mContext.get().getResources().getDimensionPixelSize(dimension);
-        holder.containerView.setLayoutParams(layoutParams);
+        ViewGroup.LayoutParams containerParams = holder.containerView.getLayoutParams();
+        containerParams.height = mContext.get().getResources().getDimensionPixelSize(dimension);
+        holder.containerView.setLayoutParams(containerParams);
+    }
+
+    private void setParentHeight(TaskHolder holder, int cellDimen, int topShadowDimen, int bottomShadowDimen) {
+        Resources res = mContext.get().getResources();
+
+        // Load child heights.
+        int cellHeight = cellDimen != 0 ? res.getDimensionPixelSize(cellDimen) : 0;
+        int topShadowHeight = topShadowDimen != 0 ? res.getDimensionPixelSize(topShadowDimen) : 0;
+        int bottomShadowHeight = bottomShadowDimen != 0 ? res.getDimensionPixelSize(bottomShadowDimen) : 0;
+        int marginHeight = bottomShadowDimen != 0 ? res.getDimensionPixelSize(R.dimen.list_item_margin_bottom) : 0;
+
+        // Set parent height.
+        ViewGroup.LayoutParams parentParams = holder.parentView.getLayoutParams();
+        parentParams.height = cellHeight + topShadowHeight + bottomShadowHeight + marginHeight;
+        holder.parentView.setLayoutParams(parentParams);
     }
 
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         if (mResetCells) {
+            // Reset cell.
+            holder.frontView.setBackgroundColor(Color.TRANSPARENT);
             holder.frontView.setVisibility(View.VISIBLE);
             holder.backView.setVisibility(View.GONE);
-            holder.containerView.setVisibility(View.VISIBLE);
+            holder.parentView.setVisibility(View.VISIBLE);
+
+            // Reset shadows.
+            holder.bottomShadow.setVisibility(View.VISIBLE);
+            holder.topShadow.setVisibility(View.VISIBLE);
         }
 
         // Reset properties.
@@ -442,6 +515,7 @@ public class TasksListAdapter extends BaseAdapter {
     private static class TaskHolder {
 
         // Containers.
+        RelativeLayout parentView;
         FrameLayout containerView;
         LinearLayout frontView;
         RelativeLayout backView;
@@ -460,6 +534,12 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Tags.
         TextView tags;
+
+        // Shadows.
+        View topShadow;
+        View bottomShadow;
+        View leftShadow;
+        View rightShadow;
     }
 
 }
