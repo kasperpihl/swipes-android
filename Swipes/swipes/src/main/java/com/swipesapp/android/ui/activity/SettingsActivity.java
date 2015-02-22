@@ -202,16 +202,12 @@ public class SettingsActivity extends BaseActivity {
 
         private void resetPreferences() {
             // Reset user preferences.
-            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().commit();
             PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
             PreferenceManager.setDefaultValues(getActivity(), R.xml.snooze_settings, true);
             PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
 
-            // Set welcome dialog as not shown.
-            PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "", getActivity());
-
             // Clear last sync date.
-            PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, null, getActivity());
+            PreferenceUtils.removePreference(PreferenceUtils.SYNC_LAST_UPDATE, getActivity());
         }
 
         private void askToKeepData() {

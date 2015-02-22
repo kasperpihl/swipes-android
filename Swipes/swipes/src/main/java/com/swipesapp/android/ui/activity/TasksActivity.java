@@ -289,6 +289,9 @@ public class TasksActivity extends BaseActivity {
                 case Constants.ACCOUNT_CHANGED_RESULT_CODE:
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
+
+                    // Refresh all lists.
+                    refreshSections();
                     break;
             }
         } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {

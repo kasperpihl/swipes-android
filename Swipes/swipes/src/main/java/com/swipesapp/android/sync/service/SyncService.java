@@ -153,7 +153,7 @@ public class SyncService {
             List<TaskSync> tasksChanged = mExtTaskSyncDao.listTasksForSync();
 
             // Only sync when called out of recursion or when there still are local changes.
-            if ((!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty())) {
+            if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) {
                 // Mark sync as in progress.
                 mIsSyncing = true;
 
@@ -173,6 +173,10 @@ public class SyncService {
                         .setCallback(new FutureCallback<String>() {
                             @Override
                             public void onCompleted(Exception e, String result) {
+                                // Mark sync as performed.
+                                mIsSyncing = false;
+                                Log.d(LOG_TAG, "Sync done.");
+
                                 // Skip processing if response is invalid.
                                 if (!isResponseValid(result)) return;
 
@@ -182,10 +186,6 @@ public class SyncService {
 
                                 // Read API response and save changes locally.
                                 handleResponse(new Gson().fromJson(result, GsonSync.class));
-
-                                // Mark sync as performed.
-                                mIsSyncing = false;
-                                Log.d(LOG_TAG, "Sync done.");
 
                                 // Call recursion to sync remaining objects.
                                 performSync(changesOnly, true);
