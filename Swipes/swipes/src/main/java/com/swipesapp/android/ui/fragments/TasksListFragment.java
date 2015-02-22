@@ -837,6 +837,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Proceed with delete.
                         mTasksService.deleteTasks(sSelectedTasks);
 
+                        // Clear selection.
+                        sSelectedTasks.clear();
+                        mActivity.updateSelectionCount(sSelectedTasks.size());
+
                         // Refresh all task lists.
                         mActivity.refreshSections();
                     }
