@@ -180,7 +180,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             case DONE:
                 setupView(rootView, R.layout.tasks_done_empty_view);
                 configureDoneView(mAdapter);
-                handleDoneButtons();
                 break;
         }
 
@@ -510,6 +509,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 case DONE:
                     tasks = mTasksService.loadCompletedTasks();
                     keepSelection(tasks);
+                    handleDoneButtons(tasks);
                     mAdapter.setShowingOld(sIsShowingOld);
                     mAdapter.update(tasks, animateRefresh);
                     break;
@@ -810,14 +810,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void handleDoneButtons() {
+    private void handleDoneButtons(List<GsonTask> completedTasks) {
         // Load date of the oldest completed task.
-        List<GsonTask> completedTasks = mTasksService.loadCompletedTasks();
         GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
         Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
 
         // Only display buttons in the done section and when the oldest completed task is older than today.
-        if (mSection == Sections.DONE && !sIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
+        if (!sIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
             mHeaderView.setVisibility(View.VISIBLE);
             mHeaderView.setAlpha(1f);
         }
