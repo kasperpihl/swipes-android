@@ -260,6 +260,29 @@ public class DateUtils {
     }
 
     /**
+     * Checks if the provided dates are in the same day.
+     *
+     * @param firstDate  First date to compare.
+     * @param secondDate Second date to compare.
+     * @return True if they are in the same day.
+     */
+    public static boolean isSameDay(Date firstDate, Date secondDate) {
+        if (firstDate == null || secondDate == null) {
+            return false;
+        }
+
+        Calendar first = Calendar.getInstance();
+        first.setTime(firstDate);
+        Calendar second = Calendar.getInstance();
+        second.setTime(secondDate);
+
+        boolean isSameYear = first.get(Calendar.YEAR) == second.get(Calendar.YEAR);
+        boolean isSameDay = first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR);
+
+        return isSameYear && isSameDay;
+    }
+
+    /**
      * Formats day of the week to a friendly name.
      *
      * @param context Context instance.

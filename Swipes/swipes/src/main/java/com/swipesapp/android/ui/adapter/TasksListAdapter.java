@@ -68,6 +68,10 @@ public class TasksListAdapter extends BaseAdapter {
     private int mListViewHeight;
     private int mVisibleAreaHeight;
 
+    private Date mNextDate;
+    private Date mPreviousDate;
+    private Date mCurrentDate;
+
     public TasksListAdapter(Context context, int layoutResourceId, Sections section) {
         mData = new ArrayList();
         mContext = new WeakReference<Context>(context);
@@ -84,6 +88,10 @@ public class TasksListAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         mResetCells = false;
+        mNextDate = null;
+        mPreviousDate = null;
+        mCurrentDate = null;
+
         super.notifyDataSetChanged();
     }
 
@@ -162,6 +170,15 @@ public class TasksListAdapter extends BaseAdapter {
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
         int subtasksCount = TasksService.getInstance(mContext.get()).countUncompletedSubtasksForTask(taskId);
+
+        // Set date for dividers.
+        if (position == 0) {
+            setDatesForSection(tasks.get(position), null, tasks.get(position + 1));
+        } else if (position == tasks.size() - 1) {
+            setDatesForSection(tasks.get(position), tasks.get(position - 1), null);
+        } else {
+            setDatesForSection(tasks.get(position), tasks.get(position - 1), tasks.get(position + 1));
+        }
 
         // Reset cell attributes to avoid recycling misbehavior.
         resetCellState(holder);
@@ -305,16 +322,23 @@ public class TasksListAdapter extends BaseAdapter {
                 R.dimen.list_item_height_large : R.dimen.list_item_height;
         int shadowSize = R.dimen.list_item_shadow_size;
 
-        if (getCount() == 1) {
+        if (getCount() == 1 || (mSection != Sections.FOCUS &&
+                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) &&
+                        !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
+
             // List has one item. Calculate cell height with full shadow.
             setParentHeight(holder, cellHeight, shadowSize, shadowSize);
-        } else if (position == 0) {
+        } else if ((mSection == Sections.FOCUS && position == 0) ||
+                (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate))) {
+
             // First row. Hide bottom shadow.
             holder.bottomShadow.setVisibility(View.GONE);
 
             // Calculate cell height based on top shadow only.
             setParentHeight(holder, cellHeight, shadowSize, 0);
-        } else if (position == getCount() - 1) {
+        } else if ((mSection == Sections.FOCUS && position == getCount() - 1) ||
+                (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mNextDate))) {
+
             // Last row. Hide top shadow.
             holder.topShadow.setVisibility(View.GONE);
 
@@ -337,6 +361,23 @@ public class TasksListAdapter extends BaseAdapter {
         ViewGroup.LayoutParams rightParams = holder.rightShadow.getLayoutParams();
         rightParams.height = res.getDimensionPixelSize(cellHeight);
         holder.rightShadow.setLayoutParams(rightParams);
+    }
+
+    private void setDatesForSection(GsonTask task, GsonTask previousTask, GsonTask nextTask) {
+        switch (mSection) {
+            case LATER:
+                // Set date as schedule.
+                mCurrentDate = task.getLocalSchedule();
+                mPreviousDate = previousTask != null ? previousTask.getLocalSchedule() : null;
+                mNextDate = nextTask != null ? nextTask.getLocalSchedule() : null;
+                break;
+            case DONE:
+                // Set date as completion.
+                mCurrentDate = task.getLocalCompletionDate();
+                mPreviousDate = previousTask != null ? previousTask.getLocalCompletionDate() : null;
+                mNextDate = nextTask != null ? nextTask.getLocalCompletionDate() : null;
+                break;
+        }
     }
 
     private void setCellHeight(TaskHolder holder, int dimension) {
@@ -440,6 +481,9 @@ public class TasksListAdapter extends BaseAdapter {
         mAnimateRefresh = animateRefresh;
         mAnimateOld = false;
         mResetCells = true;
+        mNextDate = null;
+        mPreviousDate = null;
+        mCurrentDate = null;
 
         // Remove old tasks if needed.
         handleOldTasks();
@@ -472,6 +516,9 @@ public class TasksListAdapter extends BaseAdapter {
         mResetCells = true;
         mListViewHeight = listViewHeight;
         mVisibleAreaHeight = 0;
+        mNextDate = null;
+        mPreviousDate = null;
+        mCurrentDate = null;
 
         // Refresh adapter.
         super.notifyDataSetChanged();
