@@ -33,6 +33,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +53,9 @@ public class SyncService {
 
     private List<TagSync> mSyncedTags;
     private List<TaskSync> mSyncedTasks;
+
+    private ScheduledFuture mSyncSchedule;
+    private ScheduledFuture mEvernoteSyncSchedule;
 
     private boolean mIsSyncing;
     private boolean mIsSyncingEvernote;
@@ -111,8 +115,11 @@ public class SyncService {
     public void performSync(final boolean changesOnly, int delay) {
         // Skip sync if it's already running.
         if (!mIsSyncing) {
-            // Create new thread for responsiveness.
-            new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
+            // Cancel existing schedule if needed.
+            if (mSyncSchedule != null) mSyncSchedule.cancel(false);
+
+            // Schedule new thread for responsiveness.
+            mSyncSchedule = new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
                 @Override
                 public void run() {
                     // Save date of last sync call.
@@ -127,8 +134,11 @@ public class SyncService {
 
         // Skip Evernote sync if it's already running.
         if (!mIsSyncingEvernote) {
-            // Create new thread for responsiveness.
-            new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
+            // Cancel existing schedule if needed.
+            if (mEvernoteSyncSchedule != null) mEvernoteSyncSchedule.cancel(false);
+
+            // Schedule new thread for responsiveness.
+            mEvernoteSyncSchedule = new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
                 @Override
                 public void run() {
                     // Forward call to Evernote sync.
