@@ -323,6 +323,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setFrontIconBackgrounds(R.drawable.focus_circle_selector, R.drawable.later_circle_selector, R.drawable.later_circle_selector);
         mListView.setFrontIconLongSwipeBackgrounds(R.drawable.done_circle_selector, R.drawable.later_circle_selector);
 
+        // Setup label.
+        mListView.setFrontLabel(R.id.task_label);
+        mListView.setFrontLabelBackgrounds(R.drawable.cell_label_focus, R.drawable.cell_label_later, R.drawable.cell_label_later);
+        mListView.setFrontLabelLongSwipeBackgrounds(R.drawable.cell_label_done, R.drawable.cell_label_later);
+
         // Setup actions.
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setSwipeMode(SwipeListView.SWIPE_MODE_BOTH);
@@ -363,6 +368,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setFrontIcon(R.id.button_task_priority);
         mListView.setFrontIconBackgrounds(R.drawable.done_circle_selector, R.drawable.later_circle_selector, R.drawable.focus_circle_selector);
 
+        // Setup label.
+        mListView.setFrontLabel(R.id.task_label);
+        mListView.setFrontLabelBackgrounds(R.drawable.cell_label_done, R.drawable.cell_label_later, R.drawable.cell_label_focus);
+
         // Setup actions.
         mListView.setDragAndDropEnabled(true);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -402,6 +411,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setFrontIcon(R.id.button_task_priority);
         mListView.setFrontIconBackgrounds(0, R.drawable.focus_circle_selector, R.drawable.done_circle_selector);
         mListView.setFrontIconLongSwipeBackgrounds(0, R.drawable.later_circle_selector);
+
+        // Setup label.
+        mListView.setFrontLabel(R.id.task_label);
+        mListView.setFrontLabelBackgrounds(0, R.drawable.cell_label_focus, R.drawable.cell_label_done);
+        mListView.setFrontLabelLongSwipeBackgrounds(0, R.drawable.cell_label_later);
 
         // Setup actions.
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
