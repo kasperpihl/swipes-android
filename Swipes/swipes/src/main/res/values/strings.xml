@@ -49,6 +49,7 @@
     <string name="tasks_list_search_action">Search</string>
     <string name="tasks_list_workspaces_action">Workspaces</string>
     <string name="tasks_list_settings_action">Settings</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s Today</string>
 
     <!-- Settings -->
     <string name="group_cloud">Cloud</string>

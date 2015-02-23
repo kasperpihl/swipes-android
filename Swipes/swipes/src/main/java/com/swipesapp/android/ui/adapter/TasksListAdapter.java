@@ -134,6 +134,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.time = (TextView) row.findViewById(R.id.task_time);
             holder.icons = (SwipesTextView) row.findViewById(R.id.task_icons);
             holder.subtasksCount = (TextView) row.findViewById(R.id.task_subtask_count);
+            holder.label = (TextView) row.findViewById(R.id.task_label);
             holder.tags = (TextView) row.findViewById(R.id.task_tags);
             holder.bottomShadow = row.findViewById(R.id.cell_bottom_shadow);
             holder.topShadow = row.findViewById(R.id.cell_top_shadow);
@@ -172,7 +173,9 @@ public class TasksListAdapter extends BaseAdapter {
         int subtasksCount = TasksService.getInstance(mContext.get()).countUncompletedSubtasksForTask(taskId);
 
         // Set date for dividers.
-        if (position == 0) {
+        if (tasks.size() == 1) {
+            setDatesForSection(tasks.get(position), null, null);
+        } else if (position == 0) {
             setDatesForSection(tasks.get(position), null, tasks.get(position + 1));
         } else if (position == tasks.size() - 1) {
             setDatesForSection(tasks.get(position), tasks.get(position - 1), null);
@@ -265,6 +268,9 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Set shadowed background according to position.
         setShadowBackground(holder, position);
+
+        // Set label divider.
+        setLabelDivider(holder, position);
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
@@ -282,8 +288,7 @@ public class TasksListAdapter extends BaseAdapter {
                     holder.icons.setVisibility(View.VISIBLE);
                 } else {
                     holder.time.setVisibility(View.VISIBLE);
-                    // TODO: When dividers are done, change this to show time only.
-                    holder.time.setText(DateUtils.formatToRecent(schedule, mContext.get(), true));
+                    holder.time.setText(DateUtils.getTimeAsString(mContext.get(), schedule));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
                 }
 
@@ -301,7 +306,7 @@ public class TasksListAdapter extends BaseAdapter {
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
-                    holder.time.setText(DateUtils.formatToRecent(completionDate, mContext.get(), true));
+                    holder.time.setText(DateUtils.getTimeAsString(mContext.get(), completionDate));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.DONE, mContext.get()));
                 }
 
@@ -326,7 +331,7 @@ public class TasksListAdapter extends BaseAdapter {
                 (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) &&
                         !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
 
-            // List has one item. Calculate cell height with full shadow.
+            // Group has one item. Calculate cell height with full shadow.
             setParentHeight(holder, cellHeight, shadowSize, shadowSize);
         } else if ((mSection == Sections.FOCUS && position == 0) ||
                 (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate))) {
@@ -361,6 +366,44 @@ public class TasksListAdapter extends BaseAdapter {
         ViewGroup.LayoutParams rightParams = holder.rightShadow.getLayoutParams();
         rightParams.height = res.getDimensionPixelSize(cellHeight);
         holder.rightShadow.setLayoutParams(rightParams);
+    }
+
+    private void setLabelDivider(TaskHolder holder, int position) {
+        // Set text and color according to section.
+        switch (mSection) {
+            case LATER:
+                // Set text as schedule day.
+                holder.label.setBackgroundResource(R.drawable.cell_label_later);
+                holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
+                break;
+            case FOCUS:
+                // Set text as progress for the day.
+                int completedToday = TasksService.getInstance(mContext.get()).countTasksCompletedToday();
+                int tasksToday = TasksService.getInstance(mContext.get()).countTasksForToday() + completedToday;
+                String labelText = mContext.get().getString(R.string.tasks_cell_label_focus, completedToday, tasksToday);
+
+                holder.label.setBackgroundResource(R.drawable.cell_label_focus);
+                holder.label.setText(labelText);
+                break;
+            case DONE:
+                // Set text as completion day.
+                holder.label.setBackgroundResource(R.drawable.cell_label_done);
+                holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
+                break;
+        }
+
+        if (getCount() == 1 || (mSection != Sections.FOCUS &&
+                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) &&
+                        !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
+
+            // Group has one item. Show label divider.
+            holder.label.setVisibility(View.VISIBLE);
+        } else if ((mSection == Sections.FOCUS && position == 0) ||
+                (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate))) {
+
+            // First row. Show label divider.
+            holder.label.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setDatesForSection(GsonTask task, GsonTask previousTask, GsonTask nextTask) {
@@ -421,6 +464,7 @@ public class TasksListAdapter extends BaseAdapter {
         holder.icons.setText("");
         holder.icons.setVisibility(View.GONE);
         holder.subtasksCount.setVisibility(View.GONE);
+        holder.label.setVisibility(View.GONE);
 
         // Reset translation.
         if (mResetCells) {
@@ -578,6 +622,7 @@ public class TasksListAdapter extends BaseAdapter {
         // Properties.
         SwipesTextView icons;
         TextView subtasksCount;
+        TextView label;
 
         // Tags.
         TextView tags;

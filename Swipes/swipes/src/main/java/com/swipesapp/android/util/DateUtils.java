@@ -148,6 +148,22 @@ public class DateUtils {
     }
 
     /**
+     * Returns day formatted as "Today", "Tomorrow", "Yesterday" or a regular date.
+     *
+     * @param rawDate Date to format day.
+     * @param context Context instance.
+     * @return Formatted day.
+     */
+    public static String formatDayToRecent(Date rawDate, Context context) {
+        // Format full date.
+        String recentDate = formatToRecent(rawDate, context, true);
+        int commaIndex = recentDate.indexOf(",");
+
+        // Return only characters before the comma.
+        return recentDate.substring(0, commaIndex);
+    }
+
+    /**
      * Checks if the provided date is today.
      *
      * @param date Date to check.

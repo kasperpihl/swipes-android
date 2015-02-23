@@ -494,6 +494,24 @@ public class TasksService {
     }
 
     /**
+     * Counts all uncompleted tasks for today.
+     *
+     * @return Number of uncompleted tasks for today.
+     */
+    public int countTasksForToday() {
+        return (int) mExtTaskDao.countTasksForToday();
+    }
+
+    /**
+     * Counts all tasks completed today.
+     *
+     * @return Number of tasks completed today.
+     */
+    public int countTasksCompletedToday() {
+        return (int) mExtTaskDao.countCompletedTasksToday();
+    }
+
+    /**
      * Searches tasks for the given query and section.
      *
      * @param query   Query to search for.
@@ -713,7 +731,7 @@ public class TasksService {
     }
 
     /**
-     * Count uncompleted subtasks for a given task.
+     * Counts uncompleted subtasks for a given task.
      *
      * @param objectId Parent object ID.
      * @return Number of uncompleted subtasks.

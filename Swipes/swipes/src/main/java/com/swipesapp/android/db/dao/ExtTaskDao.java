@@ -8,6 +8,7 @@ import com.swipesapp.android.db.TaskDao;
 
 import org.apache.commons.collections4.comparators.NullComparator;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -94,8 +95,33 @@ public class ExtTaskDao {
 
     public long countUncompletedSubtasksForTask(String objectId) {
         return mDao.queryBuilder().where(TaskDao.Properties.ParentLocalId.eq(objectId), TaskDao.Properties.CompletionDate.isNull(),
-                TaskDao.Properties.Deleted.eq(false)).orderAsc(TaskDao.Properties.Order)
-                .orderAsc(TaskDao.Properties.CreatedAt).buildCount().count();
+                TaskDao.Properties.Deleted.eq(false)).buildCount().count();
+    }
+
+    public long countTasksForToday() {
+        Calendar calendarTomorrow = Calendar.getInstance();
+        calendarTomorrow.setTimeInMillis(calendarTomorrow.getTimeInMillis() + 86400000);
+        calendarTomorrow.set(Calendar.HOUR_OF_DAY, 0);
+        calendarTomorrow.set(Calendar.MINUTE, 0);
+        calendarTomorrow.set(Calendar.SECOND, 0);
+        calendarTomorrow.set(Calendar.MILLISECOND, 0);
+        Date tomorrow = calendarTomorrow.getTime();
+
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(tomorrow), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
+    }
+
+    public long countCompletedTasksToday() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(calendar.getTimeInMillis() - 86400000);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        Date yesterday = calendar.getTime();
+
+        return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.gt(yesterday), TaskDao.Properties.Deleted.eq(false),
+                TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
     }
 
 }
