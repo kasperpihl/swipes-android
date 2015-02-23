@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -171,6 +172,8 @@ public class TasksActivity extends BaseActivity {
     private boolean mIsSearchActive;
     private String mSearchQuery;
 
+    private boolean mShouldSkipSync;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,9 +242,10 @@ public class TasksActivity extends BaseActivity {
 
         registerReceiver(mTasksReceiver, filter);
 
-        // Sync only changes after initial sync has been performed.
-        boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
-        mSyncService.performSync(changesOnly, 0);
+        // Start sync if allowed to.
+        if (!mShouldSkipSync) {
+            startSync();
+        }
 
         if (mWasRestored) {
             // Reset section.
@@ -297,6 +301,9 @@ public class TasksActivity extends BaseActivity {
         } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
+                    // Block sync.
+                    mShouldSkipSync = true;
+
                     // Login successful. Ask to keep user data.
                     askToKeepData();
 
@@ -381,6 +388,12 @@ public class TasksActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startSync() {
+        // Sync only changes after initial sync has been performed.
+        boolean changesOnly = PreferenceUtils.getSyncLastUpdate(this) != null;
+        mSyncService.performSync(changesOnly, 0);
     }
 
     private void performInitialSetup() {
@@ -1266,6 +1279,19 @@ public class TasksActivity extends BaseActivity {
                     public void onNegative(MaterialDialog dialog) {
                         // Clear data from test period.
                         mTasksService.clearAllData();
+
+                        // Refresh lists.
+                        refreshSections();
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        // Unblock sync.
+                        mShouldSkipSync = false;
+
+                        // Perform initial sync.
+                        startSync();
                     }
                 })
                 .show();
