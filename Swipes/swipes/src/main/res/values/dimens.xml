@@ -133,6 +133,9 @@
     <dimen name="toolbar_shadow_height">5dp</dimen>
     <dimen name="toolbar_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="toolbar_buttons_width">50dp</dimen>
+    <dimen name="toolbar_title_margin_sides">16dp</dimen>
+    <dimen name="toolbar_pressed_padding_vertical">4dp</dimen>
+    <dimen name="toolbar_pressed_padding_sides">8dp</dimen>
     <dimen name="search_bar_height">@dimen/toolbar_height</dimen>
 
 </resources>

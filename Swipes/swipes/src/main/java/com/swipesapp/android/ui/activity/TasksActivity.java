@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -206,11 +207,7 @@ public class TasksActivity extends BaseActivity {
         mTasksService = TasksService.getInstance(this);
         mSyncService = SyncService.getInstance(this);
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
-        mActionBarView.setOnClickListener(mNavigationToggleListener);
-        mActionBarTitle = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        mActionBarIcon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
+        setupActionBarCustomView();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -456,6 +453,20 @@ public class TasksActivity extends BaseActivity {
             mIntentData = new String[]{title, notes};
 
             startAddTaskWorkflow();
+        }
+    }
+
+    private void setupActionBarCustomView() {
+        // Inflate custom view.
+        LayoutInflater inflater = LayoutInflater.from(this);
+        mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
+        mActionBarView.setOnClickListener(mNavigationToggleListener);
+        mActionBarTitle = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
+        mActionBarIcon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
+
+        // Apply ripple effect.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mActionBarView.setBackgroundResource(R.drawable.navigation_menu_ripple);
         }
     }
 

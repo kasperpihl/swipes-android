@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:background="@drawable/navigation_menu_selector"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -19,7 +20,8 @@
         android:id="@+id/action_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/toolbar_title_margin_sides"
+        android:layout_marginRight="@dimen/toolbar_title_margin_sides"
         android:text="@string/focus_title"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_medium"

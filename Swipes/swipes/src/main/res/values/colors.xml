@@ -44,5 +44,6 @@
     <item name="neutral_header_light" type="color">#FAFAFA</item>
     <item name="neutral_header_dark" type="color">#2B3139</item>
     <item name="neutral_gray" type="color">#9E9E9E</item>
+    <item name="toolbar_ripple_color" type="color">#CCCCCC</item>
 
 </resources>

@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:visibility="gone">
 
-    <!-- Filter buttons area-->
+    <!-- Section buttons area -->
     <RelativeLayout
         android:id="@+id/navigation_menu_container"
         android:layout_width="match_parent"
