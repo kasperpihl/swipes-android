@@ -6,7 +6,8 @@
     android:layout_height="@dimen/search_bar_height"
     android:alpha="0"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:visibility="gone">
 
     <com.swipesapp.android.ui.view.SwipesButton
         android:id="@+id/action_bar_close_search"
@@ -14,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:background="@color/transparent"
-        android:enabled="false"
         android:text="@string/left_arrow"
         android:textSize="@dimen/toolbar_icon_size" />
 
@@ -31,6 +31,5 @@
         android:textColorHint="@android:color/white"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textStyle="bold" />
 </LinearLayout>

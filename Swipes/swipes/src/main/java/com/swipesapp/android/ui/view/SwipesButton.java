@@ -66,4 +66,9 @@ public class SwipesButton extends Button {
         });
     }
 
+    public void disableTouchFeedback() {
+        // Remove touch listener.
+        setOnTouchListener(null);
+    }
+
 }

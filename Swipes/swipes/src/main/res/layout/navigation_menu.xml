@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Shadow and content area -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navigation_menu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- Filter buttons area-->
+    <RelativeLayout
+        android:id="@+id/navigation_menu_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_menu_height"
+        android:gravity="center">
+
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/navigation_later_button"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/navigation_menu_button_margin"
+            android:layout_marginRight="@dimen/navigation_menu_button_margin"
+            android:background="@android:color/transparent"
+            android:text="@string/later_full"
+            android:textSize="@dimen/action_buttons_size" />
+
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/navigation_focus_button"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/navigation_menu_button_margin"
+            android:layout_marginRight="@dimen/navigation_menu_button_margin"
+            android:layout_toRightOf="@id/navigation_later_button"
+            android:background="@android:color/transparent"
+            android:text="@string/focus_full"
+            android:textSize="@dimen/action_buttons_size" />
+
+        <com.swipesapp.android.ui.view.SwipesButton
+            android:id="@+id/navigation_done_button"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/navigation_menu_button_margin"
+            android:layout_marginRight="@dimen/navigation_menu_button_margin"
+            android:layout_toRightOf="@id/navigation_focus_button"
+            android:background="@android:color/transparent"
+            android:text="@string/done_full"
+            android:textSize="@dimen/action_buttons_size" />
+    </RelativeLayout>
+
+    <!-- Toolbar shadow -->
+    <include layout="@layout/toolbar_shadow" />
+
+</LinearLayout>

@@ -1,6 +1,9 @@
 package com.swipesapp.android.ui.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -129,6 +132,18 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.action_bar_search_field)
     ActionEditText mSearchField;
 
+    @InjectView(R.id.navigation_menu)
+    LinearLayout mNavigationMenu;
+    @InjectView(R.id.navigation_menu_container)
+    RelativeLayout mNavigationMenuContainer;
+
+    @InjectView(R.id.navigation_later_button)
+    SwipesButton mNavigationLaterButton;
+    @InjectView(R.id.navigation_focus_button)
+    SwipesButton mNavigationFocusButton;
+    @InjectView(R.id.navigation_done_button)
+    SwipesButton mNavigationDoneButton;
+
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
 
     private static final int ACTION_LOGIN = 0;
@@ -152,6 +167,8 @@ public class TasksActivity extends BaseActivity {
     private float mTagsTranslationY;
 
     private View mActionBarView;
+    private TextView mActionBarTitle;
+    private SwipesButton mActionBarIcon;
 
     private float mPreviousOffset;
 
@@ -174,6 +191,8 @@ public class TasksActivity extends BaseActivity {
 
     private boolean mShouldSkipSync;
 
+    private boolean mIsShowingNavigation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +208,9 @@ public class TasksActivity extends BaseActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
+        mActionBarView.setOnClickListener(mNavigationToggleListener);
+        mActionBarTitle = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
+        mActionBarIcon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -438,10 +460,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void setupSystemBars(Sections section) {
-        // Set toolbar title and icon.
-        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        SwipesButton icon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
-        icon.setTextColor(Color.WHITE);
+        // Setup toolbar icon.
+        mActionBarIcon.disableTouchFeedback();
+        if (!mIsShowingNavigation) mActionBarIcon.setTextColor(Color.WHITE);
 
         // Make ActionBar transparent.
         themeActionBar(Color.TRANSPARENT);
@@ -452,16 +473,16 @@ public class TasksActivity extends BaseActivity {
             themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
 
             // Replace title and text.
-            title.setText(getString(R.string.overview_title));
-            icon.setText(getString(R.string.schedule_logbook));
+            mActionBarTitle.setText(getString(R.string.overview_title));
+            mActionBarIcon.setText(getString(R.string.schedule_logbook));
         } else {
             // Apply regular colors.
             mToolbarArea.setBackgroundColor(ThemeUtils.getSectionColor(mCurrentSection, this));
             themeStatusBar(ThemeUtils.getSectionColorDark(section, this));
 
             // Apply regular title and text.
-            title.setText(section.getSectionTitle(this));
-            icon.setText(section.getSectionIcon(this));
+            mActionBarTitle.setText(section.getSectionTitle(this));
+            mActionBarIcon.setText(section.getSectionIcon(this));
         }
     }
 
@@ -492,6 +513,8 @@ public class TasksActivity extends BaseActivity {
             mCurrentSection = Sections.getSectionByNumber(position);
 
             themeRecentsHeader(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()));
+
+            updateNavigationButtons();
 
             mHasChangedTab = true;
         }
@@ -536,16 +559,15 @@ public class TasksActivity extends BaseActivity {
             blended = ColorUtils.blendColors(fromColor, toColor, positionOffset);
             if (!mIsAddingTask) themeStatusBar(blended);
 
+            // Adjust navigation area.
+            paintNavigationArea(blended);
+
             // Fade ActionBar content gradually.
             fadeActionBar(positionOffset, from, to);
         }
     };
 
     private void fadeActionBar(float positionOffset, Sections from, Sections to) {
-        // Load toolbar title and icon.
-        TextView title = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        SwipesButton icon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
-
         if (mPreviousOffset > 0) {
             if (positionOffset > mPreviousOffset) {
                 // Swiping to the right of the ViewPager.
@@ -557,8 +579,8 @@ public class TasksActivity extends BaseActivity {
                     mActionBarView.setAlpha((positionOffset - 0.5f) * 2);
 
                     // Set next title and icon.
-                    title.setText(to.getSectionTitle(this));
-                    icon.setText(to.getSectionIcon(this));
+                    mActionBarTitle.setText(to.getSectionTitle(this));
+                    mActionBarIcon.setText(to.getSectionIcon(this));
                 }
             } else {
                 // Swiping to the left of the ViewPager.
@@ -570,8 +592,8 @@ public class TasksActivity extends BaseActivity {
                     mActionBarView.setAlpha((0.5f - positionOffset) * 2);
 
                     // Set next title and icon.
-                    title.setText(from.getSectionTitle(this));
-                    icon.setText(from.getSectionIcon(this));
+                    mActionBarTitle.setText(from.getSectionTitle(this));
+                    mActionBarIcon.setText(from.getSectionIcon(this));
                 }
             }
         }
@@ -622,11 +644,11 @@ public class TasksActivity extends BaseActivity {
 
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {
-            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_out);
             slideDown.setAnimationListener(mShowEditBarListener);
             mButtonAddTask.startAnimation(slideDown);
 
-            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
             mEditTasksBar.startAnimation(slideUp);
         }
     }
@@ -634,11 +656,11 @@ public class TasksActivity extends BaseActivity {
     public void hideEditBar() {
         // Animate views only when necessary.
         if (mEditTasksBar.isShown()) {
-            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_out);
             slideDown.setAnimationListener(mHideEditBarListener);
             mEditTasksBar.startAnimation(slideDown);
 
-            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
             mButtonAddTask.startAnimation(slideUp);
         }
 
@@ -875,13 +897,13 @@ public class TasksActivity extends BaseActivity {
     }
 
     public void hideActionButtons() {
-        Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_out);
         slideDown.setAnimationListener(mHideButtonsListener);
         mActionButtonsContainer.startAnimation(slideDown);
     }
 
     public void showActionButtons() {
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
         slideUp.setAnimationListener(mShowButtonsListener);
         mActionButtonsContainer.startAnimation(slideUp);
     }
@@ -1036,11 +1058,11 @@ public class TasksActivity extends BaseActivity {
 
         // Animate views only when necessary.
         if (mWorkspacesView.getVisibility() == View.GONE) {
-            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_out);
             slideDown.setAnimationListener(mShowWorkspacesListener);
             mButtonAddTask.startAnimation(slideDown);
 
-            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
             mWorkspacesView.startAnimation(slideUp);
         }
 
@@ -1055,11 +1077,11 @@ public class TasksActivity extends BaseActivity {
     public void hideWorkspaces() {
         // Animate views only when necessary.
         if (mWorkspacesView.isShown()) {
-            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_out);
             slideDown.setAnimationListener(mHideWorkspacesListener);
             mWorkspacesView.startAnimation(slideDown);
 
-            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
             mButtonAddTask.startAnimation(slideUp);
         }
 
@@ -1211,39 +1233,57 @@ public class TasksActivity extends BaseActivity {
             };
 
     private void showSearch() {
+        int duration = Constants.ANIMATION_DURATION_MEDIUM;
+
         // Fade in search bar.
-        mSearchBar.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
-        mToolbar.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mSearchBar.setVisibility(View.VISIBLE);
+        mSearchBar.animate().alpha(1f).setDuration(duration).setListener(null).start();
+
+        // Fade out toolbar.
+        mToolbar.animate().alpha(0f).setDuration(duration).setListener(mShowSearchListener).start();
         mButtonAddTask.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).start();
 
-        // Show search field.
-        mSearchField.setVisibility(View.VISIBLE);
+        // Focus on search field.
         mSearchField.requestFocus();
-
-        // Enable close button.
-        mSearchClose.setEnabled(true);
 
         // Set flag.
         mIsSearchActive = true;
     }
 
+    private AnimatorListenerAdapter mShowSearchListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            // Hide toolbar.
+            mToolbar.setVisibility(View.GONE);
+        }
+    };
+
     public void hideSearch() {
+        int duration = Constants.ANIMATION_DURATION_MEDIUM;
+
         // Fade out search bar.
-        mSearchBar.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
-        mToolbar.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+        mSearchBar.animate().alpha(0f).setDuration(duration).setListener(mHideSearchListener).start();
+
+        // Fade in toolbar.
+        mToolbar.setVisibility(View.VISIBLE);
+        mToolbar.animate().alpha(1f).setDuration(duration).setListener(null).start();
         mButtonAddTask.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT).start();
 
-        // Clear and hide search field.
+        // Clear search field.
         mSearchField.setText("");
-        mSearchField.setVisibility(View.GONE);
         mSearchField.clearFocus();
-
-        // Disable close button.
-        mSearchClose.setEnabled(false);
 
         // Reset flag.
         mIsSearchActive = false;
     }
+
+    private AnimatorListenerAdapter mHideSearchListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            // Hide search bar.
+            mSearchBar.setVisibility(View.GONE);
+        }
+    };
 
     public boolean isSearchActive() {
         return mIsSearchActive;
@@ -1310,6 +1350,141 @@ public class TasksActivity extends BaseActivity {
                 mSyncService.saveTaskChangesForSync(task);
             }
         }
+    }
+
+    private View.OnClickListener mNavigationToggleListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (!mNavigationMenu.isShown()) {
+                // Change action bar colors.
+                transitionNavigationArea(Color.WHITE, ThemeUtils.getSectionColorDark(mCurrentSection, mContext.get()));
+
+                // Animate in navigation menu.
+                showNavigationMenu();
+            } else {
+                // Reset action bar colors.
+                transitionNavigationArea(ThemeUtils.getSectionColorDark(mCurrentSection, mContext.get()), Color.WHITE);
+
+                // Animate out navigation menu.
+                hideNavigationMenu();
+            }
+        }
+    };
+
+    private void showNavigationMenu() {
+        // Apply container color.
+        mNavigationMenuContainer.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        // Apply button colors.
+        updateNavigationButtons();
+
+        // Slide menu in from the top.
+        Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_in);
+        mNavigationMenu.setVisibility(View.VISIBLE);
+        mNavigationMenu.startAnimation(slideDown);
+
+        // Set menu as shown.
+        mIsShowingNavigation = true;
+    }
+
+    private void hideNavigationMenu() {
+        // Slide menu out to the top.
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_out);
+        slideUp.setAnimationListener(mHideNavigationMenuListener);
+        mNavigationMenu.startAnimation(slideUp);
+
+        // Set menu as hidden.
+        mIsShowingNavigation = false;
+    }
+
+    private Animation.AnimationListener mHideNavigationMenuListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mNavigationMenu.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    private void transitionNavigationArea(final int fromColor, final int toColor) {
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Blend colors according to position.
+                float position = animation.getAnimatedFraction();
+                int blended = ColorUtils.blendColors(fromColor, toColor, position);
+
+                // Change colors of toolbar custom view.
+                mActionBarTitle.setTextColor(blended);
+                mActionBarIcon.setTextColor(blended);
+            }
+        });
+
+        anim.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+    }
+
+    private void paintNavigationArea(int color) {
+        // Change colors according to state.
+        if (mIsShowingNavigation) {
+            mActionBarTitle.setTextColor(color);
+            mActionBarIcon.setTextColor(color);
+        } else {
+            mActionBarTitle.setTextColor(Color.WHITE);
+            mActionBarIcon.setTextColor(Color.WHITE);
+        }
+    }
+
+    private void updateNavigationButtons() {
+        // Reset button colors.
+        mNavigationLaterButton.setTextColor(getResources().getColor(R.color.neutral_gray));
+        mNavigationFocusButton.setTextColor(getResources().getColor(R.color.neutral_gray));
+        mNavigationDoneButton.setTextColor(getResources().getColor(R.color.neutral_gray));
+
+        // Highlight selected section.
+        switch (mCurrentSection) {
+            case LATER:
+                mNavigationLaterButton.setTextColor(ThemeUtils.getSectionColor(mCurrentSection, this));
+                break;
+            case FOCUS:
+                mNavigationFocusButton.setTextColor(ThemeUtils.getSectionColor(mCurrentSection, this));
+                break;
+            case DONE:
+                mNavigationDoneButton.setTextColor(ThemeUtils.getSectionColor(mCurrentSection, this));
+                break;
+        }
+    }
+
+    @OnClick(R.id.navigation_later_button)
+    protected void navigationLaterClick() {
+        // Navigate to Later section.
+        navigateToSection(Sections.LATER);
+    }
+
+    @OnClick(R.id.navigation_focus_button)
+    protected void navigationFocusClick() {
+        // Navigate to Focus section.
+        navigateToSection(Sections.FOCUS);
+    }
+
+    @OnClick(R.id.navigation_done_button)
+    protected void navigationDoneClick() {
+        // Navigate to Done section.
+        navigateToSection(Sections.DONE);
+    }
+
+    private void navigateToSection(Sections section) {
+        // Change section.
+        mViewPager.setCurrentItem(section.getSectionNumber());
+
+        // Hide navigation.
+        hideNavigationMenu();
     }
 
 }

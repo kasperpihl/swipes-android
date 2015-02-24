@@ -10,7 +10,9 @@
         android:layout_width="@dimen/toolbar_buttons_width"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
+        android:clickable="false"
         android:text="@string/focus_full"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/toolbar_icon_size" />
 
     <TextView

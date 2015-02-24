@@ -73,6 +73,9 @@
             <!-- Toolbar shadow -->
             <include layout="@layout/toolbar_shadow" />
 
+            <!-- Navigation menu -->
+            <include layout="@layout/navigation_menu" />
+
         </FrameLayout>
 
     </RelativeLayout>
