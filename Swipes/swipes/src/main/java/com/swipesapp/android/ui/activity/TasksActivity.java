@@ -421,9 +421,10 @@ public class TasksActivity extends BaseActivity {
 
         // Show welcome dialog only once.
         if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
-            // TODO: Show welcome dialog.
+            // Welcome user.
+            showWelcomeDialog();
 
-            // Set welcome dialog as shown.
+            // Set dialog as shown.
             PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", this);
         }
 
@@ -1361,6 +1362,24 @@ public class TasksActivity extends BaseActivity {
                 mSyncService.saveTaskChangesForSync(task);
             }
         }
+    }
+
+    private void showWelcomeDialog() {
+        // Display welcome dialog.
+        new SwipesDialog.Builder(this)
+                .title(R.string.welcome_dialog_title)
+                .content(R.string.welcome_dialog_message)
+                .positiveText(R.string.welcome_dialog_yes)
+                .negativeText(R.string.welcome_dialog_no)
+                .actionsColorRes(R.color.neutral_accent)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        // Call login.
+                        startLogin();
+                    }
+                })
+                .show();
     }
 
     private View.OnClickListener mNavigationToggleListener = new View.OnClickListener() {
