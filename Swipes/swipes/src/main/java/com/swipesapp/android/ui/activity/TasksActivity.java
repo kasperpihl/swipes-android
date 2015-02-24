@@ -191,6 +191,7 @@ public class TasksActivity extends BaseActivity {
     private String mSearchQuery;
 
     private boolean mShouldSkipSync;
+    private boolean mShouldClearData;
 
     private boolean mIsShowingNavigation;
 
@@ -323,11 +324,22 @@ public class TasksActivity extends BaseActivity {
                     // Block sync.
                     mShouldSkipSync = true;
 
-                    // Login successful. Ask to keep user data.
-                    askToKeepData();
+                    // Login successful.
+                    if (mShouldClearData) {
+                        // Clear data immediately.
+                        clearData();
+                        performInitialSync();
+                    } else {
+                        // Ask to keep user data.
+                        askToKeepData();
+                    }
 
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    // Keep data unless told otherwise.
+                    mShouldClearData = false;
                     break;
             }
         }
@@ -423,9 +435,6 @@ public class TasksActivity extends BaseActivity {
         if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
             // Welcome user.
             showWelcomeDialog();
-
-            // Set dialog as shown.
-            PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", this);
         }
 
         // Save welcome tasks if the app is used for the first time.
@@ -1330,23 +1339,25 @@ public class TasksActivity extends BaseActivity {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         // Clear data from test period.
-                        mTasksService.clearAllData();
-
-                        // Refresh lists.
-                        refreshSections();
+                        clearData();
                     }
                 })
                 .dismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-                        // Unblock sync.
-                        mShouldSkipSync = false;
-
-                        // Perform initial sync.
-                        startSync();
+                        // Sync user data.
+                        performInitialSync();
                     }
                 })
                 .show();
+    }
+
+    private void clearData() {
+        // Clear user data.
+        mTasksService.clearAllData();
+
+        // Refresh lists.
+        refreshSections();
     }
 
     private void saveDataForSync() {
@@ -1364,6 +1375,14 @@ public class TasksActivity extends BaseActivity {
         }
     }
 
+    private void performInitialSync() {
+        // Unblock sync.
+        mShouldSkipSync = false;
+
+        // Perform initial sync.
+        startSync();
+    }
+
     private void showWelcomeDialog() {
         // Display welcome dialog.
         new SwipesDialog.Builder(this)
@@ -1375,8 +1394,18 @@ public class TasksActivity extends BaseActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        // Call login.
+                        // Returning user. Call login.
                         startLogin();
+
+                        // Clear data before initial sync.
+                        mShouldClearData = true;
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        // Set dialog as shown.
+                        PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", mContext.get());
                     }
                 })
                 .show();

@@ -12,8 +12,8 @@
     <string name="welcome_first_branding">Focus. Swipe. Achieve.</string>
     <string name="welcome_second_branding">Task list made for High Achievers</string>
     <string name="welcome_dialog_title">Welcome to Swipes!</string>
-    <string name="welcome_dialog_message">Would you like to try out the app or login to your account?</string>
-    <string name="welcome_dialog_yes">Login</string>
+    <string name="welcome_dialog_message">Would you like to try out the app or log in to your account?</string>
+    <string name="welcome_dialog_yes">Log in</string>
     <string name="welcome_dialog_no">Try out</string>
 
     <!-- Sections -->
