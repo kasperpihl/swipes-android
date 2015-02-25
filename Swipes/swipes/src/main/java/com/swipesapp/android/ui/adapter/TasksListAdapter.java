@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -128,6 +129,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
             holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
+            holder.rightContainer = (RelativeLayout) row.findViewById(R.id.task_right_container);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
@@ -149,6 +151,8 @@ public class TasksListAdapter extends BaseAdapter {
         customizeView(holder, position);
 
         animateOldTask(holder, position);
+
+        realignProperties(holder, row);
 
         return row;
     }
@@ -445,6 +449,34 @@ public class TasksListAdapter extends BaseAdapter {
         holder.parentView.setLayoutParams(parentParams);
     }
 
+    private void realignProperties(final TaskHolder holder, View row) {
+        // Align things manually when both the label and counter are visible.
+        if (holder.label.getVisibility() == View.VISIBLE && holder.subtasksCount.getVisibility() == View.VISIBLE) {
+            // Avoid recycling the container.
+            holder.rightContainer = (RelativeLayout) row.findViewById(R.id.task_right_container);
+
+            // Wait until container can be measured.
+            final ViewTreeObserver observer = holder.rightContainer.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    // Align subtasks counter to the right.
+                    RelativeLayout.LayoutParams countParams = (RelativeLayout.LayoutParams) holder.subtasksCount.getLayoutParams();
+                    countParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    holder.subtasksCount.setLayoutParams(countParams);
+
+                    // Set a fixed container width based on its first measure.
+                    ViewGroup.LayoutParams containerParams = holder.rightContainer.getLayoutParams();
+                    containerParams.width = holder.rightContainer.getWidth();
+                    holder.rightContainer.setLayoutParams(containerParams);
+
+                    // Remove listener.
+                    if (observer.isAlive()) observer.removeGlobalOnLayoutListener(this);
+                }
+            });
+        }
+    }
+
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         if (mResetCells) {
@@ -610,6 +642,7 @@ public class TasksListAdapter extends BaseAdapter {
         FrameLayout containerView;
         LinearLayout frontView;
         RelativeLayout backView;
+        RelativeLayout rightContainer;
 
         // Priority and selection.
         CheckBox priorityButton;

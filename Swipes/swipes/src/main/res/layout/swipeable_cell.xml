@@ -162,6 +162,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/task_right_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
@@ -169,7 +170,6 @@
                     android:id="@+id/task_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
                     android:background="@drawable/cell_label_focus"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -184,9 +184,9 @@
                     android:id="@+id/task_subtask_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="@dimen/subtask_counter_margin"
-                    android:layout_marginRight="@dimen/subtask_counter_margin"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/subtask_counter_margin_left"
+                    android:layout_marginRight="@dimen/subtask_counter_margin_right"
                     android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
             </RelativeLayout>
