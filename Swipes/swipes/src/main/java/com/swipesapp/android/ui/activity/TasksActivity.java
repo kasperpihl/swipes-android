@@ -205,8 +205,8 @@ public class TasksActivity extends BaseActivity {
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
 
         mContext = new WeakReference<Context>(this);
-        mTasksService = TasksService.getInstance(this);
-        mSyncService = SyncService.getInstance(this);
+        mTasksService = TasksService.getInstance();
+        mSyncService = SyncService.getInstance();
 
         setupActionBarCustomView();
 

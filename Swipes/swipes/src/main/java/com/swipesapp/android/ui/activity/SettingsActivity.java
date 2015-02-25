@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -10,6 +11,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
@@ -17,6 +19,7 @@ import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesDialog;
@@ -24,6 +27,8 @@ import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+
+import java.lang.ref.WeakReference;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -54,9 +59,13 @@ public class SettingsActivity extends BaseActivity {
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 
+        private WeakReference<Context> mContext;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            mContext = new WeakReference<Context>(getActivity());
 
             addPreferencesFromResource(R.xml.settings);
 
@@ -91,12 +100,15 @@ public class SettingsActivity extends BaseActivity {
                 }
             });
 
-            final Preference preferenceSync = findPreference("sync");
+            Preference preferenceSync = findPreference("sync");
             preferenceSync.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // Force sync and refresh.
-                    SyncService.getInstance(getActivity()).performSync(true, Constants.SYNC_DELAY);
-                    refreshSyncDate(preferenceSync);
+                    // Start sync immediately.
+                    SyncService.getInstance().setListener(mSyncListener);
+                    SyncService.getInstance().performSync(true, 0);
+
+                    // Show start message.
+                    Toast.makeText(mContext.get(), getString(R.string.sync_started_message), Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });
@@ -231,7 +243,7 @@ public class SettingsActivity extends BaseActivity {
                         @Override
                         public void onNegative(MaterialDialog dialog) {
                             // Clear data from test period.
-                            TasksService.getInstance(getActivity()).clearAllData();
+                            TasksService.getInstance().clearAllData();
 
                             finishAccountChange();
                         }
@@ -249,27 +261,45 @@ public class SettingsActivity extends BaseActivity {
 
         private void saveDataForSync() {
             // Save all tags for syncing.
-            for (GsonTag tag : TasksService.getInstance(getActivity()).loadAllTags()) {
-                SyncService.getInstance(getActivity()).saveTagForSync(tag);
+            for (GsonTag tag : TasksService.getInstance().loadAllTags()) {
+                SyncService.getInstance().saveTagForSync(tag);
             }
 
             // Save all tasks for syncing.
-            for (GsonTask task : TasksService.getInstance(getActivity()).loadAllTasks()) {
+            for (GsonTask task : TasksService.getInstance().loadAllTasks()) {
                 if (!task.getDeleted()) {
                     task.setId(null);
-                    SyncService.getInstance(getActivity()).saveTaskChangesForSync(task);
+                    SyncService.getInstance().saveTaskChangesForSync(task);
                 }
             }
         }
 
         private void refreshSyncDate(Preference preferenceSync) {
-            String lastUpdate = PreferenceUtils.getSyncLastCall(getActivity());
+            String lastUpdate = PreferenceUtils.getSyncLastUpdate(getActivity());
 
             if (lastUpdate != null) {
                 String syncSummary = DateUtils.formatToRecent(DateUtils.dateFromSync(lastUpdate), getActivity(), false);
                 preferenceSync.setSummary(getResources().getString(R.string.settings_sync_summary, syncSummary));
             }
         }
+
+        private SyncListener mSyncListener = new SyncListener() {
+            @Override
+            public void onSyncDone() {
+                // Refresh sync date.
+                Preference preferenceSync = findPreference("sync");
+                refreshSyncDate(preferenceSync);
+
+                // Show success message.
+                Toast.makeText(mContext.get(), getString(R.string.sync_completed_message), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSyncFailed() {
+                // Show failure message.
+                Toast.makeText(mContext.get(), getString(R.string.sync_failed_message), Toast.LENGTH_SHORT).show();
+            }
+        };
 
     }
 }

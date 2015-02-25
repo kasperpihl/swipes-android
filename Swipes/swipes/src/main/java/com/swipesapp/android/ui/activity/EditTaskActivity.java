@@ -189,7 +189,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         mContext = new WeakReference<Context>(this);
 
-        mTasksService = TasksService.getInstance(this);
+        mTasksService = TasksService.getInstance();
 
         int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
         mSection = Sections.getSectionByNumber(sectionNumber);
@@ -652,7 +652,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         updateViews();
 
-        SyncService.getInstance(this).performSync(true, Constants.SYNC_DELAY);
+        SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
     }
 
     @OnClick(R.id.assign_tags_back_button)

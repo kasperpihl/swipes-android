@@ -35,7 +35,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        sTasksService = TasksService.getInstance(context);
+        sTasksService = TasksService.getInstance();
 
         List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
         sExpiredTasks = new ArrayList<GsonTask>();

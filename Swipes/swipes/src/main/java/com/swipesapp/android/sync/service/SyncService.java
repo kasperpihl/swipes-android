@@ -25,13 +25,13 @@ import com.swipesapp.android.sync.gson.GsonObjects;
 import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Actions;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -56,6 +56,8 @@ public class SyncService {
 
     private ScheduledFuture mSyncSchedule;
     private ScheduledFuture mEvernoteSyncSchedule;
+
+    private SyncListener mListener;
 
     private boolean mIsSyncing;
     private boolean mIsSyncingEvernote;
@@ -83,27 +85,32 @@ public class SyncService {
     }
 
     /**
-     * Returns an existing instance of the service, or loads a new one if needed.
-     * This ensures only one DAO session is active at any given time.
+     * Returns a new instance of the service. Call once during the application's
+     * lifecycle to ensure only one DAO session is active at any given time.
      *
-     * @param context Context reference.
+     * @param context Application context.
      */
-    public static SyncService getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new SyncService(context);
-        } else {
-            sInstance.updateContext(context);
-        }
+    public static SyncService newInstance(Context context) {
+        sInstance = new SyncService(context);
         return sInstance;
     }
 
     /**
-     * Updates the context reference.
-     *
-     * @param context Context reference.
+     * Returns an existing instance of the service. Make sure you have called
+     * {@link #newInstance(android.content.Context)} at least once before.
      */
-    private void updateContext(Context context) {
-        mContext = new WeakReference<Context>(context);
+    public static SyncService getInstance() {
+        return sInstance;
+    }
+
+    /**
+     * Sets the listener to call during sync events. It gets cleared after every
+     * sync, so keep it updated whenever you need it.
+     *
+     * @param listener Listener instance.
+     */
+    public void setListener(SyncListener listener) {
+        mListener = listener;
     }
 
     /**
@@ -122,10 +129,6 @@ public class SyncService {
             mSyncSchedule = new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
                 @Override
                 public void run() {
-                    // Save date of last sync call.
-                    String lastSync = DateUtils.dateToSync(new Date());
-                    PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_CALL, lastSync, mContext.get());
-
                     // Forward call to internal sync method.
                     performSync(changesOnly, false);
                 }
@@ -188,7 +191,10 @@ public class SyncService {
                                 Log.d(LOG_TAG, "Sync done.");
 
                                 // Skip processing if response is invalid.
-                                if (!isResponseValid(result)) return;
+                                if (!isResponseValid(result)) {
+                                    sendErrorCallback();
+                                    return;
+                                }
 
                                 // Delete synced objects from tracking.
                                 deleteTrackedTags(mSyncedTags);
@@ -199,6 +205,9 @@ public class SyncService {
 
                                 // Call recursion to sync remaining objects.
                                 performSync(changesOnly, true);
+
+                                // Notifies listeners that sync is done.
+                                sendCompletionCallback();
                             }
                         });
             }
@@ -225,7 +234,7 @@ public class SyncService {
                     mIsSyncingEvernote = false;
 
                     // Refresh local content.
-                    TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+                    TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
                 }
 
                 @Override
@@ -289,7 +298,7 @@ public class SyncService {
         // Process new tags.
         if (response.getTags() != null) {
             for (GsonTag tag : response.getTags()) {
-                GsonTag localTag = TasksService.getInstance(mContext.get()).loadTag(tag.getTempId());
+                GsonTag localTag = TasksService.getInstance().loadTag(tag.getTempId());
 
                 // Check if tag already exists locally.
                 if (localTag == null) {
@@ -299,12 +308,12 @@ public class SyncService {
 
                     // Save tag locally.
                     if (!tag.getDeleted()) {
-                        TasksService.getInstance(mContext.get()).saveTag(tag);
+                        TasksService.getInstance().saveTag(tag);
                     }
                 } else {
                     // Delete tag locally.
                     if (tag.getDeleted()) {
-                        TasksService.getInstance(mContext.get()).deleteTag(localTag.getId());
+                        TasksService.getInstance().deleteTag(localTag.getId());
                     }
                 }
             }
@@ -320,7 +329,7 @@ public class SyncService {
                 // Process new tasks and changes.
                 if (response.getTasks() != null) {
                     for (GsonTask task : response.getTasks()) {
-                        GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getTempId());
+                        GsonTask old = TasksService.getInstance().loadTask(task.getTempId());
                         task.setId(old != null ? old.getId() : null);
 
                         // Set dates to local format.
@@ -336,11 +345,11 @@ public class SyncService {
                         }
 
                         // Save or update task locally.
-                        TasksService.getInstance(mContext.get()).saveTask(task, false);
+                        TasksService.getInstance().saveTask(task, false);
                     }
 
                     // Refresh local content.
-                    TasksService.getInstance(mContext.get()).sendBroadcast(Actions.TASKS_CHANGED);
+                    TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
                 }
             }
         }).start();
@@ -362,7 +371,7 @@ public class SyncService {
             taskSync = taskSyncFromGson(task);
             mExtTaskSyncDao.getDao().insert(taskSync);
         } else {
-            GsonTask old = TasksService.getInstance(mContext.get()).loadTask(task.getId());
+            GsonTask old = TasksService.getInstance().loadTask(task.getId());
 
             // Save only changed attributes.
             taskSync.setObjectId(task.getObjectId());
@@ -410,7 +419,7 @@ public class SyncService {
 
     private GsonTask gsonFromTaskSync(TaskSync task) {
         String tempId = task.getTempId() != null ? task.getTempId() : task.getObjectId();
-        GsonTask gsonTask = TasksService.getInstance(mContext.get()).loadTask(tempId);
+        GsonTask gsonTask = TasksService.getInstance().loadTask(tempId);
 
         return gsonTask != null ? GsonTask.gsonForSync(task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(),
                 task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(),
@@ -480,6 +489,20 @@ public class SyncService {
             Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" +
                     e.getMessage() + "\n" + response);
             return false;
+        }
+    }
+
+    private void sendCompletionCallback() {
+        if (mListener != null) {
+            mListener.onSyncDone();
+            mListener = null;
+        }
+    }
+
+    private void sendErrorCallback() {
+        if (mListener != null) {
+            mListener.onSyncFailed();
+            mListener = null;
         }
     }
 

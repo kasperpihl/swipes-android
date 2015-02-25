@@ -153,7 +153,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mActivity = (TasksActivity) getActivity();
 
-        mTasksService = TasksService.getInstance(getActivity());
+        mTasksService = TasksService.getInstance();
 
         mRepeatHandler = new RepeatHandler(getActivity());
 
@@ -198,7 +198,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @Override
     public void onResume() {
-        mTasksService = TasksService.getInstance(getActivity());
+        mTasksService = TasksService.getInstance();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.TAB_CHANGED);
@@ -968,7 +968,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Refresh all task lists.
         mActivity.refreshSections();
 
-        SyncService.getInstance(getActivity()).performSync(true, Constants.SYNC_DELAY);
+        SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
     }
 
     @OnClick(R.id.assign_tags_back_button)

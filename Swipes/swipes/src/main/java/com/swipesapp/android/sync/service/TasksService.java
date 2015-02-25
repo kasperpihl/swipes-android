@@ -59,28 +59,22 @@ public class TasksService {
     }
 
     /**
-     * Returns an existing instance of the service, or loads a new one if needed.
-     * This ensures only one DAO session is active at any given time.
+     * Returns a new instance of the service. Call once during the application's
+     * lifecycle to ensure only one DAO session is active at any given time.
      *
-     * @param context Context reference.
-     * @return Service instance.
+     * @param context Application context.
      */
-    public static TasksService getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new TasksService(context);
-        } else {
-            sInstance.updateContext(context);
-        }
+    public static TasksService newInstance(Context context) {
+        sInstance = new TasksService(context);
         return sInstance;
     }
 
     /**
-     * Updates the context reference.
-     *
-     * @param context Context reference.
+     * Returns an existing instance of the service. Make sure you have called
+     * {@link #newInstance(android.content.Context)} at least once before.
      */
-    private void updateContext(Context context) {
-        mContext = new WeakReference<Context>(context);
+    public static TasksService getInstance() {
+        return sInstance;
     }
 
     /**
@@ -107,7 +101,7 @@ public class TasksService {
         Long id = gsonTask.getId();
         String parentId = gsonTask.getParentLocalId();
 
-        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonTask);
+        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask);
 
         if (id == null) {
             createTask(gsonTask);
@@ -120,7 +114,7 @@ public class TasksService {
             updateParent(gsonTask, sync);
         }
 
-        if (sync) SyncService.getInstance(mContext.get()).performSync(true, Constants.SYNC_DELAY);
+        if (sync) SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
     }
 
     /**
@@ -133,7 +127,7 @@ public class TasksService {
         GsonTask gsonParent = loadTask(subtask.getParentLocalId());
         gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
 
-        if (sync) SyncService.getInstance(mContext.get()).saveTaskChangesForSync(gsonParent);
+        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent);
 
         Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
 
@@ -156,7 +150,7 @@ public class TasksService {
             // Delete subtasks.
             deleteSubtasksForTask(task.getTempId());
 
-            SyncService.getInstance(mContext.get()).performSync(true, Constants.SYNC_DELAY);
+            SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
         }
     }
 
@@ -304,7 +298,7 @@ public class TasksService {
             // Persist new tag.
             mExtTagDao.getDao().insert(tag);
 
-            SyncService.getInstance(mContext.get()).saveTagForSync(loadTag(tempId));
+            SyncService.getInstance().saveTagForSync(loadTag(tempId));
         }
     }
 
@@ -334,7 +328,7 @@ public class TasksService {
         TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
         mExtTaskTagDao.getDao().delete(assignment);
 
-        SyncService.getInstance(mContext.get()).saveTaskChangesForSync(loadTask(taskId));
+        SyncService.getInstance().saveTaskChangesForSync(loadTask(taskId));
     }
 
     /**
@@ -353,7 +347,7 @@ public class TasksService {
         Tag tag = mExtTagDao.selectTag(tagId);
         mExtTagDao.getDao().delete(tag);
 
-        SyncService.getInstance(mContext.get()).saveDeletedTagForSync(tag);
+        SyncService.getInstance().saveDeletedTagForSync(tag);
     }
 
     /**

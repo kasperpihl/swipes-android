@@ -69,7 +69,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        mTasksService = TasksService.getInstance(this);
+        mTasksService = TasksService.getInstance();
         mEvernoteIntegration = EvernoteIntegration.getInstance();
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);

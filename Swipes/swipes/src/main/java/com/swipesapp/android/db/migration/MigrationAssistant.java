@@ -28,7 +28,7 @@ public class MigrationAssistant {
      * @param context Context instance.
      */
     public static void performUpgrades(Context context) {
-        sTasksService = TasksService.getInstance(context);
+        sTasksService = TasksService.getInstance();
 
         upgradeToV7(context);
 

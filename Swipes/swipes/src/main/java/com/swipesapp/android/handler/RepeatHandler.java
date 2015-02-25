@@ -23,7 +23,7 @@ public class RepeatHandler {
     private TasksService mTasksService;
 
     public RepeatHandler(Context context) {
-        mTasksService = TasksService.getInstance(context);
+        mTasksService = TasksService.getInstance();
     }
 
     public void handleRepeatedTask(GsonTask task) {

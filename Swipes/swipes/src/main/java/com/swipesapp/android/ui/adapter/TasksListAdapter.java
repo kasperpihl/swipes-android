@@ -174,7 +174,7 @@ public class TasksListAdapter extends BaseAdapter {
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
-        int subtasksCount = TasksService.getInstance(mContext.get()).countUncompletedSubtasksForTask(taskId);
+        int subtasksCount = TasksService.getInstance().countUncompletedSubtasksForTask(taskId);
 
         // Set date for dividers.
         if (tasks.size() == 1) {
@@ -382,8 +382,8 @@ public class TasksListAdapter extends BaseAdapter {
                 break;
             case FOCUS:
                 // Set text as progress for the day.
-                int completedToday = TasksService.getInstance(mContext.get()).countTasksCompletedToday();
-                int tasksToday = TasksService.getInstance(mContext.get()).countTasksForToday() + completedToday;
+                int completedToday = TasksService.getInstance().countTasksCompletedToday();
+                int tasksToday = TasksService.getInstance().countTasksForToday() + completedToday;
                 String labelText = mContext.get().getString(R.string.tasks_cell_label_focus, completedToday, tasksToday);
 
                 holder.label.setBackgroundResource(R.drawable.cell_label_focus);

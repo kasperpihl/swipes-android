@@ -73,7 +73,7 @@
     <string name="settings_logout">Log out</string>
     <string name="settings_integrations">Integrations</string>
     <string name="settings_sync">Synchronize</string>
-    <string name="settings_sync_summary">Last sync: %s</string>
+    <string name="settings_sync_summary">Last update: %s</string>
     <string name="switch_on">YES</string>
     <string name="switch_off">NO</string>
     <string name="preference_yes">Choose</string>
@@ -291,6 +291,11 @@
     <string name="later_results_description">scheduled</string>
     <string name="focus_results_description">current</string>
     <string name="done_results_description">completed</string>
+
+    <!-- Sync -->
+    <string name="sync_started_message">Syncing&#8230;</string>
+    <string name="sync_completed_message">Sync successful!</string>
+    <string name="sync_failed_message">Sync failed.</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

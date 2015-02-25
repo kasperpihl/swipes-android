@@ -90,7 +90,7 @@ public class EvernoteSyncHandler {
 
     protected boolean checkForLocalChanges() {
         boolean result = false;
-        List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
+        List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
         for (GsonTask todoWithEvernote : objectsWithEvernote) {
             if (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null &&
                     todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
@@ -119,7 +119,7 @@ public class EvernoteSyncHandler {
             GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
                     title, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
                     null, null, null, Arrays.asList(attachment), 0);
-            TasksService.getInstance(mContext.get()).saveTask(newTodo, true);
+            TasksService.getInstance().saveTask(newTodo, true);
         }
     }
 
@@ -130,7 +130,7 @@ public class EvernoteSyncHandler {
     }
 
     protected List<Note> extractKnownNotes() {
-        List<String> evernoteIdentifiers = TasksService.getInstance(mContext.get()).loadIdentifiersWithEvernote(true);
+        List<String> evernoteIdentifiers = TasksService.getInstance().loadIdentifiersWithEvernote(true);
         List<Note> knownNotes = new ArrayList<Note>(evernoteIdentifiers.size());
         for (String s : evernoteIdentifiers) {
             Note note = EvernoteIntegration.noteFromJson(s);
@@ -302,7 +302,7 @@ public class EvernoteSyncHandler {
     }
 
     protected void findAndHandleMatches(final GsonTask parentToDo, final EvernoteToDoProcessor processor) {
-        final TasksService tasksService = TasksService.getInstance(mContext.get());
+        final TasksService tasksService = TasksService.getInstance();
         List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(parentToDo.getTempId()));
         List<EvernoteToDo> evernoteToDos = new ArrayList<EvernoteToDo>(processor.getToDos());
 
@@ -452,7 +452,7 @@ public class EvernoteSyncHandler {
     }
 
     protected void syncEvernote(final OnEvernoteCallback<Void> callback) {
-        List<GsonTask> objectsWithEvernote = TasksService.getInstance(mContext.get()).loadTasksWithEvernote(true);
+        List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
 
         final Date date = new Date();
         mReturnCount = 0;

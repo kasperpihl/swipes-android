@@ -28,8 +28,8 @@ public class WelcomeHandler {
     }
 
     public void addWelcomeTasks() {
-        TasksService tasksService = TasksService.getInstance(mContext.get());
-        SyncService syncService = SyncService.getInstance(mContext.get());
+        TasksService tasksService = TasksService.getInstance();
+        SyncService syncService = SyncService.getInstance();
         Date currentDate = new Date();
 
         GsonTask task = GsonTask.gsonForLocal(null, null, null, null, currentDate, currentDate, false, null, null, 0, 0,

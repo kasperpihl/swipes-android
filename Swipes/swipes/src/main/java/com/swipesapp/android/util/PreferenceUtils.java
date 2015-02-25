@@ -25,8 +25,6 @@ public class PreferenceUtils {
 
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
 
-    public static final String SYNC_LAST_CALL = "sync_last_call";
-
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
 
     public static final String TASKS_ADDED_FROM_INTENT = "tasks_added_from_intent";
@@ -183,17 +181,6 @@ public class PreferenceUtils {
     public static String getSyncLastUpdate(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(SYNC_LAST_UPDATE, null);
-    }
-
-    /**
-     * Reads sync last call.
-     *
-     * @param context Context instance.
-     * @return Last call to sync.
-     */
-    public static String getSyncLastCall(Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getString(SYNC_LAST_CALL, null);
     }
 
     /**
