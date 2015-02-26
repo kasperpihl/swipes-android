@@ -290,7 +290,7 @@ public class TasksListAdapter extends BaseAdapter {
                 if (location != null && !location.isEmpty()) {
                     holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mLocationIcon);
                     holder.icons.setVisibility(View.VISIBLE);
-                } else {
+                } else if (schedule != null) {
                     holder.time.setVisibility(View.VISIBLE);
                     holder.time.setText(DateUtils.getTimeAsString(mContext.get(), schedule));
                     holder.time.setTextColor(ThemeUtils.getSectionColor(Sections.LATER, mContext.get()));
@@ -331,9 +331,31 @@ public class TasksListAdapter extends BaseAdapter {
                 R.dimen.list_item_height_large : R.dimen.list_item_height;
         int shadowSize = R.dimen.list_item_shadow_size;
 
-        if (getCount() == 1 || (mSection != Sections.FOCUS &&
-                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) &&
-                        !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
+        if (getCount() > 1 && mSection == Sections.LATER && mCurrentDate == null) {
+            if (mPreviousDate != null) {
+
+                // First unspecified row. Hide bottom shadow.
+                holder.bottomShadow.setVisibility(View.GONE);
+
+                // Calculate cell height based on top shadow only.
+                setParentHeight(holder, cellHeight, shadowSize, 0);
+            } else if (position == getCount() - 1) {
+
+                // Last unspecified row. Hide top shadow.
+                holder.topShadow.setVisibility(View.GONE);
+
+                // Calculate cell height with bottom shadow and margin.
+                setParentHeight(holder, cellHeight, 0, shadowSize);
+            } else {
+                // Middle unspecified row. Hide top and bottom shadows.
+                holder.bottomShadow.setVisibility(View.GONE);
+                holder.topShadow.setVisibility(View.GONE);
+
+                // Use default cell height.
+                setParentHeight(holder, cellHeight, 0, 0);
+            }
+        } else if (getCount() == 1 || (mSection != Sections.FOCUS &&
+                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) && !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
 
             // Group has one item. Calculate cell height with full shadow.
             setParentHeight(holder, cellHeight, shadowSize, shadowSize);
@@ -397,14 +419,19 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         if (getCount() == 1 || (mSection != Sections.FOCUS &&
-                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) &&
-                        !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
+                (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) && !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
 
-            // Group has one item. Show label divider.
-            holder.label.setVisibility(View.VISIBLE);
-        } else if ((mSection == Sections.FOCUS && position == 0) ||
-                (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate))) {
+            if (!(mPreviousDate == null && mNextDate == null)) {
+                // Group has one item. Show label divider.
+                holder.label.setVisibility(View.VISIBLE);
+            }
+        } else if (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate)) {
 
+            if (!(mPreviousDate == null && mNextDate == null)) {
+                // First row. Show label divider.
+                holder.label.setVisibility(View.VISIBLE);
+            }
+        } else if (mSection == Sections.FOCUS && position == 0) {
             // First row. Show label divider.
             holder.label.setVisibility(View.VISIBLE);
         }
