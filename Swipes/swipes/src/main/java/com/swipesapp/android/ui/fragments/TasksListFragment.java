@@ -47,6 +47,7 @@ import com.swipesapp.android.ui.adapter.TasksListAdapter;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
+import com.swipesapp.android.ui.view.FlatButton;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
@@ -111,6 +112,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     // Footer views.
     private LinearLayout mResultsView;
     private TextView mResultsText;
+    private FlatButton mClearWorkspaceButton;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -292,18 +294,18 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mResultsText = (TextView) mResultsView.findViewById(R.id.workspace_results);
         mListView.addFooterView(mResultsView);
 
-        // Hide footer initially.
-        hideWorkspaceResults();
-
         // Add clear listener.
-        TextView clearWorkspace = (TextView) mResultsView.findViewById(R.id.clear_workspace_button);
-        clearWorkspace.setOnClickListener(new View.OnClickListener() {
+        mClearWorkspaceButton = (FlatButton) mResultsView.findViewById(R.id.clear_workspace_button);
+        mClearWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Clear workspace.
                 mActivity.closeWorkspaces();
             }
         });
+
+        // Hide footer initially.
+        hideWorkspaceResults();
     }
 
     private void configureLaterView(TasksListAdapter adapter) {
@@ -1203,13 +1205,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void hideWorkspaceResults() {
-        mListView.removeFooterView(mResultsView);
+        mResultsText.setVisibility(View.GONE);
+        mClearWorkspaceButton.setVisibility(View.GONE);
     }
 
     private void showWorkspaceResults() {
-        if (mListView.getFooterViewsCount() == 0) {
-            mListView.addFooterView(mResultsView);
-        }
+        mResultsText.setVisibility(View.VISIBLE);
+        mClearWorkspaceButton.setVisibility(View.VISIBLE);
     }
 
     private void updateResultsDescription(int count) {
