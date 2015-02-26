@@ -631,7 +631,7 @@ public class TasksService {
 
             switch (section) {
                 case LATER:
-                    isFromSection = task.getLocalSchedule().after(new Date());
+                    isFromSection = (task.getLocalSchedule() == null || task.getLocalSchedule().after(new Date())) && task.getLocalCompletionDate() == null;
                     break;
                 case FOCUS:
                     isFromSection = (task.getLocalSchedule() == null || task.getLocalSchedule().before(new Date())) && task.getLocalCompletionDate() == null;
