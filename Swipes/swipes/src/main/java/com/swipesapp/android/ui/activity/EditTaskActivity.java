@@ -857,13 +857,14 @@ public class EditTaskActivity extends FragmentActivity {
         }
 
         // Append notes.
-        content += "\n Notes: \n\n" + mTask.getNotes();
+        String notes = mTask.getNotes();
+        if (notes != null && !notes.isEmpty()) content += "\n Notes: \n\n" + notes;
 
         // Append basic footer.
         content += "\n\n" + getString(R.string.share_message_footer_sent_from);
 
         // Use only basic footer when sharing URLs.
-        if (!mTask.getNotes().startsWith("http")) {
+        if (notes == null || !notes.startsWith("http")) {
             content += "\n" + getString(R.string.share_message_footer_get_swipes);
         }
 
