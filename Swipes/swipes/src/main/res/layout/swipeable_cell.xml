@@ -110,7 +110,7 @@
 
             <!-- Task properties container -->
             <RelativeLayout
-                android:id="@+id/task_properties_container"
+                android:id="@+id/task_properties"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
@@ -166,6 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
+                <!-- Group label -->
                 <TextView
                     android:id="@+id/task_label"
                     android:layout_width="wrap_content"
@@ -173,8 +174,6 @@
                     android:background="@drawable/cell_label_focus"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/task_label_padding_left"
-                    android:paddingRight="@dimen/task_label_padding_right"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
@@ -184,9 +183,7 @@
                     android:id="@+id/task_subtask_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/subtask_counter_margin_left"
-                    android:layout_marginRight="@dimen/subtask_counter_margin_right"
+                    android:layout_centerInParent="true"
                     android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
             </RelativeLayout>

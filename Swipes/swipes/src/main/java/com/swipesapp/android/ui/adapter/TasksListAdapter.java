@@ -129,6 +129,7 @@ public class TasksListAdapter extends BaseAdapter {
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
             holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
+            holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties);
             holder.rightContainer = (RelativeLayout) row.findViewById(R.id.task_right_container);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
@@ -275,6 +276,9 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Set label divider.
         setLabelDivider(holder, position);
+
+        // Apply padding to properties on the right.
+        setPropertiesPadding(holder);
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
@@ -476,6 +480,32 @@ public class TasksListAdapter extends BaseAdapter {
         holder.parentView.setLayoutParams(parentParams);
     }
 
+    private void setPropertiesPadding(TaskHolder holder) {
+        Resources res = mContext.get().getResources();
+        boolean isLabelVisible = holder.label.getVisibility() == View.VISIBLE;
+        boolean isCounterVisible = holder.subtasksCount.getVisibility() == View.VISIBLE;
+
+        if (isLabelVisible) {
+            // Apply padding to group label.
+            int paddingLeft = res.getDimensionPixelSize(R.dimen.task_label_padding_left);
+            int paddingRight = res.getDimensionPixelSize(R.dimen.task_label_padding_right);
+            holder.label.setPadding(paddingLeft, 0, paddingRight, 0);
+        }
+
+        if (isCounterVisible) {
+            // Apply padding to subtasks counter.
+            int paddingLeft = res.getDimensionPixelSize(R.dimen.subtask_counter_padding_left);
+            int paddingRight = res.getDimensionPixelSize(R.dimen.subtask_counter_padding_right);
+            holder.subtasksCount.setPadding(paddingLeft, 0, paddingRight, 0);
+        }
+
+        if (!isLabelVisible && !isCounterVisible) {
+            // Apply padding to properties container.
+            int paddingRight = res.getDimensionPixelSize(R.dimen.task_properties_container_padding);
+            holder.propertiesContainer.setPadding(0, 0, paddingRight, 0);
+        }
+    }
+
     private void realignProperties(final TaskHolder holder, View row) {
         // Align things manually when both the label and counter are visible.
         if (holder.label.getVisibility() == View.VISIBLE && holder.subtasksCount.getVisibility() == View.VISIBLE) {
@@ -671,6 +701,7 @@ public class TasksListAdapter extends BaseAdapter {
         FrameLayout containerView;
         LinearLayout frontView;
         RelativeLayout backView;
+        RelativeLayout propertiesContainer;
         RelativeLayout rightContainer;
 
         // Priority and selection.
