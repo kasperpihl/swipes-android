@@ -422,7 +422,11 @@ public class TasksListAdapter extends BaseAdapter {
                 break;
         }
 
-        if (getCount() == 1 || (mSection != Sections.FOCUS &&
+        if (position == 0) {
+            // First row. Show label divider.
+            holder.label.setVisibility(View.VISIBLE);
+
+        } else if (getCount() == 1 || (mSection != Sections.FOCUS &&
                 (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) && !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
 
             if (!(mPreviousDate == null && mNextDate == null)) {
@@ -435,9 +439,6 @@ public class TasksListAdapter extends BaseAdapter {
                 // First row. Show label divider.
                 holder.label.setVisibility(View.VISIBLE);
             }
-        } else if (mSection == Sections.FOCUS && position == 0) {
-            // First row. Show label divider.
-            holder.label.setVisibility(View.VISIBLE);
         }
     }
 
@@ -545,6 +546,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         // Reset properties.
+        holder.time.setVisibility(View.GONE);
         holder.tags.setVisibility(View.GONE);
         holder.icons.setText("");
         holder.icons.setVisibility(View.GONE);
