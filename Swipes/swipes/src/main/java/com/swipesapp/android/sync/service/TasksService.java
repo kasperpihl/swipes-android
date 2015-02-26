@@ -125,14 +125,17 @@ public class TasksService {
      */
     private void updateParent(GsonTask subtask, boolean sync) {
         GsonTask gsonParent = loadTask(subtask.getParentLocalId());
-        gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
 
-        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent);
+        if (gsonParent != null) {
+            gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
 
-        Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
+            if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent);
 
-        synchronized (this) {
-            mExtTaskDao.getDao().update(parent);
+            Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
+
+            synchronized (this) {
+                mExtTaskDao.getDao().update(parent);
+            }
         }
     }
 
