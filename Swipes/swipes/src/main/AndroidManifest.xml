@@ -143,7 +143,7 @@
         <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver$ActionsReceiver" />
 
         <receiver
-            android:name="com.swipesapp.android.sync.receiver.BootReceiver"
+            android:name="com.swipesapp.android.sync.receiver.SnoozeHelper"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

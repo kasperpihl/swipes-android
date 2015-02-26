@@ -31,14 +31,14 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
     private static NotificationManager sNotificationManager;
     private static TasksService sTasksService;
-    private static List<GsonTask> sExpiredTasks;
+    private static List<GsonTask> sExpiredTasks = new ArrayList<>();
+    private static int sPreviousCount;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         sTasksService = TasksService.getInstance();
 
         List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
-        sExpiredTasks = new ArrayList<GsonTask>();
 
         Calendar calendar = Calendar.getInstance();
         long now = calendar.getTimeInMillis();
@@ -51,17 +51,21 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 long delta = schedule - now;
 
                 // Add task to the list of expired.
-                if (delta >= 0 && delta < 60000) sExpiredTasks.add(task);
+                if (delta >= 0 && delta < 60000 && !sExpiredTasks.contains(task)) {
+                    sExpiredTasks.add(task);
+                }
             }
         }
 
-        if (!sExpiredTasks.isEmpty()) {
+        if (sExpiredTasks.size() > sPreviousCount) {
             // Broadcast tasks changed.
             sTasksService.sendBroadcast(Actions.TASKS_CHANGED);
 
             // Send notification if allowed to.
             sendNotification(context);
         }
+
+        sPreviousCount = sExpiredTasks.size();
     }
 
     private void sendNotification(Context context) {
@@ -78,9 +82,9 @@ public class SnoozeReceiver extends BroadcastReceiver {
             }
 
             // Intent to open app.
-            Intent tasksIntent = new Intent(context, TasksActivity.class);
-            PendingIntent tasksPendingIntent = PendingIntent.getActivity(context, 0, tasksIntent, 0);
-            builder.setContentIntent(tasksPendingIntent);
+            Intent tasksIntent = new Intent(context, ActionsReceiver.class);
+            tasksIntent.setAction(Actions.SHOW_TASKS);
+            PendingIntent tasksPendingIntent = PendingIntent.getBroadcast(context, 0, tasksIntent, 0);
 
             // Intent for the snooze button.
             Intent snoozeIntent = new Intent(context, ActionsReceiver.class);
@@ -100,6 +104,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             String completeTitle = res.getString(R.string.notification_complete);
 
             builder.setContentTitle(title);
+            builder.setContentIntent(tasksPendingIntent);
             builder.addAction(R.drawable.ic_snooze, snoozeTitle, snoozePendingIntent);
             builder.addAction(R.drawable.ic_complete, completeTitle, completePendingIntent);
 
@@ -144,7 +149,16 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                     sTasksService.saveTask(task, true);
                 }
+            } else if (intent.getAction().equals(Actions.SHOW_TASKS)) {
+                // Open main activity.
+                Intent tasksIntent = new Intent(context, TasksActivity.class);
+                tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(tasksIntent);
             }
+
+            // Clear expired tasks.
+            sExpiredTasks.clear();
+            sPreviousCount = 0;
 
             // Cancel notification.
             sNotificationManager.cancel(0);

@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,7 +47,6 @@ import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
-import com.swipesapp.android.sync.receiver.SnoozeReceiver;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
@@ -216,8 +213,6 @@ public class TasksActivity extends BaseActivity {
         getSupportActionBar().setCustomView(mActionBarView);
 
         performInitialSetup();
-
-        createSnoozeAlarm();
 
         if (mCurrentSection == null) mCurrentSection = Sections.FOCUS;
 
@@ -505,14 +500,6 @@ public class TasksActivity extends BaseActivity {
             mActionBarTitle.setText(section.getSectionTitle(this));
             mActionBarIcon.setText(section.getSectionIcon(this));
         }
-    }
-
-    private void createSnoozeAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, SnoozeReceiver.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, 60000, 60000, alarmIntent);
     }
 
     private void setupViewPager() {

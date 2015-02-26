@@ -38,6 +38,11 @@ public class Actions {
     public static final String BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
 
     /**
+     * Notifies listeners to show tasks.
+     */
+    public static final String SHOW_TASKS = "com.swipesapp.android.ACTION_SHOW_TASKS";
+
+    /**
      * Notifies listeners to snooze tasks.
      */
     public static final String SNOOZE_TASKS = "com.swipesapp.android.ACTION_SNOOZE_TASKS";
