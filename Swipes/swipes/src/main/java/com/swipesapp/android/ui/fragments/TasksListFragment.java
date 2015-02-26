@@ -268,6 +268,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setContainerBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setAccentColor(ThemeUtils.getSectionColor(mSection, getActivity()));
         mListView.setFrontDetailText(R.id.task_time);
+        mListView.setFrontCounter(R.id.task_subtask_count);
 
         // Setup filters.
         setupResultsFooter();

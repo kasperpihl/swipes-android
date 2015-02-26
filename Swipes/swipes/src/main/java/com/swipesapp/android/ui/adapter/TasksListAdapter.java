@@ -57,7 +57,7 @@ public class TasksListAdapter extends BaseAdapter {
     private String mRepeatIcon;
     private String mTagsIcon;
 
-    private boolean mResetCells;
+    private boolean mIsDraggingCell;
     private boolean mIsShowingOld;
 
     // Determines if old tasks will be animated into the screen.
@@ -88,7 +88,7 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        mResetCells = false;
+        mIsDraggingCell = true;
         mNextDate = null;
         mPreviousDate = null;
         mCurrentDate = null;
@@ -479,16 +479,12 @@ public class TasksListAdapter extends BaseAdapter {
 
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
-        if (mResetCells) {
+        if (!mIsDraggingCell) {
             // Reset cell.
             holder.frontView.setBackgroundColor(Color.TRANSPARENT);
             holder.frontView.setVisibility(View.VISIBLE);
             holder.backView.setVisibility(View.GONE);
             holder.parentView.setVisibility(View.VISIBLE);
-
-            // Reset shadows.
-            holder.bottomShadow.setVisibility(View.VISIBLE);
-            holder.topShadow.setVisibility(View.VISIBLE);
         }
 
         // Reset properties.
@@ -498,8 +494,14 @@ public class TasksListAdapter extends BaseAdapter {
         holder.subtasksCount.setVisibility(View.GONE);
         holder.label.setVisibility(View.GONE);
 
+        // Reset shadows.
+        holder.bottomShadow.setVisibility(View.VISIBLE);
+        holder.topShadow.setVisibility(View.VISIBLE);
+        holder.leftShadow.setVisibility(View.VISIBLE);
+        holder.rightShadow.setVisibility(View.VISIBLE);
+
         // Reset translation.
-        if (mResetCells) {
+        if (!mIsDraggingCell) {
             if (mAnimateRefresh) {
                 ObjectAnimator animator = ObjectAnimator.ofFloat(holder.frontView, "translationX", 0);
                 animator.start();
@@ -556,7 +558,7 @@ public class TasksListAdapter extends BaseAdapter {
         mData = data;
         mAnimateRefresh = animateRefresh;
         mAnimateOld = false;
-        mResetCells = true;
+        mIsDraggingCell = false;
         mNextDate = null;
         mPreviousDate = null;
         mCurrentDate = null;
@@ -589,7 +591,7 @@ public class TasksListAdapter extends BaseAdapter {
         mData = data;
         mIsShowingOld = true;
         mAnimateOld = true;
-        mResetCells = true;
+        mIsDraggingCell = false;
         mListViewHeight = listViewHeight;
         mVisibleAreaHeight = 0;
         mNextDate = null;
