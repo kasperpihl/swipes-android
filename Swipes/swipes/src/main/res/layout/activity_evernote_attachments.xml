@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/evernote_attachments_header_height"
             android:background="@color/evernote_brand"
-            android:paddingLeft="@dimen/evernote_attachments_header_padding"
-            android:paddingRight="@dimen/evernote_attachments_header_padding">
+            android:paddingLeft="@dimen/evernote_attachments_header_padding_left"
+            android:paddingRight="@dimen/evernote_attachments_header_padding_right">
 
             <com.swipesapp.android.ui.view.SwipesTextView
                 android:id="@+id/search_icon"
@@ -63,51 +63,77 @@
                 android:textSize="@dimen/evernote_attachments_text_size" />
         </RelativeLayout>
 
-        <!-- List area -->
-        <ListView
-            android:id="@android:id/list"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:clipToPadding="false"
-            android:divider="@null"
-            android:dividerHeight="0dp" />
+            android:layout_height="match_parent">
 
-        <!-- Footer with checkbox -->
-        <RelativeLayout
-            android:id="@+id/evernote_footer_area"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/evernote_attachments_header_height"
-            android:paddingLeft="@dimen/evernote_attachments_margin_sides"
-            android:paddingRight="@dimen/evernote_attachments_margin_sides">
+            <!-- Content area. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/filter_checkbox_area"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/evernote_attachments_margin_sides">
+                <!-- List area -->
+                <ListView
+                    android:id="@android:id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:clipToPadding="false"
+                    android:divider="@null"
+                    android:dividerHeight="0dp" />
 
-                <CheckBox
-                    android:id="@+id/filter_checkbox"
-                    android:layout_width="@dimen/evernote_attachments_checkbox_size"
-                    android:layout_height="@dimen/evernote_attachments_checkbox_size"
-                    android:button="@null"
-                    android:checked="true" />
-            </FrameLayout>
+                <!-- Footer with checkbox -->
+                <RelativeLayout
+                    android:id="@+id/evernote_footer_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/evernote_attachments_header_height"
+                    android:paddingLeft="@dimen/evernote_attachments_margin_sides"
+                    android:paddingRight="@dimen/evernote_attachments_margin_sides">
 
-            <TextView
-                android:id="@+id/filter_checkbox_description"
+                    <FrameLayout
+                        android:id="@+id/filter_checkbox_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/evernote_attachments_margin_sides">
+
+                        <CheckBox
+                            android:id="@+id/filter_checkbox"
+                            android:layout_width="@dimen/evernote_attachments_checkbox_size"
+                            android:layout_height="@dimen/evernote_attachments_checkbox_size"
+                            android:button="@null"
+                            android:checked="true" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/filter_checkbox_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/filter_checkbox_area"
+                        android:ellipsize="end"
+                        android:text="@string/evernote_filter_description"
+                        android:textSize="@dimen/evernote_attachments_text_size" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <!-- Evernote label -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/filter_checkbox_area"
-                android:ellipsize="end"
-                android:text="@string/evernote_filter_description"
-                android:textSize="@dimen/evernote_attachments_text_size" />
-        </RelativeLayout>
+                android:gravity="right">
+
+                <View
+                    android:layout_width="@dimen/evernote_attachments_label_width"
+                    android:layout_height="@dimen/evernote_attachments_label_height"
+                    android:background="@drawable/cell_label_evernote" />
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
 

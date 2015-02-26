@@ -112,9 +112,12 @@
     <dimen name="evernote_attachments_header_height">56dp</dimen>
     <dimen name="evernote_attachments_checkbox_size">25dp</dimen>
     <dimen name="evernote_attachments_text_size">16sp</dimen>
-    <dimen name="evernote_attachments_header_padding">24dp</dimen>
+    <dimen name="evernote_attachments_header_padding_left">24dp</dimen>
+    <dimen name="evernote_attachments_header_padding_right">28dp</dimen>
     <dimen name="evernote_attachments_margin_sides">16dp</dimen>
     <dimen name="evernote_attachments_icon_size">@dimen/action_buttons_size</dimen>
+    <dimen name="evernote_attachments_label_width">80dp</dimen>
+    <dimen name="evernote_attachments_label_height">10dp</dimen>
 
     <!-- Components -->
     <dimen name="text_size_small">14sp</dimen>
