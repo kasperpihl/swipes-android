@@ -329,7 +329,7 @@ public class TasksService {
     public void unassignTag(Long tagId, Long taskId) {
         // Load assignment and delete from database.
         TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
-        mExtTaskTagDao.getDao().delete(assignment);
+        if (assignment != null) mExtTaskTagDao.getDao().delete(assignment);
 
         SyncService.getInstance().saveTaskChangesForSync(loadTask(taskId));
     }
