@@ -47,19 +47,6 @@ public class DateUtils {
     public static final String TIMEZONE_SYNC = "UTC";
 
     /**
-     * Returns a Calendar object for the given date.
-     *
-     * @param date Desired date.
-     * @return Calendar object.
-     */
-    public static Calendar getCalendarFromDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        return calendar;
-    }
-
-    /**
      * Returns formatted time for a given date. Format will be "HH:mm" or "hh:mm a",
      * depending on the device's 24-hour format setting.
      *
@@ -67,6 +54,8 @@ public class DateUtils {
      * @return Formatted time.
      */
     public static String getTimeAsString(Context context, Date date) {
+        if (date == null) return context.getString(R.string.date_unspecified);
+
         String time;
 
         if (DateFormat.is24HourFormat(context)) {
@@ -88,6 +77,8 @@ public class DateUtils {
      * @return Formatted date.
      */
     public static String getDateAsString(Context context, Date date) {
+        if (date == null) return context.getString(R.string.date_unspecified);
+
         String time;
         String format;
 
@@ -155,6 +146,9 @@ public class DateUtils {
      * @return Formatted day.
      */
     public static String formatDayToRecent(Date rawDate, Context context) {
+        // Check if date is unspecified.
+        if (rawDate == null) return context.getString(R.string.date_unspecified);
+
         // Format full date.
         String recentDate = formatToRecent(rawDate, context, true);
         int commaIndex = recentDate.indexOf(",");
@@ -170,6 +164,8 @@ public class DateUtils {
      * @return True if date is today.
      */
     public static boolean isToday(Date date) {
+        if (date == null) return false;
+
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
         Calendar currentDate = Calendar.getInstance();
@@ -189,9 +185,7 @@ public class DateUtils {
      * @return True if date is older than today.
      */
     public static boolean isOlderThanToday(Date date) {
-        if (date == null) {
-            return false;
-        }
+        if (date == null) return false;
 
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
@@ -212,9 +206,7 @@ public class DateUtils {
      * @return True if date is newer than today.
      */
     public static boolean isNewerThanToday(Date date) {
-        if (date == null) {
-            return false;
-        }
+        if (date == null) return false;
 
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
@@ -235,9 +227,7 @@ public class DateUtils {
      * @return True if date is within a week.
      */
     public static boolean isWithinWeek(Date date) {
-        if (date == null) {
-            return false;
-        }
+        if (date == null) return false;
 
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
@@ -261,9 +251,7 @@ public class DateUtils {
      * @return True if it's in the same year.
      */
     public static boolean isSameYear(Date date) {
-        if (date == null) {
-            return false;
-        }
+        if (date == null) return false;
 
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
@@ -283,9 +271,7 @@ public class DateUtils {
      * @return True if they are in the same day.
      */
     public static boolean isSameDay(Date firstDate, Date secondDate) {
-        if (firstDate == null || secondDate == null) {
-            return false;
-        }
+        if (firstDate == null || secondDate == null) return false;
 
         Calendar first = Calendar.getInstance();
         first.setTime(firstDate);
@@ -306,6 +292,8 @@ public class DateUtils {
      * @return Formatted string.
      */
     public static String formatDayOfWeek(Context context, Calendar date) {
+        if (date == null) return "";
+
         // Load resource string for day of the week.
         switch (date.get(Calendar.DAY_OF_WEEK)) {
             case 1:
@@ -335,6 +323,8 @@ public class DateUtils {
      * @return Formatted string.
      */
     public static String formatMonth(Context context, Calendar date) {
+        if (date == null) return "";
+
         // Load resource string for month.
         switch (date.get(Calendar.MONTH)) {
             case 0:
@@ -374,6 +364,8 @@ public class DateUtils {
      * @return Formatted string.
      */
     public static String formatDayOfMonth(Context context, Calendar date) {
+        if (date == null) return "";
+
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
 
         // Load resource string for day of month with suffix.
