@@ -304,7 +304,7 @@
     </plurals>
     <plurals name="notification_title">
         <item quantity="one">%s</item>
-        <item quantity="other">You have %d new tasks</item>
+        <item quantity="other">You have %s new tasks</item>
     </plurals>
     <plurals name="workspace_results">
         <item quantity="one">%1$s %2$s task with tags: &lt;b>%3$s&lt;/b></item>
