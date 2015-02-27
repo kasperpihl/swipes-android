@@ -168,17 +168,20 @@ public class EvernoteService {
                     try {
                         if (note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
                             json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_PERSONAL);
-                        } else {
+                        } else if (mBusinessNotebookGuids != null) {
                             String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
+
                             if (guid != null) {
                                 guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
                                 final LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
+
                                 if (linkedNotebook != null) {
                                     json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_BUSINESS);
                                     final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(linkedNotebook);
                                     json.put(KEY_JSON_LINKED_NOTEBOOK, jsonLinkedNotebook);
                                 } else {
                                     final LinkedNotebook sharedNotebook = mLinkedPersonalNotebooks.get(note.getNotebookGuid());
+
                                     if (null != sharedNotebook) {
                                         json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_SHARED);
                                         final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(sharedNotebook);
