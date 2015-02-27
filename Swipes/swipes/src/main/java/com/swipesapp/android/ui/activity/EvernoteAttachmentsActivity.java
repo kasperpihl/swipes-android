@@ -85,12 +85,12 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         // Initialize list view.
         ListView listView = (ListView) findViewById(android.R.id.list);
 
-        // Load notes.
-        mEvernoteIntegration.findNotes(FILTER_PREFIX + "", mEvernoteCallback);
-
         // Setup adapter.
         mAdapter = new EvernoteAttachmentsAdapter(this, mNotes, mAttachmentsListener);
         listView.setAdapter(mAdapter);
+
+        // Load notes.
+        mEvernoteIntegration.findNotes(FILTER_PREFIX + "", mEvernoteCallback);
     }
 
     private void customizeViews() {
