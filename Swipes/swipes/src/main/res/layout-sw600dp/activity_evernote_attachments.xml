@@ -7,6 +7,9 @@
     android:orientation="vertical"
     tools:context="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity">
 
-    <include layout="@layout/evernote_attachments_view" />
+    <include
+        layout="@layout/evernote_attachments_view"
+        android:layout_width="@dimen/evernote_attachments_dialog_width"
+        android:layout_height="@dimen/evernote_attachments_dialog_height" />
 
 </LinearLayout>

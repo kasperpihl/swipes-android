@@ -9,12 +9,19 @@
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">32dp</dimen>
 
+    <!-- Edit -->
+    <dimen name="edit_task_dialog_height">420dp</dimen>
+
     <!-- Scheduler -->
     <dimen name="snooze_view_width">420dp</dimen>
     <dimen name="snooze_view_height">420dp</dimen>
 
     <!-- Done -->
     <dimen name="done_buttons_margin_vertical">25dp</dimen>
+
+    <!-- Evernote -->
+    <dimen name="evernote_attachments_dialog_width">440dp</dimen>
+    <dimen name="evernote_attachments_dialog_height">580dp</dimen>
 
     <!-- Components -->
     <dimen name="floating_button_margin">24dp</dimen>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
-    android:layout_width="420dp"
+    android:layout_width="@dimen/edit_task_dialog_height"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:focusableInTouchMode="true"
