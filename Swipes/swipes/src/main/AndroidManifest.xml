@@ -95,7 +95,8 @@
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/Login_Theme">
+            android:theme="@style/Login_Theme"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
                 android:value="true" />
