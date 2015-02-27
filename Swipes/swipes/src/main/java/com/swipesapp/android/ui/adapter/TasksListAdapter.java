@@ -339,11 +339,16 @@ public class TasksListAdapter extends BaseAdapter {
         if (getCount() > 1 && mSection == Sections.LATER && mCurrentDate == null) {
             if (mPreviousDate != null) {
 
-                // First unspecified row. Hide bottom shadow.
-                holder.bottomShadow.setVisibility(View.GONE);
+                if (getCount() - position == 1) {
+                    // Single unspecified item. Calculate cell height with full shadow.
+                    setParentHeight(holder, cellHeight, shadowSize, shadowSize);
+                } else {
+                    // First unspecified row. Hide bottom shadow.
+                    holder.bottomShadow.setVisibility(View.GONE);
 
-                // Calculate cell height based on top shadow only.
-                setParentHeight(holder, cellHeight, shadowSize, 0);
+                    // Calculate cell height based on top shadow only.
+                    setParentHeight(holder, cellHeight, shadowSize, 0);
+                }
             } else if (position == getCount() - 1) {
 
                 // Last unspecified row. Hide top shadow.
