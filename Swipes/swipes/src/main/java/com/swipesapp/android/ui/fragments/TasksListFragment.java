@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -130,7 +131,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     FlowLayout mTaskTagsContainer;
 
     @InjectView(R.id.landscape_header)
-    LinearLayout mLandscapeHeader;
+    RelativeLayout mLandscapeHeader;
+
+    @InjectView(R.id.landscape_header_area)
+    LinearLayout mLandscapeHeaderArea;
 
     @InjectView(R.id.action_bar_title)
     TextView mLandscapeHeaderTitle;
@@ -280,12 +284,25 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mEmptyView = mViewStub.inflate();
         mListView.setEmptyView(mEmptyView);
 
+        // Setup tablet mode.
+        setupViewForTablets();
+    }
+
+    private void setupViewForTablets() {
         // Setup landscape header.
         mLandscapeHeader.setVisibility(DeviceUtils.isLandscape(getActivity()) ? View.VISIBLE : View.GONE);
-        mLandscapeHeader.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+        mLandscapeHeaderArea.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+
+        // Setup title and icon.
         mLandscapeHeaderTitle.setText(mSection.getSectionTitle(getActivity()));
         mLandscapeHeaderIcon.setText(mSection.getSectionIcon(getActivity()));
-        mLandscapeHeaderIcon.setLayoutParams(mLandscapeHeaderTitle.getLayoutParams());
+        mLandscapeHeaderIcon.setTextColor(Color.WHITE);
+        mLandscapeHeaderIcon.disableTouchFeedback();
+
+        // Disable edge effect.
+        if (DeviceUtils.isTablet(getActivity())) {
+            mListView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        }
     }
 
     private void setupResultsFooter() {
@@ -787,12 +804,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
             }
         }
+
+        if (DeviceUtils.isLandscape(getActivity())) {
+            // Hide landscape header.
+            mLandscapeHeader.setVisibility(View.GONE);
+        }
     }
 
     private void hideEmptyView() {
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
             focusEmptyView.setAlpha(0f);
+        }
+
+        if (DeviceUtils.isLandscape(getActivity())) {
+            // Show landscape header.
+            mLandscapeHeader.setVisibility(View.VISIBLE);
         }
     }
 
@@ -874,6 +901,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             public void onAnimationEnd(Animator animation) {
                 // Hide buttons.
                 mHeaderView.setVisibility(View.GONE);
+
+                // Show header in landscape.
+                if (DeviceUtils.isLandscape(getActivity())) {
+                    mLandscapeHeader.setVisibility(View.VISIBLE);
+                }
 
                 // Show old tasks.
                 List<GsonTask> tasks = mTasksService.loadCompletedTasks();

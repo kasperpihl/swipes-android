@@ -465,9 +465,15 @@ public class TasksActivity extends BaseActivity {
         // Inflate custom view.
         LayoutInflater inflater = LayoutInflater.from(this);
         mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
-        mActionBarView.setOnClickListener(mNavigationToggleListener);
         mActionBarTitle = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
         mActionBarIcon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
+
+        // Enable navigation menu on portrait only.
+        if (DeviceUtils.isLandscape(this)) {
+            mActionBarView.setClickable(false);
+        } else {
+            mActionBarView.setOnClickListener(mNavigationToggleListener);
+        }
 
         // Apply ripple effect.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

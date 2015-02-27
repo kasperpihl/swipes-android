@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/landscape_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/list_padding_sides"
+    android:layout_marginRight="@dimen/list_padding_sides"
+    android:layout_marginTop="@dimen/landscape_header_margin_top">
+
+    <!-- Top shadow -->
+    <View
+        android:id="@+id/header_top_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_shadow_size"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow_cell_top" />
+
+    <!-- Left shadow -->
+    <View
+        android:id="@+id/header_left_shadow"
+        android:layout_width="@dimen/list_item_shadow_size"
+        android:layout_height="@dimen/landscape_header_height"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/header_top_shadow"
+        android:background="@drawable/shadow_cell_left" />
+
+    <!-- Right shadow -->
+    <View
+        android:id="@+id/header_right_shadow"
+        android:layout_width="@dimen/list_item_shadow_size"
+        android:layout_height="@dimen/landscape_header_height"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/header_top_shadow"
+        android:background="@drawable/shadow_cell_right" />
+
+    <!-- Header area -->
+    <include
+        android:id="@+id/landscape_header_area"
+        layout="@layout/action_bar_custom_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/landscape_header_height"
+        android:layout_below="@id/header_top_shadow"
+        android:layout_toLeftOf="@id/header_right_shadow"
+        android:layout_toRightOf="@id/header_left_shadow" />
+
+</RelativeLayout>

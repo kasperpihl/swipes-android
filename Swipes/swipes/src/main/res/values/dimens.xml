@@ -26,6 +26,7 @@
     <dimen name="pager_margin_sides">-16dp</dimen>
     <dimen name="landscape_header_height">@dimen/toolbar_height</dimen>
     <dimen name="landscape_header_margin_top">@dimen/list_default_padding</dimen>
+    <dimen name="landscape_header_delta">5dp</dimen>
     <dimen name="task_back_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="navigation_menu_height">65dp</dimen>
     <dimen name="navigation_menu_button_margin">16dp</dimen>

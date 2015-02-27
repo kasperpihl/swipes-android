@@ -26,6 +26,7 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
 import com.swipesapp.android.values.Sections;
@@ -396,6 +397,19 @@ public class TasksListAdapter extends BaseAdapter {
         ViewGroup.LayoutParams rightParams = holder.rightShadow.getLayoutParams();
         rightParams.height = res.getDimensionPixelSize(cellHeight);
         holder.rightShadow.setLayoutParams(rightParams);
+
+        // Hide first top shadow on landscape mode.
+        if (position == 0 && DeviceUtils.isLandscape(mContext.get())) {
+            holder.topShadow.setVisibility(View.GONE);
+
+            if (getCount() == 1) {
+                // Calculate cell height with bottom shadow and margin.
+                setParentHeight(holder, cellHeight, 0, shadowSize);
+            } else {
+                // Use default cell height.
+                setParentHeight(holder, cellHeight, 0, 0);
+            }
+        }
     }
 
     private void setLabelDivider(TaskHolder holder, int position) {
