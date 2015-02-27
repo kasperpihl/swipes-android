@@ -1,0 +1,10 @@
+<resources>
+
+    <!-- Preview themes. -->
+    <style name="Tasks_Preview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/preview_tasks</item>
+        <item name="colorPrimary">@color/neutral_accent</item>
+        <item name="colorPrimaryDark">@color/neutral_accent_dark</item>
+    </style>
+
+</resources>

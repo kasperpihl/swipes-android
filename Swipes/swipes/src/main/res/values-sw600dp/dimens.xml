@@ -3,14 +3,15 @@
 
     <!-- Tasks list -->
     <dimen name="list_padding_top">35dp</dimen>
-    <dimen name="pager_padding_sides">60dp</dimen>
-    <dimen name="pager_margin_sides">-15dp</dimen>
+    <dimen name="pager_padding_sides">50dp</dimen>
+    <dimen name="pager_margin_sides">-5dp</dimen>
 
     <!-- Empty view -->
     <dimen name="activity_horizontal_margin">32dp</dimen>
 
     <!-- Edit -->
     <dimen name="edit_task_dialog_height">420dp</dimen>
+    <dimen name="edit_bar_height">65dp</dimen>
 
     <!-- Scheduler -->
     <dimen name="snooze_view_width">420dp</dimen>
