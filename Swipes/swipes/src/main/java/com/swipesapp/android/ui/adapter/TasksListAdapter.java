@@ -24,11 +24,11 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
-import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
 
@@ -218,7 +218,7 @@ public class TasksListAdapter extends BaseAdapter {
         // Display Evernote icon.
         if (attachments != null) {
             for (GsonAttachment attachment : attachments) {
-                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
+                if (attachment.getService().equals(Services.EVERNOTE)) {
                     holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mEvernoteIcon);
                     holder.icons.setVisibility(View.VISIBLE);
                 }

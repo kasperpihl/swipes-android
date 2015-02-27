@@ -17,7 +17,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.ui.view.TimePreference;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;

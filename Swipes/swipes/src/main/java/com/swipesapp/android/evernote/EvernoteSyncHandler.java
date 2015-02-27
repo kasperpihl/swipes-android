@@ -13,6 +13,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.LevenshteinDistance;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
+import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -29,13 +30,13 @@ import java.util.UUID;
 public class EvernoteSyncHandler {
 
     protected final static String TAG = "EvernoteSyncHandler";
-    protected final static String PREFS_NAME = "EvernoteSyncHandler";
     protected final static String KEY_LAST_UPDATED = "lastUpdated";
+    protected final static String KEY_AUTO_IMPORT = "evernote_auto_import";
     protected final static String KEY_EVERNOTE_JSON_CONVERTED = "evernoteJsonConverted";
     protected final static int TITLE_MAX_LENGTH = 255;
-    protected final static long FETCH_CHANGES_TIMEOUT = 30 * 1000; // 30 seconds
+    protected final static long FETCH_CHANGES_TIMEOUT = 30000; // 30 seconds
 
-    protected static EvernoteSyncHandler sInstance = new EvernoteSyncHandler();
+    protected static EvernoteSyncHandler sInstance;
 
     protected Set<Note> mChangedNotes;
     protected Date mLastUpdated;
@@ -47,33 +48,37 @@ public class EvernoteSyncHandler {
     protected Exception mRunningError;
     protected boolean mConvertedToJson;
 
+    public EvernoteSyncHandler(Context context) {
+        // Setup sync handler
+        mChangedNotes = new LinkedHashSet<Note>();
+        mConvertedToJson = false;
+        mContext = new WeakReference<Context>(context);
+    }
+
+    public static EvernoteSyncHandler newInstance(Context context) {
+        sInstance = new EvernoteSyncHandler(context);
+        return sInstance;
+    }
+
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
     }
 
-    protected EvernoteSyncHandler() {
-        // Setup sync handler
-        mChangedNotes = new LinkedHashSet<Note>();
-        mConvertedToJson = false;
-    }
-
-    public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback) {
+    public void synchronizeEvernote(OnEvernoteCallback<Void> callback) {
         // ensure authentication
-        if (!EvernoteIntegration.getInstance().isAuthenticated()) {
+        if (!EvernoteService.getInstance().isAuthenticated()) {
             callback.onException(new Exception("Evernote not authenticated"));
         }
 
         mKnownNotes = null;
         mChangedNotes.clear();
-        mContext = new WeakReference<Context>(context);
 
         if (!mConvertedToJson)
             convertToJSONIdentifiers();
 
         // retrieve last update time
         if (null == mLastUpdated) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-            long dateLong = settings.getLong(KEY_LAST_UPDATED, 0);
+            long dateLong = PreferenceUtils.readLongPreference(KEY_LAST_UPDATED, mContext.get());
             if (0 < dateLong) {
                 mLastUpdated = new Date(dateLong);
             }
@@ -90,9 +95,9 @@ public class EvernoteSyncHandler {
             }
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean("evernote_auto_import", false)) {
-            findUpdatedNotesWithTag(EvernoteIntegration.SWIPES_TAG_NAME, callback);
+        boolean autoImport = PreferenceUtils.readBooleanPreference(KEY_AUTO_IMPORT, mContext.get());
+        if (autoImport) {
+            findUpdatedNotesWithTag(EvernoteService.SWIPES_TAG_NAME, callback);
         } else {
             syncEvernote(callback);
         }
@@ -130,9 +135,9 @@ public class EvernoteSyncHandler {
             }
             final String fTitle = title;
             // add to DB
-            EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+            EvernoteService.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                 public void onSuccess(String data) {
-                    final GsonAttachment attachment = new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, fTitle, true);
+                    final GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, fTitle, true);
 
                     final Date currentDate = new Date();
                     final String tempId = UUID.randomUUID().toString();
@@ -170,7 +175,7 @@ public class EvernoteSyncHandler {
         List<String> evernoteIdentifiers = TasksService.getInstance().loadIdentifiersWithEvernote(true);
         List<Note> knownNotes = new ArrayList<Note>(evernoteIdentifiers.size());
         for (String s : evernoteIdentifiers) {
-            Note note = EvernoteIntegration.noteFromJson(s);
+            Note note = EvernoteService.noteFromJson(s);
             if (null != note) {
                 knownNotes.add(note);
             }
@@ -199,7 +204,7 @@ public class EvernoteSyncHandler {
             query.append(getEvernoteFormattedDateString(mLastUpdated));
         }
 
-        EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
+        EvernoteService.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
             public void onSuccess(List<Note> data) {
                 if (null == mKnownNotes) {
                     mKnownNotes = extractKnownNotes();
@@ -241,7 +246,7 @@ public class EvernoteSyncHandler {
     protected void fetchEvernoteChanges(final OnEvernoteCallback<Void> callback) {
         final String query = (null != mLastUpdated) ? "updated:" + getEvernoteFormattedDateString(mLastUpdated) : null;
 
-        EvernoteIntegration.getInstance().findNotes(query, new OnEvernoteCallback<List<Note>>() {
+        EvernoteService.getInstance().findNotes(query, new OnEvernoteCallback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> data) {
                 if (null == mKnownNotes) {
@@ -326,7 +331,7 @@ public class EvernoteSyncHandler {
         final List<GsonTask> evernoteSubtasks = new ArrayList<GsonTask>();
         for (GsonTask subtask : subtasks) {
             // TODO we will add additional checks when we handle updated or deleted
-            if (/*(null == subtask.getOrigin()) || */EvernoteIntegration.EVERNOTE_SERVICE.equals(subtask.getOrigin())) {
+            if (/*(null == subtask.getOrigin()) || */Services.EVERNOTE.equals(subtask.getOrigin())) {
                 evernoteSubtasks.add(subtask);
             }
         }
@@ -365,7 +370,7 @@ public class EvernoteSyncHandler {
                     // subtask exists but not marked as evernote yet
                     if (null == subtask.getOrigin()) {
                         subtask.setOriginIdentifier(evernoteToDo.getTitle());
-                        subtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
+                        subtask.setOrigin(Services.EVERNOTE);
                         tasksService.saveTask(subtask, true);
                     }
                     if (handleEvernoteToDo(evernoteToDo, subtask, processor, false, tasksService)) {
@@ -410,14 +415,14 @@ public class EvernoteSyncHandler {
                 String tempId = UUID.randomUUID().toString();
                 matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
+                        RepeatOptions.NEVER.getValue(), Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
             } else if (null == matchingSubtask.getOrigin()) {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
-                matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
+                matchingSubtask.setOrigin(Services.EVERNOTE);
                 tasksService.saveTask(matchingSubtask, true);
             }
 
@@ -434,7 +439,7 @@ public class EvernoteSyncHandler {
         if (subtasks != null && subtasks.size() > 0) {
             ArrayList<GsonTask> tasksToDelete = new ArrayList<GsonTask>();
             for (GsonTask subtask : subtasks) {
-                if (null != subtask.getOrigin() && subtask.getOrigin().equals(EvernoteIntegration.EVERNOTE_SERVICE)) {
+                if (null != subtask.getOrigin() && subtask.getOrigin().equals(Services.EVERNOTE)) {
                     updated = true;
                     tasksToDelete.add(subtask);
                 }
@@ -448,7 +453,7 @@ public class EvernoteSyncHandler {
         for (GsonTask subtask : subtasks) {
             if (processor.addToDo(subtask.getTitle())) {
                 subtask.setOriginIdentifier(subtask.getTitle());
-                subtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
+                subtask.setOrigin(Services.EVERNOTE);
                 updated = true;
                 tasksService.saveTask(subtask, true);
             }
@@ -461,7 +466,7 @@ public class EvernoteSyncHandler {
     }
 
     protected boolean hasChangesFromEvernoteId(String enid) {
-        Note searchNote = EvernoteIntegration.noteFromJson(enid);
+        Note searchNote = EvernoteService.noteFromJson(enid);
         for (Note note : mChangedNotes) {
             if (searchNote != null && note.getGuid().equalsIgnoreCase(searchNote.getGuid()) && note.getNotebookGuid().equalsIgnoreCase(searchNote.getNotebookGuid())) {
                 return true;
@@ -513,7 +518,7 @@ public class EvernoteSyncHandler {
 
         boolean syncedAnything = false;
         for (final GsonTask todoWithEvernote : objectsWithEvernote) {
-            GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
+            GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
 
             if (attachment != null) {
                 final boolean hasLocalChanges = hasLocalChanges(todoWithEvernote);
@@ -570,22 +575,26 @@ public class EvernoteSyncHandler {
     synchronized protected void convertToJSONIdentifiers() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext.get());
         mConvertedToJson = settings.getBoolean(KEY_EVERNOTE_JSON_CONVERTED, false);
+
         if (!mConvertedToJson) {
             mConvertedToJson = true;
             settings.edit().putBoolean(KEY_EVERNOTE_JSON_CONVERTED, true).apply();
             final List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
+
             for (final GsonTask todoWithEvernote : objectsWithEvernote) {
-                final GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
+                final GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
 
                 if (attachment != null) {
                     final String identifier = attachment.getIdentifier();
-                    if (!EvernoteIntegration.isJSONFormat(identifier)) {
-                        final Note note = EvernoteIntegration.noteFromJson(identifier);
-                        EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+
+                    if (!EvernoteService.isJSONFormat(identifier)) {
+                        final Note note = EvernoteService.noteFromJson(identifier);
+
+                        EvernoteService.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                             @Override
                             public void onSuccess(String data) {
                                 todoWithEvernote.removeAttachment(attachment);
-                                todoWithEvernote.addAttachment(new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, attachment.getTitle(), true));
+                                todoWithEvernote.addAttachment(new GsonAttachment(null, data, Services.EVERNOTE, attachment.getTitle(), true));
                                 TasksService.getInstance().saveTask(todoWithEvernote, true);
                             }
 

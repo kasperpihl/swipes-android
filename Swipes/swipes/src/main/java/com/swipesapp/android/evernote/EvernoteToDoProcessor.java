@@ -142,7 +142,7 @@ public class EvernoteToDoProcessor {
     {
         this.callback = callback;
         this.todos = new ArrayList<EvernoteToDo>();
-        EvernoteIntegration.getInstance().downloadNote(noteRefString, new OnEvernoteCallback<Note>() {
+        EvernoteService.getInstance().downloadNote(noteRefString, new OnEvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note data) {
                 EvernoteToDoProcessor.this.note = data;
@@ -162,7 +162,7 @@ public class EvernoteToDoProcessor {
             callback.onException(new Exception("Note not updated"));
 
         note.setContent(updatedContent);
-        EvernoteIntegration.getInstance().updateNote(note, new OnEvernoteCallback<Note>() {
+        EvernoteService.getInstance().updateNote(note, new OnEvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note data) {
                 EvernoteToDoProcessor.this.note = note;

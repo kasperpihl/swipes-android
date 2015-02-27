@@ -89,6 +89,30 @@ public class PreferenceUtils {
     }
 
     /**
+     * Reads a long preference.
+     *
+     * @param context    Context instance.
+     * @param preference Preference to read.
+     * @return Long value.
+     */
+    public static long readLongPreference(String preference, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getLong(preference, 0);
+    }
+
+    /**
+     * Reads a boolean preference.
+     *
+     * @param context    Context instance.
+     * @param preference Preference to read.
+     * @return Boolean value.
+     */
+    public static boolean readBooleanPreference(String preference, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(preference, false);
+    }
+
+    /**
      * Reads theme setting.
      *
      * @param context Context instance.

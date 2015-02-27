@@ -23,7 +23,7 @@ import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesDialog;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;

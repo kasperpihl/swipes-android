@@ -5,18 +5,11 @@ package com.swipesapp.android.values;
  *
  * @author Felipe Bari
  */
-public enum Services {
+public class Services {
 
-    EVERNOTE("evernote");
-
-    private String mValue;
-
-    Services(String value) {
-        mValue = value;
-    }
-
-    public String getValue() {
-        return mValue;
-    }
+    /**
+     * Evernote service.
+     */
+    public static final String EVERNOTE = "evernote";
 
 }

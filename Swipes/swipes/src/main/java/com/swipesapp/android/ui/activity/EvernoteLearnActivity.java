@@ -1,13 +1,16 @@
 package com.swipesapp.android.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.evernote.client.android.EvernoteSession;
 import com.swipesapp.android.R;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
 
 import java.lang.ref.WeakReference;
 
@@ -28,6 +31,8 @@ public class EvernoteLearnActivity extends BaseActivity {
         setContentView(R.layout.activity_evernote_learn);
         ButterKnife.inject(this);
 
+        mContext = new WeakReference<Context>(this);
+
         getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.evernote_gray_background));
 
         getSupportActionBar().hide();
@@ -43,14 +48,30 @@ public class EvernoteLearnActivity extends BaseActivity {
         mButtonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!EvernoteIntegration.getInstance().isAuthenticated()) {
+                if (!EvernoteService.getInstance().isAuthenticated()) {
                     // Link Evernote account.
-                    EvernoteIntegration.getInstance().authenticateInContext(mContext.get());
+                    EvernoteService.getInstance().authenticate(mContext.get());
                 } else {
                     finish();
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EvernoteSession.REQUEST_CODE_OAUTH:
+                if (resultCode == Activity.RESULT_OK) {
+                    // Close this and refresh settings UI.
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                } else {
+                    // Do nothing after finishing.
+                    setResult(Activity.RESULT_CANCELED);
+                }
+                break;
+        }
     }
 
 }

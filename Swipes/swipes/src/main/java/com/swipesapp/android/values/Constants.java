@@ -1,4 +1,4 @@
-package com.swipesapp.android.util;
+package com.swipesapp.android.values;
 
 /**
  * Holds application constants.
@@ -69,6 +69,11 @@ public class Constants {
      * Request code for Evernote attachments.
      */
     public static final int EVERNOTE_ATTACHMENTS_REQUEST_CODE = 5;
+
+    /**
+     * Request code for Evernote learn more screen.
+     */
+    public static final int EVERNOTE_LEARN_REQUEST_CODE = 6;
 
     /**
      * Result code for theme changed.

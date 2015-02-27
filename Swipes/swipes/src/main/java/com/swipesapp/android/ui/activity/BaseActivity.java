@@ -16,7 +16,7 @@ import android.view.WindowManager;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.util.ColorUtils;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 

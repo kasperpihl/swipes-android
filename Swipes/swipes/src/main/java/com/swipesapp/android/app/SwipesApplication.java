@@ -9,7 +9,8 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
+import com.swipesapp.android.evernote.EvernoteSyncHandler;
 import com.swipesapp.android.sync.receiver.SnoozeHelper;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
@@ -41,8 +42,9 @@ public class SwipesApplication extends Application {
         TasksService.newInstance(getApplicationContext());
         SyncService.newInstance(getApplicationContext());
 
-        // Provide initial context for Evernote integration.
-        EvernoteIntegration.getInstance().setContext(getApplicationContext());
+        // Initialize Evernote service.
+        EvernoteService.newInstance(getApplicationContext());
+        EvernoteSyncHandler.newInstance(getApplicationContext());
 
         // Start snooze alarm.
         SnoozeHelper.createSnoozeAlarm(getApplicationContext());

@@ -17,7 +17,7 @@ import com.swipesapp.android.db.TagSync;
 import com.swipesapp.android.db.TaskSync;
 import com.swipesapp.android.db.dao.ExtTagSyncDao;
 import com.swipesapp.android.db.dao.ExtTaskSyncDao;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -44,6 +44,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class SyncService {
 
+    private static final String API_URL = "http://api.swipesapp.com/v1/sync";
+    private static final String PLATFORM = "android";
+    private static final int MAX_OBJECTS = 200;
+
+    private static final String LOG_TAG = SyncService.class.getSimpleName();
+
     private static SyncService sInstance;
 
     private ExtTaskSyncDao mExtTaskSyncDao;
@@ -61,14 +67,6 @@ public class SyncService {
 
     private boolean mIsSyncing;
     private boolean mIsSyncingEvernote;
-
-    private static final String API_URL = "http://api.swipesapp.com/v1/sync";
-
-    private static final String PLATFORM = "android";
-
-    private static final int MAX_OBJECTS = 200;
-
-    private static final String LOG_TAG = SyncService.class.getSimpleName();
 
     /**
      * Internal constructor. Handles loading of extended DAOs for custom DB operations.
@@ -186,10 +184,6 @@ public class SyncService {
                         .setCallback(new FutureCallback<String>() {
                             @Override
                             public void onCompleted(Exception e, String result) {
-                                // Mark sync as performed.
-                                mIsSyncing = false;
-                                Log.d(LOG_TAG, "Sync done.");
-
                                 // Skip processing if response is invalid.
                                 if (!isResponseValid(result)) {
                                     sendErrorCallback();
@@ -219,13 +213,13 @@ public class SyncService {
      */
     private synchronized void performEvernoteSync() {
         // Skip sync when the user isn't authenticated or sync is disabled.
-        if (EvernoteIntegration.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
+        if (EvernoteService.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
 
             // Mark Evernote sync as in progress.
             mIsSyncingEvernote = true;
 
             // Start Evernote sync.
-            EvernoteSyncHandler.getInstance().synchronizeEvernote(mContext.get(), new OnEvernoteCallback<Void>() {
+            EvernoteSyncHandler.getInstance().synchronizeEvernote(new OnEvernoteCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
                     Log.d(LOG_TAG, "Evernote synced.");
@@ -338,11 +332,6 @@ public class SyncService {
                         task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
                         task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
                         task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
-
-                        // HACK: Fix bug causing other platforms to delete the attachments.
-                        if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
-                            task.setAttachments(old.getAttachments());
-                        }
 
                         // Save or update task locally.
                         TasksService.getInstance().saveTask(task, false);
@@ -496,6 +485,11 @@ public class SyncService {
     }
 
     private void sendCompletionCallback() {
+        // Mark sync as performed.
+        mIsSyncing = false;
+        Log.d(LOG_TAG, "Sync done.");
+
+        // Send callback.
         if (mListener != null) {
             mListener.onSyncDone();
             mListener = null;
@@ -503,6 +497,11 @@ public class SyncService {
     }
 
     private void sendErrorCallback() {
+        // Mark sync as performed.
+        mIsSyncing = false;
+        Log.d(LOG_TAG, "Sync error.");
+
+        // Send callback.
         if (mListener != null) {
             mListener.onSyncFailed();
             mListener = null;

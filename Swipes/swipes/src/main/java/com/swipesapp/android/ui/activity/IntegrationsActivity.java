@@ -9,9 +9,10 @@ import android.preference.PreferenceFragment;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.client.android.EvernoteSession;
 import com.swipesapp.android.R;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 public class IntegrationsActivity extends BaseActivity {
 
@@ -51,8 +52,7 @@ public class IntegrationsActivity extends BaseActivity {
             evernoteLink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     // Link Evernote account.
-                    EvernoteIntegration.getInstance().authenticateInContext(getActivity());
-                    // TODO: Find out if linking is done and reload screen.
+                    EvernoteService.getInstance().authenticate(getActivity());
                     return true;
                 }
             });
@@ -71,7 +71,7 @@ public class IntegrationsActivity extends BaseActivity {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     // Unlink Evernote account.
-                                    EvernoteIntegration.getInstance().logoutInContext(getActivity());
+                                    EvernoteService.getInstance().logout();
 
                                     // Reload activity.
                                     getActivity().recreate();
@@ -98,7 +98,7 @@ public class IntegrationsActivity extends BaseActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     // Show guide.
                     Intent intent = new Intent(getActivity(), EvernoteLearnActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, Constants.EVERNOTE_LEARN_REQUEST_CODE);
                     return true;
                 }
             });
@@ -108,7 +108,7 @@ public class IntegrationsActivity extends BaseActivity {
             Preference evernoteSyncPersonal = findPreference("evernote_sync_personal");
             Preference evernoteSyncBusiness = findPreference("evernote_sync_business");
 
-            if (EvernoteIntegration.getInstance().isAuthenticated()) {
+            if (EvernoteService.getInstance().isAuthenticated()) {
                 // Hide Evernote link button.
                 getPreferenceScreen().removePreference(evernoteLink);
             } else {
@@ -125,6 +125,18 @@ public class IntegrationsActivity extends BaseActivity {
             getPreferenceScreen().removePreference(evernoteSyncPersonal);
             getPreferenceScreen().removePreference(evernoteSyncBusiness);
             getPreferenceScreen().removePreference(evernoteOpenImporter);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            switch (requestCode) {
+                case Constants.EVERNOTE_LEARN_REQUEST_CODE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        // Refresh UI after Evernote login.
+                        getActivity().recreate();
+                    }
+                    break;
+            }
         }
 
     }

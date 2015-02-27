@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.swipesapp.android.util.ColorUtils;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Sections;
 

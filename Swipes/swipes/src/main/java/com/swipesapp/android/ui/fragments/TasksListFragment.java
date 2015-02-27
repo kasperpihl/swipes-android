@@ -52,7 +52,7 @@ import com.swipesapp.android.ui.view.FlatButton;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;

@@ -65,4 +65,19 @@ public class GsonAttachment {
         this.sync = sync ? 1 : 0;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof GsonAttachment) {
+            if (((GsonAttachment) obj).getIdentifier().equals(identifier)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
+
 }

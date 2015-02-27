@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 
 public class SwipesTextView extends TextView {
     private Context mContext;

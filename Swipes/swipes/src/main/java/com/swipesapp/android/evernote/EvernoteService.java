@@ -29,6 +29,7 @@ import com.swipesapp.android.values.Services;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,51 +38,52 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class EvernoteIntegration {
+public class EvernoteService {
 
     public static final String SWIPES_TAG_NAME = "swipes";
-    public static final String EVERNOTE_SERVICE = "evernote";
 
-    private static final String sTag = "EvernoteIntegration";
+    private static final String LOG_TAG = "EvernoteIntegration";
 
     // Your Evernote API key. See http://dev.evernote.com/documentation/cloud/
     // Please obfuscate your code to help keep these values secret.
     // taken from iOS (for now?)
-    private static final String sConsumerKey = "swipes";
-    private static final String sConsumerSecret = "e862f0d879e2c2b6";
+    private static final String CONSUMER_KEY = "swipes";
+    private static final String CONSUMER_SECRET = "e862f0d879e2c2b6";
 
     // Initial development is done on Evernote's testing service, the sandbox.
     // Change to HOST_PRODUCTION to use the Evernote production service
     // once your code is complete, or HOST_CHINA to use the Yinxiang Biji
     // (Evernote China) production service.
-    private static final EvernoteSession.EvernoteService sEvernoteService = EvernoteSession.EvernoteService.PRODUCTION;
+    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.PRODUCTION;
 
     // Set this to true if you want to allow linked notebooks for accounts that can only access a single
     // notebook.
-    private static final boolean sSupportAppLinkedNotebooks = true;
+    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
 
     // Maximum number of notes to search
-    private static final int sMaxNotes = 100;
-    private static final long sSearchCacheTimeout = 300 * 1000;
+    private static final int MAX_NOTES = 100;
+    private static final long SEARCH_CACHE_TIMEOUT = 300000; // 300 seconds
 
-    private static final String sKeyNoteGuid = "noteguid";
-    private static final String sKeyNotebookGuid = "notebookguid";
+    private static final String KEY_NOTE_GUID = "noteguid";
+    private static final String KEY_NOTEBOOKS_GUID = "notebookguid";
 
-    private static final String sKeyJson = "json:";
-    private static final String sKeyJsonGuid = "guid";
-    private static final String sKeyJsonType = "type";
-    private static final String sKeyJsonTypePersonal = "personal";
-    private static final String sKeyJsonTypeShared = "shared";
-    private static final String sKeyJsonTypeBusiness = "business";
-    private static final String sKeyJsonLinkedNotebook = "linkedNotebook";
-    private static final String sKeyJsonNotebookGuid = "guid";
-    private static final String sKeyJsonNotebookNoteStoreUrl = "url";
-    private static final String sKeyJsonNotebookShardId = "shardid";
-    private static final String sKeyJsonNotebookSharedNotebookGlobalId = "globalid";
+    private static final String KEY_JSON = "json:";
+    private static final String KEY_JSON_GUID = "guid";
+    private static final String KEY_JSON_TYPE = "type";
+    private static final String KEY_JSON_TYPE_PERSONAL = "personal";
+    private static final String KEY_JSON_TYPE_SHARED = "shared";
+    private static final String KEY_JSON_TYPE_BUSINESS = "business";
+    private static final String KEY_JSON_LINKED_NOTEBOOK = "linkedNotebook";
+    private static final String KEY_JSON_NOTEBOOK_GUID = "guid";
+    private static final String KEY_JSON_NOTEBOOK_STORE_URL = "url";
+    private static final String KEY_JSON_NOTEBOOK_SHARDID = "shardid";
+    private static final String KEY_JSON_NOTEBOOK_SHARED_GLOBAL_ID = "globalid";
 
-    protected final static EvernoteIntegration sInstance = new EvernoteIntegration();
+    protected static EvernoteService sInstance;
 
     protected EvernoteSession mEvernoteSession;
+
+    protected WeakReference<Context> mContext;
 
     protected String mSwipesTagGuid;
     protected String mUserNotebookGuid;
@@ -93,59 +95,65 @@ public class EvernoteIntegration {
 
     protected List<AsyncNoteStoreClient> mClients;
 
-    public static EvernoteIntegration getInstance() {
+    public EvernoteService(Context context) {
+        mEvernoteSession = EvernoteSession.getInstance(context, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, SUPPORT_APP_LINKED_NOTEBOOKS);
+        mContext = new WeakReference<Context>(context);
+    }
+
+    public static EvernoteService newInstance(final Context context) {
+        sInstance = new EvernoteService(context);
+        return sInstance;
+    }
+
+    public static EvernoteService getInstance() {
         return sInstance;
     }
 
     public static boolean isJSONFormat(String identifier) {
-        return identifier.startsWith(sKeyJson);
+        return identifier.startsWith(KEY_JSON);
     }
 
     public static Note noteFromJson(String jsonString) {
         Note note;
-        if (jsonString.startsWith(sKeyJson)) {
+        if (jsonString.startsWith(KEY_JSON)) {
             try {
-                final JSONObject json = new JSONObject(jsonString.substring(sKeyJson.length(), jsonString.length()));
+                final JSONObject json = new JSONObject(jsonString.substring(KEY_JSON.length(), jsonString.length()));
                 note = new Note();
-                note.setGuid(json.getString(sKeyJsonGuid));
+                note.setGuid(json.getString(KEY_JSON_GUID));
 
-                String type = json.getString(sKeyJsonType);
-                if (null != type && !sKeyJsonTypePersonal.equalsIgnoreCase(type)) {
-                    JSONObject jsonLinkedNotebook = json.getJSONObject(sKeyJsonLinkedNotebook);
+                String type = json.getString(KEY_JSON_TYPE);
+                if (null != type && !KEY_JSON_TYPE_PERSONAL.equalsIgnoreCase(type)) {
+                    JSONObject jsonLinkedNotebook = json.getJSONObject(KEY_JSON_LINKED_NOTEBOOK);
                     if (null != jsonLinkedNotebook) {
-                        note.setNotebookGuid(jsonLinkedNotebook.getString(sKeyJsonNotebookGuid));
+                        note.setNotebookGuid(jsonLinkedNotebook.getString(KEY_JSON_NOTEBOOK_GUID));
                     }
                 }
 
             } catch (Exception ex) {
                 note = null;
-                Log.e(sTag, ex.getMessage(), ex);
+                Log.e(LOG_TAG, ex.getMessage(), ex);
             }
         } else {
             try {
                 final JSONObject json = new JSONObject(jsonString);
                 note = new Note();
-                note.setGuid(json.getString(sKeyNoteGuid));
-                note.setNotebookGuid(json.optString(sKeyNotebookGuid));
+                note.setGuid(json.getString(KEY_NOTE_GUID));
+                note.setNotebookGuid(json.optString(KEY_NOTEBOOKS_GUID));
             } catch (Exception e) {
                 note = null;
-                Log.e(sTag, e.getMessage(), e);
+                Log.e(LOG_TAG, e.getMessage(), e);
             }
         }
         return note;
     }
 
-    protected EvernoteIntegration() {
-        //Set up the Evernote Singleton Session
-    }
-
     private JSONObject getJSONForLinkedNotebook(final LinkedNotebook linkedNotebook) throws JSONException {
         final JSONObject jsonLinkedNotebook = new JSONObject();
 
-        jsonLinkedNotebook.put(sKeyJsonNotebookGuid, linkedNotebook.getGuid());
-        jsonLinkedNotebook.put(sKeyJsonNotebookNoteStoreUrl, linkedNotebook.getNoteStoreUrl());
-        jsonLinkedNotebook.put(sKeyJsonNotebookShardId, linkedNotebook.getShardId());
-        jsonLinkedNotebook.put(sKeyJsonNotebookSharedNotebookGlobalId, linkedNotebook.getShareKey());
+        jsonLinkedNotebook.put(KEY_JSON_NOTEBOOK_GUID, linkedNotebook.getGuid());
+        jsonLinkedNotebook.put(KEY_JSON_NOTEBOOK_STORE_URL, linkedNotebook.getNoteStoreUrl());
+        jsonLinkedNotebook.put(KEY_JSON_NOTEBOOK_SHARDID, linkedNotebook.getShardId());
+        jsonLinkedNotebook.put(KEY_JSON_NOTEBOOK_SHARED_GLOBAL_ID, linkedNotebook.getShareKey());
 
         return jsonLinkedNotebook;
     }
@@ -153,35 +161,35 @@ public class EvernoteIntegration {
     public void asyncJsonFromNote(final Note note, final OnEvernoteCallback<String> callback) {
         final JSONObject json = new JSONObject();
         try {
-            json.put(sKeyJsonGuid, note.getGuid());
+            json.put(KEY_JSON_GUID, note.getGuid());
             getNoteStoreGuids(new OnEvernoteCallback<Void>() {
                 public void onSuccess(Void data) {
                     // find out type
                     try {
                         if (note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
-                            json.put(sKeyJsonType, sKeyJsonTypePersonal);
+                            json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_PERSONAL);
                         } else {
                             String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
                             if (guid != null) {
                                 guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
                                 final LinkedNotebook linkedNotebook = mBusinessNotebooks.get(guid);
                                 if (linkedNotebook != null) {
-                                    json.put(sKeyJsonType, sKeyJsonTypeBusiness);
+                                    json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_BUSINESS);
                                     final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(linkedNotebook);
-                                    json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
+                                    json.put(KEY_JSON_LINKED_NOTEBOOK, jsonLinkedNotebook);
                                 } else {
                                     final LinkedNotebook sharedNotebook = mLinkedPersonalNotebooks.get(note.getNotebookGuid());
                                     if (null != sharedNotebook) {
-                                        json.put(sKeyJsonType, sKeyJsonTypeShared);
+                                        json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_SHARED);
                                         final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(sharedNotebook);
-                                        json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
+                                        json.put(KEY_JSON_LINKED_NOTEBOOK, jsonLinkedNotebook);
                                     } else {
                                         callback.onException(new Exception("Cannot find LinkedNotebook for guid" + note.getNotebookGuid()));
                                     }
                                 }
                             }
                         }
-                        callback.onSuccess(sKeyJson + json.toString());
+                        callback.onSuccess(KEY_JSON + json.toString());
                     } catch (JSONException ex) {
                         callback.onException(ex);
                     }
@@ -192,13 +200,9 @@ public class EvernoteIntegration {
                 }
             });
         } catch (Exception ex) {
-            Log.e(sTag, ex.getMessage(), ex);
+            Log.e(LOG_TAG, ex.getMessage(), ex);
             callback.onException(ex);
         }
-    }
-
-    public void setContext(final Context context) {
-        mEvernoteSession = EvernoteSession.getInstance(context, sConsumerKey, sConsumerSecret, sEvernoteService, sSupportAppLinkedNotebooks);
     }
 
     private void getPersonalDefaultNotebookGuid(final AsyncNoteStoreClient personalNoteStore, final OnEvernoteCallback<Void> callback) {
@@ -335,8 +339,8 @@ public class EvernoteIntegration {
         return mEvernoteSession.isLoggedIn();
     }
 
-    public void authenticateInContext(final Context ctx) {
-        mEvernoteSession.authenticate(ctx);
+    public void authenticate(Context activityContext) {
+        mEvernoteSession.authenticate(activityContext);
     }
 
     public void getSwipesTagGuid(final OnEvernoteCallback<String> callback) {
@@ -380,7 +384,7 @@ public class EvernoteIntegration {
         }
     }
 
-    public void logoutInContext(final Context ctx) {
+    public void logout() {
         try {
             // invalidate all data
             EvernoteSyncHandler.getInstance().setUpdatedAt(null);
@@ -392,13 +396,13 @@ public class EvernoteIntegration {
             mBusinessNotebookGuids = null;
             mSearchCache = null;
 
-            mEvernoteSession.logOut(ctx);
+            mEvernoteSession.logOut(mContext.get());
 
             // remove all attachments and sync
             TasksService.getInstance().deleteAttachmentsForService(Services.EVERNOTE);
             SyncService.getInstance().performSync(true, 0);
         } catch (Exception e) {
-            Log.e(sTag, e.getMessage(), e);
+            Log.e(LOG_TAG, e.getMessage(), e);
         }
     }
 
@@ -472,7 +476,7 @@ public class EvernoteIntegration {
                     filter.setWords(query);
 
                     final AsyncNoteStoreClient client = data.get(i);
-                    client.findNotes(filter, 0, sMaxNotes, new OnClientCallback<NoteList>() {
+                    client.findNotes(filter, 0, MAX_NOTES, new OnClientCallback<NoteList>() {
                         public void onSuccess(NoteList data) {
                             results.addAll(data.getNotes());
                             if (++askedClients[0] >= totalClients) {
@@ -544,7 +548,7 @@ public class EvernoteIntegration {
     }
 
     public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note> callback) {
-        final Note note = EvernoteIntegration.noteFromJson(noteRefString);
+        final Note note = EvernoteService.noteFromJson(noteRefString);
         if (null == note) {
             callback.onException(new Exception("Invalid EN reference: " + noteRefString));
             return;
@@ -598,7 +602,7 @@ public class EvernoteIntegration {
             final HashMap<String, CacheData<List<Note>>> searchCacheCopy = new HashMap<String, CacheData<List<Note>>>(mSearchCache);
             for (String key : searchCacheCopy.keySet()) {
                 final CacheData<List<Note>> data = searchCacheCopy.get(key);
-                if (data.time + sSearchCacheTimeout < time) {
+                if (data.time + SEARCH_CACHE_TIMEOUT < time) {
                     mSearchCache.remove(key);
                 }
             }

@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.swipesapp.android.R;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -43,11 +43,11 @@ import com.swipesapp.android.ui.view.RepeatOption;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
-import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
@@ -277,7 +277,7 @@ public class EditTaskActivity extends FragmentActivity {
         mDeleteButton.setTextColor(getResources().getColor(secondaryColor));
         mShareButton.setTextColor(getResources().getColor(secondaryColor));
 
-        if (!EvernoteIntegration.getInstance().isAuthenticated() ||
+        if (!EvernoteService.getInstance().isAuthenticated() ||
                 !PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
             mEvernoteButton.setVisibility(View.GONE);
         }
@@ -413,7 +413,7 @@ public class EditTaskActivity extends FragmentActivity {
         if (mTask.getAttachments() != null) {
             for (GsonAttachment attachment : mTask.getAttachments()) {
                 // Check if attachment comes from Evernote.
-                if (attachment.getService().equals(Services.EVERNOTE.getValue())) {
+                if (attachment.getService().equals(Services.EVERNOTE)) {
                     // Attachment found. Update views.
                     mEvernoteAttachmentContainer.setVisibility(View.VISIBLE);
                     mEvernoteAttachmentTitle.setText(attachment.getTitle());

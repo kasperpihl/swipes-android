@@ -16,7 +16,7 @@ import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
-import com.swipesapp.android.util.Constants;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
 
@@ -370,8 +370,6 @@ public class TasksService {
             Attachment attachment = mExtAttachmentDao.selectAttachment(id);
             updateAttachment(gsonAttachment, attachment, taskId);
         }
-
-        // TODO: Save attachment for sync.
     }
 
     /**
@@ -395,15 +393,17 @@ public class TasksService {
      * @param attachment     Attachment to update.
      */
     private void updateAttachment(GsonAttachment gsonAttachment, Attachment attachment, long taskId) {
-        // Update only mutable attributes.
-        attachment.setIdentifier(gsonAttachment.getIdentifier());
-        attachment.setService(gsonAttachment.getService());
-        attachment.setTitle(gsonAttachment.getTitle());
-        attachment.setSync(gsonAttachment.getSync());
-        attachment.setTaskId(taskId);
+        if (attachment != null) {
+            // Update only mutable attributes.
+            attachment.setIdentifier(gsonAttachment.getIdentifier());
+            attachment.setService(gsonAttachment.getService());
+            attachment.setTitle(gsonAttachment.getTitle());
+            attachment.setSync(gsonAttachment.getSync());
+            attachment.setTaskId(taskId);
 
-        synchronized (this) {
-            mExtAttachmentDao.getDao().update(attachment);
+            synchronized (this) {
+                mExtAttachmentDao.getDao().update(attachment);
+            }
         }
     }
 
@@ -423,9 +423,9 @@ public class TasksService {
      *
      * @param service Service to search for (e.g. Services.EVERNOTE).
      */
-    public void deleteAttachmentsForService(Services service) {
+    public void deleteAttachmentsForService(String service) {
         // Load attachments.
-        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(service.getValue());
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(service);
 
         if (attachments != null) {
             for (Attachment attachment : attachments) {
@@ -665,7 +665,7 @@ public class TasksService {
      */
     public List<GsonTask> loadTasksWithEvernote(boolean attachmentSync) {
         // Load Evernote attachments.
-        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE.getValue());
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE);
 
         // Holds matching tasks.
         List<GsonTask> matches = new ArrayList<GsonTask>();
@@ -693,7 +693,7 @@ public class TasksService {
      */
     public List<String> loadIdentifiersWithEvernote(boolean attachmentSync) {
         // Load Evernote attachments.
-        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE.getValue());
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE);
 
         // Holds matching tasks.
         List<String> matches = new ArrayList<String>();
@@ -812,8 +812,8 @@ public class TasksService {
      * @param service Service to search for (e.g. Services.EVERNOTE).
      * @return List of attachments.
      */
-    public List<GsonAttachment> loadAttachmentsForService(Services service) {
-        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForService(service.getValue()));
+    public List<GsonAttachment> loadAttachmentsForService(String service) {
+        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForService(service));
     }
 
     /**

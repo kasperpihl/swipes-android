@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
-import com.swipesapp.android.evernote.EvernoteIntegration;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -22,8 +22,8 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.EvernoteAttachmentsAdapter;
 import com.swipesapp.android.ui.listener.EvernoteAttachmentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
-import com.swipesapp.android.util.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Services;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     private static final String FILTER_PREFIX = "todo:* ";
 
     private TasksService mTasksService;
-    private EvernoteIntegration mEvernoteIntegration;
+    private EvernoteService mEvernoteIntegration;
 
     private GsonTask mTask;
 
@@ -70,7 +70,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mTasksService = TasksService.getInstance();
-        mEvernoteIntegration = EvernoteIntegration.getInstance();
+        mEvernoteIntegration = EvernoteService.getInstance();
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
 
@@ -175,11 +175,11 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     private EvernoteAttachmentsListener mAttachmentsListener = new EvernoteAttachmentsListener() {
         @Override
         public void attachNote(final Note note) {
-            EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+            EvernoteService.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                 @Override
                 public void onSuccess(String data) {
                     // Save attachment to task.
-                    GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE.getValue(), note.getTitle(), true);
+                    GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, note.getTitle(), true);
                     mTask.addAttachment(attachment);
                     mTasksService.saveTask(mTask, true);
 
