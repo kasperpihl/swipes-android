@@ -64,7 +64,7 @@ public class EvernoteToDoProcessor {
                 String todoText = tempToDoText.toString().trim();
                 if (0 == todoText.length()) {
                     // too trimmed (no name)
-                    todoText = "Untitled " + untitledCount++;
+                    todoText = null;
                 }
 
                 // too long?
@@ -161,6 +161,7 @@ public class EvernoteToDoProcessor {
         if (null == updatedContent)
             callback.onException(new Exception("Note not updated"));
 
+        note.setContent(updatedContent);
         EvernoteIntegration.getInstance().updateNote(note, new OnEvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note data) {
@@ -201,7 +202,13 @@ public class EvernoteToDoProcessor {
 
     public List<EvernoteToDo> getToDos()
     {
-        return this.todos;
+        ArrayList<EvernoteToDo> validTodos = new ArrayList<EvernoteToDo>(this.todos);
+        for (EvernoteToDo todo : this.todos) {
+            if (null == todo.getTitle()) {
+                validTodos.remove(todo);
+            }
+        }
+        return validTodos;
     }
 
     public boolean getNeedUpdate()
@@ -291,9 +298,9 @@ public class EvernoteToDoProcessor {
                 case '&':
                     escapedXML.append("&amp;");
                     break;
-                case '\'':
-                    escapedXML.append("&#x27;");
-                    break;
+                //case '\'':
+                //    escapedXML.append("&#x27;");
+                //    break;
                 default:
                     escapedXML.append(c);
             }
@@ -305,8 +312,7 @@ public class EvernoteToDoProcessor {
     ////////////////////////////////////////
     // adding TODOs
     ////////////////////////////////////////
-    private int getNewToDoPosAtTheBeginning()
-    {
+    private int getNewToDoPosAtTheBeginning() {
         int devPos = updatedContent.indexOf("<en-note");
         if (-1 != devPos) {
             int loc = updatedContent.indexOf('>', devPos + 8);
@@ -315,10 +321,22 @@ public class EvernoteToDoProcessor {
         return devPos;
     }
 
-    private int getNewToDoPos()
-    {
+    private EvernoteToDo getLastValidTodo() {
+        for (int i = this.todos.size() - 1; i >= 0; i--) {
+            EvernoteToDo todo = this.todos.get(i);
+            if (null != todo.getTitle()) {
+                return todo;
+            }
+        }
+        return null;
+    }
+
+    private int getNewToDoPos() {
         if (0 < todos.size()) {
-            EvernoteToDo todo = todos.get(todos.size() - 1);
+            EvernoteToDo todo = getLastValidTodo();
+            if (null == todo) {
+                return getNewToDoPosAtTheBeginning();
+            }
 
             int startLocation = 0;
             for (int i = 0; i <= todo.getPosition(); i++) {
@@ -343,8 +361,7 @@ public class EvernoteToDoProcessor {
         return getNewToDoPosAtTheBeginning();
     }
 
-    public boolean addToDo(String title)
-    {
+    public boolean addToDo(String title) {
         if (null == updatedContent)
             updatedContent = note.getContent();
 

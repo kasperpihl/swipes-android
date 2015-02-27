@@ -31,6 +31,7 @@ public class EvernoteSyncHandler {
     protected final static String TAG = "EvernoteSyncHandler";
     protected final static String PREFS_NAME = "EvernoteSyncHandler";
     protected final static String KEY_LAST_UPDATED = "lastUpdated";
+    protected final static String KEY_EVERNOTE_JSON_CONVERTED = "evernoteJsonConverted";
     protected final static int TITLE_MAX_LENGTH = 255;
     protected final static long FETCH_CHANGES_TIMEOUT = 30 * 1000; // 30 seconds
 
@@ -41,6 +42,10 @@ public class EvernoteSyncHandler {
     protected WeakReference<Context> mContext;
     protected List<Note> mKnownNotes;
     protected Integer mReturnCount = 0;
+    protected int mTotalNoteCount;
+    protected int mCurrentNoteCount;
+    protected Exception mRunningError;
+    protected boolean mConvertedToJson;
 
     public static EvernoteSyncHandler getInstance() {
         return sInstance;
@@ -49,6 +54,7 @@ public class EvernoteSyncHandler {
     protected EvernoteSyncHandler() {
         // Setup sync handler
         mChangedNotes = new LinkedHashSet<Note>();
+        mConvertedToJson = false;
     }
 
     public void synchronizeEvernote(Context context, OnEvernoteCallback<Void> callback) {
@@ -60,10 +66,14 @@ public class EvernoteSyncHandler {
         mKnownNotes = null;
         mChangedNotes.clear();
         mContext = new WeakReference<Context>(context);
+
+        if (!mConvertedToJson)
+            convertToJSONIdentifiers();
+
         // retrieve last update time
         if (null == mLastUpdated) {
-            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            long dateLong = prefs.getLong(KEY_LAST_UPDATED, 0);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            long dateLong = settings.getLong(KEY_LAST_UPDATED, 0);
             if (0 < dateLong) {
                 mLastUpdated = new Date(dateLong);
             }
@@ -101,8 +111,16 @@ public class EvernoteSyncHandler {
         return result;
     }
 
-    protected void addAndSyncNewTasksFromNotes(List<Note> notes) {
-        for (Note note : notes) {
+    protected void addAndSyncNewTasksFromNotes(List<Note> notes, final OnEvernoteCallback<Void> callback) {
+        mTotalNoteCount = notes.size();
+        if (mTotalNoteCount == 0) {
+            callback.onSuccess(null);
+            return;
+        }
+        mCurrentNoteCount = 0;
+        mRunningError = null;
+
+        for (final Note note : notes) {
             String title = note.getTitle();
             if (null == title) {
                 title = mContext.get().getString(R.string.evernote_untitled_note);
@@ -110,16 +128,35 @@ public class EvernoteSyncHandler {
             if (TITLE_MAX_LENGTH < title.length()) {
                 title = title.substring(0, TITLE_MAX_LENGTH);
             }
+            final String fTitle = title;
             // add to DB
-            GsonAttachment attachment = new GsonAttachment(null, EvernoteIntegration.jsonFromNote(note), EvernoteIntegration.EVERNOTE_SERVICE, title, true);
+            EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+                public void onSuccess(String data) {
+                    final GsonAttachment attachment = new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, fTitle, true);
 
-            Date currentDate = new Date();
-            String tempId = UUID.randomUUID().toString();
-            Log.d(TAG, "Creating task with UUID: " + tempId);
-            GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
-                    title, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
-                    null, null, null, Arrays.asList(attachment), 0);
-            TasksService.getInstance().saveTask(newTodo, true);
+                    final Date currentDate = new Date();
+                    final String tempId = UUID.randomUUID().toString();
+                    Log.d(TAG, "Creating task with UUID: " + tempId);
+                    GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
+                            fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
+                            null, null, null, Arrays.asList(attachment), 0);
+                    TasksService.getInstance().saveTask(newTodo, true);
+                    if (++mCurrentNoteCount >= mTotalNoteCount) {
+                        if (null == mRunningError)
+                            callback.onSuccess(null);
+                        else
+                            callback.onException(mRunningError);
+                    }
+                }
+
+                public void onException(Exception ex) {
+                    if (null == mRunningError)
+                        mRunningError = ex;
+                    if (++mCurrentNoteCount >= mTotalNoteCount) {
+                        callback.onException(mRunningError);
+                    }
+                }
+            });
         }
     }
 
@@ -163,7 +200,6 @@ public class EvernoteSyncHandler {
         }
 
         EvernoteIntegration.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
-            @Override
             public void onSuccess(List<Note> data) {
                 if (null == mKnownNotes) {
                     mKnownNotes = extractKnownNotes();
@@ -175,11 +211,17 @@ public class EvernoteSyncHandler {
                     }
                     mChangedNotes.add(note);
                 }
-                addAndSyncNewTasksFromNotes(newNotes);
-                fetchEvernoteChanges(callback);
+                addAndSyncNewTasksFromNotes(newNotes, new OnEvernoteCallback<Void>() {
+                    public void onSuccess(Void data) {
+                        fetchEvernoteChanges(callback);
+                    }
+
+                    public void onException(Exception ex) {
+                        callback.onException(ex);
+                    }
+                });
             }
 
-            @Override
             public void onException(Exception e) {
                 Log.e(TAG, "findUpdatedNotesWithTag exception", e);
                 callback.onException(e);
@@ -310,16 +352,13 @@ public class EvernoteSyncHandler {
         List<GsonTask> subtasksLeftToBeFound = new ArrayList<GsonTask>(subtasks);
         List<EvernoteToDo> evernoteToDosLeftToBeFound = new ArrayList<EvernoteToDo>(evernoteToDos);
 
-        boolean isNew = false;
         boolean updated = false;
 
         // Match and clean all direct matches
-        for (EvernoteToDo evernoteToDo : processor.getToDos()) {
-            GsonTask matchingSubtask = null;
+        for (EvernoteToDo evernoteToDo : evernoteToDos) {
 
             for (GsonTask subtask : subtasks) {
                 if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier())) {
-                    matchingSubtask = subtask;
                     subtasksLeftToBeFound.remove(subtask);
                     evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
@@ -329,10 +368,43 @@ public class EvernoteSyncHandler {
                         subtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
                         tasksService.saveTask(subtask, true);
                     }
+                    if (handleEvernoteToDo(evernoteToDo, subtask, processor, false, tasksService)) {
+                        updated = true;
+                    }
                     break;
                 }
             }
 
+            if (subtasks.size() != subtasksLeftToBeFound.size()) {
+                subtasks.clear();
+                subtasks.addAll(subtasksLeftToBeFound);
+            }
+        }
+
+        evernoteToDos.clear();
+        evernoteToDos.addAll(evernoteToDosLeftToBeFound);
+
+        // Match and clean all indirect matches
+        for (EvernoteToDo evernoteToDo : evernoteToDos) {
+            GsonTask matchingSubtask = null;
+
+            int bestScore = Integer.MAX_VALUE;
+            GsonTask bestMatch = null;
+
+            for (GsonTask subtask : subtasks) {
+                if (null == subtask.getOriginIdentifier())
+                    continue;
+                int match = LevenshteinDistance.computeEditDistance(evernoteToDo.getTitle(), subtask.getOriginIdentifier());
+                if (match < bestScore) {
+                    bestScore = match;
+                    bestMatch = subtask;
+                }
+            }
+
+            if (bestScore <= 5)
+                matchingSubtask = bestMatch;
+
+            boolean isNew = false;
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
                 String tempId = UUID.randomUUID().toString();
@@ -342,49 +414,7 @@ public class EvernoteSyncHandler {
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
-            }
-
-            if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, false, tasksService)) {
-                updated = true;
-            }
-
-            subtasks.clear();
-            subtasks.addAll(subtasksLeftToBeFound);
-        }
-
-        evernoteToDos.clear();
-        evernoteToDos.addAll(evernoteToDosLeftToBeFound);
-
-        // Match and clean all indirect matches
-        for (EvernoteToDo evernoteToDo : processor.getToDos()) {
-            GsonTask matchingSubtask = null;
-
-            int bestScore = 0;
-            GsonTask bestMatch = null;
-
-            for (GsonTask subtask : subtasks) {
-                if (null == subtask.getOriginIdentifier())
-                    continue;
-                int match = LevenshteinDistance.computeEditDistance(evernoteToDo.getTitle(), subtask.getOriginIdentifier());
-                if (match > bestScore) {
-                    bestScore = match;
-                    bestMatch = subtask;
-                }
-            }
-
-            if (bestScore >= 120) // TODO check score (might be wrong for java implementation)
-                matchingSubtask = bestMatch;
-
-            if (null == matchingSubtask && !subtasks.isEmpty()) {
-                Date currentDate = new Date();
-                String tempId = UUID.randomUUID().toString();
-                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
-                        evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-                        RepeatOptions.NEVER.getValue(), EvernoteIntegration.EVERNOTE_SERVICE, evernoteToDo.getTitle(), null, null, 0);
-                tasksService.saveTask(matchingSubtask, true);
-                updated = true;
-                isNew = true;
-            } else if (matchingSubtask != null && null == matchingSubtask.getOrigin()) {
+            } else if (null == matchingSubtask.getOrigin()) {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
                 matchingSubtask.setOrigin(EvernoteIntegration.EVERNOTE_SERVICE);
@@ -392,19 +422,25 @@ public class EvernoteSyncHandler {
             }
 
             subtasksLeftToBeFound.remove(matchingSubtask);
+            subtasks.clear();
+            subtasks.addAll(subtasksLeftToBeFound);
             evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
             if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, tasksService))
                 updated = true;
-
-            subtasks.clear();
-            subtasks.addAll(subtasksLeftToBeFound);
         }
 
         // remove evernote subtasks not found in the evernote from our task
         if (subtasks != null && subtasks.size() > 0) {
-            updated = true;
-            tasksService.deleteTasks(subtasks);
+            ArrayList<GsonTask> tasksToDelete = new ArrayList<GsonTask>();
+            for (GsonTask subtask : subtasks) {
+                if (null != subtask.getOrigin() && subtask.getOrigin().equals(EvernoteIntegration.EVERNOTE_SERVICE)) {
+                    updated = true;
+                    tasksToDelete.add(subtask);
+                }
+            }
+            if (0 < tasksToDelete.size())
+                tasksService.deleteTasks(tasksToDelete);
         }
 
         // add newly added tasks to evernote
@@ -429,6 +465,22 @@ public class EvernoteSyncHandler {
         for (Note note : mChangedNotes) {
             if (searchNote != null && note.getGuid().equalsIgnoreCase(searchNote.getGuid()) && note.getNotebookGuid().equalsIgnoreCase(searchNote.getNotebookGuid())) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean hasLocalChanges(final GsonTask todoWithEvernote) {
+        if (null != mLastUpdated) {
+            if (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+                return true;
+            }
+            final TasksService tasksService = TasksService.getInstance();
+            List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(todoWithEvernote.getTempId()));
+            for (GsonTask subtask : subtasks) {
+                if (subtask.getLocalUpdatedAt() != null && subtask.getLocalUpdatedAt().after(mLastUpdated)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -464,7 +516,7 @@ public class EvernoteSyncHandler {
             GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
 
             if (attachment != null) {
-                final boolean hasLocalChanges = (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated));
+                final boolean hasLocalChanges = hasLocalChanges(todoWithEvernote);
                 final boolean hasChangesFromEvernote = hasChangesFromEvernoteId(attachment.getIdentifier());
                 if (!hasLocalChanges && !hasChangesFromEvernote) {
                     finalizeSync(date, targetCount, runningError[0], callback);
@@ -511,6 +563,40 @@ public class EvernoteSyncHandler {
 
         if (!syncedAnything) {
             callback.onSuccess(null);
+        }
+    }
+
+    // converts from the old format to the new (universal) JSON format
+    synchronized protected void convertToJSONIdentifiers() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext.get());
+        mConvertedToJson = settings.getBoolean(KEY_EVERNOTE_JSON_CONVERTED, false);
+        if (!mConvertedToJson) {
+            mConvertedToJson = true;
+            settings.edit().putBoolean(KEY_EVERNOTE_JSON_CONVERTED, true).apply();
+            final List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
+            for (final GsonTask todoWithEvernote : objectsWithEvernote) {
+                final GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(EvernoteIntegration.EVERNOTE_SERVICE);
+
+                if (attachment != null) {
+                    final String identifier = attachment.getIdentifier();
+                    if (!EvernoteIntegration.isJSONFormat(identifier)) {
+                        final Note note = EvernoteIntegration.noteFromJson(identifier);
+                        EvernoteIntegration.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
+                            @Override
+                            public void onSuccess(String data) {
+                                todoWithEvernote.removeAttachment(attachment);
+                                todoWithEvernote.addAttachment(new GsonAttachment(null, data, EvernoteIntegration.EVERNOTE_SERVICE, attachment.getTitle(), true));
+                                TasksService.getInstance().saveTask(todoWithEvernote, true);
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                Log.e(TAG, "Error: " + e.getMessage(), e);
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 }

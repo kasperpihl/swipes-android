@@ -101,7 +101,7 @@ public class TasksService {
         Long id = gsonTask.getId();
         String parentId = gsonTask.getParentLocalId();
 
-        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask);
+        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask, null);
 
         if (id == null) {
             createTask(gsonTask);
@@ -129,7 +129,7 @@ public class TasksService {
         if (gsonParent != null) {
             gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
 
-            if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent);
+            if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent, null);
 
             Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
 
@@ -179,6 +179,9 @@ public class TasksService {
      * @param task     Task to update.
      */
     private void updateTask(GsonTask gsonTask, Task task) {
+        // Set new update date.
+        gsonTask.setLocalUpdatedAt(new Date());
+
         // Update only mutable attributes.
         task.setTempId(gsonTask.getTempId());
         task.setUpdatedAt(gsonTask.getLocalUpdatedAt());
@@ -331,7 +334,7 @@ public class TasksService {
         TaskTag assignment = mExtTaskTagDao.selectAssociation(taskId, tagId);
         if (assignment != null) mExtTaskTagDao.getDao().delete(assignment);
 
-        SyncService.getInstance().saveTaskChangesForSync(loadTask(taskId));
+        SyncService.getInstance().saveTaskChangesForSync(loadTask(taskId), null);
     }
 
     /**
@@ -426,8 +429,15 @@ public class TasksService {
 
         if (attachments != null) {
             for (Attachment attachment : attachments) {
+                // Load task with attachment.
+                GsonTask old = loadTask(attachment.getTaskId());
+
                 // Delete from database.
                 mExtAttachmentDao.getDao().delete(attachment);
+
+                // Update task with removed attachment.
+                GsonTask updated = loadTask(old.getId());
+                SyncService.getInstance().saveTaskChangesForSync(updated, old);
             }
         }
     }
@@ -666,7 +676,8 @@ public class TasksService {
                 if (attachment.getSync() == attachmentSync) {
                     // Add associated task to the list of matches.
                     GsonTask match = loadTask(attachment.getTaskId());
-                    matches.add(match);
+                    if (!match.getDeleted())
+                        matches.add(match);
                 }
             }
         }
@@ -691,8 +702,10 @@ public class TasksService {
             for (Attachment attachment : attachments) {
                 // Check for sync property.
                 if (attachment.getSync() == attachmentSync) {
-                    // Add associated task to the list of matches.
-                    matches.add(attachment.getIdentifier());
+                    // Check if the task for attachment is not deleted.
+                    GsonTask matchingTask = loadTask(attachment.getTaskId());
+                    if (!matchingTask.getDeleted())
+                        matches.add(attachment.getIdentifier());
                 }
             }
         }

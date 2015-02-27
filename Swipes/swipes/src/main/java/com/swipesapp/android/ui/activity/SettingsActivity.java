@@ -269,7 +269,7 @@ public class SettingsActivity extends BaseActivity {
             for (GsonTask task : TasksService.getInstance().loadAllTasks()) {
                 if (!task.getDeleted()) {
                     task.setId(null);
-                    SyncService.getInstance().saveTaskChangesForSync(task);
+                    SyncService.getInstance().saveTaskChangesForSync(task, null);
                 }
             }
         }
