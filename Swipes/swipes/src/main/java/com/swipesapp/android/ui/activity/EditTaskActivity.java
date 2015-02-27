@@ -277,8 +277,7 @@ public class EditTaskActivity extends FragmentActivity {
         mDeleteButton.setTextColor(getResources().getColor(secondaryColor));
         mShareButton.setTextColor(getResources().getColor(secondaryColor));
 
-        if (!EvernoteService.getInstance().isAuthenticated() ||
-                !PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
+        if (!EvernoteService.getInstance().isAuthenticated() || !PreferenceUtils.isEvernoteSyncEnabled(this)) {
             mEvernoteButton.setVisibility(View.GONE);
         }
 
@@ -433,7 +432,7 @@ public class EditTaskActivity extends FragmentActivity {
                 mSubtaskFirstTitle.setTextColor(ThemeUtils.getTextColor(this));
 
                 mSubtaskFirstButton.setChecked(false);
-                int background = ThemeUtils.isLightTheme(mContext.get()) ? R.drawable.checkbox_selector_light : R.drawable.checkbox_selector_dark;
+                int background = ThemeUtils.isLightTheme(this) ? R.drawable.checkbox_selector_light : R.drawable.checkbox_selector_dark;
                 mSubtaskFirstButton.setBackgroundResource(background);
 
                 // Edit confirmation listener.

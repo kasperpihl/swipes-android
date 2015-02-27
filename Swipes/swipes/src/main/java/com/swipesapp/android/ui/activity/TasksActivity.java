@@ -58,11 +58,11 @@ import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.ColorUtils;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
@@ -427,13 +427,13 @@ public class TasksActivity extends BaseActivity {
         MigrationAssistant.performUpgrades(mContext.get());
 
         // Show welcome dialog only once.
-        if (!PreferenceUtils.hasShownWelcomeScreen(mContext.get())) {
+        if (!PreferenceUtils.hasShownWelcomeScreen(this)) {
             // Welcome user.
             showWelcomeDialog();
         }
 
         // Save welcome tasks if the app is used for the first time.
-        if (PreferenceUtils.isFirstRun(mContext.get())) {
+        if (PreferenceUtils.isFirstRun(this)) {
             WelcomeHandler welcomeHandler = new WelcomeHandler(this);
             welcomeHandler.addWelcomeTasks();
         }
@@ -654,7 +654,7 @@ public class TasksActivity extends BaseActivity {
 
     public void showEditBar() {
         // Apply container color.
-        mEditBarArea.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        mEditBarArea.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         // Animate views only when necessary.
         if (mEditTasksBar.getVisibility() == View.GONE) {
@@ -1012,11 +1012,11 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void customizeSelectionColors() {
-        int background = ThemeUtils.isLightTheme(mContext.get()) ?
+        int background = ThemeUtils.isLightTheme(this) ?
                 R.drawable.round_rectangle_light : R.drawable.round_rectangle_dark;
         mEditBarCount.setBackgroundResource(background);
 
-        int textColor = ThemeUtils.isLightTheme(mContext.get()) ? R.color.dark_text : R.color.light_text;
+        int textColor = ThemeUtils.isLightTheme(this) ? R.color.dark_text : R.color.light_text;
         mEditBarCount.setTextColor(getResources().getColor(textColor));
     }
 
@@ -1068,7 +1068,7 @@ public class TasksActivity extends BaseActivity {
 
     public void showWorkspaces() {
         // Apply container color.
-        mWorkspacesArea.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        mWorkspacesArea.setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
         // Animate views only when necessary.
         if (mWorkspacesView.getVisibility() == View.GONE) {
