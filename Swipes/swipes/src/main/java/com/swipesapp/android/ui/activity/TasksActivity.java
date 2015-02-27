@@ -1363,7 +1363,7 @@ public class TasksActivity extends BaseActivity {
         for (GsonTask task : mTasksService.loadAllTasks()) {
             if (!task.getDeleted()) {
                 task.setId(null);
-                mSyncService.saveTaskChangesForSync(task);
+                mSyncService.saveTaskChangesForSync(task, null);
             }
         }
     }

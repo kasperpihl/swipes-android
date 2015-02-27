@@ -13,7 +13,6 @@ import com.evernote.client.android.AsyncBusinessNoteStoreClient;
 import com.evernote.client.android.AsyncNoteStoreClient;
 import com.evernote.client.android.ClientFactory;
 import com.evernote.client.android.EvernoteSession;
-import com.evernote.client.android.InvalidAuthenticationException;
 import com.evernote.client.android.OnClientCallback;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
@@ -122,8 +121,7 @@ public class EvernoteIntegration {
                 note = null;
                 Log.e(sTag, ex.getMessage(), ex);
             }
-        }
-        else {
+        } else {
             try {
                 final JSONObject json = new JSONObject(jsonString);
                 note = new Note();
@@ -162,8 +160,7 @@ public class EvernoteIntegration {
                     try {
                         if (note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
                             json.put(sKeyJsonType, sKeyJsonTypePersonal);
-                        }
-                        else {
+                        } else {
                             String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
                             if (guid != null) {
                                 guid = mSharedToBusiness.containsKey(guid) ? mSharedToBusiness.get(guid) : guid;
@@ -172,15 +169,13 @@ public class EvernoteIntegration {
                                     json.put(sKeyJsonType, sKeyJsonTypeBusiness);
                                     final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(linkedNotebook);
                                     json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
-                                }
-                                else {
+                                } else {
                                     final LinkedNotebook sharedNotebook = mLinkedPersonalNotebooks.get(note.getNotebookGuid());
                                     if (null != sharedNotebook) {
                                         json.put(sKeyJsonType, sKeyJsonTypeShared);
                                         final JSONObject jsonLinkedNotebook = getJSONForLinkedNotebook(sharedNotebook);
                                         json.put(sKeyJsonLinkedNotebook, jsonLinkedNotebook);
-                                    }
-                                    else {
+                                    } else {
                                         callback.onException(new Exception("Cannot find LinkedNotebook for guid" + note.getNotebookGuid()));
                                     }
                                 }
@@ -329,22 +324,18 @@ public class EvernoteIntegration {
             } catch (Exception ex) {
                 callback.onException(ex);
             }
-        }
-        else if (null == mEvernoteSession) {
+        } else if (null == mEvernoteSession) {
             callback.onException(new Exception("No evernote session"));
-        }
-        else {
+        } else {
             callback.onSuccess(null);
         }
     }
 
-    public boolean isAuthenticated()
-    {
+    public boolean isAuthenticated() {
         return mEvernoteSession.isLoggedIn();
     }
 
-    public void authenticateInContext(final Context ctx)
-    {
+    public void authenticateInContext(final Context ctx) {
         mEvernoteSession.authenticate(ctx);
     }
 
@@ -404,8 +395,8 @@ public class EvernoteIntegration {
             mEvernoteSession.logOut(ctx);
 
             // remove all attachments and sync
-            TasksService.getInstance(ctx).deleteAttachmentsForService(Services.EVERNOTE);
-            SyncService.getInstance(ctx).performSync(true);
+            TasksService.getInstance().deleteAttachmentsForService(Services.EVERNOTE);
+            SyncService.getInstance().performSync(true, 0);
         } catch (Exception e) {
             Log.e(sTag, e.getMessage(), e);
         }
@@ -435,8 +426,7 @@ public class EvernoteIntegration {
                     callback.onSuccess(result);
                 }
             });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             callback.onException(e);
         }
 
@@ -507,7 +497,7 @@ public class EvernoteIntegration {
         });
     }
 
-    private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<Boolean>callback) {
+    private void checkIsBusinessNotebook(final String notebookGuid, final OnEvernoteCallback<Boolean> callback) {
         getNoteStoreGuids(new OnEvernoteCallback<Void>() {
             public void onSuccess(Void data) {
                 callback.onSuccess(null != mBusinessNotebooks ? mBusinessNotebookGuids.contains(notebookGuid) : false);
@@ -519,16 +509,14 @@ public class EvernoteIntegration {
         });
     }
 
-    void provideAsyncNoteStoreClientForNote(final Note note, final OnEvernoteCallback<AsyncNoteStoreClient>callback) {
+    void provideAsyncNoteStoreClientForNote(final Note note, final OnEvernoteCallback<AsyncNoteStoreClient> callback) {
         if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
             try {
                 callback.onSuccess(mEvernoteSession.getClientFactory().createNoteStoreClient());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 callback.onException(e);
             }
-        }
-        else {
+        } else {
             // business or linked note
             checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<Boolean>() {
                 public void onSuccess(final Boolean isBusinessNotebook) {
@@ -555,7 +543,7 @@ public class EvernoteIntegration {
         }
     }
 
-    public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note>callback) {
+    public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note> callback) {
         final Note note = EvernoteIntegration.noteFromJson(noteRefString);
         if (null == note) {
             callback.onException(new Exception("Invalid EN reference: " + noteRefString));
@@ -581,7 +569,7 @@ public class EvernoteIntegration {
         });
     }
 
-    public void updateNote(final Note note, final OnEvernoteCallback<Note>callback) {
+    public void updateNote(final Note note, final OnEvernoteCallback<Note> callback) {
 
         provideAsyncNoteStoreClientForNote(note, new OnEvernoteCallback<AsyncNoteStoreClient>() {
             public void onSuccess(AsyncNoteStoreClient client) {
