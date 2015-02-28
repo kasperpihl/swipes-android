@@ -337,16 +337,16 @@ public class SyncService {
                         TasksService.getInstance().saveTask(task, false);
                     }
 
+                    // Save last update time.
+                    if (response.getUpdateTime() != null) {
+                        PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
+                    }
+
                     // Refresh local content.
                     TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
                 }
             }
         }).start();
-
-        // Save last update time.
-        if (response.getUpdateTime() != null) {
-            PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
-        }
     }
 
     public void saveTaskChangesForSync(GsonTask current, GsonTask old) {
