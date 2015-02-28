@@ -143,7 +143,7 @@ public class EvernoteSyncHandler {
                     final String tempId = UUID.randomUUID().toString();
                     Log.d(TAG, "Creating task with UUID: " + tempId);
                     GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
-                            fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(),
+                            fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER,
                             null, null, null, Arrays.asList(attachment), 0);
                     TasksService.getInstance().saveTask(newTodo, true);
                     if (++mCurrentNoteCount >= mTotalNoteCount) {
@@ -415,7 +415,7 @@ public class EvernoteSyncHandler {
                 String tempId = UUID.randomUUID().toString();
                 matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-                        RepeatOptions.NEVER.getValue(), Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
+                        RepeatOptions.NEVER, Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;

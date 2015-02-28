@@ -734,7 +734,7 @@ public class TasksActivity extends BaseActivity {
 
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, mSelectedTags, null, 0);
+                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, mSelectedTags, null, 0);
             mTasksService.saveTask(task, true);
         }
 

@@ -44,7 +44,7 @@ public class MigrationAssistant {
         if (!PreferenceUtils.hasUpgradedToVersion(7, context)) {
             // Update all tasks.
             for (GsonTask task : sTasksService.loadAllTasks()) {
-                task.setRepeatOption(RepeatOptions.NEVER.getValue());
+                task.setRepeatOption(RepeatOptions.NEVER);
                 task.setOriginIdentifier(null);
 
                 sTasksService.saveTask(task, false);

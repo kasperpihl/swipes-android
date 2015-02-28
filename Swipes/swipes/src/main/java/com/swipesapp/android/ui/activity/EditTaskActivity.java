@@ -902,7 +902,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatNever.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.NEVER.getValue());
+        mTask.setRepeatOption(RepeatOptions.NEVER);
         mTask.setLocalRepeatDate(null);
 
         hideRepeatOptions();
@@ -915,7 +915,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatDay.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.EVERY_DAY.getValue());
+        mTask.setRepeatOption(RepeatOptions.EVERY_DAY);
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
@@ -928,7 +928,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatMonFri.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY.getValue());
+        mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY);
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
@@ -941,7 +941,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatWeek.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.EVERY_WEEK.getValue());
+        mTask.setRepeatOption(RepeatOptions.EVERY_WEEK);
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
@@ -954,7 +954,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatMonth.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.EVERY_MONTH.getValue());
+        mTask.setRepeatOption(RepeatOptions.EVERY_MONTH);
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
@@ -967,7 +967,7 @@ public class EditTaskActivity extends FragmentActivity {
         clearRepeatSelections();
         mRepeatYear.select(mSection);
 
-        mTask.setRepeatOption(RepeatOptions.EVERY_YEAR.getValue());
+        mTask.setRepeatOption(RepeatOptions.EVERY_YEAR);
         mTask.setLocalRepeatDate(mTask.getLocalSchedule());
 
         hideRepeatOptions();
@@ -989,50 +989,51 @@ public class EditTaskActivity extends FragmentActivity {
         String repeatOption = mTask.getRepeatOption();
 
         // Set selected option.
-        if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER.getValue())) {
+        if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER)) {
             mRepeatNever.select(mSection);
-        } else if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_DAY)) {
             mRepeatDay.select(mSection);
-        } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY)) {
             mRepeatMonFri.select(mSection);
-        } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK)) {
             mRepeatWeek.select(mSection);
-        } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH)) {
             mRepeatMonth.select(mSection);
-        } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR.getValue())) {
+        } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR)) {
             mRepeatYear.select(mSection);
         }
     }
 
     private void setRepeatDescription() {
         String repeatOption = mTask.getRepeatOption();
+        Date repeatDate = mTask.getLocalRepeatDate();
 
         // Set friendly description.
-        if (repeatOption == null || repeatOption.equals(RepeatOptions.NEVER.getValue())) {
+        if (repeatDate == null || repeatOption == null || repeatOption.equals(RepeatOptions.NEVER)) {
             // Option is set to never.
             mRepeat.setText(getString(R.string.repeat_never_description));
         } else {
-            Calendar repeatDate = Calendar.getInstance();
-            repeatDate.setTime(mTask.getLocalRepeatDate());
+            Calendar repeatCalendar = Calendar.getInstance();
+            repeatCalendar.setTime(repeatDate);
 
-            String time = DateUtils.getTimeAsString(this, mTask.getLocalRepeatDate());
-            String dayOfWeek = DateUtils.formatDayOfWeek(this, repeatDate);
-            String dayOfMonth = DateUtils.formatDayOfMonth(this, repeatDate);
-            String month = DateUtils.formatMonth(this, repeatDate);
+            String time = DateUtils.getTimeAsString(this, repeatDate);
+            String dayOfWeek = DateUtils.formatDayOfWeek(this, repeatCalendar);
+            String dayOfMonth = DateUtils.formatDayOfMonth(this, repeatCalendar);
+            String month = DateUtils.formatMonth(this, repeatCalendar);
 
-            if (repeatOption.equals(RepeatOptions.EVERY_DAY.getValue())) {
+            if (repeatOption.equals(RepeatOptions.EVERY_DAY)) {
                 // Option is set to every day.
                 mRepeat.setText(getString(R.string.repeat_day_description, time));
-            } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY.getValue())) {
+            } else if (repeatOption.equals(RepeatOptions.MONDAY_TO_FRIDAY)) {
                 // Option is set to monday to friday.
                 mRepeat.setText(getString(R.string.repeat_mon_fri_description, time));
-            } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK.getValue())) {
+            } else if (repeatOption.equals(RepeatOptions.EVERY_WEEK)) {
                 // Option is set to every week.
                 mRepeat.setText(getString(R.string.repeat_week_description, dayOfWeek, time));
-            } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH.getValue())) {
+            } else if (repeatOption.equals(RepeatOptions.EVERY_MONTH)) {
                 // Option is set to every month.
                 mRepeat.setText(getString(R.string.repeat_month_description, dayOfMonth, time));
-            } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR.getValue())) {
+            } else if (repeatOption.equals(RepeatOptions.EVERY_YEAR)) {
                 // Option is set to every year.
                 mRepeat.setText(getString(R.string.repeat_year_description, month, dayOfMonth, time));
             }
@@ -1112,7 +1113,7 @@ public class EditTaskActivity extends FragmentActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER.getValue(), null, null, new ArrayList<GsonTag>(), null, 0);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER, null, null, new ArrayList<GsonTag>(), null, 0);
             mTasksService.saveTask(task, true);
 
             refreshSubtasks();
