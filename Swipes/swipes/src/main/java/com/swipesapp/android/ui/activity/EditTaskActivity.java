@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -207,6 +208,8 @@ public class EditTaskActivity extends FragmentActivity {
 
     @Override
     public void finish() {
+        setResult(Activity.RESULT_OK);
+
         super.finish();
 
         overridePendingTransition(0, 0);

@@ -252,8 +252,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     break;
             }
         } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
-            // Refresh all tasks after editing.
-            mActivity.refreshSections();
+            if (resultCode == Activity.RESULT_OK) {
+                // Refresh all tasks after editing.
+                mActivity.refreshSections();
+            }
         }
     }
 
