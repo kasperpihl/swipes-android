@@ -104,15 +104,16 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
+        if (position < 0 || position >= getCount()) {
+            return null;
+        }
         return mData.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        if (position < 0 || position >= getCount()) {
-            return -1;
-        }
-        return ((GsonTask) getItem(position)).getItemId();
+        GsonTask item = (GsonTask) getItem(position);
+        return item != null ? item.getItemId() : -1;
     }
 
     @Override

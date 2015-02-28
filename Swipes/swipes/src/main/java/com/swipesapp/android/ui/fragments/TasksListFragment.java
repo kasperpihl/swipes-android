@@ -52,12 +52,12 @@ import com.swipesapp.android.ui.view.FlatButton;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
@@ -565,7 +565,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private GsonTask getTask(int position) {
-        // TODO: Ignore last position to account for the footer.
         return (GsonTask) mAdapter.getItem(position);
     }
 
@@ -649,101 +648,114 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override
         public void onFinishedSwipeRight(int position) {
-            switch (mSection) {
-                case LATER:
-                    // Move task from Later to Focus.
-                    getTask(position).setLocalSchedule(new Date());
-                    mTasksService.saveTask(getTask(position), true);
-                    // Refresh all lists.
-                    mActivity.refreshSections();
-                    break;
-                case FOCUS:
-                    // Move task from Focus to Done.
-                    getTask(position).setLocalCompletionDate(new Date());
-                    mTasksService.saveTask(getTask(position), true);
-                    // Handle repeat.
-                    mRepeatHandler.handleRepeatedTask(getTask(position));
-                    // Refresh all lists.
-                    mActivity.refreshSections();
-                    break;
+            GsonTask task = getTask(position);
+            if (task != null) {
+                switch (mSection) {
+                    case LATER:
+                        // Move task from Later to Focus.
+                        task.setLocalSchedule(new Date());
+                        mTasksService.saveTask(task, true);
+                        // Refresh all lists.
+                        mActivity.refreshSections();
+                        break;
+                    case FOCUS:
+                        // Move task from Focus to Done.
+                        task.setLocalCompletionDate(new Date());
+                        mTasksService.saveTask(task, true);
+                        // Handle repeat.
+                        mRepeatHandler.handleRepeatedTask(task);
+                        // Refresh all lists.
+                        mActivity.refreshSections();
+                        break;
+                }
             }
         }
 
         @Override
         public void onFinishedSwipeLeft(int position) {
-            switch (mSection) {
-                case LATER:
-                    // Reschedule task.
-                    openSnoozeSelector(getTask(position));
-                    break;
-                case FOCUS:
-                    // Move task from Focus to Later.
-                    openSnoozeSelector(getTask(position));
-                    break;
-                case DONE:
-                    // Move task from Done to Focus.
-                    getTask(position).setLocalCompletionDate(null);
-                    mTasksService.saveTask(getTask(position), true);
-                    // Refresh all lists.
-                    mActivity.refreshSections();
-                    break;
+            GsonTask task = getTask(position);
+            if (task != null) {
+                switch (mSection) {
+                    case LATER:
+                        // Reschedule task.
+                        openSnoozeSelector(task);
+                        break;
+                    case FOCUS:
+                        // Move task from Focus to Later.
+                        openSnoozeSelector(task);
+                        break;
+                    case DONE:
+                        // Move task from Done to Focus.
+                        task.setLocalCompletionDate(null);
+                        mTasksService.saveTask(task, true);
+                        // Refresh all lists.
+                        mActivity.refreshSections();
+                        break;
+                }
             }
         }
 
         @Override
         public void onFinishedLongSwipeRight(int position) {
-            switch (mSection) {
-                case LATER:
-                    // Move task from Later to Done.
-                    Date currentDate = new Date();
-                    getTask(position).setLocalCompletionDate(currentDate);
-                    getTask(position).setLocalSchedule(currentDate);
-                    mTasksService.saveTask(getTask(position), true);
-                    // Handle repeat.
-                    mRepeatHandler.handleRepeatedTask(getTask(position));
-                    // Refresh all lists.
-                    mActivity.refreshSections();
-                    break;
+            GsonTask task = getTask(position);
+            if (task != null) {
+                switch (mSection) {
+                    case LATER:
+                        // Move task from Later to Done.
+                        Date currentDate = new Date();
+                        task.setLocalCompletionDate(currentDate);
+                        task.setLocalSchedule(currentDate);
+                        mTasksService.saveTask(task, true);
+                        // Handle repeat.
+                        mRepeatHandler.handleRepeatedTask(task);
+                        // Refresh all lists.
+                        mActivity.refreshSections();
+                        break;
+                }
             }
         }
 
         @Override
         public void onFinishedLongSwipeLeft(int position) {
-            switch (mSection) {
-                case LATER:
-                    // Reschedule task.
-                    openSnoozeSelector(getTask(position));
-                    break;
-                case DONE:
-                    // Move task from Done to Later.
-                    openSnoozeSelector(getTask(position));
-                    break;
+            GsonTask task = getTask(position);
+            if (task != null) {
+                switch (mSection) {
+                    case LATER:
+                        // Reschedule task.
+                        openSnoozeSelector(task);
+                        break;
+                    case DONE:
+                        // Move task from Done to Later.
+                        openSnoozeSelector(task);
+                        break;
+                }
             }
         }
 
         @Override
         public void onClickFrontView(View view, int position) {
             GsonTask task = getTask(position);
+            if (task != null) {
+                // Start selection or edit task.
+                if (mActivity.isSelectionMode()) {
+                    View selectedIndicator = view.findViewById(R.id.selected_indicator);
 
-            // Start selection or edit task.
-            if (mActivity.isSelectionMode()) {
-                View selectedIndicator = view.findViewById(R.id.selected_indicator);
+                    if (task.isSelected()) {
+                        // Deselect task.
+                        task.setSelected(false);
+                        selectedIndicator.setBackgroundColor(0);
+                        sSelectedTasks.remove(task);
+                    } else {
+                        // Select task.
+                        task.setSelected(true);
+                        selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+                        sSelectedTasks.add(task);
+                    }
 
-                if (task.isSelected()) {
-                    // Deselect task.
-                    task.setSelected(false);
-                    selectedIndicator.setBackgroundColor(0);
-                    sSelectedTasks.remove(task);
+                    mActivity.updateSelectionCount(sSelectedTasks.size());
                 } else {
-                    // Select task.
-                    task.setSelected(true);
-                    selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
-                    sSelectedTasks.add(task);
+                    startEditTask(task.getId());
                 }
-
-                mActivity.updateSelectionCount(sSelectedTasks.size());
-            } else {
-                startEditTask(task.getId());
             }
         }
 
@@ -755,9 +767,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             Integer priority = checked ? 1 : 0;
 
             GsonTask task = getTask(position);
-            task.setPriority(priority);
-
-            mTasksService.saveTask(task, true);
+            if (task != null) {
+                task.setPriority(priority);
+                mTasksService.saveTask(task, true);
+            }
         }
     };
 
