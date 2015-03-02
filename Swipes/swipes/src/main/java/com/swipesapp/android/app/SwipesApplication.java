@@ -3,6 +3,7 @@ package com.swipesapp.android.app;
 import android.app.Application;
 import android.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.swipesapp.android.R;
@@ -27,6 +28,9 @@ public class SwipesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Initialize Crashlytics.
+        Crashlytics.start(this);
 
         // Initialize the Parse SDK.
         Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
