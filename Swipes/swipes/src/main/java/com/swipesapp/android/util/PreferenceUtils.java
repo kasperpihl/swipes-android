@@ -66,6 +66,18 @@ public class PreferenceUtils {
     }
 
     /**
+     * Saves an int preference.
+     *
+     * @param preference Preference to save.
+     * @param value      Value to apply.
+     * @param context    Context instance.
+     */
+    public static void saveIntPreference(String preference, int value, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().putInt(preference, value).apply();
+    }
+
+    /**
      * Removes a preference.
      *
      * @param preference Preference to remove.
@@ -98,6 +110,18 @@ public class PreferenceUtils {
     public static long readLongPreference(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getLong(preference, 0);
+    }
+
+    /**
+     * Reads an int preference.
+     *
+     * @param context    Context instance.
+     * @param preference Preference to read.
+     * @return Int value.
+     */
+    public static int readIntPreference(String preference, Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getInt(preference, 0);
     }
 
     /**

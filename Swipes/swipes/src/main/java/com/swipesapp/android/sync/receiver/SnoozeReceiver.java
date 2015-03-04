@@ -18,6 +18,7 @@ import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Actions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,14 +30,23 @@ import java.util.List;
  */
 public class SnoozeReceiver extends BroadcastReceiver {
 
+    private static final String KEY_EXPIRED_TASKS = "notifications_expired_tasks";
+    private static final String KEY_PREVIOUS_COUNT = "notifications_previous_count";
+
+    private static final String TASKS_SEPARATOR = ", ";
+    private static final String TASKS_REGEX = "\\s*,\\s*";
+
     private static NotificationManager sNotificationManager;
     private static TasksService sTasksService;
-    private static List<GsonTask> sExpiredTasks = new ArrayList<>();
+    private static List<GsonTask> sExpiredTasks;
     private static int sPreviousCount;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         sTasksService = TasksService.getInstance();
+
+        // Reload expired tasks in case the receiver was killed.
+        reloadPreviousData(context);
 
         List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
 
@@ -66,6 +76,9 @@ public class SnoozeReceiver extends BroadcastReceiver {
         }
 
         sPreviousCount = sExpiredTasks.size();
+
+        // Persist expired tasks in case the receiver is killed.
+        saveCurrentData(context);
     }
 
     private void sendNotification(Context context) {
@@ -123,9 +136,50 @@ public class SnoozeReceiver extends BroadcastReceiver {
         }
     }
 
+    private static void reloadPreviousData(Context context) {
+        if (sExpiredTasks == null) sExpiredTasks = new ArrayList<>();
+
+        String expired = PreferenceUtils.readStringPreference(KEY_EXPIRED_TASKS, context);
+        sPreviousCount = PreferenceUtils.readIntPreference(KEY_PREVIOUS_COUNT, context);
+
+        // Load tasks from comma-separated task IDs.
+        if (expired != null) {
+            List<String> taskIds = Arrays.asList(expired.split(TASKS_REGEX));
+
+            for (String taskId : taskIds) {
+                GsonTask task = sTasksService.loadTask(taskId);
+
+                if (task != null && !sExpiredTasks.contains(task)) {
+                    sExpiredTasks.add(task);
+                }
+            }
+        }
+    }
+
+    private static void saveCurrentData(Context context) {
+        String taskIds = null;
+
+        // Save tasks as comma-separated task IDs.
+        for (GsonTask task : sExpiredTasks) {
+            if (taskIds == null) {
+                taskIds = task.getTempId();
+            } else {
+                taskIds += TASKS_SEPARATOR + task.getTempId();
+            }
+        }
+
+        PreferenceUtils.saveStringPreference(KEY_EXPIRED_TASKS, taskIds, context);
+        PreferenceUtils.saveIntPreference(KEY_PREVIOUS_COUNT, sPreviousCount, context);
+    }
+
     public static class ActionsReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            sTasksService = TasksService.getInstance();
+
+            // Reload expired tasks in case the receiver was killed.
+            reloadPreviousData(context);
+
             if (intent.getAction().equals(Actions.SNOOZE_TASKS)) {
                 // Set snooze time.
                 Calendar snooze = Calendar.getInstance();
@@ -160,7 +214,11 @@ public class SnoozeReceiver extends BroadcastReceiver {
             sExpiredTasks.clear();
             sPreviousCount = 0;
 
+            // Persist expired tasks in case the receiver is killed.
+            saveCurrentData(context);
+
             // Cancel notification.
+            sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             sNotificationManager.cancel(0);
         }
     }
