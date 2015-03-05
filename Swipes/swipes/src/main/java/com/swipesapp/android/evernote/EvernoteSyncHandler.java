@@ -350,7 +350,7 @@ public class EvernoteSyncHandler {
 
     protected void findAndHandleMatches(final GsonTask parentToDo, final EvernoteToDoProcessor processor) {
         final TasksService tasksService = TasksService.getInstance();
-        List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(parentToDo.getTempId()));
+        List<GsonTask> subtasks = /*filterSubtasksWithEvernote(*/tasksService.loadSubtasksForTask(parentToDo.getTempId())/*)*/;
         List<EvernoteToDo> evernoteToDos = new ArrayList<EvernoteToDo>(processor.getToDos());
 
         // Creating helper arrays for determining which ones has already been matched
@@ -363,7 +363,7 @@ public class EvernoteSyncHandler {
         for (EvernoteToDo evernoteToDo : evernoteToDos) {
 
             for (GsonTask subtask : subtasks) {
-                if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier())) {
+                if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier()) || evernoteToDo.getTitle().equalsIgnoreCase(subtask.getTitle())) {
                     subtasksLeftToBeFound.remove(subtask);
                     evernoteToDosLeftToBeFound.remove(evernoteToDo);
 

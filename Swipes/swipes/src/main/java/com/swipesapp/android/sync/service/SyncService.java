@@ -382,6 +382,9 @@ public class SyncService {
             taskSync.setTags(hasObjectChanged(old.getTags(), current.getTags()) ? tagsToString(current.getTags()) : null);
             taskSync.setAttachments(hasObjectChanged(old.getAttachments(), current.getAttachments()) ? attachmentsToString(current.getAttachments()) : null);
 
+            taskSync.setOrigin(hasObjectChanged(old.getOrigin(), current.getOrigin()) ? current.getOrigin() : null);
+            taskSync.setOriginIdentifier(hasObjectChanged(old.getOriginIdentifier(), current.getOriginIdentifier()) ? current.getOriginIdentifier() : null);
+
             mExtTaskSyncDao.getDao().insert(taskSync);
         }
     }
