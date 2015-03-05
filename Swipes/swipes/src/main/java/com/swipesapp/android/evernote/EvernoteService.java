@@ -42,7 +42,7 @@ public class EvernoteService {
 
     public static final String SWIPES_TAG_NAME = "swipes";
 
-    private static final String LOG_TAG = "EvernoteIntegration";
+    private static final String LOG_TAG = EvernoteService.class.getSimpleName();
 
     // Your Evernote API key. See http://dev.evernote.com/documentation/cloud/
     // Please obfuscate your code to help keep these values secret.
