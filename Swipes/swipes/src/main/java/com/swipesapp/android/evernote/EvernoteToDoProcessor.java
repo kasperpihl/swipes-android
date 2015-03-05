@@ -181,7 +181,7 @@ public class EvernoteToDoProcessor {
         this.todos.clear();
         try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-            String s = note.getContent();
+            //String s = note.getContent();
             parser.parse(new InputSource(new StringReader(note.getContent())), new EvernoteHandler(new OnEvernoteCallback<List<EvernoteToDo>>() {
                 @Override
                 public void onSuccess(List<EvernoteToDo> data) {
@@ -223,7 +223,7 @@ public class EvernoteToDoProcessor {
     {
         if ((null != updatedToDo) && (updatedToDo.isChecked() != checked)) {
             if (null == updatedContent)
-                updatedContent = note.getContent();
+                updatedContent = getNoteContent();
 
             int startLocation = 0;
             for (int i = 0; i <= updatedToDo.getPosition(); i++) {
@@ -253,7 +253,7 @@ public class EvernoteToDoProcessor {
     {
         if ((null != updatedToDo) && (!updatedToDo.getTitle().equals(title))) {
             if (null == updatedContent)
-                updatedContent = note.getContent();
+                updatedContent = getNoteContent();
 
             int startLocation = 0;
             for (int i = 0; i <= updatedToDo.getPosition(); i++) {
@@ -312,6 +312,10 @@ public class EvernoteToDoProcessor {
     ////////////////////////////////////////
     // adding TODOs
     ////////////////////////////////////////
+    private String getNoteContent() {
+        return note.getContent().replaceAll("<en-note/>", "<en-note></en-note>");
+    }
+
     private int getNewToDoPosAtTheBeginning() {
         int devPos = updatedContent.indexOf("<en-note");
         if (-1 != devPos) {
@@ -363,7 +367,7 @@ public class EvernoteToDoProcessor {
 
     public boolean addToDo(String title) {
         if (null == updatedContent)
-            updatedContent = note.getContent();
+            updatedContent = getNoteContent();
 
         int startPos = getNewToDoPos();
         if (startPos >= updatedContent.length()) {

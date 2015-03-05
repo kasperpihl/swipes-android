@@ -195,6 +195,8 @@ public class TasksService {
         task.setLocation(gsonTask.getLocation());
         task.setRepeatDate(gsonTask.getLocalRepeatDate());
         task.setRepeatOption(gsonTask.getRepeatOption());
+        task.setOrigin(gsonTask.getOrigin());
+        task.setOriginIdentifier(gsonTask.getOriginIdentifier());
 
         synchronized (this) {
             mExtTaskDao.getDao().update(task);

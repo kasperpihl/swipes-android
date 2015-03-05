@@ -517,37 +517,45 @@ public class EvernoteService {
     }
 
     void provideAsyncNoteStoreClientForNote(final Note note, final OnEvernoteCallback<AsyncNoteStoreClient> callback) {
-        if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
-            try {
-                callback.onSuccess(mEvernoteSession.getClientFactory().createNoteStoreClient());
-            } catch (Exception e) {
+        getNoteStoreGuids(new OnEvernoteCallback<Void>() {
+            public void onSuccess(Void data) {
+                if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
+                    try {
+                        callback.onSuccess(mEvernoteSession.getClientFactory().createNoteStoreClient());
+                    } catch (Exception e) {
+                        callback.onException(e);
+                    }
+                } else {
+                    // business or linked note
+                    checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<Boolean>() {
+                        public void onSuccess(final Boolean isBusinessNotebook) {
+                            if (isBusinessNotebook) {
+                                mEvernoteSession.getClientFactory().createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
+                                    public void onSuccess(AsyncBusinessNoteStoreClient client) {
+                                        callback.onSuccess(client.getAsyncClient());
+                                    }
+
+                                    public void onException(Exception e) {
+                                        callback.onException(e);
+                                    }
+                                });
+                            }
+//                          else {
+//                              int i = 5;
+//                          }
+                        }
+
+                        public void onException(Exception e) {
+                            callback.onException(e);
+                        }
+                    });
+                }
+            }
+
+            public void onException(Exception e) {
                 callback.onException(e);
             }
-        } else {
-            // business or linked note
-            checkIsBusinessNotebook(note.getNotebookGuid(), new OnEvernoteCallback<Boolean>() {
-                public void onSuccess(final Boolean isBusinessNotebook) {
-                    if (isBusinessNotebook) {
-                        mEvernoteSession.getClientFactory().createBusinessNoteStoreClientAsync(new OnClientCallback<AsyncBusinessNoteStoreClient>() {
-                            public void onSuccess(AsyncBusinessNoteStoreClient client) {
-                                callback.onSuccess(client.getAsyncClient());
-                            }
-
-                            public void onException(Exception e) {
-                                callback.onException(e);
-                            }
-                        });
-                    }
-//                    else {
-//                        int i = 5;
-//                    }
-                }
-
-                public void onException(Exception e) {
-                    callback.onException(e);
-                }
-            });
-        }
+        });
     }
 
     public void downloadNote(final String noteRefString, final OnEvernoteCallback<Note> callback) {
