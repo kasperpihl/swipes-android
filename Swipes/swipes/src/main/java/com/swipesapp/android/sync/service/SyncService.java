@@ -384,9 +384,6 @@ public class SyncService {
             taskSync.setOrigin(hasObjectChanged(old.getOrigin(), current.getOrigin()) ? current.getOrigin() : null);
             taskSync.setOriginIdentifier(hasObjectChanged(old.getOriginIdentifier(), current.getOriginIdentifier()) ? current.getOriginIdentifier() : null);
 
-            taskSync.setOrigin(hasObjectChanged(old.getOrigin(), current.getOrigin()) ? current.getOrigin() : null);
-            taskSync.setOriginIdentifier(hasObjectChanged(old.getOriginIdentifier(), current.getOriginIdentifier()) ? current.getOriginIdentifier() : null);
-
             mExtTaskSyncDao.getDao().insert(taskSync);
         }
     }

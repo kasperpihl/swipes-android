@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class EvernoteSyncHandler {
 
-    protected final static String TAG = "EvernoteSyncHandler";
+    protected final static String LOG_TAG = EvernoteSyncHandler.class.getSimpleName();
     protected final static String KEY_LAST_UPDATED = "lastUpdated";
     protected final static String KEY_AUTO_IMPORT = "evernote_auto_import";
     protected final static String KEY_EVERNOTE_JSON_CONVERTED = "evernoteJsonConverted";
@@ -141,7 +141,7 @@ public class EvernoteSyncHandler {
 
                     final Date currentDate = new Date();
                     final String tempId = UUID.randomUUID().toString();
-                    Log.d(TAG, "Creating task with UUID: " + tempId);
+                    Log.d(LOG_TAG, "Creating task with UUID: " + tempId);
                     GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
                             fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER,
                             null, null, null, Arrays.asList(attachment), 0);
@@ -228,7 +228,7 @@ public class EvernoteSyncHandler {
             }
 
             public void onException(Exception e) {
-                Log.e(TAG, "findUpdatedNotesWithTag exception", e);
+                Log.e(LOG_TAG, "findUpdatedNotesWithTag exception", e);
                 callback.onException(e);
             }
         });
@@ -261,7 +261,7 @@ public class EvernoteSyncHandler {
 
             @Override
             public void onException(Exception e) {
-                Log.e(TAG, "fetchEvernoteChanges exception", e);
+                Log.e(LOG_TAG, "fetchEvernoteChanges exception", e);
                 callback.onException(e);
             }
         });
@@ -272,7 +272,7 @@ public class EvernoteSyncHandler {
 
         // If subtask is deleted from Swipes - mark completed in Evernote
         if (subtask.isDeleted() && !evernoteToDo.isChecked()) {
-            Log.d(TAG, "completing evernote - subtask was deleted");
+            Log.d(LOG_TAG, "completing evernote - subtask was deleted");
             processor.updateToDo(evernoteToDo, true);
             return false;
         }
@@ -285,12 +285,12 @@ public class EvernoteSyncHandler {
             if (subtaskIsCompleted) {
                 // If subtask was completed in Swipes after last sync override evernote
                 if (null != mLastUpdated && mLastUpdated.before(subtask.getLocalCompletionDate())) {
-                    Log.d(TAG, "completing evernote");
+                    Log.d(LOG_TAG, "completing evernote");
                     processor.updateToDo(evernoteToDo, subtaskIsCompleted);
                 }
                 // If not - uncomplete in Swipes
                 else {
-                    Log.d(TAG, "uncompleting subtask");
+                    Log.d(LOG_TAG, "uncompleting subtask");
                     subtask.setCompletionDate(null);
                     tasksService.saveTask(subtask, true);
                     updated = true;
@@ -301,12 +301,12 @@ public class EvernoteSyncHandler {
                 // If subtask is updated later than last sync override Evernote
                 // There could be an error margin here, but I don't see a better solution at the moment
                 if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getLocalUpdatedAt())) {
-                    Log.d(TAG, "uncompleting evernote");
+                    Log.d(LOG_TAG, "uncompleting evernote");
                     processor.updateToDo(evernoteToDo, false);
                 }
                 // If not, override in Swipes
                 else {
-                    Log.d(TAG, "completing subtask");
+                    Log.d(LOG_TAG, "completing subtask");
                     subtask.setLocalCompletionDate(new Date());
                     tasksService.saveTask(subtask, true);
                     updated = true;
@@ -317,7 +317,7 @@ public class EvernoteSyncHandler {
         // difference in name
         if (!subtask.getTitle().equals(subtask.getOriginIdentifier())) {
             if (processor.updateToDo(evernoteToDo, subtask.getTitle())) {
-                Log.d(TAG, "renamed evernote");
+                Log.d(LOG_TAG, "renamed evernote");
                 subtask.setOriginIdentifier(subtask.getTitle());
                 tasksService.saveTask(subtask, true);
                 updated = true;
@@ -546,7 +546,7 @@ public class EvernoteSyncHandler {
                                     if (null == runningError[0])
                                         runningError[0] = ex;
                                     finalizeSync(date, targetCount, ex, callback);
-                                    Log.e(TAG, ex.getMessage(), ex);
+                                    Log.e(LOG_TAG, ex.getMessage(), ex);
                                 }
                             });
                         } else {
@@ -560,7 +560,7 @@ public class EvernoteSyncHandler {
                         if (null == runningError[0])
                             runningError[0] = ex;
                         finalizeSync(date, targetCount, ex, callback);
-                        Log.e(TAG, ex.getMessage(), ex);
+                        Log.e(LOG_TAG, ex.getMessage(), ex);
                     }
                 });
             }
@@ -600,7 +600,7 @@ public class EvernoteSyncHandler {
 
                             @Override
                             public void onException(Exception e) {
-                                Log.e(TAG, "Error: " + e.getMessage(), e);
+                                Log.e(LOG_TAG, "Error: " + e.getMessage(), e);
                             }
                         });
                     }
