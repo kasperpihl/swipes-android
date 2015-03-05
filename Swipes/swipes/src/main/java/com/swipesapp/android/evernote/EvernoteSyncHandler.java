@@ -187,8 +187,8 @@ public class EvernoteSyncHandler {
         boolean result = true;
         for (Note n : knownNotes) {
             if (n.getGuid().equalsIgnoreCase(note.getGuid())) {
-                if ((n.getNotebookGuid() == null && note.getNotebookGuid() == null) ||
-                        (n.getNotebookGuid() != null && n.getNotebookGuid().equalsIgnoreCase(note.getNotebookGuid()))) {
+                if ((n.getNotebookGuid() == null) ||
+                        (n.getNotebookGuid().equalsIgnoreCase(note.getNotebookGuid()))) {
                     result = false;
                     break;
                 }
@@ -468,7 +468,7 @@ public class EvernoteSyncHandler {
     protected boolean hasChangesFromEvernoteId(String enid) {
         Note searchNote = EvernoteService.noteFromJson(enid);
         for (Note note : mChangedNotes) {
-            if (searchNote != null && note.getGuid().equalsIgnoreCase(searchNote.getGuid()) && note.getNotebookGuid().equalsIgnoreCase(searchNote.getNotebookGuid())) {
+            if (searchNote != null && note.getGuid().equalsIgnoreCase(searchNote.getGuid())) {
                 return true;
             }
         }
