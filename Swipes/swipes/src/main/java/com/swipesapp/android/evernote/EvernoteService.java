@@ -121,7 +121,7 @@ public class EvernoteService {
                 note = new Note();
                 note.setGuid(json.getString(KEY_JSON_GUID));
 
-                String type = json.getString(KEY_JSON_TYPE);
+                String type = json.optString(KEY_JSON_TYPE, KEY_JSON_TYPE_PERSONAL);
                 if (null != type && !KEY_JSON_TYPE_PERSONAL.equalsIgnoreCase(type)) {
                     JSONObject jsonLinkedNotebook = json.getJSONObject(KEY_JSON_LINKED_NOTEBOOK);
                     if (null != jsonLinkedNotebook) {
@@ -166,9 +166,10 @@ public class EvernoteService {
                 public void onSuccess(Void data) {
                     // find out type
                     try {
-                        if (note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
+                        if (null == note.getNotebookGuid() || note.getNotebookGuid().equalsIgnoreCase(mUserNotebookGuid)) {
                             json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_PERSONAL);
-                        } else if (mBusinessNotebookGuids != null) {
+                        }
+                        else if (mBusinessNotebookGuids != null) {
                             String guid = mBusinessNotebookGuids.contains(note.getNotebookGuid()) ? note.getNotebookGuid() : null;
 
                             if (guid != null) {
@@ -191,6 +192,10 @@ public class EvernoteService {
                                     }
                                 }
                             }
+                        }
+                        else {
+                            // this is risky but better than nothing
+                            json.put(KEY_JSON_TYPE, KEY_JSON_TYPE_PERSONAL);
                         }
                         callback.onSuccess(KEY_JSON + json.toString());
                     } catch (JSONException ex) {
