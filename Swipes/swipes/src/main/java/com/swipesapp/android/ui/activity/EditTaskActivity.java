@@ -166,8 +166,8 @@ public class EditTaskActivity extends FragmentActivity {
     private static final String INTENT_VIEW_NOTE = "com.evernote.action.VIEW_NOTE";
     private static final String EXTRA_EVERNOTE_GUID = "NOTE_GUID";
 
-    private static final String GUID_PREFIX = "\"guid\":\"";
-    private static final String GUID_SUFFIX = "\",\"type\"";
+    private static final String GUID_PREFIX = "guid\":\"";
+    private static final String GUID_SUFFIX = "\"";
 
     private WeakReference<Context> mContext;
 
@@ -1231,15 +1231,18 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.evernote_attachment_container)
     protected void openEvernoteAttachment() {
-        // Extract GUID from attachment.
         String guid = mEvernoteAttachment.getIdentifier();
-        guid = guid.substring(guid.indexOf(GUID_PREFIX) + GUID_PREFIX.length());
-        guid = guid.substring(0, guid.indexOf(GUID_SUFFIX));
 
-        // Open note in Evernote.
-        Intent evernoteIntent = new Intent(INTENT_VIEW_NOTE);
-        evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
-        startActivity(evernoteIntent);
+        if (guid != null && !guid.isEmpty()) {
+            // Extract GUID from attachment.
+            guid = guid.substring(guid.indexOf(GUID_PREFIX) + GUID_PREFIX.length());
+            guid = guid.substring(0, guid.indexOf(GUID_SUFFIX));
+
+            // Open note in Evernote.
+            Intent evernoteIntent = new Intent(INTENT_VIEW_NOTE);
+            evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
+            startActivity(evernoteIntent);
+        }
     }
 
 }
