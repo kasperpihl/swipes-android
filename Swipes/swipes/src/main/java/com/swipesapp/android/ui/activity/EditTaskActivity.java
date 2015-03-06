@@ -163,6 +163,12 @@ public class EditTaskActivity extends FragmentActivity {
 
     private static final String TAG_SEPARATOR = ", ";
 
+    private static final String INTENT_VIEW_NOTE = "com.evernote.action.VIEW_NOTE";
+    private static final String EXTRA_EVERNOTE_GUID = "NOTE_GUID";
+
+    private static final String GUID_PREFIX = "\"guid\":\"";
+    private static final String GUID_SUFFIX = "\",\"type\"";
+
     private WeakReference<Context> mContext;
 
     private TasksService mTasksService;
@@ -170,6 +176,7 @@ public class EditTaskActivity extends FragmentActivity {
     private Long mId;
 
     private GsonTask mTask;
+    private GsonAttachment mEvernoteAttachment;
 
     private List<GsonTag> mAssignedTags;
 
@@ -417,6 +424,7 @@ public class EditTaskActivity extends FragmentActivity {
                 // Check if attachment comes from Evernote.
                 if (attachment.getService().equals(Services.EVERNOTE)) {
                     // Attachment found. Update views.
+                    mEvernoteAttachment = attachment;
                     mEvernoteAttachmentContainer.setVisibility(View.VISIBLE);
                     mEvernoteAttachmentTitle.setText(attachment.getTitle());
                 }
@@ -1217,5 +1225,18 @@ public class EditTaskActivity extends FragmentActivity {
             return false;
         }
     };
+
+    @OnClick(R.id.evernote_attachment_container)
+    protected void openEvernoteAttachment() {
+        // Extract GUID from attachment.
+        String guid = mEvernoteAttachment.getIdentifier();
+        guid = guid.substring(guid.indexOf(GUID_PREFIX) + GUID_PREFIX.length());
+        guid = guid.substring(0, guid.indexOf(GUID_SUFFIX));
+
+        // Open note in Evernote.
+        Intent evernoteIntent = new Intent(INTENT_VIEW_NOTE);
+        evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
+        startActivity(evernoteIntent);
+    }
 
 }
