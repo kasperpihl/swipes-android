@@ -211,6 +211,9 @@ public class EditTaskActivity extends FragmentActivity {
         setupListView();
 
         updateViews();
+
+        boolean showActionSteps = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_ACTION_STEPS, false);
+        if (showActionSteps) showSubtasks();
     }
 
     @Override

@@ -740,23 +740,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (task != null) {
                 // Start selection or edit task.
                 if (mActivity.isSelectionMode()) {
-                    View selectedIndicator = view.findViewById(R.id.selected_indicator);
-
-                    if (task.isSelected()) {
-                        // Deselect task.
-                        task.setSelected(false);
-                        selectedIndicator.setBackgroundColor(0);
-                        sSelectedTasks.remove(task);
-                    } else {
-                        // Select task.
-                        task.setSelected(true);
-                        selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
-                        sSelectedTasks.add(task);
-                    }
-
-                    mActivity.updateSelectionCount(sSelectedTasks.size());
+                    selectTask(view, task);
                 } else {
-                    startEditTask(task.getId());
+                    startEditTask(task.getId(), false);
                 }
             }
         }
@@ -774,7 +760,38 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 mTasksService.saveTask(task, true);
             }
         }
+
+        @Override
+        public void onClickNumber(View view, int position) {
+            GsonTask task = getTask(position);
+            if (task != null) {
+                // Start selection or show action steps.
+                if (mActivity.isSelectionMode()) {
+                    selectTask(view, task);
+                } else {
+                    startEditTask(task.getId(), true);
+                }
+            }
+        }
     };
+
+    private void selectTask(View view, GsonTask task) {
+        View selectedIndicator = view.findViewById(R.id.selected_indicator);
+
+        if (task.isSelected()) {
+            // Deselect task.
+            task.setSelected(false);
+            selectedIndicator.setBackgroundColor(0);
+            sSelectedTasks.remove(task);
+        } else {
+            // Select task.
+            task.setSelected(true);
+            selectedIndicator.setBackgroundColor(ThemeUtils.getSectionColor(mSection, getActivity()));
+            sSelectedTasks.add(task);
+        }
+
+        mActivity.updateSelectionCount(sSelectedTasks.size());
+    }
 
     @Override
     public void listReordered(List list) {
@@ -974,11 +991,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
     }
 
-    private void startEditTask(Long taskId) {
-        // Call task edit activity, passing the tempId of the selected task as parameter.
+    private void startEditTask(Long taskId, boolean showActionSteps) {
+        // Call edit task activity, passing the tempId of the selected task as parameter.
         Intent editTaskIntent = new Intent(getActivity(), EditTaskActivity.class);
         editTaskIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
         editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
+        editTaskIntent.putExtra(Constants.EXTRA_SHOW_ACTION_STEPS, showActionSteps);
 
         startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
     }

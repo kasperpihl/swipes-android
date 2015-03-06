@@ -46,6 +46,11 @@ public class Constants {
     public static final String EXTRA_TASK_ID = "TASK_ID";
 
     /**
+     * Intent extra to show action steps.
+     */
+    public static final String EXTRA_SHOW_ACTION_STEPS = "SHOW_ACTION_STEPS";
+
+    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;
