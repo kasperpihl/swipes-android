@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -1231,13 +1232,12 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.evernote_attachment_container)
     protected void openEvernoteAttachment() {
-        String guid = mEvernoteAttachment.getIdentifier();
+        // Extract GUID from note.
+        String identifier = mEvernoteAttachment.getIdentifier();
+        Note note = EvernoteService.noteFromJson(identifier);
+        String guid = note != null ? note.getGuid() : null;
 
         if (guid != null && !guid.isEmpty()) {
-            // Extract GUID from attachment.
-            guid = guid.substring(guid.indexOf(GUID_PREFIX) + GUID_PREFIX.length());
-            guid = guid.substring(0, guid.indexOf(GUID_SUFFIX));
-
             // Open note in Evernote.
             Intent evernoteIntent = new Intent(INTENT_VIEW_NOTE);
             evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
