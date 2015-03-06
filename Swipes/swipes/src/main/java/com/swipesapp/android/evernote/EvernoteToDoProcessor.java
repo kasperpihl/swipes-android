@@ -377,6 +377,7 @@ public class EvernoteToDoProcessor {
 
         if (-1 != startPos) {
             updatedContent = updatedContent.substring(0, startPos) + "<div><en-todo/>" + xmlEscape(title) + "<br/></div>" + updatedContent.substring(startPos);
+            todos.add(new EvernoteToDo(title, false, todos.size()));
             needUpdate = true;
             return true;
         }
