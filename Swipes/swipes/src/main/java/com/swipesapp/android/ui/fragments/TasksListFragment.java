@@ -525,32 +525,39 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public void refreshTaskList(boolean animateRefresh) {
         // Block refresh while swiping.
         if (!mListView.isSwiping()) {
-            List<GsonTask> tasks;
 
-            // Update adapter with new data.
-            switch (mSection) {
-                case LATER:
-                    tasks = mTasksService.loadScheduledTasks();
-                    keepSelection(tasks);
-                    mAdapter.update(tasks, animateRefresh);
+            // Only refresh as usual when workspace is inactive.
+            if (mActivity.getSelectedFilterTags().isEmpty()) {
+                List<GsonTask> tasks;
 
-                    // Refresh empty view.
-                    sNextTask = !tasks.isEmpty() ? tasks.get(0) : null;
-                    mActivity.updateEmptyView();
-                    break;
-                case FOCUS:
-                    tasks = mTasksService.loadFocusedTasks();
-                    keepSelection(tasks);
-                    mListView.setContentList(tasks);
-                    mAdapter.update(tasks, animateRefresh);
-                    break;
-                case DONE:
-                    tasks = mTasksService.loadCompletedTasks();
-                    keepSelection(tasks);
-                    handleDoneButtons(tasks);
-                    mAdapter.setShowingOld(sIsShowingOld);
-                    mAdapter.update(tasks, animateRefresh);
-                    break;
+                // Update adapter with new data.
+                switch (mSection) {
+                    case LATER:
+                        tasks = mTasksService.loadScheduledTasks();
+                        keepSelection(tasks);
+                        mAdapter.update(tasks, animateRefresh);
+
+                        // Refresh empty view.
+                        sNextTask = !tasks.isEmpty() ? tasks.get(0) : null;
+                        mActivity.updateEmptyView();
+                        break;
+                    case FOCUS:
+                        tasks = mTasksService.loadFocusedTasks();
+                        keepSelection(tasks);
+                        mListView.setContentList(tasks);
+                        mAdapter.update(tasks, animateRefresh);
+                        break;
+                    case DONE:
+                        tasks = mTasksService.loadCompletedTasks();
+                        keepSelection(tasks);
+                        handleDoneButtons(tasks);
+                        mAdapter.setShowingOld(sIsShowingOld);
+                        mAdapter.update(tasks, animateRefresh);
+                        break;
+                }
+            } else {
+                // Workspace is active. Reload filter.
+                filterByTags();
             }
         }
     }
