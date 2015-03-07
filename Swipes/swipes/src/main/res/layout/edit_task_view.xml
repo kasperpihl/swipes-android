@@ -238,7 +238,7 @@
                     android:hint="@string/edit_task_notes_default_text"
                     android:imeOptions="actionDone"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:maxHeight="@dimen/edit_task_title_max_height"
+                    android:maxHeight="@dimen/edit_task_note_max_height"
                     android:scrollHorizontally="false"
                     android:textSize="@dimen/text_size_small" />
             </RelativeLayout>

@@ -55,6 +55,7 @@
     <dimen name="edit_bar_buttons_margin">4dp</dimen>
     <dimen name="edit_bar_margin_edges">10dp</dimen>
     <dimen name="edit_task_title_max_height">130dp</dimen>
+    <dimen name="edit_task_note_max_height">260dp</dimen>
     <dimen name="add_tag_input_margin">24dp</dimen>
     <dimen name="repeat_option_height">50dp</dimen>
     <dimen name="repeat_options_margin">5dp</dimen>
