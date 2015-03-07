@@ -98,6 +98,10 @@ public class ExtTaskDao {
                 TaskDao.Properties.Deleted.eq(false)).buildCount().count();
     }
 
+    public long countAllTasks() {
+        return mDao.queryBuilder().where(TaskDao.Properties.Deleted.eq(false)).buildCount().count();
+    }
+
     public long countTasksForToday() {
         Calendar calendarTomorrow = Calendar.getInstance();
         calendarTomorrow.setTimeInMillis(calendarTomorrow.getTimeInMillis() + 86400000);

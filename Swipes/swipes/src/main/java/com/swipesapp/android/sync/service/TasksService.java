@@ -503,6 +503,15 @@ public class TasksService {
     }
 
     /**
+     * Counts all tasks.
+     *
+     * @return Total number of tasks. Deleted tasks are not considered.
+     */
+    public int countAllTasks() {
+        return (int) mExtTaskDao.countAllTasks();
+    }
+
+    /**
      * Counts all uncompleted tasks for today.
      *
      * @return Number of uncompleted tasks for today.

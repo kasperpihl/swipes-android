@@ -306,6 +306,9 @@ public class TasksActivity extends BaseActivity {
                     }, 1);
                     break;
                 case Constants.ACCOUNT_CHANGED_RESULT_CODE:
+                    // Perform initial setup again.
+                    performInitialSetup();
+
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
 
@@ -324,9 +327,12 @@ public class TasksActivity extends BaseActivity {
                         // Clear data immediately.
                         clearData();
                         performInitialSync();
-                    } else {
+                    } else if (mTasksService.countAllTasks() > 0) {
                         // Ask to keep user data.
                         askToKeepData();
+                    } else {
+                        // Sync user data.
+                        performInitialSync();
                     }
 
                     // Change visibility of login menu.
@@ -433,7 +439,7 @@ public class TasksActivity extends BaseActivity {
         }
 
         // Save welcome tasks if the app is used for the first time.
-        if (PreferenceUtils.isFirstRun(this)) {
+        if (PreferenceUtils.isUserFirstRun(this)) {
             WelcomeHandler welcomeHandler = new WelcomeHandler(this);
             welcomeHandler.addWelcomeTasks();
         }

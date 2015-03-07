@@ -23,10 +23,10 @@ import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesDialog;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 import java.lang.ref.WeakReference;
 
@@ -160,8 +160,16 @@ public class SettingsActivity extends BaseActivity {
             if (requestCode == Constants.LOGIN_REQUEST_CODE) {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        // Login successful. Ask to keep user data.
-                        askToKeepData();
+                        // Login successful. Mark initial setup as performed.
+                        PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
+                        PreferenceUtils.saveStringPreference(PreferenceUtils.FIRST_RUN, "NO", getActivity());
+
+                        if (TasksService.getInstance().countAllTasks() > 0) {
+                            // Ask to keep user data.
+                            askToKeepData();
+                        } else {
+                            finishAccountChange();
+                        }
                         break;
                 }
             }
@@ -203,6 +211,9 @@ public class SettingsActivity extends BaseActivity {
                             // Logout Parse user.
                             ParseUser.logOut();
 
+                            // Clear user data.
+                            TasksService.getInstance().clearAllData();
+
                             // Reset user preferences.
                             resetPreferences();
 
@@ -220,6 +231,10 @@ public class SettingsActivity extends BaseActivity {
 
             // Clear last sync date.
             PreferenceUtils.removePreference(PreferenceUtils.SYNC_LAST_UPDATE, getActivity());
+
+            // Clear state of initial setup.
+            PreferenceUtils.removePreference(PreferenceUtils.FIRST_RUN, getActivity());
+            PreferenceUtils.removePreference(PreferenceUtils.WELCOME_DIALOG, getActivity());
         }
 
         private void askToKeepData() {

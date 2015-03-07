@@ -148,12 +148,12 @@ public class PreferenceUtils {
     }
 
     /**
-     * Determines if it is the app's first run.
+     * Determines if a user is running the app for the first time. This is reset when the user logs out.
      *
      * @param context Context instance.
      * @return True if it's the app's first run.
      */
-    public static boolean isFirstRun(Context context) {
+    public static boolean isUserFirstRun(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isFirstRun = settings.getString(FIRST_RUN, "").isEmpty();
 
