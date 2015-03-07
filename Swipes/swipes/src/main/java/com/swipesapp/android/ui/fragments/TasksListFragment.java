@@ -1245,11 +1245,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void filterByTags() {
-        // Load tasks for each selected tag.
+        // Load tasks for each selected tag ("OR" filter).
         Set<GsonTask> filteredTasks = new LinkedHashSet<>();
         for (GsonTag tag : mActivity.getSelectedFilterTags()) {
             filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
         }
+
+        // Find tasks not containing all selected tags.
+        Set<GsonTask> tasksToRemove = new LinkedHashSet<>();
+        for (GsonTask task : filteredTasks) {
+            if (!task.getTags().containsAll(mActivity.getSelectedFilterTags())) {
+                tasksToRemove.add(task);
+            }
+        }
+
+        // Apply "AND" filter by default (remove tasks not matching).
+        filteredTasks.removeAll(tasksToRemove);
 
         // Make sure old tasks are shown.
         if (mSection == Sections.DONE) {
