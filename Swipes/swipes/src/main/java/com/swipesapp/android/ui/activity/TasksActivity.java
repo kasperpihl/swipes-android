@@ -71,7 +71,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import butterknife.ButterKnife;
@@ -159,7 +161,8 @@ public class TasksActivity extends BaseActivity {
 
     private Sections mCurrentSection;
 
-    private List<GsonTag> mSelectedTags;
+    private Set<GsonTag> mSelectedTags;
+    private Set<GsonTag> mSelectedFilterTags;
 
     // Used by animator to store tags container position.
     private float mTagsTranslationY;
@@ -181,8 +184,6 @@ public class TasksActivity extends BaseActivity {
     private String[] mIntentData;
 
     private boolean mIsSelectionMode;
-
-    private List<GsonTag> mSelectedFilterTags;
 
     private boolean mIsSearchActive;
     private String mSearchQuery;
@@ -221,7 +222,8 @@ public class TasksActivity extends BaseActivity {
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
 
-        mSelectedTags = new ArrayList<GsonTag>();
+        mSelectedTags = new LinkedHashSet<>();
+        mSelectedFilterTags = new LinkedHashSet<>();
 
         mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
 
@@ -330,9 +332,6 @@ public class TasksActivity extends BaseActivity {
                     } else if (mTasksService.countAllTasks() > 0) {
                         // Ask to keep user data.
                         askToKeepData();
-                    } else {
-                        // Sync user data.
-                        performInitialSync();
                     }
 
                     // Change visibility of login menu.
@@ -733,6 +732,8 @@ public class TasksActivity extends BaseActivity {
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
         String tempId = UUID.randomUUID().toString();
         String notes = null;
+        List<GsonTag> tags = new ArrayList<>();
+        tags.addAll(mSelectedTags);
 
         if (mIntentData != null) {
             notes = mIntentData[1];
@@ -740,7 +741,7 @@ public class TasksActivity extends BaseActivity {
 
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, mSelectedTags, null, 0);
+                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
             mTasksService.saveTask(task, true);
         }
 
@@ -962,6 +963,8 @@ public class TasksActivity extends BaseActivity {
         List<GsonTag> tags = mTasksService.loadAllTags();
         mAddTaskTagContainer.removeAllViews();
 
+        mSelectedTags.addAll(mSelectedFilterTags);
+
         // For each tag, add a checkbox as child view.
         for (GsonTag tag : tags) {
             int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
@@ -971,6 +974,9 @@ public class TasksActivity extends BaseActivity {
 
             // Set listener to assign tag.
             tagBox.setOnClickListener(mTagClickListener);
+
+            // Pre-select tag if needed.
+            if (mSelectedTags.contains(tag)) tagBox.setChecked(true);
 
             // Add child view.
             mAddTaskTagContainer.addView(tagBox);
@@ -1144,7 +1150,6 @@ public class TasksActivity extends BaseActivity {
 
     private void loadWorkspacesTags() {
         List<GsonTag> tags = mTasksService.loadAllAssignedTags();
-        mSelectedFilterTags = new ArrayList<GsonTag>();
 
         mWorkspacesTags.removeAllViews();
         mWorkspacesTags.setVisibility(View.VISIBLE);
@@ -1159,6 +1164,9 @@ public class TasksActivity extends BaseActivity {
 
             // Set listener to apply filter.
             tagBox.setOnClickListener(mFilterTagListener);
+
+            // Pre-select tag if needed.
+            if (mSelectedFilterTags.contains(tag)) tagBox.setChecked(true);
 
             // Add child view.
             mWorkspacesTags.addView(tagBox);
@@ -1190,7 +1198,7 @@ public class TasksActivity extends BaseActivity {
         }
     };
 
-    public List<GsonTag> getSelectedFilterTags() {
+    public Set<GsonTag> getSelectedFilterTags() {
         return mSelectedFilterTags;
     }
 
