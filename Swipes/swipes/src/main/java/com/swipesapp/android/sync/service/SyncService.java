@@ -353,11 +353,9 @@ public class SyncService {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
-        TaskSync taskSync = new TaskSync();
-
         if (current.getId() == null) {
             // Save entire task for sync.
-            taskSync = taskSyncFromGson(current);
+            TaskSync taskSync = taskSyncFromGson(current);
             mExtTaskSyncDao.getDao().insert(taskSync);
         } else {
             // Load old task if not provided.
@@ -365,26 +363,35 @@ public class SyncService {
                 old = TasksService.getInstance().loadTask(current.getId());
             }
 
+            // Load previous (not yet synced) changes.
+            TaskSync taskSync = mExtTaskSyncDao.selectTaskForSync(current.getTempId());
+            if (taskSync == null) taskSync = new TaskSync();
+
             // Save only changed attributes.
             taskSync.setObjectId(current.getObjectId());
             taskSync.setTempId(current.getTempId());
             taskSync.setUpdatedAt(DateUtils.dateToSync(current.getLocalUpdatedAt()));
-            taskSync.setDeleted(hasObjectChanged(old.getDeleted(), current.getDeleted()) ? current.getDeleted() : null);
-            taskSync.setTitle(hasObjectChanged(old.getTitle(), current.getTitle()) ? current.getTitle() : null);
-            taskSync.setNotes(hasObjectChanged(old.getNotes(), current.getNotes()) ? current.getNotes() : null);
-            taskSync.setOrder(hasObjectChanged(old.getOrder(), current.getOrder()) ? current.getOrder() : null);
-            taskSync.setPriority(hasObjectChanged(old.getPriority(), current.getPriority()) ? current.getPriority() : null);
-            taskSync.setCompletionDate(hasObjectChanged(old.getLocalCompletionDate(), current.getLocalCompletionDate()) ? DateUtils.dateToSync(current.getLocalCompletionDate()) : null);
-            taskSync.setSchedule(hasObjectChanged(old.getLocalSchedule(), current.getLocalSchedule()) ? DateUtils.dateToSync(current.getLocalSchedule()) : null);
-            taskSync.setLocation(hasObjectChanged(old.getLocation(), current.getLocation()) ? current.getLocation() : null);
-            taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), current.getLocalRepeatDate()) ? DateUtils.dateToSync(current.getLocalRepeatDate()) : null);
-            taskSync.setRepeatOption(hasObjectChanged(old.getRepeatOption(), current.getRepeatOption()) ? null : current.getRepeatOption());
-            taskSync.setTags(hasObjectChanged(old.getTags(), current.getTags()) ? tagsToString(current.getTags()) : null);
-            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), current.getAttachments()) ? attachmentsToString(current.getAttachments()) : null);
-            taskSync.setOrigin(hasObjectChanged(old.getOrigin(), current.getOrigin()) ? current.getOrigin() : null);
-            taskSync.setOriginIdentifier(hasObjectChanged(old.getOriginIdentifier(), current.getOriginIdentifier()) ? current.getOriginIdentifier() : null);
+            taskSync.setDeleted(hasObjectChanged(old.getDeleted(), current.getDeleted()) ? current.getDeleted() : taskSync.getDeleted());
+            taskSync.setTitle(hasObjectChanged(old.getTitle(), current.getTitle()) ? current.getTitle() : taskSync.getTitle());
+            taskSync.setNotes(hasObjectChanged(old.getNotes(), current.getNotes()) ? current.getNotes() : taskSync.getNotes());
+            taskSync.setOrder(hasObjectChanged(old.getOrder(), current.getOrder()) ? current.getOrder() : taskSync.getOrder());
+            taskSync.setPriority(hasObjectChanged(old.getPriority(), current.getPriority()) ? current.getPriority() : taskSync.getPriority());
+            taskSync.setCompletionDate(hasObjectChanged(old.getLocalCompletionDate(), current.getLocalCompletionDate()) ? DateUtils.dateToSync(current.getLocalCompletionDate()) : taskSync.getCompletionDate());
+            taskSync.setSchedule(hasObjectChanged(old.getLocalSchedule(), current.getLocalSchedule()) ? DateUtils.dateToSync(current.getLocalSchedule()) : taskSync.getSchedule());
+            taskSync.setLocation(hasObjectChanged(old.getLocation(), current.getLocation()) ? current.getLocation() : taskSync.getLocation());
+            taskSync.setRepeatDate(hasObjectChanged(old.getLocalRepeatDate(), current.getLocalRepeatDate()) ? DateUtils.dateToSync(current.getLocalRepeatDate()) : taskSync.getRepeatDate());
+            taskSync.setRepeatOption(hasObjectChanged(old.getRepeatOption(), current.getRepeatOption()) ? current.getRepeatOption() : taskSync.getRepeatOption());
+            taskSync.setTags(hasObjectChanged(old.getTags(), current.getTags()) ? tagsToString(current.getTags()) : taskSync.getTags());
+            taskSync.setAttachments(hasObjectChanged(old.getAttachments(), current.getAttachments()) ? attachmentsToString(current.getAttachments()) : taskSync.getAttachments());
+            taskSync.setOrigin(hasObjectChanged(old.getOrigin(), current.getOrigin()) ? current.getOrigin() : taskSync.getOrigin());
+            taskSync.setOriginIdentifier(hasObjectChanged(old.getOriginIdentifier(), current.getOriginIdentifier()) ? current.getOriginIdentifier() : taskSync.getOriginIdentifier());
 
-            mExtTaskSyncDao.getDao().insert(taskSync);
+            // Save or update tracked changes.
+            if (taskSync.getId() == null) {
+                mExtTaskSyncDao.getDao().insert(taskSync);
+            } else {
+                mExtTaskSyncDao.getDao().update(taskSync);
+            }
         }
     }
 
