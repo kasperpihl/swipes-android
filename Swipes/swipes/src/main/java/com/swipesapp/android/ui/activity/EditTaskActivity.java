@@ -219,6 +219,13 @@ public class EditTaskActivity extends FragmentActivity {
 
     @Override
     public void finish() {
+        // Save note changes when the user forgets to press the "Done" key.
+        if (!mTask.isDeleted()) {
+            if (!mNotes.getText().toString().equals(mTask.getNotes())) {
+                performChanges(true);
+            }
+        }
+
         setResult(Activity.RESULT_OK);
 
         super.finish();
@@ -550,12 +557,7 @@ public class EditTaskActivity extends FragmentActivity {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // If the action is a key-up event on the return key, save task changes.
-                        if (v.getText().length() > 0) {
-                            performChanges(true);
-                        } else {
-                            v.setText(mTask.getNotes());
-                            hideKeyboard();
-                        }
+                        performChanges(true);
                     }
                     return true;
                 }
@@ -565,10 +567,6 @@ public class EditTaskActivity extends FragmentActivity {
         @Override
         public void onKeyboardBackPressed() {
             hideKeyboard();
-
-            if (mNotes.getText().length() <= 0) {
-                mNotes.setText(mTask.getNotes());
-            }
         }
     };
 
@@ -656,7 +654,9 @@ public class EditTaskActivity extends FragmentActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         // Proceed with delete.
+                        mTask.setDeleted(true);
                         mTasksService.deleteTasks(Arrays.asList(mTask));
+
                         // Close activity.
                         finish();
                     }
