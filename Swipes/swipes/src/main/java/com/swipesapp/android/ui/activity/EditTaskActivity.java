@@ -254,8 +254,7 @@ public class EditTaskActivity extends FragmentActivity {
         } else if (mTagsArea.getVisibility() == View.VISIBLE) {
             closeTags();
         } else {
-            performChanges(false);
-            super.onBackPressed();
+            finish();
         }
     }
 
@@ -296,8 +295,8 @@ public class EditTaskActivity extends FragmentActivity {
         }
 
         mTitle.setTextColor(ThemeUtils.getTextColor(this));
-        mTitle.setOnEditorActionListener(mEnterListener);
-        mTitle.setListener(mKeyboardBackListener);
+        mTitle.setOnEditorActionListener(mTitleEnterListener);
+        mTitle.setListener(mTitleKeyboardBackListener);
 
         mPropertiesView.setOnTouchListener(mPropertiesTouchListener);
 
@@ -322,8 +321,8 @@ public class EditTaskActivity extends FragmentActivity {
         mNotes.setTextColor(ThemeUtils.getTextColor(this));
         mNotes.setHintTextColor(ThemeUtils.getTextColor(this));
         mNotes.setLinkTextColor(ThemeUtils.getSectionColor(mSection, this));
-        mNotes.setOnEditorActionListener(mEnterListener);
-        mNotes.setListener(mKeyboardBackListener);
+        mNotes.setOnEditorActionListener(mNotesEnterListener);
+        mNotes.setListener(mNotesKeyboardBackListener);
         mNotes.setOnTouchListener(mNotesTouchListener);
 
         mSubtaskAddIcon.setTextColor(ThemeUtils.getTextColor(this));
@@ -331,7 +330,7 @@ public class EditTaskActivity extends FragmentActivity {
         mSubtaskAddTitle.setTextColor(ThemeUtils.getTextColor(this));
         mSubtaskAddTitle.setHintTextColor(ThemeUtils.getTextColor(this));
         mSubtaskAddTitle.setOnEditorActionListener(mSubtaskEnterListener);
-        mSubtaskAddTitle.setListener(mKeyboardBackListener);
+        mSubtaskAddTitle.setListener(mTitleKeyboardBackListener);
 
         mSubtaskVisibilityIcon.setRotation(270f);
         mSubtaskVisibilityIcon.setTextColor(ThemeUtils.getTextColor(this));
@@ -366,7 +365,7 @@ public class EditTaskActivity extends FragmentActivity {
         addTitle.setTextColor(ThemeUtils.getTextColor(this));
         addTitle.setHintTextColor(ThemeUtils.getTextColor(this));
         addTitle.setOnEditorActionListener(mSubtaskEnterListener);
-        addTitle.setListener(mKeyboardBackListener);
+        addTitle.setListener(mTitleKeyboardBackListener);
 
         SwipesTextView visibilityIcon = (SwipesTextView) footer.findViewById(R.id.subtask_visibility_icon);
         visibilityIcon.setRotation(90f);
@@ -517,7 +516,7 @@ public class EditTaskActivity extends FragmentActivity {
         return tags;
     }
 
-    private TextView.OnEditorActionListener mEnterListener =
+    private TextView.OnEditorActionListener mTitleEnterListener =
             new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -534,13 +533,41 @@ public class EditTaskActivity extends FragmentActivity {
                 }
             };
 
-    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
+    private KeyboardBackListener mTitleKeyboardBackListener = new KeyboardBackListener() {
         @Override
         public void onKeyboardBackPressed() {
             hideKeyboard();
 
             if (mTitle.getText().length() <= 0) {
                 mTitle.setText(mTask.getTitle());
+            }
+        }
+    };
+
+    private TextView.OnEditorActionListener mNotesEnterListener =
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, save task changes.
+                        if (v.getText().length() > 0) {
+                            performChanges(true);
+                        } else {
+                            v.setText(mTask.getNotes());
+                            hideKeyboard();
+                        }
+                    }
+                    return true;
+                }
+            };
+
+    private KeyboardBackListener mNotesKeyboardBackListener = new KeyboardBackListener() {
+        @Override
+        public void onKeyboardBackPressed() {
+            hideKeyboard();
+
+            if (mNotes.getText().length() <= 0) {
+                mNotes.setText(mTask.getNotes());
             }
         }
     };
@@ -560,7 +587,6 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.main_layout)
     protected void cancel() {
-        performChanges(false);
         finish();
     }
 
