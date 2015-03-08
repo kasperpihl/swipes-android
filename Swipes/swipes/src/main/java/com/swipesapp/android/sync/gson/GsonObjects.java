@@ -1,7 +1,8 @@
 package com.swipesapp.android.sync.gson;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 
 import java.util.List;
 
@@ -13,14 +14,12 @@ import java.util.List;
 public class GsonObjects {
 
     @SerializedName("Tag")
-    @Expose(deserialize = false)
-    private List<GsonTag> tags;
+    private List<Tag> tags;
 
     @SerializedName("ToDo")
-    @Expose(deserialize = false)
-    private List<GsonTask> tasks;
+    private List<Task> tasks;
 
-    public GsonObjects(List<GsonTag> tags, List<GsonTask> tasks) {
+    public GsonObjects(List<Tag> tags, List<Task> tasks) {
         this.tags = tags;
         this.tasks = tasks;
     }

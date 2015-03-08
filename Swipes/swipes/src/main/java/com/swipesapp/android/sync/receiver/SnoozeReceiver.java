@@ -10,7 +10,7 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
@@ -38,7 +38,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
     private static NotificationManager sNotificationManager;
     private static TasksService sTasksService;
-    private static List<GsonTask> sExpiredTasks;
+    private static List<Task> sExpiredTasks;
     private static int sPreviousCount;
 
     @Override
@@ -48,15 +48,15 @@ public class SnoozeReceiver extends BroadcastReceiver {
         // Reload expired tasks in case the receiver was killed.
         reloadPreviousData(context);
 
-        List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
+        List<Task> snoozedTasks = sTasksService.loadScheduledTasks();
 
         Calendar calendar = Calendar.getInstance();
         long now = calendar.getTimeInMillis();
 
         // Look for tasks with snooze date within the next minute.
-        for (GsonTask task : snoozedTasks) {
-            if (task.getLocalSchedule() != null) {
-                calendar.setTime(task.getLocalSchedule());
+        for (Task task : snoozedTasks) {
+            if (task.getSchedule() != null) {
+                calendar.setTime(task.getSchedule());
                 long schedule = calendar.getTimeInMillis();
                 long delta = schedule - now;
 
@@ -124,7 +124,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             // Display task titles for multiple tasks.
             if (size > 1) {
                 NotificationCompat.InboxStyle content = new NotificationCompat.InboxStyle();
-                for (GsonTask task : sExpiredTasks) {
+                for (Task task : sExpiredTasks) {
                     content.addLine(task.getTitle());
                 }
                 builder.setStyle(content);
@@ -147,7 +147,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             List<String> taskIds = Arrays.asList(expired.split(TASKS_REGEX));
 
             for (String taskId : taskIds) {
-                GsonTask task = sTasksService.loadTask(taskId);
+                Task task = sTasksService.loadTask(taskId);
 
                 if (task != null && !sExpiredTasks.contains(task)) {
                     sExpiredTasks.add(task);
@@ -160,7 +160,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
         String taskIds = null;
 
         // Save tasks as comma-separated task IDs.
-        for (GsonTask task : sExpiredTasks) {
+        for (Task task : sExpiredTasks) {
             if (taskIds == null) {
                 taskIds = task.getTempId();
             } else {
@@ -189,17 +189,17 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 SnoozeActivity.applyNextDayTreatment(snooze);
 
                 // Snooze tasks from notification.
-                for (GsonTask task : sExpiredTasks) {
-                    task.setLocalSchedule(snooze.getTime());
+                for (Task task : sExpiredTasks) {
+                    task.setSchedule(snooze.getTime());
 
                     sTasksService.saveTask(task, true);
                 }
             } else if (intent.getAction().equals(Actions.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
-                for (GsonTask task : sExpiredTasks) {
+                for (Task task : sExpiredTasks) {
                     Date currentDate = new Date();
-                    task.setLocalCompletionDate(currentDate);
-                    task.setLocalSchedule(currentDate);
+                    task.setCompletionDate(currentDate);
+                    task.setSchedule(currentDate);
 
                     sTasksService.saveTask(task, true);
                 }

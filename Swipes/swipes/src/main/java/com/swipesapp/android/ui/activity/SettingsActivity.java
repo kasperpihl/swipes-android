@@ -17,8 +17,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
@@ -276,12 +276,12 @@ public class SettingsActivity extends BaseActivity {
 
         private void saveDataForSync() {
             // Save all tags for syncing.
-            for (GsonTag tag : TasksService.getInstance().loadAllTags()) {
+            for (Tag tag : TasksService.getInstance().loadAllTags()) {
                 SyncService.getInstance().saveTagForSync(tag);
             }
 
             // Save all tasks for syncing.
-            for (GsonTask task : TasksService.getInstance().loadAllTasks()) {
+            for (Task task : TasksService.getInstance().loadAllTasks()) {
                 if (!task.getDeleted()) {
                     task.setId(null);
                     SyncService.getInstance().saveTaskChangesForSync(task, null);

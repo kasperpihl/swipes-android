@@ -13,16 +13,12 @@ import com.swipesapp.android.db.dao.ExtAttachmentDao;
 import com.swipesapp.android.db.dao.ExtTagDao;
 import com.swipesapp.android.db.dao.ExtTaskDao;
 import com.swipesapp.android.db.dao.ExtTaskTagDao;
-import com.swipesapp.android.sync.gson.GsonAttachment;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -94,24 +90,23 @@ public class TasksService {
     /**
      * Creates a new task, or updates an existing one.
      *
-     * @param gsonTask Object holding task data.
-     * @param sync     True to queue changes and perform sync.
+     * @param task Object holding task data.
+     * @param sync True to queue changes and perform sync.
      */
-    public void saveTask(GsonTask gsonTask, boolean sync) {
-        Long id = gsonTask.getId();
-        String parentId = gsonTask.getParentLocalId();
+    public void saveTask(Task task, boolean sync) {
+        Long id = task.getId();
+        String parentId = task.getParentLocalId();
 
-        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask, null);
+        if (sync) SyncService.getInstance().saveTaskChangesForSync(task, null);
 
         if (id == null) {
-            createTask(gsonTask);
+            createTask(task);
         } else {
-            Task task = mExtTaskDao.selectTask(id);
-            updateTask(gsonTask, task);
+            updateTask(task);
         }
 
         if (parentId != null) {
-            updateParent(gsonTask, sync);
+            updateParent(task, sync);
         }
 
         if (sync) SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
@@ -123,15 +118,13 @@ public class TasksService {
      * @param subtask Subtask to update parent.
      * @param sync    True to queue changes for sync.
      */
-    private void updateParent(GsonTask subtask, boolean sync) {
-        GsonTask gsonParent = loadTask(subtask.getParentLocalId());
+    private void updateParent(Task subtask, boolean sync) {
+        Task parent = loadTask(subtask.getParentLocalId());
 
-        if (gsonParent != null) {
-            gsonParent.setLocalUpdatedAt(subtask.getLocalUpdatedAt());
+        if (parent != null) {
+            parent.setUpdatedAt(subtask.getUpdatedAt());
 
-            if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonParent, null);
-
-            Task parent = tasksFromGson(Arrays.asList(gsonParent)).get(0);
+            if (sync) SyncService.getInstance().saveTaskChangesForSync(parent, null);
 
             synchronized (this) {
                 mExtTaskDao.getDao().update(parent);
@@ -144,8 +137,8 @@ public class TasksService {
      *
      * @param tasks List containing tasks to delete.
      */
-    public void deleteTasks(List<GsonTask> tasks) {
-        for (GsonTask task : tasks) {
+    public void deleteTasks(List<Task> tasks) {
+        for (Task task : tasks) {
             // Mark task as deleted and persist change.
             task.setDeleted(true);
             saveTask(task, true);
@@ -160,63 +153,44 @@ public class TasksService {
     /**
      * Creates a new task.
      *
-     * @param gsonTask Object holding new task data.
+     * @param task Object holding new task data.
      */
-    private void createTask(GsonTask gsonTask) {
-        Task task = tasksFromGson(Arrays.asList(gsonTask)).get(0);
-
+    private void createTask(Task task) {
         synchronized (this) {
             Long taskId = mExtTaskDao.getDao().insert(task);
-            saveTags(taskId, gsonTask.getTags());
-            saveAttachments(taskId, gsonTask.getAttachments());
+            saveTags(taskId, task.getTags());
+            saveAttachments(taskId, task.getAttachments());
         }
     }
 
     /**
      * Updates an existing task.
      *
-     * @param gsonTask Object holding updated data.
-     * @param task     Task to update.
+     * @param task Object holding updated data.
      */
-    private void updateTask(GsonTask gsonTask, Task task) {
+    private void updateTask(Task task) {
         // Set new update date.
-        gsonTask.setLocalUpdatedAt(new Date());
-
-        // Update only mutable attributes.
-        task.setTempId(gsonTask.getTempId());
-        task.setUpdatedAt(gsonTask.getLocalUpdatedAt());
-        task.setDeleted(gsonTask.isDeleted());
-        task.setTitle(gsonTask.getTitle());
-        task.setNotes(gsonTask.getNotes());
-        task.setOrder(gsonTask.getOrder());
-        task.setPriority(gsonTask.getPriority());
-        task.setCompletionDate(gsonTask.getLocalCompletionDate());
-        task.setSchedule(gsonTask.getLocalSchedule());
-        task.setLocation(gsonTask.getLocation());
-        task.setRepeatDate(gsonTask.getLocalRepeatDate());
-        task.setRepeatOption(gsonTask.getRepeatOption());
-        task.setOrigin(gsonTask.getOrigin());
-        task.setOriginIdentifier(gsonTask.getOriginIdentifier());
+        task.setUpdatedAt(new Date());
 
         synchronized (this) {
             mExtTaskDao.getDao().update(task);
-            saveTags(task.getId(), gsonTask.getTags());
-            saveAttachments(task.getId(), gsonTask.getAttachments());
+            saveTags(task.getId(), task.getTags());
+            saveAttachments(task.getId(), task.getAttachments());
         }
     }
 
     /**
      * Associates existing tags with a task.
      *
-     * @param taskId   ID of the task.
-     * @param gsonTags List of objects holding tag data.
+     * @param taskId ID of the task.
+     * @param tags   List of objects holding tag data.
      */
-    private void saveTags(Long taskId, List<GsonTag> gsonTags) {
-        if (gsonTags != null) {
-            for (GsonTag tag : gsonTags) {
+    private void saveTags(Long taskId, List<Tag> tags) {
+        if (tags != null) {
+            for (Tag tag : tags) {
                 // Load tag based on temp ID or object ID.
                 String tempId = tag.getTempId() != null ? tag.getTempId() : tag.getObjectId();
-                GsonTag localTag = loadTag(tempId);
+                Tag localTag = loadTag(tempId);
 
                 // Make sure tag already exists locally.
                 if (localTag != null) {
@@ -240,21 +214,21 @@ public class TasksService {
      * @param taskId             Task to associate with.
      * @param currentAttachments List of attachments.
      */
-    private void saveAttachments(Long taskId, List<GsonAttachment> currentAttachments) {
+    private void saveAttachments(Long taskId, List<Attachment> currentAttachments) {
         // Load existing attachments.
-        List<GsonAttachment> previousAttachments = loadTask(taskId).getAttachments();
+        List<Attachment> previousAttachments = loadTask(taskId).getAttachments();
         // List to keep track of updated objects.
-        List<GsonAttachment> updatedAttachments = new ArrayList<GsonAttachment>();
+        List<Attachment> updatedAttachments = new ArrayList<>();
 
         if (previousAttachments != null) {
-            for (GsonAttachment previous : previousAttachments) {
+            for (Attachment previous : previousAttachments) {
                 Long id = previous.getId();
                 String identifier = previous.getIdentifier();
                 boolean hasMatch = false;
 
                 // Match existing with updated.
                 if (currentAttachments != null) {
-                    for (GsonAttachment current : currentAttachments) {
+                    for (Attachment current : currentAttachments) {
                         if (id.equals(current.getId()) || identifier.equals(current.getIdentifier())) {
                             // Update attachment.
                             previous.setIdentifier(current.getIdentifier());
@@ -285,7 +259,7 @@ public class TasksService {
         if (currentAttachments != null) {
             currentAttachments.removeAll(updatedAttachments);
 
-            for (GsonAttachment newAttachment : currentAttachments) {
+            for (Attachment newAttachment : currentAttachments) {
                 saveAttachment(newAttachment, taskId);
             }
         }
@@ -315,13 +289,10 @@ public class TasksService {
      *
      * @param tag Tag to save.
      */
-    public void saveTag(GsonTag tag) {
+    public void saveTag(Tag tag) {
         if (tag.getTitle() != null && !tag.getTitle().isEmpty()) {
-            // Create local tag.
-            Tag localTag = new Tag(null, tag.getObjectId(), tag.getTempId(), tag.getLocalCreatedAt(), tag.getLocalUpdatedAt(), tag.getTitle());
-
             // Persist local tag.
-            mExtTagDao.getDao().insert(localTag);
+            mExtTagDao.getDao().insert(tag);
         }
     }
 
@@ -361,29 +332,27 @@ public class TasksService {
     /**
      * Creates a new attachment, or updates an existing one.
      *
-     * @param gsonAttachment Object holding attachment data.
+     * @param attachment Object holding attachment data.
      */
-    public void saveAttachment(GsonAttachment gsonAttachment, long taskId) {
-        Long id = gsonAttachment.getId();
+    public void saveAttachment(Attachment attachment, long taskId) {
+        Long id = attachment.getId();
 
         if (id == null) {
-            createAttachment(gsonAttachment, taskId);
+            createAttachment(attachment, taskId);
         } else {
-            Attachment attachment = mExtAttachmentDao.selectAttachment(id);
-            updateAttachment(gsonAttachment, attachment, taskId);
+            updateAttachment(attachment, taskId);
         }
     }
 
     /**
      * Creates a new attachment.
      *
-     * @param gsonAttachment Object holding new attachment data.
-     * @param taskId         Database ID of the task to associate with.
+     * @param attachment Object holding new attachment data.
+     * @param taskId     Database ID of the task to associate with.
      */
-    private void createAttachment(GsonAttachment gsonAttachment, long taskId) {
-        Attachment attachment = attachmentsFromGson(Arrays.asList(gsonAttachment), taskId).get(0);
-
+    private void createAttachment(Attachment attachment, long taskId) {
         synchronized (this) {
+            attachment.setTaskId(taskId);
             mExtAttachmentDao.getDao().insert(attachment);
         }
     }
@@ -391,21 +360,12 @@ public class TasksService {
     /**
      * Updates an existing attachment.
      *
-     * @param gsonAttachment Object holding updated data.
-     * @param attachment     Attachment to update.
+     * @param attachment Object holding updated data.
      */
-    private void updateAttachment(GsonAttachment gsonAttachment, Attachment attachment, long taskId) {
-        if (attachment != null) {
-            // Update only mutable attributes.
-            attachment.setIdentifier(gsonAttachment.getIdentifier());
-            attachment.setService(gsonAttachment.getService());
-            attachment.setTitle(gsonAttachment.getTitle());
-            attachment.setSync(gsonAttachment.getSync());
+    private void updateAttachment(Attachment attachment, long taskId) {
+        synchronized (this) {
             attachment.setTaskId(taskId);
-
-            synchronized (this) {
-                mExtAttachmentDao.getDao().update(attachment);
-            }
+            mExtAttachmentDao.getDao().update(attachment);
         }
     }
 
@@ -432,13 +392,13 @@ public class TasksService {
         if (attachments != null) {
             for (Attachment attachment : attachments) {
                 // Load task with attachment.
-                GsonTask old = loadTask(attachment.getTaskId());
+                Task old = loadTask(attachment.getTaskId());
 
                 // Delete from database.
                 mExtAttachmentDao.getDao().delete(attachment);
 
                 // Update task with removed attachment.
-                GsonTask updated = loadTask(old.getId());
+                Task updated = loadTask(old.getId());
                 SyncService.getInstance().saveTaskChangesForSync(updated, old);
             }
         }
@@ -450,9 +410,15 @@ public class TasksService {
      * @param id ID of the task.
      * @return Selected task.
      */
-    public GsonTask loadTask(Long id) {
+    public Task loadTask(Long id) {
         Task task = mExtTaskDao.selectTask(id);
-        return task != null ? gsonFromTasks(Arrays.asList(task)).get(0) : null;
+
+        if (task != null) {
+            task.setTags(loadTagsForTask(id));
+            task.setAttachments(loadAttachmentsForTask(id));
+        }
+
+        return task;
     }
 
     /**
@@ -461,9 +427,15 @@ public class TasksService {
      * @param tempId Temp ID of the task.
      * @return Selected task.
      */
-    public GsonTask loadTask(String tempId) {
+    public Task loadTask(String tempId) {
         Task task = mExtTaskDao.selectTask(tempId);
-        return task != null ? gsonFromTasks(Arrays.asList(task)).get(0) : null;
+
+        if (task != null) {
+            task.setTags(loadTagsForTask(task.getId()));
+            task.setAttachments(loadAttachmentsForTask(task.getId()));
+        }
+
+        return task;
     }
 
     /**
@@ -471,8 +443,17 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public List<GsonTask> loadAllTasks() {
-        return gsonFromTasks(mExtTaskDao.listAllTasks());
+    public List<Task> loadAllTasks() {
+        List<Task> tasks = mExtTaskDao.listAllTasks();
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setTags(loadTagsForTask(task.getId()));
+                task.setAttachments(loadAttachmentsForTask(task.getId()));
+            }
+        }
+
+        return tasks != null ? tasks : new ArrayList<Task>();
     }
 
     /**
@@ -480,8 +461,17 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public List<GsonTask> loadScheduledTasks() {
-        return gsonFromTasks(mExtTaskDao.listScheduledTasks());
+    public List<Task> loadScheduledTasks() {
+        List<Task> tasks = mExtTaskDao.listScheduledTasks();
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setTags(loadTagsForTask(task.getId()));
+                task.setAttachments(loadAttachmentsForTask(task.getId()));
+            }
+        }
+
+        return tasks != null ? tasks : new ArrayList<Task>();
     }
 
     /**
@@ -489,8 +479,17 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public List<GsonTask> loadFocusedTasks() {
-        return gsonFromTasks(mExtTaskDao.listFocusedTasks());
+    public List<Task> loadFocusedTasks() {
+        List<Task> tasks = mExtTaskDao.listFocusedTasks();
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setTags(loadTagsForTask(task.getId()));
+                task.setAttachments(loadAttachmentsForTask(task.getId()));
+            }
+        }
+
+        return tasks != null ? tasks : new ArrayList<Task>();
     }
 
     /**
@@ -498,8 +497,17 @@ public class TasksService {
      *
      * @return List of tasks.
      */
-    public List<GsonTask> loadCompletedTasks() {
-        return gsonFromTasks(mExtTaskDao.listCompletedTasks());
+    public List<Task> loadCompletedTasks() {
+        List<Task> tasks = mExtTaskDao.listCompletedTasks();
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setTags(loadTagsForTask(task.getId()));
+                task.setAttachments(loadAttachmentsForTask(task.getId()));
+            }
+        }
+
+        return tasks != null ? tasks : new ArrayList<Task>();
     }
 
     /**
@@ -536,9 +544,9 @@ public class TasksService {
      * @param section Section to search from.
      * @return List of tasks.
      */
-    public List<GsonTask> searchTasks(String query, Sections section) {
-        List<GsonTask> tasks = new ArrayList<GsonTask>();
-        List<GsonTask> results = new ArrayList<GsonTask>();
+    public List<Task> searchTasks(String query, Sections section) {
+        List<Task> tasks = new ArrayList<>();
+        List<Task> results = new ArrayList<>();
 
         switch (section) {
             case LATER:
@@ -552,7 +560,7 @@ public class TasksService {
                 break;
         }
 
-        for (GsonTask task : tasks) {
+        for (Task task : tasks) {
             String title = task.getTitle() != null ? task.getTitle().toLowerCase() : "";
             String notes = task.getNotes() != null ? task.getNotes().toLowerCase() : "";
 
@@ -571,8 +579,8 @@ public class TasksService {
      * @param task  Task to search from.
      * @return True if they contain, false otherwise.
      */
-    private boolean tagsContainQuery(String query, GsonTask task) {
-        for (GsonTag tag : task.getTags()) {
+    private boolean tagsContainQuery(String query, Task task) {
+        for (Tag tag : task.getTags()) {
             String title = tag.getTitle().toLowerCase();
 
             if (title.contains(query)) {
@@ -588,9 +596,8 @@ public class TasksService {
      * @param id Database ID of the tag.
      * @return Selected tag.
      */
-    public GsonTag loadTag(Long id) {
-        Tag tag = mExtTagDao.selectTag(id);
-        return tag != null ? gsonFromTags(Arrays.asList(tag)).get(0) : null;
+    public Tag loadTag(Long id) {
+        return mExtTagDao.selectTag(id);
     }
 
     /**
@@ -599,9 +606,8 @@ public class TasksService {
      * @param tempId Temp ID of the tag.
      * @return Selected tag.
      */
-    public GsonTag loadTag(String tempId) {
-        Tag tag = mExtTagDao.selectTag(tempId);
-        return tag != null ? gsonFromTags(Arrays.asList(tag)).get(0) : null;
+    public Tag loadTag(String tempId) {
+        return mExtTagDao.selectTag(tempId);
     }
 
     /**
@@ -609,8 +615,9 @@ public class TasksService {
      *
      * @return List of tags.
      */
-    public List<GsonTag> loadAllTags() {
-        return gsonFromTags(mExtTagDao.listAllTags());
+    public List<Tag> loadAllTags() {
+        List<Tag> tags = mExtTagDao.listAllTags();
+        return tags != null ? tags : new ArrayList<Tag>();
     }
 
     /**
@@ -618,15 +625,15 @@ public class TasksService {
      *
      * @return List of tags.
      */
-    public List<GsonTag> loadAllAssignedTags() {
-        List<GsonTag> tags = loadAllTags();
-        List<GsonTag> assigned = new ArrayList<GsonTag>();
+    public List<Tag> loadAllAssignedTags() {
+        List<Tag> tags = loadAllTags();
+        List<Tag> assigned = new ArrayList<Tag>();
 
-        for (GsonTag tag : tags) {
+        for (Tag tag : tags) {
             List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTag(tag.getId());
 
             for (TaskTag association : associations) {
-                Task task = mExtTaskDao.selectTask(association.getTaskId());
+                Task task = loadTask(association.getTaskId());
 
                 if (!task.getDeleted() && !assigned.contains(tag)) assigned.add(tag);
             }
@@ -642,23 +649,23 @@ public class TasksService {
      * @param section Section to load tasks from.
      * @return List of tasks.
      */
-    public List<GsonTask> loadTasksForTag(Long tagId, Sections section) {
+    public List<Task> loadTasksForTag(Long tagId, Sections section) {
         List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTag(tagId);
-        List<GsonTask> tasks = new ArrayList<GsonTask>();
+        List<Task> tasks = new ArrayList<>();
 
         for (TaskTag association : associations) {
-            GsonTask task = loadTask(association.getTaskId());
+            Task task = loadTask(association.getTaskId());
             boolean isFromSection = false;
 
             switch (section) {
                 case LATER:
-                    isFromSection = (task.getLocalSchedule() == null || task.getLocalSchedule().after(new Date())) && task.getLocalCompletionDate() == null;
+                    isFromSection = (task.getSchedule() == null || task.getSchedule().after(new Date())) && task.getCompletionDate() == null;
                     break;
                 case FOCUS:
-                    isFromSection = (task.getLocalSchedule() == null || task.getLocalSchedule().before(new Date())) && task.getLocalCompletionDate() == null;
+                    isFromSection = (task.getSchedule() == null || task.getSchedule().before(new Date())) && task.getCompletionDate() == null;
                     break;
                 case DONE:
-                    isFromSection = task.getLocalCompletionDate() != null;
+                    isFromSection = task.getCompletionDate() != null;
                     break;
             }
 
@@ -674,19 +681,19 @@ public class TasksService {
      * @param attachmentSync Attachments are filtered by this value for their "sync" property.
      * @return List of tasks.
      */
-    public List<GsonTask> loadTasksWithEvernote(boolean attachmentSync) {
+    public List<Task> loadTasksWithEvernote(boolean attachmentSync) {
         // Load Evernote attachments.
         List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(Services.EVERNOTE);
 
         // Holds matching tasks.
-        List<GsonTask> matches = new ArrayList<GsonTask>();
+        List<Task> matches = new ArrayList<>();
 
         if (attachments != null) {
             for (Attachment attachment : attachments) {
                 // Check for sync property.
                 if (attachment.getSync() == attachmentSync) {
                     // Add associated task to the list of matches.
-                    GsonTask match = loadTask(attachment.getTaskId());
+                    Task match = loadTask(attachment.getTaskId());
                     if (!match.getDeleted())
                         matches.add(match);
                 }
@@ -714,7 +721,7 @@ public class TasksService {
                 // Check for sync property.
                 if (attachment.getSync() == attachmentSync) {
                     // Check if the task for attachment is not deleted.
-                    GsonTask matchingTask = loadTask(attachment.getTaskId());
+                    Task matchingTask = loadTask(attachment.getTaskId());
                     if (!matchingTask.getDeleted())
                         matches.add(attachment.getIdentifier());
                 }
@@ -730,9 +737,9 @@ public class TasksService {
      * @param taskId ID of the task.
      * @return List of tags.
      */
-    private List<GsonTag> loadTagsForTask(Long taskId) {
+    private List<Tag> loadTagsForTask(Long taskId) {
         List<TaskTag> associations = mExtTaskTagDao.selectAssociationsForTask(taskId);
-        List<GsonTag> tags = new ArrayList<GsonTag>();
+        List<Tag> tags = new ArrayList<>();
 
         for (TaskTag association : associations) {
             tags.add(loadTag(association.getTagId()));
@@ -747,8 +754,9 @@ public class TasksService {
      * @param objectId Parent object ID.
      * @return List of subtasks.
      */
-    public List<GsonTask> loadSubtasksForTask(String objectId) {
-        return gsonFromTasks(mExtTaskDao.listSubtasksForTask(objectId));
+    public List<Task> loadSubtasksForTask(String objectId) {
+        List<Task> subtasks = mExtTaskDao.listSubtasksForTask(objectId);
+        return subtasks != null ? subtasks : new ArrayList<Task>();
     }
 
     /**
@@ -767,10 +775,10 @@ public class TasksService {
      * @param objectId Parent object ID.
      */
     private void deleteSubtasksForTask(String objectId) {
-        List<GsonTask> subtasks = loadSubtasksForTask(objectId);
+        List<Task> subtasks = loadSubtasksForTask(objectId);
 
         // Mark subtasks as deleted and persist changes.
-        for (GsonTask subtask : subtasks) {
+        for (Task subtask : subtasks) {
             subtask.setDeleted(true);
             saveTask(subtask, true);
         }
@@ -782,8 +790,9 @@ public class TasksService {
      * @param taskId ID of the task.
      * @return List of attachments.
      */
-    public List<GsonAttachment> loadAttachmentsForTask(Long taskId) {
-        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForTask(taskId));
+    public List<Attachment> loadAttachmentsForTask(Long taskId) {
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForTask(taskId);
+        return attachments != null ? attachments : new ArrayList<Attachment>();
     }
 
     /**
@@ -792,9 +801,8 @@ public class TasksService {
      * @param id Database ID of the attachment.
      * @return Selected attachment.
      */
-    public GsonAttachment loadAttachment(Long id) {
-        Attachment attachment = mExtAttachmentDao.selectAttachment(id);
-        return attachment != null ? gsonFromAttachments(Arrays.asList(attachment)).get(0) : null;
+    public Attachment loadAttachment(Long id) {
+        return mExtAttachmentDao.selectAttachment(id);
     }
 
     /**
@@ -803,9 +811,8 @@ public class TasksService {
      * @param identifier Identifier of the attachment.
      * @return Selected attachment.
      */
-    public GsonAttachment loadAttachment(String identifier) {
-        Attachment attachment = mExtAttachmentDao.selectAttachment(identifier);
-        return attachment != null ? gsonFromAttachments(Arrays.asList(attachment)).get(0) : null;
+    public Attachment loadAttachment(String identifier) {
+        return mExtAttachmentDao.selectAttachment(identifier);
     }
 
     /**
@@ -813,8 +820,9 @@ public class TasksService {
      *
      * @return List of attachments.
      */
-    public List<GsonAttachment> loadAllAttachments() {
-        return gsonFromAttachments(mExtAttachmentDao.listAllAttachments());
+    public List<Attachment> loadAllAttachments() {
+        List<Attachment> attachments = mExtAttachmentDao.listAllAttachments();
+        return attachments != null ? attachments : new ArrayList<Attachment>();
     }
 
     /**
@@ -823,8 +831,9 @@ public class TasksService {
      * @param service Service to search for (e.g. Services.EVERNOTE).
      * @return List of attachments.
      */
-    public List<GsonAttachment> loadAttachmentsForService(String service) {
-        return gsonFromAttachments(mExtAttachmentDao.listAttachmentsForService(service));
+    public List<Attachment> loadAttachmentsForService(String service) {
+        List<Attachment> attachments = mExtAttachmentDao.listAttachmentsForService(service);
+        return attachments != null ? attachments : new ArrayList<Attachment>();
     }
 
     /**
@@ -854,114 +863,6 @@ public class TasksService {
         for (Attachment attachment : attachments) {
             mExtAttachmentDao.getDao().delete(attachment);
         }
-    }
-
-    /**
-     * Converts a list of Task objects to GsonTask.
-     *
-     * @param tasks List of tasks.
-     * @return Converted list.
-     */
-    private List<GsonTask> gsonFromTasks(List<Task> tasks) {
-        List<GsonTask> gsonTasks = new ArrayList<GsonTask>();
-
-        if (tasks != null) {
-            for (Task task : tasks) {
-                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), loadAttachmentsForTask(task.getId()), task.getId()));
-            }
-        }
-
-        return gsonTasks;
-    }
-
-    /**
-     * Converts a list of Tag objects to GsonTag.
-     *
-     * @param tags List of tags.
-     * @return Converted list.
-     */
-    private List<GsonTag> gsonFromTags(List<Tag> tags) {
-        List<GsonTag> gsonTags = new ArrayList<GsonTag>();
-
-        if (tags != null) {
-            for (Tag tag : tags) {
-                gsonTags.add(GsonTag.gsonForLocal(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
-            }
-        }
-
-        return gsonTags;
-    }
-
-    /**
-     * Converts a list of Attachment objects to GsonAttachment.
-     *
-     * @param attachments List of attachments.
-     * @return Converted list.
-     */
-    private List<GsonAttachment> gsonFromAttachments(List<Attachment> attachments) {
-        List<GsonAttachment> gsonAttachments = new ArrayList<GsonAttachment>();
-
-        if (attachments != null) {
-            for (Attachment attachment : attachments) {
-                gsonAttachments.add(new GsonAttachment(attachment.getId(), attachment.getIdentifier(), attachment.getService(), attachment.getTitle(), attachment.getSync()));
-            }
-        }
-
-        return gsonAttachments;
-    }
-
-    /**
-     * Converts a list of GsonTask to Task objects.
-     *
-     * @param gsonTasks List of GsonTask.
-     * @return Converted list.
-     */
-    private List<Task> tasksFromGson(List<GsonTask> gsonTasks) {
-        List<Task> tasks = new ArrayList<Task>();
-
-        if (gsonTasks != null) {
-            for (GsonTask gsonTask : gsonTasks) {
-                tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(), gsonTask.getLocalCreatedAt(), gsonTask.getLocalUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getLocalCompletionDate(), gsonTask.getLocalSchedule(), gsonTask.getLocation(), gsonTask.getLocalRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
-            }
-        }
-
-        return tasks;
-    }
-
-    /**
-     * Converts a list of GsonTag to Tag objects.
-     *
-     * @param gsonTags List of GsonTag.
-     * @return Converted list.
-     */
-    private List<Tag> tagsFromGson(List<GsonTag> gsonTags) {
-        List<Tag> tags = new ArrayList<Tag>();
-
-        if (gsonTags != null) {
-            for (GsonTag gsonTag : gsonTags) {
-                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getLocalCreatedAt(), gsonTag.getLocalUpdatedAt(), gsonTag.getTitle()));
-            }
-        }
-
-        return tags;
-    }
-
-    /**
-     * Converts a list of GsonAttachment to Attachment objects.
-     *
-     * @param gsonAttachments List of GsonAttachment.
-     * @return Converted list.
-     */
-    private List<Attachment> attachmentsFromGson(List<GsonAttachment> gsonAttachments, long taskId) {
-        List<Attachment> attachments = new ArrayList<Attachment>();
-
-        if (gsonAttachments != null) {
-            for (GsonAttachment gsonAttachment : gsonAttachments) {
-                attachments.add(new Attachment(gsonAttachment.getId(), gsonAttachment.getIdentifier(), gsonAttachment.getService(), gsonAttachment.getTitle(), gsonAttachment.getSync(), taskId));
-            }
-        }
-
-        return attachments;
     }
 
 }

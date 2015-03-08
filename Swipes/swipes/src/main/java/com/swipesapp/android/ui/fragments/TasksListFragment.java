@@ -36,9 +36,9 @@ import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.handler.RepeatHandler;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
@@ -100,9 +100,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private RepeatHandler mRepeatHandler;
 
     // Selected tasks, tags and filters.
-    private static List<GsonTask> sSelectedTasks;
-    private static GsonTask sNextTask;
-    private List<GsonTag> mAssignedTags;
+    private static List<Task> sSelectedTasks;
+    private static Task sNextTask;
+    private List<Tag> mAssignedTags;
 
     // Empty view.
     private View mEmptyView;
@@ -163,7 +163,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mRepeatHandler = new RepeatHandler(getActivity());
 
-        sSelectedTasks = new ArrayList<GsonTask>();
+        sSelectedTasks = new ArrayList<Task>();
 
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
         mSection = Sections.getSectionByNumber(sectionNumber);
@@ -528,13 +528,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Only refresh as usual when workspace is inactive.
             if (mActivity.getSelectedFilterTags().isEmpty()) {
-                List<GsonTask> tasks;
+                List<Task> tasks;
 
                 // Update adapter with new data.
                 switch (mSection) {
                     case LATER:
                         tasks = mTasksService.loadScheduledTasks();
-                        keepSelection(tasks);
                         mAdapter.update(tasks, animateRefresh);
 
                         // Refresh empty view.
@@ -543,13 +542,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         break;
                     case FOCUS:
                         tasks = mTasksService.loadFocusedTasks();
-                        keepSelection(tasks);
                         mListView.setContentList(tasks);
                         mAdapter.update(tasks, animateRefresh);
                         break;
                     case DONE:
                         tasks = mTasksService.loadCompletedTasks();
-                        keepSelection(tasks);
                         handleDoneButtons(tasks);
                         mAdapter.setShowingOld(sIsShowingOld);
                         mAdapter.update(tasks, animateRefresh);
@@ -562,19 +559,16 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void keepSelection(List<GsonTask> tasks) {
-        for (GsonTask selected : sSelectedTasks) {
-            for (GsonTask task : tasks) {
-                if (selected.getTempId().equals(task.getTempId())) {
-                    task.setSelected(true);
-                    break;
-                }
-            }
+    private void clearSelection() {
+        for (Task task : sSelectedTasks) {
+            task.setSelected(false);
         }
+
+        sSelectedTasks.clear();
     }
 
-    private GsonTask getTask(int position) {
-        return (GsonTask) mAdapter.getItem(position);
+    private Task getTask(int position) {
+        return (Task) mAdapter.getItem(position);
     }
 
     private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
@@ -594,7 +588,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 //                mListView.setSwipeEnabled(false);
             } else if (action.equals(Actions.SELECTION_CLEARED)) {
                 // Clear selected tasks and stop selection mode.
-                sSelectedTasks.clear();
+                clearSelection();
                 mActivity.cancelSelection();
 
                 // TODO: Enable swiping.
@@ -657,19 +651,19 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private BaseSwipeListViewListener mSwipeListener = new BaseSwipeListViewListener() {
         @Override
         public void onFinishedSwipeRight(int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 switch (mSection) {
                     case LATER:
                         // Move task from Later to Focus.
-                        task.setLocalSchedule(new Date());
+                        task.setSchedule(new Date());
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
                         mActivity.refreshSections();
                         break;
                     case FOCUS:
                         // Move task from Focus to Done.
-                        task.setLocalCompletionDate(new Date());
+                        task.setCompletionDate(new Date());
                         mTasksService.saveTask(task, true);
                         // Handle repeat.
                         mRepeatHandler.handleRepeatedTask(task);
@@ -682,7 +676,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedSwipeLeft(int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 switch (mSection) {
                     case LATER:
@@ -695,7 +689,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         break;
                     case DONE:
                         // Move task from Done to Focus.
-                        task.setLocalCompletionDate(null);
+                        task.setCompletionDate(null);
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
                         mActivity.refreshSections();
@@ -706,14 +700,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedLongSwipeRight(int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 switch (mSection) {
                     case LATER:
                         // Move task from Later to Done.
                         Date currentDate = new Date();
-                        task.setLocalCompletionDate(currentDate);
-                        task.setLocalSchedule(currentDate);
+                        task.setCompletionDate(currentDate);
+                        task.setSchedule(currentDate);
                         mTasksService.saveTask(task, true);
                         // Handle repeat.
                         mRepeatHandler.handleRepeatedTask(task);
@@ -726,7 +720,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onFinishedLongSwipeLeft(int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 switch (mSection) {
                     case LATER:
@@ -743,7 +737,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onClickFrontView(View view, int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 // Start selection or edit task.
                 if (mActivity.isSelectionMode()) {
@@ -761,7 +755,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             priorityButton.setChecked(checked);
             Integer priority = checked ? 1 : 0;
 
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 task.setPriority(priority);
                 mTasksService.saveTask(task, true);
@@ -770,7 +764,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         @Override
         public void onClickNumber(View view, int position) {
-            GsonTask task = getTask(position);
+            Task task = getTask(position);
             if (task != null) {
                 // Start selection or show action steps.
                 if (mActivity.isSelectionMode()) {
@@ -782,7 +776,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     };
 
-    private void selectTask(View view, GsonTask task) {
+    private void selectTask(View view, Task task) {
         View selectedIndicator = view.findViewById(R.id.selected_indicator);
 
         if (task.isSelected()) {
@@ -803,20 +797,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @Override
     public void listReordered(List list) {
         if (mSection == Sections.FOCUS) {
-            reorderTasks((List<GsonTask>) list);
-
             // Clear selected tasks and hide edit bar.
-            sSelectedTasks.clear();
+            clearSelection();
             mActivity.cancelSelection();
+
+            reorderTasks((List<Task>) list);
 
             refreshTaskList(false);
         }
     }
 
-    private void reorderTasks(List<GsonTask> tasks) {
+    private void reorderTasks(List<Task> tasks) {
         // Save task order as its position on the list.
         for (int i = 0; i < tasks.size(); i++) {
-            GsonTask task = tasks.get(i);
+            Task task = tasks.get(i);
             task.setOrder(i);
             mTasksService.saveTask(task, true);
         }
@@ -868,8 +862,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             TextView nextTaskText = (TextView) mEmptyView.findViewById(R.id.text_next_task);
             TextView allDoneMessage = (TextView) mEmptyView.findViewById(R.id.text_all_done_message);
 
-            if (sNextTask != null && sNextTask.getLocalSchedule() != null) {
-                Date nextSchedule = sNextTask.getLocalSchedule();
+            if (sNextTask != null && sNextTask.getSchedule() != null) {
+                Date nextSchedule = sNextTask.getSchedule();
 
                 // Set text according to the next scheduled task.
                 if (DateUtils.isToday(nextSchedule)) {
@@ -895,10 +889,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void handleDoneButtons(List<GsonTask> completedTasks) {
+    private void handleDoneButtons(List<Task> completedTasks) {
         // Load date of the oldest completed task.
-        GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
-        Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
+        Task oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
+        Date completionDate = oldestTask != null ? oldestTask.getCompletionDate() : null;
 
         // Only display buttons in the done section and when the oldest completed task is older than today.
         if (!sIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
@@ -918,12 +912,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        // Clear selection.
+                        clearSelection();
+                        mActivity.updateSelectionCount(0);
+
                         // Proceed with delete.
                         mTasksService.deleteTasks(sSelectedTasks);
-
-                        // Clear selection.
-                        sSelectedTasks.clear();
-                        mActivity.updateSelectionCount(sSelectedTasks.size());
 
                         // Refresh all task lists.
                         mActivity.refreshSections();
@@ -947,8 +941,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 }
 
                 // Show old tasks.
-                List<GsonTask> tasks = mTasksService.loadCompletedTasks();
-                keepSelection(tasks);
+                List<Task> tasks = mTasksService.loadCompletedTasks();
                 mAdapter.showOld(tasks, mListViewHeight);
 
                 // Set old tasks as shown.
@@ -970,11 +963,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         // List of old tasks to delete.
-                        List<GsonTask> oldTasks = new ArrayList<GsonTask>();
+                        List<Task> oldTasks = new ArrayList<Task>();
 
-                        for (GsonTask task : mTasksService.loadCompletedTasks()) {
+                        for (Task task : mTasksService.loadCompletedTasks()) {
                             // Check if it's an old task.
-                            if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
+                            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
                                 // Add to the removal list.
                                 oldTasks.add(task);
                             }
@@ -991,7 +984,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 .show();
     }
 
-    private void openSnoozeSelector(GsonTask task) {
+    private void openSnoozeSelector(Task task) {
         // Call snooze activity.
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
@@ -1149,12 +1142,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void loadTags() {
-        List<GsonTag> tags = mTasksService.loadAllTags();
-        mAssignedTags = new ArrayList<GsonTag>();
+        List<Tag> tags = mTasksService.loadAllTags();
+        mAssignedTags = new ArrayList<Tag>();
         mTaskTagsContainer.removeAllViews();
 
         // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
+        for (Tag tag : tags) {
             int resource = ThemeUtils.isLightTheme(getActivity()) ? R.layout.tag_box_light : R.layout.tag_box_dark;
             CheckBox tagBox = (CheckBox) getActivity().getLayoutInflater().inflate(resource, null);
             tagBox.setText(tag.getTitle());
@@ -1179,7 +1172,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private View.OnClickListener mTagClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Assign or remove tag from selected tasks.
             if (isTagAssigned(selectedTag)) {
@@ -1193,7 +1186,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private View.OnLongClickListener mTagLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View view) {
-            final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            final Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Display dialog to delete tag.
             new SwipesDialog.Builder(getActivity())
@@ -1218,12 +1211,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     };
 
-    private boolean isTagAssigned(GsonTag selectedTag) {
+    private boolean isTagAssigned(Tag selectedTag) {
         int assigns = 0;
         // Using a counter, check if the tag is assigned to all selected tasks.
-        for (GsonTask task : sSelectedTasks) {
+        for (Task task : sSelectedTasks) {
             // Increase counter if tag is already assigned to the task.
-            for (GsonTag tag : task.getTags()) {
+            for (Tag tag : task.getTags()) {
                 if (tag.getId().equals(selectedTag.getId())) {
                     assigns++;
                 }
@@ -1232,18 +1225,18 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         return assigns == sSelectedTasks.size();
     }
 
-    private void assignTag(GsonTag tag) {
+    private void assignTag(Tag tag) {
         // Assign to all selected tasks.
-        for (GsonTask task : sSelectedTasks) {
+        for (Task task : sSelectedTasks) {
             mAssignedTags.add(tag);
             task.setTags(mAssignedTags);
             mTasksService.saveTask(task, true);
         }
     }
 
-    private void unassignTag(GsonTag tag) {
+    private void unassignTag(Tag tag) {
         // Unassign from all selected tasks.
-        for (GsonTask task : sSelectedTasks) {
+        for (Task task : sSelectedTasks) {
             mTasksService.unassignTag(tag.getId(), task.getId());
         }
 
@@ -1253,14 +1246,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void filterByTags() {
         // Load tasks for each selected tag ("OR" filter).
-        Set<GsonTask> filteredTasks = new LinkedHashSet<>();
-        for (GsonTag tag : mActivity.getSelectedFilterTags()) {
+        Set<Task> filteredTasks = new LinkedHashSet<>();
+        for (Tag tag : mActivity.getSelectedFilterTags()) {
             filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
         }
 
         // Find tasks not containing all selected tags.
-        Set<GsonTask> tasksToRemove = new LinkedHashSet<>();
-        for (GsonTask task : filteredTasks) {
+        Set<Task> tasksToRemove = new LinkedHashSet<>();
+        for (Task task : filteredTasks) {
             if (!task.getTags().containsAll(mActivity.getSelectedFilterTags())) {
                 tasksToRemove.add(task);
             }
@@ -1282,7 +1275,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         updateResultsDescription(filteredTasks.size());
 
         // Refresh list with filtered tasks.
-        List<GsonTask> list = new ArrayList<>(filteredTasks);
+        List<Task> list = new ArrayList<>(filteredTasks);
         mListView.setContentList(list);
         mAdapter.update(list, false);
     }
@@ -1313,7 +1306,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         String tags = null;
-        for (GsonTag tag : mActivity.getSelectedFilterTags()) {
+        for (Tag tag : mActivity.getSelectedFilterTags()) {
             if (tags == null) {
                 tags = tag.getTitle();
             } else {
@@ -1342,7 +1335,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void performSearch() {
         String query = mActivity.getSearchQuery();
-        List<GsonTask> results = mTasksService.searchTasks(query, mSection);
+        List<Task> results = mTasksService.searchTasks(query, mSection);
 
         if (mSection == Sections.DONE) {
             if (!query.isEmpty()) {
@@ -1365,10 +1358,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         String content = getString(R.string.share_message_header);
 
         // Append task titles.
-        for (GsonTask task : sSelectedTasks) {
+        for (Task task : sSelectedTasks) {
             content += getString(R.string.share_message_circle) + task.getTitle() + "\n";
 
-            for (GsonTask subtask : mTasksService.loadSubtasksForTask(task.getTempId())) {
+            for (Task subtask : mTasksService.loadSubtasksForTask(task.getTempId())) {
                 content += "\t\t" + getString(R.string.share_message_circle) + subtask.getTitle() + "\n";
             }
         }

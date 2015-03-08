@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.ui.listener.KeyboardBackListener;
 import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
@@ -31,13 +31,13 @@ import java.util.List;
  */
 public class SubtasksAdapter extends BaseAdapter {
 
-    private List<GsonTask> mData;
+    private List<Task> mData;
     private WeakReference<Context> mContext;
     private SubtaskListener mListener;
     private Resources mResources;
     private View mMainLayout;
 
-    public SubtasksAdapter(Context context, List<GsonTask> data, SubtaskListener listener, View mainLayout) {
+    public SubtasksAdapter(Context context, List<Task> data, SubtaskListener listener, View mainLayout) {
         mData = data;
         mContext = new WeakReference<Context>(context);
         mListener = listener;
@@ -60,14 +60,14 @@ public class SubtasksAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        GsonTask item = (GsonTask) getItem(position);
-        return item != null ? item.getItemId() : -1;
+        Task item = (Task) getItem(position);
+        return item != null ? item.getId() : -1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SubtaskHolder holder;
-        GsonTask task = mData.get(position);
+        Task task = mData.get(position);
         LayoutInflater inflater = ((Activity) mContext.get()).getLayoutInflater();
 
         convertView = inflater.inflate(R.layout.subtask_cell, parent, false);
@@ -89,10 +89,10 @@ public class SubtasksAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void customizeView(final SubtaskHolder holder, final GsonTask task) {
+    private void customizeView(final SubtaskHolder holder, final Task task) {
         // Setup properties.
         holder.title.setText(task.getTitle());
-        final boolean isCompleted = task.getLocalCompletionDate() != null;
+        final boolean isCompleted = task.getCompletionDate() != null;
         holder.button.setChecked(isCompleted);
 
         // Setup action.
@@ -154,7 +154,7 @@ public class SubtasksAdapter extends BaseAdapter {
         holder.button.setBackgroundResource(background);
     }
 
-    public void update(List<GsonTask> data) {
+    public void update(List<Task> data) {
         // Check for thread safety.
         ThreadUtils.checkOnMainThread();
 

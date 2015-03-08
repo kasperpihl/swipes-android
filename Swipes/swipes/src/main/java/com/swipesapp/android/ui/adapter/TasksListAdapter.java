@@ -18,9 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonAttachment;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Attachment;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.SwipesTextView;
@@ -112,8 +112,8 @@ public class TasksListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        GsonTask item = (GsonTask) getItem(position);
-        return item != null ? item.getItemId() : -1;
+        Task item = (Task) getItem(position);
+        return item != null ? item.getId() : -1;
     }
 
     @Override
@@ -165,15 +165,15 @@ public class TasksListAdapter extends BaseAdapter {
         // a generic list in order to fix a bug that keeps drag and drop from working as expected.
         // A cast needs to be done here to properly display custom data. This behavior is not ideal,
         // so the DynamicListView should be revised in the future to avoid the need of hacks.
-        final List<GsonTask> tasks = (List<GsonTask>) mData;
+        final List<Task> tasks = (List<Task>) mData;
 
         // Attributes displayed for all sections.
         String title = tasks.get(position).getTitle();
-        List<GsonTag> tagList = tasks.get(position).getTags();
+        List<Tag> tagList = tasks.get(position).getTags();
         String tags = null;
-        List<GsonAttachment> attachments = tasks.get(position).getAttachments();
+        List<Attachment> attachments = tasks.get(position).getAttachments();
         String notes = tasks.get(position).getNotes();
-        Date repeatDate = tasks.get(position).getLocalRepeatDate();
+        Date repeatDate = tasks.get(position).getRepeatDate();
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
@@ -218,7 +218,7 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Display Evernote icon.
         if (attachments != null) {
-            for (GsonAttachment attachment : attachments) {
+            for (Attachment attachment : attachments) {
                 if (attachment.getService().equals(Services.EVERNOTE)) {
                     holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mEvernoteIcon);
                     holder.icons.setVisibility(View.VISIBLE);
@@ -239,7 +239,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
 
         // Build the formatted tags.
-        for (GsonTag tag : tagList) {
+        for (Tag tag : tagList) {
             if (tags == null) {
                 tags = tag.getTitle();
             } else {
@@ -283,14 +283,14 @@ public class TasksListAdapter extends BaseAdapter {
         setPropertiesPadding(holder);
     }
 
-    private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
+    private void customizeViewForSection(TaskHolder holder, int position, List<Task> tasks) {
         switch (mSection) {
             case LATER:
                 // Set priority button color.
                 holder.priorityButton.setBackgroundResource(R.drawable.later_circle_selector);
 
                 // Display scheduled time or location icon (never both).
-                Date schedule = tasks.get(position).getLocalSchedule();
+                Date schedule = tasks.get(position).getSchedule();
                 String location = tasks.get(position).getLocation();
 
                 if (location != null && !location.isEmpty()) {
@@ -312,7 +312,7 @@ public class TasksListAdapter extends BaseAdapter {
                 holder.priorityButton.setBackgroundResource(R.drawable.done_circle_selector);
 
                 // Display completion time and hide repeat icon.
-                Date completionDate = tasks.get(position).getLocalCompletionDate();
+                Date completionDate = tasks.get(position).getCompletionDate();
 
                 if (completionDate != null) {
                     holder.time.setVisibility(View.VISIBLE);
@@ -462,19 +462,19 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    private void setDatesForSection(GsonTask task, GsonTask previousTask, GsonTask nextTask) {
+    private void setDatesForSection(Task task, Task previousTask, Task nextTask) {
         switch (mSection) {
             case LATER:
                 // Set date as schedule.
-                mCurrentDate = task.getLocalSchedule();
-                mPreviousDate = previousTask != null ? previousTask.getLocalSchedule() : null;
-                mNextDate = nextTask != null ? nextTask.getLocalSchedule() : null;
+                mCurrentDate = task.getSchedule();
+                mPreviousDate = previousTask != null ? previousTask.getSchedule() : null;
+                mNextDate = nextTask != null ? nextTask.getSchedule() : null;
                 break;
             case DONE:
                 // Set date as completion.
-                mCurrentDate = task.getLocalCompletionDate();
-                mPreviousDate = previousTask != null ? previousTask.getLocalCompletionDate() : null;
-                mNextDate = nextTask != null ? nextTask.getLocalCompletionDate() : null;
+                mCurrentDate = task.getCompletionDate();
+                mPreviousDate = previousTask != null ? previousTask.getCompletionDate() : null;
+                mNextDate = nextTask != null ? nextTask.getCompletionDate() : null;
                 break;
         }
     }
@@ -625,11 +625,11 @@ public class TasksListAdapter extends BaseAdapter {
         mListContentsListener = listContentsListener;
     }
 
-    public List<GsonTask> getData() {
+    public List<Task> getData() {
         return mData;
     }
 
-    public void update(List<GsonTask> data, boolean animateRefresh) {
+    public void update(List<Task> data, boolean animateRefresh) {
         // Check for thread safety.
         ThreadUtils.checkOnMainThread();
 
@@ -662,7 +662,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    public void showOld(List<GsonTask> data, int listViewHeight) {
+    public void showOld(List<Task> data, int listViewHeight) {
         // Check for thread safety.
         ThreadUtils.checkOnMainThread();
 
@@ -688,27 +688,27 @@ public class TasksListAdapter extends BaseAdapter {
     private void handleOldTasks() {
         // Check if old tasks should be displayed.
         if (!mIsShowingOld) {
-            List<GsonTask> oldTasks = new ArrayList<GsonTask>();
+            List<Task> oldTasks = new ArrayList<Task>();
 
-            for (GsonTask task : (List<GsonTask>) mData) {
+            for (Task task : (List<Task>) mData) {
                 // Check if it's an old task.
-                if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
+                if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
                     // Add it to the removal list.
                     oldTasks.add(task);
                 }
             }
 
             // Remove old tasks from view.
-            ((List<GsonTask>) mData).removeAll(oldTasks);
+            ((List<Task>) mData).removeAll(oldTasks);
         }
     }
 
     private int getFirstOldPosition() {
         int position;
         for (position = 0; position < mData.size(); position++) {
-            GsonTask task = ((List<GsonTask>) mData).get(position);
+            Task task = ((List<Task>) mData).get(position);
             // Check if completion date is older than today.
-            if (DateUtils.isOlderThanToday(task.getLocalCompletionDate())) {
+            if (DateUtils.isOlderThanToday(task.getCompletionDate())) {
                 // First old task position found.
                 break;
             }

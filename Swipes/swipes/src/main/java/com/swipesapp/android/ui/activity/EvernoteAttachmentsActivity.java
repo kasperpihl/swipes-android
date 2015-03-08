@@ -14,10 +14,10 @@ import android.widget.ListView;
 
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.Attachment;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
-import com.swipesapp.android.sync.gson.GsonAttachment;
-import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.EvernoteAttachmentsAdapter;
 import com.swipesapp.android.ui.listener.EvernoteAttachmentsListener;
@@ -51,7 +51,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     private TasksService mTasksService;
     private EvernoteService mEvernoteIntegration;
 
-    private GsonTask mTask;
+    private Task mTask;
 
     private EvernoteAttachmentsAdapter mAdapter;
     private List<Note> mNotes = new ArrayList<Note>();
@@ -179,7 +179,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
                 @Override
                 public void onSuccess(String data) {
                     // Save attachment to task.
-                    GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, note.getTitle(), true);
+                    Attachment attachment = new Attachment(null, data, Services.EVERNOTE, note.getTitle(), true, mTask.getId());
                     mTask.addAttachment(attachment);
                     mTasksService.saveTask(mTask, true);
 

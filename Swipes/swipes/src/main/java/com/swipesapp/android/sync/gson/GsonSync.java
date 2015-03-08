@@ -1,7 +1,8 @@
 package com.swipesapp.android.sync.gson;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 
 import java.util.List;
 
@@ -13,38 +14,28 @@ import java.util.List;
 public class GsonSync {
 
     // Request fields.
-    @Expose(deserialize = false)
     private String sessionToken;
 
-    @Expose(deserialize = false)
     private String platform;
 
-    @Expose(deserialize = false)
     private String version;
 
-    @Expose(deserialize = false)
     private Boolean changesOnly;
 
-    @Expose(deserialize = false)
     private String lastUpdate;
 
-    @Expose(deserialize = false)
     private GsonObjects objects;
 
     // Response fields.
-    @Expose(serialize = false)
     private String serverTime;
 
-    @Expose(serialize = false)
     private String updateTime;
 
     @SerializedName("ToDo")
-    @Expose(serialize = false)
-    private List<GsonTask> tasks;
+    private List<Task> tasks;
 
     @SerializedName("Tag")
-    @Expose(serialize = false)
-    private List<GsonTag> tags;
+    private List<Tag> tags;
 
     public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, GsonObjects objects) {
         this.sessionToken = sessionToken;
@@ -63,11 +54,11 @@ public class GsonSync {
         return updateTime;
     }
 
-    public List<GsonTask> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public List<GsonTag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 

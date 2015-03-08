@@ -12,7 +12,7 @@ public abstract class OnEvernoteCallback<T> {
     public abstract void onSuccess(final T data);
 
     /**
-     * @param exception is the error sent to the callback when the async operation has completed negatively
+     * @param e is the error sent to the callback when the async operation has completed negatively
      */
     public abstract void onException(final Exception e);
 }

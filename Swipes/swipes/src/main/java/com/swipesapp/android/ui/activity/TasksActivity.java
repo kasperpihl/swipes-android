@@ -43,10 +43,11 @@ import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.Attachment;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SectionsPagerAdapter;
@@ -161,8 +162,8 @@ public class TasksActivity extends BaseActivity {
 
     private Sections mCurrentSection;
 
-    private Set<GsonTag> mSelectedTags;
-    private Set<GsonTag> mSelectedFilterTags;
+    private Set<Tag> mSelectedTags;
+    private Set<Tag> mSelectedFilterTags;
 
     // Used by animator to store tags container position.
     private float mTagsTranslationY;
@@ -732,16 +733,19 @@ public class TasksActivity extends BaseActivity {
         Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
         String tempId = UUID.randomUUID().toString();
         String notes = null;
-        List<GsonTag> tags = new ArrayList<>();
+        List<Tag> tags = new ArrayList<>();
         tags.addAll(mSelectedTags);
+        List<Attachment> attachments = new ArrayList<>();
 
         if (mIntentData != null) {
             notes = mIntentData[1];
         }
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
+            Task task = new Task(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
+                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null);
+            task.setTags(tags);
+            task.setAttachments(attachments);
             mTasksService.saveTask(task, true);
         }
 
@@ -960,13 +964,13 @@ public class TasksActivity extends BaseActivity {
     };
 
     private void loadTags() {
-        List<GsonTag> tags = mTasksService.loadAllTags();
+        List<Tag> tags = mTasksService.loadAllTags();
         mAddTaskTagContainer.removeAllViews();
 
         mSelectedTags.addAll(mSelectedFilterTags);
 
         // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
+        for (Tag tag : tags) {
             int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
             CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
             tagBox.setText(tag.getTitle());
@@ -986,7 +990,7 @@ public class TasksActivity extends BaseActivity {
     private View.OnClickListener mTagClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Add or remove from list of selected tags.
             if (isTagSelected(selectedTag)) {
@@ -997,9 +1001,9 @@ public class TasksActivity extends BaseActivity {
         }
     };
 
-    private boolean isTagSelected(GsonTag selectedTag) {
+    private boolean isTagSelected(Tag selectedTag) {
         // Check if tag already exists in the list of selected.
-        for (GsonTag tag : mSelectedTags) {
+        for (Tag tag : mSelectedTags) {
             if (tag.getId().equals(selectedTag.getId())) {
                 return true;
             }
@@ -1007,10 +1011,10 @@ public class TasksActivity extends BaseActivity {
         return false;
     }
 
-    private void removeSelectedTag(GsonTag selectedTag) {
+    private void removeSelectedTag(Tag selectedTag) {
         // Find and remove tag from the list of selected.
-        List<GsonTag> selected = new ArrayList<GsonTag>(mSelectedTags);
-        for (GsonTag tag : selected) {
+        List<Tag> selected = new ArrayList<Tag>(mSelectedTags);
+        for (Tag tag : selected) {
             if (tag.getId().equals(selectedTag.getId())) {
                 mSelectedTags.remove(tag);
             }
@@ -1149,14 +1153,14 @@ public class TasksActivity extends BaseActivity {
     };
 
     private void loadWorkspacesTags() {
-        List<GsonTag> tags = mTasksService.loadAllAssignedTags();
+        List<Tag> tags = mTasksService.loadAllAssignedTags();
 
         mWorkspacesTags.removeAllViews();
         mWorkspacesTags.setVisibility(View.VISIBLE);
         mWorkspacesEmptyTags.setVisibility(View.GONE);
 
         // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
+        for (Tag tag : tags) {
             int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
             CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
             tagBox.setText(tag.getTitle());
@@ -1185,7 +1189,7 @@ public class TasksActivity extends BaseActivity {
     private View.OnClickListener mFilterTagListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Add or remove tag from selected filters.
             if (mSelectedFilterTags.contains(selectedTag)) {
@@ -1198,7 +1202,7 @@ public class TasksActivity extends BaseActivity {
         }
     };
 
-    public Set<GsonTag> getSelectedFilterTags() {
+    public Set<Tag> getSelectedFilterTags() {
         return mSelectedFilterTags;
     }
 
@@ -1369,12 +1373,12 @@ public class TasksActivity extends BaseActivity {
 
     private void saveDataForSync() {
         // Save all tags for syncing.
-        for (GsonTag tag : mTasksService.loadAllTags()) {
+        for (Tag tag : mTasksService.loadAllTags()) {
             mSyncService.saveTagForSync(tag);
         }
 
         // Save all tasks for syncing.
-        for (GsonTask task : mTasksService.loadAllTasks()) {
+        for (Task task : mTasksService.loadAllTasks()) {
             if (!task.getDeleted()) {
                 task.setId(null);
                 mSyncService.saveTaskChangesForSync(task, null);

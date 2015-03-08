@@ -13,14 +13,14 @@ import android.widget.TextView;
 import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.ui.view.TimePreference;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class SnoozeActivity extends FragmentActivity {
 
     private TasksService mTasksService;
 
-    private GsonTask mTask;
+    private Task mTask;
 
     private int mDayStartHour;
     private int mDayStartMinute;
@@ -526,8 +526,8 @@ public class SnoozeActivity extends FragmentActivity {
 
     private void performChanges(Date schedule) {
         // Perform task changes.
-        mTask.setLocalSchedule(schedule);
-        mTask.setLocalCompletionDate(null);
+        mTask.setSchedule(schedule);
+        mTask.setCompletionDate(null);
         mTasksService.saveTask(mTask, true);
 
         // Mark schedule as performed.

@@ -7,8 +7,8 @@ import android.util.Log;
 
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
-import com.swipesapp.android.sync.gson.GsonAttachment;
-import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.db.Attachment;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.LevenshteinDistance;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -105,10 +105,10 @@ public class EvernoteSyncHandler {
 
     protected boolean checkForLocalChanges() {
         boolean result = false;
-        List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
-        for (GsonTask todoWithEvernote : objectsWithEvernote) {
-            if (todoWithEvernote.getLocalUpdatedAt() != null && mLastUpdated != null &&
-                    todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+        List<Task> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
+        for (Task todoWithEvernote : objectsWithEvernote) {
+            if (todoWithEvernote.getUpdatedAt() != null && mLastUpdated != null &&
+                    todoWithEvernote.getUpdatedAt().after(mLastUpdated)) {
                 result = true;
                 break;
             }
@@ -137,14 +137,14 @@ public class EvernoteSyncHandler {
             // add to DB
             EvernoteService.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                 public void onSuccess(String data) {
-                    final GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, fTitle, true);
+                    final Attachment attachment = new Attachment(null, data, Services.EVERNOTE, fTitle, true, 0);
 
                     final Date currentDate = new Date();
                     final String tempId = UUID.randomUUID().toString();
                     Log.d(LOG_TAG, "Creating task with UUID: " + tempId);
-                    GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
-                            fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER,
-                            null, null, null, Arrays.asList(attachment), 0);
+                    Task newTodo = new Task(null, null, tempId, null, currentDate, currentDate, false, fTitle, null,
+                            null, 0, null, currentDate, null, null, RepeatOptions.NEVER, null, null);
+                    newTodo.setAttachments(Arrays.asList(attachment));
                     TasksService.getInstance().saveTask(newTodo, true);
                     if (++mCurrentNoteCount >= mTotalNoteCount) {
                         if (null == mRunningError)
@@ -267,7 +267,7 @@ public class EvernoteSyncHandler {
         });
     }
 
-    protected boolean handleEvernoteToDo(final EvernoteToDo evernoteToDo, final GsonTask subtask, final EvernoteToDoProcessor processor, boolean isNew, final TasksService tasksService) {
+    protected boolean handleEvernoteToDo(final EvernoteToDo evernoteToDo, final Task subtask, final EvernoteToDoProcessor processor, boolean isNew, final TasksService tasksService) {
         boolean updated = false;
 
         // If subtask is deleted from Swipes - mark completed in Evernote
@@ -277,14 +277,14 @@ public class EvernoteSyncHandler {
             return false;
         }
 
-        boolean subtaskIsCompleted = subtask.getLocalCompletionDate() != null;
+        boolean subtaskIsCompleted = subtask.getCompletionDate() != null;
 
         // difference in completion
         if (subtaskIsCompleted != evernoteToDo.isChecked()) {
             // difference in completion
             if (subtaskIsCompleted) {
                 // If subtask was completed in Swipes after last sync override evernote
-                if (null != mLastUpdated && mLastUpdated.before(subtask.getLocalCompletionDate())) {
+                if (null != mLastUpdated && mLastUpdated.before(subtask.getCompletionDate())) {
                     Log.d(LOG_TAG, "completing evernote");
                     processor.updateToDo(evernoteToDo, subtaskIsCompleted);
                 }
@@ -300,14 +300,14 @@ public class EvernoteSyncHandler {
             else {
                 // If subtask is updated later than last sync override Evernote
                 // There could be an error margin here, but I don't see a better solution at the moment
-                if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getLocalUpdatedAt())) {
+                if (!isNew && null != mLastUpdated && mLastUpdated.before(subtask.getUpdatedAt())) {
                     Log.d(LOG_TAG, "uncompleting evernote");
                     processor.updateToDo(evernoteToDo, false);
                 }
                 // If not, override in Swipes
                 else {
                     Log.d(LOG_TAG, "completing subtask");
-                    subtask.setLocalCompletionDate(new Date());
+                    subtask.setCompletionDate(new Date());
                     tasksService.saveTask(subtask, true);
                     updated = true;
                 }
@@ -327,9 +327,9 @@ public class EvernoteSyncHandler {
         return updated;
     }
 
-    protected List<GsonTask> filterSubtasksWithEvernote(final List<GsonTask> subtasks) {
-        final List<GsonTask> evernoteSubtasks = new ArrayList<GsonTask>();
-        for (GsonTask subtask : subtasks) {
+    protected List<Task> filterSubtasksWithEvernote(final List<Task> subtasks) {
+        final List<Task> evernoteSubtasks = new ArrayList<Task>();
+        for (Task subtask : subtasks) {
             // TODO we will add additional checks when we handle updated or deleted
             if (/*(null == subtask.getOrigin()) || */Services.EVERNOTE.equals(subtask.getOrigin())) {
                 evernoteSubtasks.add(subtask);
@@ -338,9 +338,9 @@ public class EvernoteSyncHandler {
         return evernoteSubtasks;
     }
 
-    protected List<GsonTask> filterSubtasksWithoutOrigin(final List<GsonTask> subtasks) {
-        final List<GsonTask> noOriginSubtasks = new ArrayList<GsonTask>();
-        for (GsonTask subtask : subtasks) {
+    protected List<Task> filterSubtasksWithoutOrigin(final List<Task> subtasks) {
+        final List<Task> noOriginSubtasks = new ArrayList<Task>();
+        for (Task subtask : subtasks) {
             if ((null == subtask.getOrigin())) {
                 noOriginSubtasks.add(subtask);
             }
@@ -348,13 +348,13 @@ public class EvernoteSyncHandler {
         return noOriginSubtasks;
     }
 
-    protected void findAndHandleMatches(final GsonTask parentToDo, final EvernoteToDoProcessor processor) {
+    protected void findAndHandleMatches(final Task parentToDo, final EvernoteToDoProcessor processor) {
         final TasksService tasksService = TasksService.getInstance();
-        List<GsonTask> subtasks = /*filterSubtasksWithEvernote(*/tasksService.loadSubtasksForTask(parentToDo.getTempId())/*)*/;
+        List<Task> subtasks = /*filterSubtasksWithEvernote(*/tasksService.loadSubtasksForTask(parentToDo.getTempId())/*)*/;
         List<EvernoteToDo> evernoteToDos = new ArrayList<EvernoteToDo>(processor.getToDos());
 
         // Creating helper arrays for determining which ones has already been matched
-        List<GsonTask> subtasksLeftToBeFound = new ArrayList<GsonTask>(subtasks);
+        List<Task> subtasksLeftToBeFound = new ArrayList<Task>(subtasks);
         List<EvernoteToDo> evernoteToDosLeftToBeFound = new ArrayList<EvernoteToDo>(evernoteToDos);
 
         boolean updated = false;
@@ -362,7 +362,7 @@ public class EvernoteSyncHandler {
         // Match and clean all direct matches
         for (EvernoteToDo evernoteToDo : evernoteToDos) {
 
-            for (GsonTask subtask : subtasks) {
+            for (Task subtask : subtasks) {
                 if (evernoteToDo.getTitle().equalsIgnoreCase(subtask.getOriginIdentifier()) || evernoteToDo.getTitle().equalsIgnoreCase(subtask.getTitle())) {
                     subtasksLeftToBeFound.remove(subtask);
                     evernoteToDosLeftToBeFound.remove(evernoteToDo);
@@ -391,12 +391,12 @@ public class EvernoteSyncHandler {
 
         // Match and clean all indirect matches
         for (EvernoteToDo evernoteToDo : evernoteToDos) {
-            GsonTask matchingSubtask = null;
+            Task matchingSubtask = null;
 
             int bestScore = Integer.MAX_VALUE;
-            GsonTask bestMatch = null;
+            Task bestMatch = null;
 
-            for (GsonTask subtask : subtasks) {
+            for (Task subtask : subtasks) {
                 if (null == subtask.getOriginIdentifier())
                     continue;
                 int match = LevenshteinDistance.computeEditDistance(evernoteToDo.getTitle(), subtask.getOriginIdentifier());
@@ -413,9 +413,9 @@ public class EvernoteSyncHandler {
             if (null == matchingSubtask) {
                 Date currentDate = new Date();
                 String tempId = UUID.randomUUID().toString();
-                matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
+                matchingSubtask = new Task(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
-                        RepeatOptions.NEVER, Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
+                        RepeatOptions.NEVER, Services.EVERNOTE, evernoteToDo.getTitle());
                 tasksService.saveTask(matchingSubtask, true);
                 updated = true;
                 isNew = true;
@@ -437,8 +437,8 @@ public class EvernoteSyncHandler {
 
         // remove evernote subtasks not found in the evernote from our task
         if (subtasks != null && subtasks.size() > 0) {
-            ArrayList<GsonTask> tasksToDelete = new ArrayList<GsonTask>();
-            for (GsonTask subtask : subtasks) {
+            ArrayList<Task> tasksToDelete = new ArrayList<Task>();
+            for (Task subtask : subtasks) {
                 if (null != subtask.getOrigin() && subtask.getOrigin().equals(Services.EVERNOTE)) {
                     updated = true;
                     tasksToDelete.add(subtask);
@@ -450,7 +450,7 @@ public class EvernoteSyncHandler {
 
         // add newly added tasks to evernote
         subtasks = filterSubtasksWithoutOrigin(tasksService.loadSubtasksForTask(parentToDo.getTempId()));
-        for (GsonTask subtask : subtasks) {
+        for (Task subtask : subtasks) {
             if (processor.addToDo(subtask.getTitle())) {
                 subtask.setOriginIdentifier(subtask.getTitle());
                 subtask.setOrigin(Services.EVERNOTE);
@@ -475,15 +475,15 @@ public class EvernoteSyncHandler {
         return false;
     }
 
-    protected boolean hasLocalChanges(final GsonTask todoWithEvernote) {
+    protected boolean hasLocalChanges(final Task todoWithEvernote) {
         if (null != mLastUpdated) {
-            if (todoWithEvernote.getLocalUpdatedAt() != null && todoWithEvernote.getLocalUpdatedAt().after(mLastUpdated)) {
+            if (todoWithEvernote.getUpdatedAt() != null && todoWithEvernote.getUpdatedAt().after(mLastUpdated)) {
                 return true;
             }
             final TasksService tasksService = TasksService.getInstance();
-            List<GsonTask> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(todoWithEvernote.getTempId()));
-            for (GsonTask subtask : subtasks) {
-                if (subtask.getLocalUpdatedAt() != null && subtask.getLocalUpdatedAt().after(mLastUpdated)) {
+            List<Task> subtasks = filterSubtasksWithEvernote(tasksService.loadSubtasksForTask(todoWithEvernote.getTempId()));
+            for (Task subtask : subtasks) {
+                if (subtask.getUpdatedAt() != null && subtask.getUpdatedAt().after(mLastUpdated)) {
                     return true;
                 }
             }
@@ -509,7 +509,7 @@ public class EvernoteSyncHandler {
     }
 
     protected void syncEvernote(final OnEvernoteCallback<Void> callback) {
-        List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
+        List<Task> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
 
         final Date date = new Date();
         mReturnCount = 0;
@@ -517,8 +517,8 @@ public class EvernoteSyncHandler {
         final Exception[] runningError = {null};
 
         boolean syncedAnything = false;
-        for (final GsonTask todoWithEvernote : objectsWithEvernote) {
-            GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
+        for (final Task todoWithEvernote : objectsWithEvernote) {
+            Attachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
 
             if (attachment != null) {
                 final boolean hasLocalChanges = hasLocalChanges(todoWithEvernote);
@@ -579,10 +579,10 @@ public class EvernoteSyncHandler {
         if (!mConvertedToJson) {
             mConvertedToJson = true;
             settings.edit().putBoolean(KEY_EVERNOTE_JSON_CONVERTED, true).apply();
-            final List<GsonTask> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
+            final List<Task> objectsWithEvernote = TasksService.getInstance().loadTasksWithEvernote(true);
 
-            for (final GsonTask todoWithEvernote : objectsWithEvernote) {
-                final GsonAttachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
+            for (final Task todoWithEvernote : objectsWithEvernote) {
+                final Attachment attachment = todoWithEvernote.getFirstAttachmentForService(Services.EVERNOTE);
 
                 if (attachment != null) {
                     final String identifier = attachment.getIdentifier();
@@ -594,7 +594,7 @@ public class EvernoteSyncHandler {
                             @Override
                             public void onSuccess(String data) {
                                 todoWithEvernote.removeAttachment(attachment);
-                                todoWithEvernote.addAttachment(new GsonAttachment(null, data, Services.EVERNOTE, attachment.getTitle(), true));
+                                todoWithEvernote.addAttachment(new Attachment(null, data, Services.EVERNOTE, attachment.getTitle(), true, todoWithEvernote.getId()));
                                 TasksService.getInstance().saveTask(todoWithEvernote, true);
                             }
 

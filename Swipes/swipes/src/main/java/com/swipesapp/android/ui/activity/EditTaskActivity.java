@@ -30,10 +30,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
+import com.swipesapp.android.db.Attachment;
+import com.swipesapp.android.db.Tag;
+import com.swipesapp.android.db.Task;
 import com.swipesapp.android.evernote.EvernoteService;
-import com.swipesapp.android.sync.gson.GsonAttachment;
-import com.swipesapp.android.sync.gson.GsonTag;
-import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.adapter.SubtasksAdapter;
@@ -176,14 +176,14 @@ public class EditTaskActivity extends FragmentActivity {
 
     private Long mId;
 
-    private GsonTask mTask;
-    private GsonAttachment mEvernoteAttachment;
+    private Task mTask;
+    private Attachment mEvernoteAttachment;
 
-    private List<GsonTag> mAssignedTags;
+    private List<Tag> mAssignedTags;
 
     private SubtasksAdapter mAdapter;
     private ListView mListView;
-    private List<GsonTask> mSubtasks;
+    private List<Task> mSubtasks;
 
     private Sections mSection;
 
@@ -383,7 +383,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         if (mTask.getPriority() != null) mPriority.setChecked(mTask.getPriority() == 1);
 
-        mSchedule.setText(DateUtils.formatToRecent(mTask.getLocalSchedule(), this, true));
+        mSchedule.setText(DateUtils.formatToRecent(mTask.getSchedule(), this, true));
 
         setSelectedRepeatOption();
 
@@ -423,7 +423,7 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void loadEvernoteAttachment() {
         if (mTask.getAttachments() != null) {
-            for (GsonAttachment attachment : mTask.getAttachments()) {
+            for (Attachment attachment : mTask.getAttachments()) {
                 // Check if attachment comes from Evernote.
                 if (attachment.getService().equals(Services.EVERNOTE)) {
                     // Attachment found. Update views.
@@ -438,9 +438,9 @@ public class EditTaskActivity extends FragmentActivity {
     private void loadFirstSubtask() {
         boolean allCompleted = true;
 
-        for (final GsonTask subtask : mSubtasks) {
+        for (final Task subtask : mSubtasks) {
             // Display for first uncompleted task.
-            if (subtask.getLocalCompletionDate() == null) {
+            if (subtask.getCompletionDate() == null) {
                 // Setup properties.
                 mSubtaskFirstTitle.setText(subtask.getTitle());
                 mSubtaskFirstTitle.setTextColor(ThemeUtils.getTextColor(this));
@@ -505,7 +505,7 @@ public class EditTaskActivity extends FragmentActivity {
     private String buildFormattedTags() {
         String tags = null;
 
-        for (GsonTag tag : mTask.getTags()) {
+        for (Tag tag : mTask.getTags()) {
             if (tags == null) {
                 tags = tag.getTitle();
             } else {
@@ -797,12 +797,12 @@ public class EditTaskActivity extends FragmentActivity {
     }
 
     private void loadTags() {
-        List<GsonTag> tags = mTasksService.loadAllTags();
-        mAssignedTags = new ArrayList<GsonTag>();
+        List<Tag> tags = mTasksService.loadAllTags();
+        mAssignedTags = new ArrayList<Tag>();
         mTaskTagsContainer.removeAllViews();
 
         // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
+        for (Tag tag : tags) {
             int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
             CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
             tagBox.setText(tag.getTitle());
@@ -826,7 +826,7 @@ public class EditTaskActivity extends FragmentActivity {
     private View.OnClickListener mTagClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Assign or remove tag from selected tasks.
             if (isTagAssigned(selectedTag)) {
@@ -840,7 +840,7 @@ public class EditTaskActivity extends FragmentActivity {
     private View.OnLongClickListener mTagLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View view) {
-            final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
+            final Tag selectedTag = mTasksService.loadTag((long) view.getId());
 
             // Display dialog to delete tag.
             new SwipesDialog.Builder(mContext.get())
@@ -865,9 +865,9 @@ public class EditTaskActivity extends FragmentActivity {
         }
     };
 
-    private boolean isTagAssigned(GsonTag selectedTag) {
+    private boolean isTagAssigned(Tag selectedTag) {
         // Check if tag is already assigned to the task.
-        for (GsonTag tag : mTask.getTags()) {
+        for (Tag tag : mTask.getTags()) {
             if (tag.getId().equals(selectedTag.getId())) {
                 return true;
             }
@@ -875,13 +875,13 @@ public class EditTaskActivity extends FragmentActivity {
         return false;
     }
 
-    private void assignTag(GsonTag tag) {
+    private void assignTag(Tag tag) {
         // Add to list and perform changes.
         mAssignedTags.add(tag);
         performChanges(false);
     }
 
-    private void unassignTag(GsonTag tag) {
+    private void unassignTag(Tag tag) {
         // Unassign and update list.
         mTasksService.unassignTag(tag.getId(), mTask.getId());
         mAssignedTags.remove(tag);
@@ -892,7 +892,7 @@ public class EditTaskActivity extends FragmentActivity {
         String content = getString(R.string.share_message_circle) + mTask.getTitle() + "\n";
 
         // Append subtask titles.
-        for (GsonTask subtask : mTasksService.loadSubtasksForTask(mTask.getTempId())) {
+        for (Task subtask : mTasksService.loadSubtasksForTask(mTask.getTempId())) {
             content += "\t\t" + getString(R.string.share_message_circle) + subtask.getTitle() + "\n";
         }
 
@@ -941,7 +941,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatNever.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.NEVER);
-        mTask.setLocalRepeatDate(null);
+        mTask.setRepeatDate(null);
 
         hideRepeatOptions();
 
@@ -954,7 +954,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatDay.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_DAY);
-        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
+        mTask.setRepeatDate(mTask.getSchedule());
 
         hideRepeatOptions();
 
@@ -967,7 +967,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatMonFri.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.MONDAY_TO_FRIDAY);
-        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
+        mTask.setRepeatDate(mTask.getSchedule());
 
         hideRepeatOptions();
 
@@ -980,7 +980,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatWeek.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_WEEK);
-        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
+        mTask.setRepeatDate(mTask.getSchedule());
 
         hideRepeatOptions();
 
@@ -993,7 +993,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatMonth.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_MONTH);
-        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
+        mTask.setRepeatDate(mTask.getSchedule());
 
         hideRepeatOptions();
 
@@ -1006,7 +1006,7 @@ public class EditTaskActivity extends FragmentActivity {
         mRepeatYear.select(mSection);
 
         mTask.setRepeatOption(RepeatOptions.EVERY_YEAR);
-        mTask.setLocalRepeatDate(mTask.getLocalSchedule());
+        mTask.setRepeatDate(mTask.getSchedule());
 
         hideRepeatOptions();
 
@@ -1044,7 +1044,7 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void setRepeatDescription() {
         String repeatOption = mTask.getRepeatOption();
-        Date repeatDate = mTask.getLocalRepeatDate();
+        Date repeatDate = mTask.getRepeatDate();
 
         // Set friendly description.
         if (repeatDate == null || repeatOption == null || repeatOption.equals(RepeatOptions.NEVER)) {
@@ -1080,19 +1080,19 @@ public class EditTaskActivity extends FragmentActivity {
 
     private SubtaskListener mSubtaskListener = new SubtaskListener() {
         @Override
-        public void completeSubtask(GsonTask task) {
-            task.setLocalCompletionDate(new Date());
+        public void completeSubtask(Task task) {
+            task.setCompletionDate(new Date());
             saveSubtask(task);
         }
 
         @Override
-        public void uncompleteSubtask(GsonTask task) {
-            task.setLocalCompletionDate(null);
+        public void uncompleteSubtask(Task task) {
+            task.setCompletionDate(null);
             saveSubtask(task);
         }
 
         @Override
-        public void deleteSubtask(final GsonTask task) {
+        public void deleteSubtask(final Task task) {
             // Display dialog to delete subtask.
             new SwipesDialog.Builder(mContext.get())
                     .title(R.string.delete_subtask_dialog_title)
@@ -1115,7 +1115,7 @@ public class EditTaskActivity extends FragmentActivity {
         }
 
         @Override
-        public void editSubtask(GsonTask task) {
+        public void editSubtask(Task task) {
             saveSubtask(task);
         }
     };
@@ -1140,7 +1140,7 @@ public class EditTaskActivity extends FragmentActivity {
                 }
             };
 
-    private void saveSubtask(GsonTask task) {
+    private void saveSubtask(Task task) {
         mTasksService.saveTask(task, true);
         refreshSubtasks();
         updateViews();
@@ -1151,7 +1151,9 @@ public class EditTaskActivity extends FragmentActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER, null, null, new ArrayList<GsonTag>(), null, 0);
+            Task task = new Task(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title,
+                    null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER, null, null);
+
             mTasksService.saveTask(task, true);
 
             refreshSubtasks();
@@ -1192,10 +1194,10 @@ public class EditTaskActivity extends FragmentActivity {
         mSubtaskFirstItem.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                GsonTask task = getFirstUncompletedSubtask();
+                Task task = getFirstUncompletedSubtask();
 
                 if (task != null) {
-                    task.setLocalCompletionDate(new Date());
+                    task.setCompletionDate(new Date());
                     saveSubtask(task);
                 }
 
@@ -1233,9 +1235,9 @@ public class EditTaskActivity extends FragmentActivity {
         updateViews();
     }
 
-    private GsonTask getFirstUncompletedSubtask() {
-        for (GsonTask subtask : mSubtasks) {
-            if (subtask.getLocalCompletionDate() == null) return subtask;
+    private Task getFirstUncompletedSubtask() {
+        for (Task subtask : mSubtasks) {
+            if (subtask.getCompletionDate() == null) return subtask;
         }
         return null;
     }

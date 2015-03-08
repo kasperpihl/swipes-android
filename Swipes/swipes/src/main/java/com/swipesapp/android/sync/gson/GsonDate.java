@@ -1,7 +1,5 @@
 package com.swipesapp.android.sync.gson;
 
-import com.google.gson.annotations.Expose;
-
 /**
  * Gson mapping class for date objects.
  * <p/>
@@ -15,10 +13,7 @@ import com.google.gson.annotations.Expose;
  */
 public class GsonDate {
 
-    @Expose
     private String __type;
-
-    @Expose
     private String iso;
 
     /**
