@@ -206,9 +206,7 @@ public class EvernoteSyncHandler {
 
         EvernoteService.getInstance().findNotes(query.toString(), new OnEvernoteCallback<List<Note>>() {
             public void onSuccess(List<Note> data) {
-                if (null == mKnownNotes) {
-                    mKnownNotes = extractKnownNotes();
-                }
+                mKnownNotes = extractKnownNotes();
                 ArrayList<Note> newNotes = new ArrayList<Note>();
                 for (Note note : data) {
                     if (isNoteNew(note, mKnownNotes)) {
@@ -249,9 +247,7 @@ public class EvernoteSyncHandler {
         EvernoteService.getInstance().findNotes(query, new OnEvernoteCallback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> data) {
-                if (null == mKnownNotes) {
-                    mKnownNotes = extractKnownNotes();
-                }
+                mKnownNotes = extractKnownNotes();
                 for (Note note : data) {
                     if (!isNoteNew(note, mKnownNotes))
                         mChangedNotes.add(note);
