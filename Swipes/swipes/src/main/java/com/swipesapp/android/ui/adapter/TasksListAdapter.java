@@ -222,6 +222,7 @@ public class TasksListAdapter extends BaseAdapter {
                 if (attachment.getService().equals(Services.EVERNOTE)) {
                     holder.icons.setText(holder.icons.getText() + ICON_SEPARATOR + mEvernoteIcon);
                     holder.icons.setVisibility(View.VISIBLE);
+                    break;
                 }
             }
         }

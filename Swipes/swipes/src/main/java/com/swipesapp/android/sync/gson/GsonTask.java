@@ -350,20 +350,7 @@ public class GsonTask {
     }
 
     public void removeAttachment(GsonAttachment attachment) {
-        if (attachments != null) {
-            GsonAttachment match = null;
-
-            for (GsonAttachment gsonAttachment : attachments) {
-                Long id = gsonAttachment.getId();
-                String identifier = gsonAttachment.getIdentifier();
-
-                if (id.equals(attachment.getId()) || identifier.equals(attachment.getIdentifier())) {
-                    match = gsonAttachment;
-                }
-            }
-
-            attachments.remove(match);
-        }
+        attachments.remove(attachment);
     }
 
     public GsonAttachment getFirstAttachmentForService(String service) {
