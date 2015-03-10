@@ -632,6 +632,8 @@ public class EvernoteService {
     }
 
     private void cacheAddSearchResults(final String query, List<Note> notes) {
+        if ((null != query) && query.contains("updated:"))
+            return; // these better not be cached
         if (null == mSearchCache) {
             mSearchCache = new HashMap<String, CacheData<List<Note>>>();
         }
