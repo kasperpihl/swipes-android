@@ -178,7 +178,15 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
             EvernoteService.getInstance().asyncJsonFromNote(note, new OnEvernoteCallback<String>() {
                 @Override
                 public void onSuccess(String data) {
-                    // Save attachment to task.
+                    // Remove current attachment.
+                    for (GsonAttachment attachment : mTask.getAttachments()) {
+                        if (attachment.getService().equals(Services.EVERNOTE)) {
+                            mTask.removeAttachment(attachment);
+                            break;
+                        }
+                    }
+
+                    // Save new attachment to task.
                     GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, note.getTitle(), true);
                     mTask.addAttachment(attachment);
                     mTasksService.saveTask(mTask, true);
