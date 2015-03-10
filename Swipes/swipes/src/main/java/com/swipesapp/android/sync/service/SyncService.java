@@ -333,6 +333,11 @@ public class SyncService {
                         task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
                         task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
 
+                        // HACK: Fix bug causing other platforms to delete the attachments.
+                        if (old != null && (task.getAttachments() == null || task.getAttachments().isEmpty())) {
+                            task.setAttachments(old.getAttachments());
+                        }
+
                         // Save or update task locally.
                         TasksService.getInstance().saveTask(task, false);
                     }
