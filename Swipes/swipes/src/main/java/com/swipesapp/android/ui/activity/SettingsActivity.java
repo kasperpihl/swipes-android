@@ -18,6 +18,7 @@ import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
@@ -66,6 +67,14 @@ public class SettingsActivity extends BaseActivity {
             Analytics.sendRecurringTasks(this);
             Analytics.sendNumberOfTags(this);
         }
+    }
+
+    @Override
+    public void onResume() {
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_SETTINGS);
+
+        super.onResume();
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
@@ -206,6 +215,9 @@ public class SettingsActivity extends BaseActivity {
             // Call Parse login activity.
             ParseLoginBuilder builder = new ParseLoginBuilder(getActivity());
             startActivityForResult(builder.build(), Constants.LOGIN_REQUEST_CODE);
+
+            // Send screen view event.
+            Analytics.sendScreenView(Screens.SCREEN_LOGIN);
         }
 
         private void performLogout() {

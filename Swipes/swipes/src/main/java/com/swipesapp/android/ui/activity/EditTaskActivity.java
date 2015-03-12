@@ -31,6 +31,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -271,6 +272,9 @@ public class EditTaskActivity extends FragmentActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.TASKS_CHANGED);
         registerReceiver(mReceiver, filter);
+
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_EDIT_TASK);
 
         super.onResume();
     }

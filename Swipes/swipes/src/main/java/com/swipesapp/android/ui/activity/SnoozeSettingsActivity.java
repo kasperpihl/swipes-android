@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.util.ThemeUtils;
 
 public class SnoozeSettingsActivity extends BaseActivity {
@@ -18,6 +20,14 @@ public class SnoozeSettingsActivity extends BaseActivity {
                 new SnoozeSettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+    }
+
+    @Override
+    public void onResume() {
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_SNOOZES);
+
+        super.onResume();
     }
 
     public static class SnoozeSettingsFragment extends PreferenceFragment {

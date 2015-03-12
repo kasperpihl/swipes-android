@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.ui.view.SwipesTextView;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -75,6 +77,14 @@ public class AboutActivity extends BaseActivity {
 
         mOss.setTextColor(ThemeUtils.getTextColor(this));
         mOssLicenses.setTextColor(ThemeUtils.getSecondaryTextColor(this));
+    }
+
+    @Override
+    public void onResume() {
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_ABOUT);
+
+        super.onResume();
     }
 
     @OnClick(R.id.about_policies_container)

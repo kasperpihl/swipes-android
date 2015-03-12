@@ -79,7 +79,7 @@ public class Analytics {
                 .setNewSession()
                 .build());
 
-        logDebugMessage("Sent dimension: User Level");
+        logDebugMessage("Sent dimension: User Level - " + userLevel);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Analytics {
                 .setNewSession()
                 .build());
 
-        logDebugMessage("Sent dimension: Active Theme");
+        logDebugMessage("Sent dimension: Active Theme - " + theme);
     }
 
     /**
@@ -119,7 +119,7 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            logDebugMessage("Sent dimension: Recurring Tasks");
+            logDebugMessage("Sent dimension: Recurring Tasks - " + currentCount);
         }
     }
 
@@ -142,7 +142,7 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            logDebugMessage("Sent dimension: Number of Tags");
+            logDebugMessage("Sent dimension: Number of Tags - " + currentCount);
         }
     }
 
@@ -166,7 +166,7 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            logDebugMessage("Sent dimension: Mailbox Status");
+            logDebugMessage("Sent dimension: Mailbox Status - " + status);
         }
     }
 

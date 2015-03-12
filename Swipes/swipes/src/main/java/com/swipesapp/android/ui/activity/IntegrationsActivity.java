@@ -9,6 +9,8 @@ import android.preference.PreferenceFragment;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.client.android.EvernoteSession;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.util.ThemeUtils;
@@ -26,6 +28,14 @@ public class IntegrationsActivity extends BaseActivity {
                 new IntegrationsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+    }
+
+    @Override
+    public void onResume() {
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_INTEGRATIONS);
+
+        super.onResume();
     }
 
     @Override

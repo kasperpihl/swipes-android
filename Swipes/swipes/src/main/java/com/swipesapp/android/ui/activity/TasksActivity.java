@@ -44,6 +44,7 @@ import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -1335,6 +1336,9 @@ public class TasksActivity extends BaseActivity {
         // Call Parse login activity.
         ParseLoginBuilder builder = new ParseLoginBuilder(this);
         startActivityForResult(builder.build(), Constants.LOGIN_REQUEST_CODE);
+
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_LOGIN);
     }
 
     private void askToKeepData() {

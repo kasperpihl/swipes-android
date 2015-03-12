@@ -5,43 +5,7 @@
     <!-- Default session timeout. -->
     <integer name="ga_sessionTimeout">300</integer>
 
-    <!-- Automatic Activity measurement. -->
-    <bool name="ga_autoActivityTracking">true</bool>
-    <bool name="enableAutoActivityReports">true</bool>
-
     <!-- Tracking ID. -->
     <string name="ga_trackingId">UA-41592802-4</string>
-
-    <!-- Screen names that appear in reports. -->
-    <screenName name="com.swipesapp.android.ui.activity.TasksActivity">
-        Tasks
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.SnoozeActivity">
-        Scheduler
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.EditTaskActivity">
-        Edit Task
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.EvernoteAttachmentsActivity">
-        Evernote Attachments
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.SettingsActivity">
-        Settings
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.SnoozeSettingsActivity">
-        Snoozes Menu
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.IntegrationsActivity">
-        Integrations Menu
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.EvernoteLearnActivity">
-        Evernote Learn More
-    </screenName>
-    <screenName name="com.swipesapp.android.ui.activity.AboutActivity">
-        About
-    </screenName>
-    <screenName name="com.parse.ui.ParseLoginActivity">
-        Login
-    </screenName>
 
 </resources>

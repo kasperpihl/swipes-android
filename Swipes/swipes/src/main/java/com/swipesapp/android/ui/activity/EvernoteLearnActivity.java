@@ -10,6 +10,8 @@ import android.widget.Button;
 
 import com.evernote.client.android.EvernoteSession;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 
 import java.lang.ref.WeakReference;
@@ -56,6 +58,14 @@ public class EvernoteLearnActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        // Send screen view event.
+        Analytics.sendScreenView(Screens.SCREEN_EVERNOTE_LEARN);
+
+        super.onResume();
     }
 
     @Override
