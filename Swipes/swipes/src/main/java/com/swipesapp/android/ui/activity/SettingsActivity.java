@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
@@ -50,10 +51,20 @@ public class SettingsActivity extends BaseActivity {
             // Theme has changed. Set result code.
             setResult(Constants.THEME_CHANGED_RESULT_CODE);
             sHasChangedTheme = false;
+
+            // Update theme dimension.
+            Analytics.sendActiveTheme(this);
         } else if (sHasChangedAccount) {
             // User has logged in or out. Set result code.
             setResult(Constants.ACCOUNT_CHANGED_RESULT_CODE);
             sHasChangedAccount = false;
+
+            // Update user level dimension.
+            Analytics.sendUserLevel(this);
+
+            // Update recurring tasks and tags dimensions.
+            Analytics.sendRecurringTasks(this);
+            Analytics.sendNumberOfTags(this);
         }
     }
 

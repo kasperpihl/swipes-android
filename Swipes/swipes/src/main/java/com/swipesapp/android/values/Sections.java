@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.util.Analytics;
+import com.swipesapp.android.analytics.Screens;
 
 /**
  * Holds the possible sections.
@@ -62,11 +62,11 @@ public enum Sections {
     public String getScreenName() {
         switch (mSectionNumber) {
             case 0:
-                return Analytics.SCREEN_LATER;
+                return Screens.SCREEN_LATER;
             case 1:
-                return Analytics.SCREEN_FOCUS;
+                return Screens.SCREEN_FOCUS;
             case 2:
-                return Analytics.SCREEN_DONE;
+                return Screens.SCREEN_DONE;
             default:
                 Log.wtf(TAG, "Section does not exist.");
                 return null;

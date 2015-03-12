@@ -5,6 +5,7 @@ import android.util.Log;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Task;
 import com.swipesapp.android.db.TaskDao;
+import com.swipesapp.android.values.RepeatOptions;
 
 import org.apache.commons.collections4.comparators.NullComparator;
 
@@ -126,6 +127,11 @@ public class ExtTaskDao {
 
         return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.gt(yesterday), TaskDao.Properties.Deleted.eq(false),
                 TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
+    }
+
+    public long countRecurringTasks() {
+        return mDao.queryBuilder().where(TaskDao.Properties.RepeatOption.notEq(RepeatOptions.NEVER),
+                TaskDao.Properties.Deleted.eq(false)).buildCount().count();
     }
 
 }

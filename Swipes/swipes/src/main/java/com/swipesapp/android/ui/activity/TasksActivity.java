@@ -43,6 +43,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -57,7 +58,6 @@ import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
-import com.swipesapp.android.util.Analytics;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -337,6 +337,9 @@ public class TasksActivity extends BaseActivity {
                         // Ask to keep user data.
                         askToKeepData();
                     }
+
+                    // Update user level dimension.
+                    Analytics.sendUserLevel(this);
 
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
@@ -1420,6 +1423,9 @@ public class TasksActivity extends BaseActivity {
                     public void onDismiss(DialogInterface dialogInterface) {
                         // Set dialog as shown.
                         PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", mContext.get());
+
+                        // Update user level dimension.
+                        Analytics.sendUserLevel(mContext.get());
                     }
                 })
                 .show();

@@ -12,6 +12,7 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
@@ -23,6 +24,8 @@ import com.swipesapp.android.sync.service.TasksService;
 
 /**
  * Swipes custom application class.
+ *
+ * @author Felipe Bari
  */
 public class SwipesApplication extends Application {
 
@@ -65,6 +68,9 @@ public class SwipesApplication extends Application {
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.snooze_settings, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.integrations, true);
+
+        // Send initial user dimensions.
+        Analytics.startUserDimensions(getApplicationContext());
     }
 
     public static void startDaoSession(Context context) {

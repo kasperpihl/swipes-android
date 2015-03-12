@@ -10,6 +10,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Tag;
@@ -311,6 +312,9 @@ public class SyncService {
                     }
                 }
             }
+
+            // Update number of tags dimension.
+            Analytics.sendNumberOfTags(mContext.get());
         }
 
         // Create another thread for processing tasks.
@@ -349,6 +353,9 @@ public class SyncService {
 
                     // Refresh local content.
                     TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
+
+                    // Update recurring tasks dimension.
+                    Analytics.sendRecurringTasks(mContext.get());
                 }
             }
         }).start();

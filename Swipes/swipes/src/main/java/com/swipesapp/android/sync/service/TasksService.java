@@ -3,6 +3,7 @@ package com.swipesapp.android.sync.service;
 import android.content.Context;
 import android.content.Intent;
 
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.Attachment;
 import com.swipesapp.android.db.DaoSession;
@@ -307,6 +308,9 @@ public class TasksService {
             mExtTagDao.getDao().insert(tag);
 
             SyncService.getInstance().saveTagForSync(loadTag(tempId));
+
+            // Update number of tags dimension.
+            Analytics.sendNumberOfTags(mContext.get());
         }
     }
 
@@ -356,6 +360,9 @@ public class TasksService {
         mExtTagDao.getDao().delete(tag);
 
         SyncService.getInstance().saveDeletedTagForSync(tag);
+
+        // Update number of tags dimension.
+        Analytics.sendNumberOfTags(mContext.get());
     }
 
     /**
@@ -530,6 +537,15 @@ public class TasksService {
     }
 
     /**
+     * Counts all recurring tasks.
+     *
+     * @return Number of recurring tasks. Deleted tasks are not considered.
+     */
+    public int countRecurringTasks() {
+        return (int) mExtTaskDao.countRecurringTasks();
+    }
+
+    /**
      * Searches tasks for the given query and section.
      *
      * @param query   Query to search for.
@@ -611,6 +627,15 @@ public class TasksService {
      */
     public List<GsonTag> loadAllTags() {
         return gsonFromTags(mExtTagDao.listAllTags());
+    }
+
+    /**
+     * Counts all tags.
+     *
+     * @return Total number of tags.
+     */
+    public int countAllTags() {
+        return (int) mExtTagDao.countAllTags();
     }
 
     /**

@@ -15,10 +15,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.util.ColorUtils;
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 /**
  * Standard activity to be extended across the app.
@@ -51,6 +52,17 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
+    }
+
+    /**
+     * Updates relevant analytics dimensions.
+     */
+    @Override
+    public void onResume() {
+        // Send Mailbox status dimension.
+        Analytics.sendMailboxStatus(this);
+
+        super.onResume();
     }
 
     /**

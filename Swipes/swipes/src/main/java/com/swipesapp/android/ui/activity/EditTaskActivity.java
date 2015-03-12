@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.Analytics;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -635,6 +636,9 @@ public class EditTaskActivity extends FragmentActivity {
         mTask.setNotes(mNotes.getText().toString());
         mTask.setTags(mAssignedTags);
         mTasksService.saveTask(mTask, true);
+
+        // Update recurring tasks dimension.
+        Analytics.sendRecurringTasks(this);
 
         if (hideKeyboard) hideKeyboard();
 

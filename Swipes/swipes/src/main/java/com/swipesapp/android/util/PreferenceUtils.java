@@ -14,20 +14,18 @@ import com.swipesapp.android.db.migration.MigrationAssistant;
 public class PreferenceUtils {
 
     public static final String THEME_KEY = "settings_theme";
-
     public static final String FIRST_RUN = "app_first_run";
-
     public static final String WELCOME_DIALOG = "shown_welcome_screen";
-
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
-
     public static final String VIBRATIONS_KEY = "settings_enable_vibration";
-
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
-
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
-
     public static final String TASKS_ADDED_FROM_INTENT = "tasks_added_from_intent";
+    public static final String SENT_DIMENSIONS = "sent_user_dimensions";
+    public static final String RECURRING_COUNT = "recurring_tasks_count";
+    public static final String TAGS_COUNT = "tags_count";
+    public static final String EVERNOTE_STATUS = "evernote_status";
+    public static final String MAILBOX_STATUS = "mailbox_status";
 
     /**
      * Saves a boolean preference.
@@ -251,6 +249,17 @@ public class PreferenceUtils {
     public static boolean hasAddedTasksFromIntent(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(TASKS_ADDED_FROM_INTENT, false);
+    }
+
+    /**
+     * Checks if the app has sent initial user dimensions.
+     *
+     * @param context Context instance.
+     * @return True if it has sent.
+     */
+    public static boolean hasSentUserDimensions(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(SENT_DIMENSIONS, false);
     }
 
 }

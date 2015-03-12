@@ -44,4 +44,8 @@ public class ExtTagDao {
         return mDao.queryBuilder().list();
     }
 
+    public long countAllTags() {
+        return mDao.queryBuilder().buildCount().count();
+    }
+
 }
