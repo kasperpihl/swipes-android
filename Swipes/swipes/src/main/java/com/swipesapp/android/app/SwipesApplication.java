@@ -1,11 +1,16 @@
 package com.swipesapp.android.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger.LogLevel;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
@@ -25,6 +30,8 @@ public class SwipesApplication extends Application {
 
     private static final String DB_NAME = "swipes-db";
 
+    private static Tracker sTracker;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,9 +45,7 @@ public class SwipesApplication extends Application {
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 
         // Initialize database session.
-        SwipesHelper helper = new SwipesHelper(getApplicationContext(), DB_NAME, null);
-        DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
-        sDaoSession = daoMaster.newSession();
+        startDaoSession(getApplicationContext());
 
         // Initialize services.
         TasksService.newInstance(getApplicationContext());
@@ -53,14 +58,39 @@ public class SwipesApplication extends Application {
         // Start snooze alarm.
         SnoozeHelper.createSnoozeAlarm(getApplicationContext());
 
+        // Start Analytics tracker.
+        startTracker(getApplicationContext());
+
         // Load default user preferences.
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.snooze_settings, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.integrations, true);
     }
 
+    public static void startDaoSession(Context context) {
+        SwipesHelper helper = new SwipesHelper(context, DB_NAME, null);
+        DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
+        sDaoSession = daoMaster.newSession();
+    }
+
     public static DaoSession getDaoSession() {
         return sDaoSession;
+    }
+
+    public static void startTracker(Context context) {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+        sTracker = analytics.newTracker(R.xml.app_tracker);
+
+        if (BuildConfig.DEBUG) {
+            analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
+
+            // HACK: Force replace tracking ID with the debug one.
+            sTracker.set("&tid", "UA-41592802-6");
+        }
+    }
+
+    public static Tracker getTracker() {
+        return sTracker;
     }
 
 }

@@ -57,6 +57,7 @@ import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
+import com.swipesapp.android.util.Analytics;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -274,6 +275,9 @@ public class TasksActivity extends BaseActivity {
 
         // Clear restoration flag.
         mWasRestored = false;
+
+        // Send screen view event.
+        Analytics.sendScreenView(mCurrentSection.getScreenName());
 
         super.onResume();
     }
@@ -545,6 +549,9 @@ public class TasksActivity extends BaseActivity {
                     // Notify listeners that current tab has changed.
                     mTasksService.sendBroadcast(Actions.TAB_CHANGED);
                     mHasChangedTab = false;
+
+                    // Send screen view event.
+                    Analytics.sendScreenView(mCurrentSection.getScreenName());
                 }
 
                 mActionBarView.setAlpha(1f);

@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.crashlytics.android.Crashlytics;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.values.Actions;
@@ -21,12 +23,21 @@ public class SnoozeHelper extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Actions.BOOT_COMPLETED)) {
+            // Initialize Crashlytics.
+            Crashlytics.start(context);
+
             // Start snooze alarm.
             createSnoozeAlarm(context);
+
+            // Initialize database session.
+            SwipesApplication.startDaoSession(context);
 
             // Initialize services.
             TasksService.newInstance(context);
             SyncService.newInstance(context);
+
+            // Start Analytics tracker.
+            SwipesApplication.startTracker(context);
         }
     }
 
