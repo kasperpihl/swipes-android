@@ -40,6 +40,28 @@ public class Analytics {
     }
 
     /**
+     * Sends an action event.
+     *
+     * @param category Event category.
+     * @param action   Event action.
+     * @param label    Event label.
+     * @param value    Event value.
+     */
+    public static void sendEvent(String category, String action, String label, Long value) {
+        HitBuilders.EventBuilder builder = getBaseEventBuilder()
+                .setCategory(category)
+                .setAction(action);
+
+        if (label != null) builder.setLabel(label);
+        if (value != null) builder.setValue(value);
+
+        Tracker tracker = SwipesApplication.getTracker();
+        tracker.send(builder.build());
+
+        logDebugMessage("Sent event: " + category + " - " + action + " - " + label);
+    }
+
+    /**
      * Sends initial user dimensions only once after the app
      * has been started for the first time.
      *
@@ -208,6 +230,16 @@ public class Analytics {
      */
     private static HitBuilders.ScreenViewBuilder getBaseScreenBuilder() {
         return new HitBuilders.ScreenViewBuilder()
+                .setCustomDimension(Dimensions.DIMEN_PLATFORM, Dimensions.VALUE_PLATFORM);
+    }
+
+    /**
+     * Returns a base EventBuilder including platform dimension.
+     *
+     * @return EventBuilder instance.
+     */
+    private static HitBuilders.EventBuilder getBaseEventBuilder() {
+        return new HitBuilders.EventBuilder()
                 .setCustomDimension(Dimensions.DIMEN_PLATFORM, Dimensions.VALUE_PLATFORM);
     }
 
