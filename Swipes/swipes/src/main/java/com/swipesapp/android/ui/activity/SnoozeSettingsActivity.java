@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.analytics.Analytics;
-import com.swipesapp.android.analytics.Screens;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.util.ThemeUtils;
 
 public class SnoozeSettingsActivity extends BaseActivity {

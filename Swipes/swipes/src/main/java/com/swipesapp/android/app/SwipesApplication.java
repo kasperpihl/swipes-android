@@ -12,7 +12,7 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
-import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;

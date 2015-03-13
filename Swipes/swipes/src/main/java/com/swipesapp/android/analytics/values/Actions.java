@@ -1,4 +1,4 @@
-package com.swipesapp.android.analytics;
+package com.swipesapp.android.analytics.values;
 
 /**
  * Holds the event actions to track in analytics.

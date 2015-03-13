@@ -10,7 +10,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
-import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.Tag;

@@ -15,7 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;

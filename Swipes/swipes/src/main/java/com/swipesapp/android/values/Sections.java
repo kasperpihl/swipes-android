@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.analytics.Screens;
+import com.swipesapp.android.analytics.values.Screens;
 
 /**
  * Holds the possible sections.

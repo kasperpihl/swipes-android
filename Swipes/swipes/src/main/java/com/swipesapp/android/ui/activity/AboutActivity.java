@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
-import com.swipesapp.android.analytics.Analytics;
-import com.swipesapp.android.analytics.Screens;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;

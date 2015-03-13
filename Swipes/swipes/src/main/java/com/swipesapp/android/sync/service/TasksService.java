@@ -3,7 +3,7 @@ package com.swipesapp.android.sync.service;
 import android.content.Context;
 import android.content.Intent;
 
-import com.swipesapp.android.analytics.Analytics;
+import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.Attachment;
 import com.swipesapp.android.db.DaoSession;

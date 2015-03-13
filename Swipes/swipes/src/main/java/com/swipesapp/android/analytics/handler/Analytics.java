@@ -1,4 +1,4 @@
-package com.swipesapp.android.analytics;
+package com.swipesapp.android.analytics.handler;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,6 +7,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
+import com.swipesapp.android.analytics.values.Dimensions;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.service.TasksService;
