@@ -51,7 +51,7 @@ public class MigrationAssistant {
             }
 
             // Mark as upgraded.
-            PreferenceUtils.saveBooleanPreference(V7_UPGRADE_KEY, true, context);
+            PreferenceUtils.saveBoolean(V7_UPGRADE_KEY, true, context);
         }
     }
 
@@ -73,7 +73,7 @@ public class MigrationAssistant {
             }
 
             // Mark as upgraded.
-            PreferenceUtils.saveBooleanPreference(V8_UPGRADE_KEY, true, context);
+            PreferenceUtils.saveBoolean(V8_UPGRADE_KEY, true, context);
         }
     }
 

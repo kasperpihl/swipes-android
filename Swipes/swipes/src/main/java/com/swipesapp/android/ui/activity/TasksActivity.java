@@ -774,7 +774,7 @@ public class TasksActivity extends BaseActivity {
 
         if (mIntentData != null) {
             Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
-            PreferenceUtils.saveBooleanPreference(PreferenceUtils.TASKS_ADDED_FROM_INTENT, true, this);
+            PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, true, this);
         }
 
         endAddTaskWorkflow(true);
@@ -1442,7 +1442,7 @@ public class TasksActivity extends BaseActivity {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
                         // Set dialog as shown.
-                        PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", mContext.get());
+                        PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", mContext.get());
 
                         // Update user level dimension.
                         Analytics.sendUserLevel(mContext.get());

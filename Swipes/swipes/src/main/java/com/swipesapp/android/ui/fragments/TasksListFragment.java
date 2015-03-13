@@ -224,7 +224,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             refreshTaskList(false);
 
             // Reset preference.
-            PreferenceUtils.saveBooleanPreference(PreferenceUtils.TASKS_ADDED_FROM_INTENT, false, getActivity());
+            PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, false, getActivity());
         }
 
         super.onResume();

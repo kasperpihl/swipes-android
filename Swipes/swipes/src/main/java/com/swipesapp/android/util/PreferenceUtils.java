@@ -36,7 +36,7 @@ public class PreferenceUtils {
      * @param value      Value to apply.
      * @param context    Context instance.
      */
-    public static void saveBooleanPreference(String preference, boolean value, Context context) {
+    public static void saveBoolean(String preference, boolean value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putBoolean(preference, value).apply();
     }
@@ -48,7 +48,7 @@ public class PreferenceUtils {
      * @param value      Value to apply.
      * @param context    Context instance.
      */
-    public static void saveStringPreference(String preference, String value, Context context) {
+    public static void saveString(String preference, String value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putString(preference, value).apply();
     }
@@ -60,7 +60,7 @@ public class PreferenceUtils {
      * @param value      Value to apply.
      * @param context    Context instance.
      */
-    public static void saveLongPreference(String preference, Long value, Context context) {
+    public static void saveLong(String preference, Long value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putLong(preference, value).apply();
     }
@@ -72,7 +72,7 @@ public class PreferenceUtils {
      * @param value      Value to apply.
      * @param context    Context instance.
      */
-    public static void saveIntPreference(String preference, int value, Context context) {
+    public static void saveInt(String preference, int value, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putInt(preference, value).apply();
     }
@@ -83,7 +83,7 @@ public class PreferenceUtils {
      * @param preference Preference to remove.
      * @param context    Context instance.
      */
-    public static void removePreference(String preference, Context context) {
+    public static void remove(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().remove(preference).apply();
     }
@@ -95,7 +95,7 @@ public class PreferenceUtils {
      * @param preference Preference to read.
      * @return String value.
      */
-    public static String readStringPreference(String preference, Context context) {
+    public static String readString(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(preference, null);
     }
@@ -107,7 +107,7 @@ public class PreferenceUtils {
      * @param preference Preference to read.
      * @return Long value.
      */
-    public static long readLongPreference(String preference, Context context) {
+    public static long readLong(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getLong(preference, 0);
     }
@@ -119,7 +119,7 @@ public class PreferenceUtils {
      * @param preference Preference to read.
      * @return Int value.
      */
-    public static int readIntPreference(String preference, Context context) {
+    public static int readInt(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getInt(preference, 0);
     }
@@ -131,20 +131,9 @@ public class PreferenceUtils {
      * @param preference Preference to read.
      * @return Boolean value.
      */
-    public static boolean readBooleanPreference(String preference, Context context) {
+    public static boolean readBoolean(String preference, Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(preference, false);
-    }
-
-    /**
-     * Reads theme setting.
-     *
-     * @param context Context instance.
-     * @return Current theme.
-     */
-    public static String readThemeSetting(Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getString(THEME_KEY, null);
     }
 
     /**

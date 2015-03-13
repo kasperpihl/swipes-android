@@ -34,7 +34,7 @@ public class WelcomeHandler {
         // Save install date on first launch.
         if (PreferenceUtils.isFirstLaunch(context)) {
             String installDate = DateUtils.dateToSync(new Date());
-            PreferenceUtils.saveStringPreference(PreferenceUtils.INSTALL_DATE, installDate, context);
+            PreferenceUtils.saveString(PreferenceUtils.INSTALL_DATE, installDate, context);
 
             // Send installation event.
             Analytics.sendEvent(Categories.ONBOARDING, Actions.INSTALLATION, null, null);

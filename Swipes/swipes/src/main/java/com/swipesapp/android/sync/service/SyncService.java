@@ -348,7 +348,7 @@ public class SyncService {
 
                     // Save last update time.
                     if (response.getUpdateTime() != null) {
-                        PreferenceUtils.saveStringPreference(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
+                        PreferenceUtils.saveString(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
                     }
 
                     // Refresh local content.

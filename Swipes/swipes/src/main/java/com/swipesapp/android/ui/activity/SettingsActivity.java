@@ -181,8 +181,8 @@ public class SettingsActivity extends BaseActivity {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         // Login successful. Mark initial setup as performed.
-                        PreferenceUtils.saveStringPreference(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
-                        PreferenceUtils.saveStringPreference(PreferenceUtils.FIRST_RUN, "NO", getActivity());
+                        PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
+                        PreferenceUtils.saveString(PreferenceUtils.FIRST_RUN, "NO", getActivity());
 
                         if (TasksService.getInstance().countAllTasks() > 0) {
                             // Ask to keep user data.
@@ -253,11 +253,11 @@ public class SettingsActivity extends BaseActivity {
             PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
 
             // Clear last sync date.
-            PreferenceUtils.removePreference(PreferenceUtils.SYNC_LAST_UPDATE, getActivity());
+            PreferenceUtils.remove(PreferenceUtils.SYNC_LAST_UPDATE, getActivity());
 
             // Clear state of initial setup.
-            PreferenceUtils.removePreference(PreferenceUtils.FIRST_RUN, getActivity());
-            PreferenceUtils.removePreference(PreferenceUtils.WELCOME_DIALOG, getActivity());
+            PreferenceUtils.remove(PreferenceUtils.FIRST_RUN, getActivity());
+            PreferenceUtils.remove(PreferenceUtils.WELCOME_DIALOG, getActivity());
         }
 
         private void askToKeepData() {

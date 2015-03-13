@@ -81,7 +81,7 @@ public class Analytics {
             sendNumberOfTags(context);
             sendMailboxStatus(context);
 
-            PreferenceUtils.saveBooleanPreference(PreferenceUtils.SENT_DIMENSIONS, true, context);
+            PreferenceUtils.saveBoolean(PreferenceUtils.SENT_DIMENSIONS, true, context);
         }
     }
 
@@ -118,7 +118,7 @@ public class Analytics {
      */
     public static void sendEvernoteUserLevel(Context context) {
         String userLevel = Dimensions.VALUE_EVERNOTE_NOT_INSTALLED;
-        String previousLevel = PreferenceUtils.readStringPreference(PreferenceUtils.EVERNOTE_LEVEL, context);
+        String previousLevel = PreferenceUtils.readString(PreferenceUtils.EVERNOTE_LEVEL, context);
 
         if (EvernoteService.getInstance().isAuthenticated()) {
             // TODO: Get account type from Evernote.
@@ -128,7 +128,7 @@ public class Analytics {
         }
 
         if (!userLevel.equals(previousLevel)) {
-            PreferenceUtils.saveStringPreference(PreferenceUtils.EVERNOTE_LEVEL, userLevel, context);
+            PreferenceUtils.saveString(PreferenceUtils.EVERNOTE_LEVEL, userLevel, context);
 
             Tracker tracker = SwipesApplication.getTracker();
             tracker.setScreenName(null);
@@ -166,10 +166,10 @@ public class Analytics {
      */
     public static void sendRecurringTasks(Context context) {
         String currentCount = String.valueOf(TasksService.getInstance().countRecurringTasks());
-        String previousCount = PreferenceUtils.readStringPreference(PreferenceUtils.RECURRING_COUNT, context);
+        String previousCount = PreferenceUtils.readString(PreferenceUtils.RECURRING_COUNT, context);
 
         if (!currentCount.equals(previousCount)) {
-            PreferenceUtils.saveStringPreference(PreferenceUtils.RECURRING_COUNT, currentCount, context);
+            PreferenceUtils.saveString(PreferenceUtils.RECURRING_COUNT, currentCount, context);
 
             Tracker tracker = SwipesApplication.getTracker();
             tracker.setScreenName(null);
@@ -189,10 +189,10 @@ public class Analytics {
      */
     public static void sendNumberOfTags(Context context) {
         String currentCount = String.valueOf(TasksService.getInstance().countAllTags());
-        String previousCount = PreferenceUtils.readStringPreference(PreferenceUtils.TAGS_COUNT, context);
+        String previousCount = PreferenceUtils.readString(PreferenceUtils.TAGS_COUNT, context);
 
         if (!currentCount.equals(previousCount)) {
-            PreferenceUtils.saveStringPreference(PreferenceUtils.TAGS_COUNT, currentCount, context);
+            PreferenceUtils.saveString(PreferenceUtils.TAGS_COUNT, currentCount, context);
 
             Tracker tracker = SwipesApplication.getTracker();
             tracker.setScreenName(null);
@@ -213,10 +213,10 @@ public class Analytics {
     public static void sendMailboxStatus(Context context) {
         boolean isInstalled = DeviceUtils.isAppInstalled(MAILBOX_PACKAGE, context);
         String status = isInstalled ? Dimensions.VALUE_MAILBOX_INSTALLED : Dimensions.VALUE_MAILBOX_NOT_INSTALLED;
-        String previousStatus = PreferenceUtils.readStringPreference(PreferenceUtils.MAILBOX_STATUS, context);
+        String previousStatus = PreferenceUtils.readString(PreferenceUtils.MAILBOX_STATUS, context);
 
         if (!status.equals(previousStatus)) {
-            PreferenceUtils.saveStringPreference(PreferenceUtils.MAILBOX_STATUS, status, context);
+            PreferenceUtils.saveString(PreferenceUtils.MAILBOX_STATUS, status, context);
 
             Tracker tracker = SwipesApplication.getTracker();
             tracker.setScreenName(null);
@@ -258,7 +258,7 @@ public class Analytics {
     public static Long getDaysSinceInstall(Context context) {
         long daysDifference = 0;
 
-        String installDateString = PreferenceUtils.readStringPreference(PreferenceUtils.INSTALL_DATE, context);
+        String installDateString = PreferenceUtils.readString(PreferenceUtils.INSTALL_DATE, context);
         Date installDate = DateUtils.dateFromSync(installDateString);
 
         if (installDate != null) {

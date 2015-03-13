@@ -19,7 +19,7 @@ public class ThemeUtils {
      * @return Current selected theme.
      */
     public static Themes getCurrentTheme(Context context) {
-        String theme = PreferenceUtils.readThemeSetting(context);
+        String theme = PreferenceUtils.readString(PreferenceUtils.THEME_KEY, context);
         if (theme != null) {
             return Themes.getThemeByName(theme);
         } else {

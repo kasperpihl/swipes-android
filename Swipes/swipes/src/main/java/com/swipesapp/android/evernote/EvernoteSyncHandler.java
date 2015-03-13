@@ -78,7 +78,7 @@ public class EvernoteSyncHandler {
 
         // retrieve last update time
         if (null == mLastUpdated) {
-            long dateLong = PreferenceUtils.readLongPreference(KEY_LAST_UPDATED, mContext.get());
+            long dateLong = PreferenceUtils.readLong(KEY_LAST_UPDATED, mContext.get());
             if (0 < dateLong) {
                 mLastUpdated = new Date(dateLong);
             }
@@ -95,7 +95,7 @@ public class EvernoteSyncHandler {
             }
         }
 
-        boolean autoImport = PreferenceUtils.readBooleanPreference(KEY_AUTO_IMPORT, mContext.get());
+        boolean autoImport = PreferenceUtils.readBoolean(KEY_AUTO_IMPORT, mContext.get());
         if (autoImport) {
             findUpdatedNotesWithTag(EvernoteService.SWIPES_TAG_NAME, callback);
         } else {
@@ -235,9 +235,9 @@ public class EvernoteSyncHandler {
     protected void setUpdatedAt(Date date) {
         mLastUpdated = date;
         if (null != date) {
-            PreferenceUtils.saveLongPreference(KEY_LAST_UPDATED, date.getTime(), mContext.get());
+            PreferenceUtils.saveLong(KEY_LAST_UPDATED, date.getTime(), mContext.get());
         } else {
-            PreferenceUtils.removePreference(KEY_LAST_UPDATED, mContext.get());
+            PreferenceUtils.remove(KEY_LAST_UPDATED, mContext.get());
         }
     }
 

@@ -140,8 +140,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
     private static void reloadPreviousData(Context context) {
         if (sExpiredTasks == null) sExpiredTasks = new ArrayList<>();
 
-        String expired = PreferenceUtils.readStringPreference(KEY_EXPIRED_TASKS, context);
-        sPreviousCount = PreferenceUtils.readIntPreference(KEY_PREVIOUS_COUNT, context);
+        String expired = PreferenceUtils.readString(KEY_EXPIRED_TASKS, context);
+        sPreviousCount = PreferenceUtils.readInt(KEY_PREVIOUS_COUNT, context);
 
         // Load tasks from comma-separated task IDs.
         if (expired != null) {
@@ -169,8 +169,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
             }
         }
 
-        PreferenceUtils.saveStringPreference(KEY_EXPIRED_TASKS, taskIds, context);
-        PreferenceUtils.saveIntPreference(KEY_PREVIOUS_COUNT, sPreviousCount, context);
+        PreferenceUtils.saveString(KEY_EXPIRED_TASKS, taskIds, context);
+        PreferenceUtils.saveInt(KEY_PREVIOUS_COUNT, sPreviousCount, context);
     }
 
     public static class ActionsReceiver extends BroadcastReceiver {
