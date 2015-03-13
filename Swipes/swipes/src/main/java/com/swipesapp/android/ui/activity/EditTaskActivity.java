@@ -50,7 +50,7 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
@@ -270,7 +270,7 @@ public class EditTaskActivity extends FragmentActivity {
     @Override
     public void onResume() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Actions.TASKS_CHANGED);
+        filter.addAction(Intents.TASKS_CHANGED);
         registerReceiver(mReceiver, filter);
 
         // Send screen view event.
@@ -506,7 +506,7 @@ public class EditTaskActivity extends FragmentActivity {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
+            if (intent.getAction().equals(Intents.TASKS_CHANGED)) {
                 // Refresh subtasks.
                 loadFirstSubtask();
                 refreshSubtasks();

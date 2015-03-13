@@ -10,7 +10,7 @@ import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 
 /**
  * Helper for handling the snooze alarm. Automatically starts the alarm when
@@ -22,7 +22,7 @@ public class SnoozeHelper extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Actions.BOOT_COMPLETED)) {
+        if (intent.getAction().equals(Intents.BOOT_COMPLETED)) {
             // Initialize Crashlytics.
             Crashlytics.start(context);
 

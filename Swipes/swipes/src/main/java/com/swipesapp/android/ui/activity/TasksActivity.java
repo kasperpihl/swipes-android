@@ -63,7 +63,7 @@ import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
@@ -250,14 +250,14 @@ public class TasksActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         // Forward call to listeners.
-        mTasksService.sendBroadcast(Actions.BACK_PRESSED);
+        mTasksService.sendBroadcast(Intents.BACK_PRESSED);
     }
 
     @Override
     public void onResume() {
         // Create filter and start receiver.
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Actions.TASKS_CHANGED);
+        filter.addAction(Intents.TASKS_CHANGED);
 
         registerReceiver(mTasksReceiver, filter);
 
@@ -551,7 +551,7 @@ public class TasksActivity extends BaseActivity {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
                 if (mHasChangedTab) {
                     // Notify listeners that current tab has changed.
-                    mTasksService.sendBroadcast(Actions.TAB_CHANGED);
+                    mTasksService.sendBroadcast(Intents.TAB_CHANGED);
                     mHasChangedTab = false;
 
                     // Send screen view event.
@@ -635,7 +635,7 @@ public class TasksActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Filter intent actions.
-            if (intent.getAction().equals(Actions.TASKS_CHANGED)) {
+            if (intent.getAction().equals(Intents.TASKS_CHANGED)) {
                 // Perform refresh of all sections.
                 refreshSections();
             }
@@ -855,19 +855,19 @@ public class TasksActivity extends BaseActivity {
     @OnClick(R.id.button_assign_tags)
     protected void assignTags() {
         // Send a broadcast to assign tags to the selected tasks. The fragment should handle it.
-        mTasksService.sendBroadcast(Actions.ASSIGN_TAGS);
+        mTasksService.sendBroadcast(Intents.ASSIGN_TAGS);
     }
 
     @OnClick(R.id.button_delete_tasks)
     protected void deleteTasks() {
         // Send a broadcast to delete tasks. The fragment should handle it, since it contains the list.
-        mTasksService.sendBroadcast(Actions.DELETE_TASKS);
+        mTasksService.sendBroadcast(Intents.DELETE_TASKS);
     }
 
     @OnClick(R.id.button_share_tasks)
     protected void shareTasks() {
         // Send a broadcast to share selected tasks. The fragment should handle it.
-        mTasksService.sendBroadcast(Actions.SHARE_TASKS);
+        mTasksService.sendBroadcast(Intents.SHARE_TASKS);
     }
 
     private View.OnFocusChangeListener mFocusListener = new View.OnFocusChangeListener() {
@@ -1045,7 +1045,7 @@ public class TasksActivity extends BaseActivity {
 
     @OnClick(R.id.button_close_selection)
     protected void closeSelection() {
-        mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
+        mTasksService.sendBroadcast(Intents.SELECTION_CLEARED);
     }
 
     private void enableSelection() {
@@ -1053,7 +1053,7 @@ public class TasksActivity extends BaseActivity {
 
         showEditBar();
 
-        mTasksService.sendBroadcast(Actions.SELECTION_STARTED);
+        mTasksService.sendBroadcast(Intents.SELECTION_STARTED);
     }
 
     public void cancelSelection() {
@@ -1081,7 +1081,7 @@ public class TasksActivity extends BaseActivity {
         mSelectedFilterTags.clear();
 
         // Update lists.
-        mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
+        mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
     }
 
     @OnClick(R.id.button_confirm_workspace)
@@ -1205,7 +1205,7 @@ public class TasksActivity extends BaseActivity {
                 mSelectedFilterTags.add(selectedTag);
             }
 
-            mTasksService.sendBroadcast(Actions.FILTER_BY_TAGS);
+            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
         }
     };
 
@@ -1255,7 +1255,7 @@ public class TasksActivity extends BaseActivity {
         public void afterTextChanged(Editable editable) {
             mSearchQuery = mSearchField.getText().toString().toLowerCase();
 
-            mTasksService.sendBroadcast(Actions.PERFORM_SEARCH);
+            mTasksService.sendBroadcast(Intents.PERFORM_SEARCH);
         }
     };
 

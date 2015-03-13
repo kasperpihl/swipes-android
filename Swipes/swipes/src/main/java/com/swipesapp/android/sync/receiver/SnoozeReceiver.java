@@ -15,7 +15,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.PreferenceUtils;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
         if (sExpiredTasks.size() > sPreviousCount) {
             // Broadcast tasks changed.
-            sTasksService.sendBroadcast(Actions.TASKS_CHANGED);
+            sTasksService.sendBroadcast(Intents.TASKS_CHANGED);
 
             // Send notification if allowed to.
             sendNotification(context);
@@ -96,17 +96,17 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
             // Intent to open app.
             Intent tasksIntent = new Intent(context, ActionsReceiver.class);
-            tasksIntent.setAction(Actions.SHOW_TASKS);
+            tasksIntent.setAction(Intents.SHOW_TASKS);
             PendingIntent tasksPendingIntent = PendingIntent.getBroadcast(context, 0, tasksIntent, 0);
 
             // Intent for the snooze button.
             Intent snoozeIntent = new Intent(context, ActionsReceiver.class);
-            snoozeIntent.setAction(Actions.SNOOZE_TASKS);
+            snoozeIntent.setAction(Intents.SNOOZE_TASKS);
             PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(context, 0, snoozeIntent, 0);
 
             // Intent for the complete button.
             Intent completeIntent = new Intent(context, ActionsReceiver.class);
-            completeIntent.setAction(Actions.COMPLETE_TASKS);
+            completeIntent.setAction(Intents.COMPLETE_TASKS);
             PendingIntent completePendingIntent = PendingIntent.getBroadcast(context, 0, completeIntent, 0);
 
             // Load strings based on number of tasks.
@@ -180,7 +180,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             // Reload expired tasks in case the receiver was killed.
             reloadPreviousData(context);
 
-            if (intent.getAction().equals(Actions.SNOOZE_TASKS)) {
+            if (intent.getAction().equals(Intents.SNOOZE_TASKS)) {
                 // Set snooze time.
                 Calendar snooze = Calendar.getInstance();
                 int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
@@ -194,7 +194,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                     sTasksService.saveTask(task, true);
                 }
-            } else if (intent.getAction().equals(Actions.COMPLETE_TASKS)) {
+            } else if (intent.getAction().equals(Intents.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
                     Date currentDate = new Date();
@@ -203,7 +203,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                     sTasksService.saveTask(task, true);
                 }
-            } else if (intent.getAction().equals(Actions.SHOW_TASKS)) {
+            } else if (intent.getAction().equals(Intents.SHOW_TASKS)) {
                 // Open main activity.
                 Intent tasksIntent = new Intent(context, TasksActivity.class);
                 tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

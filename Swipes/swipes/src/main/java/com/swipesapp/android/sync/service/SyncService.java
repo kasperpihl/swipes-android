@@ -29,7 +29,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -229,7 +229,7 @@ public class SyncService {
                     mIsSyncingEvernote = false;
 
                     // Refresh local content.
-                    TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
+                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
                 }
 
                 @Override
@@ -352,7 +352,7 @@ public class SyncService {
                     }
 
                     // Refresh local content.
-                    TasksService.getInstance().sendBroadcast(Actions.TASKS_CHANGED);
+                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
 
                     // Update recurring tasks dimension.
                     Analytics.sendRecurringTasks(mContext.get());

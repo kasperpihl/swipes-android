@@ -5,7 +5,7 @@ package com.swipesapp.android.values;
  *
  * @author Felipe Bari
  */
-public class Actions {
+public class Intents {
 
     /**
      * Notifies a change in the tasks.

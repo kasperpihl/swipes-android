@@ -56,7 +56,7 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Actions;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 
@@ -207,15 +207,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mTasksService = TasksService.getInstance();
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Actions.TAB_CHANGED);
-        filter.addAction(Actions.ASSIGN_TAGS);
-        filter.addAction(Actions.DELETE_TASKS);
-        filter.addAction(Actions.SHARE_TASKS);
-        filter.addAction(Actions.BACK_PRESSED);
-        filter.addAction(Actions.SELECTION_STARTED);
-        filter.addAction(Actions.SELECTION_CLEARED);
-        filter.addAction(Actions.FILTER_BY_TAGS);
-        filter.addAction(Actions.PERFORM_SEARCH);
+        filter.addAction(Intents.TAB_CHANGED);
+        filter.addAction(Intents.ASSIGN_TAGS);
+        filter.addAction(Intents.DELETE_TASKS);
+        filter.addAction(Intents.SHARE_TASKS);
+        filter.addAction(Intents.BACK_PRESSED);
+        filter.addAction(Intents.SELECTION_STARTED);
+        filter.addAction(Intents.SELECTION_CLEARED);
+        filter.addAction(Intents.FILTER_BY_TAGS);
+        filter.addAction(Intents.PERFORM_SEARCH);
 
         getActivity().registerReceiver(mTasksReceiver, filter);
 
@@ -583,16 +583,16 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             String action = intent.getAction();
 
             // Filter intent actions.
-            if (action.equals(Actions.TAB_CHANGED)) {
+            if (action.equals(Intents.TAB_CHANGED)) {
                 if (!mActivity.isSelectionMode()) {
                     // Enable or disable swiping.
                     boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
                     mListView.setSwipeEnabled(enabled);
                 }
-            } else if (action.equals(Actions.SELECTION_STARTED)) {
+            } else if (action.equals(Intents.SELECTION_STARTED)) {
                 // TODO: Disable swiping.
 //                mListView.setSwipeEnabled(false);
-            } else if (action.equals(Actions.SELECTION_CLEARED)) {
+            } else if (action.equals(Intents.SELECTION_CLEARED)) {
                 // Clear selected tasks and stop selection mode.
                 sSelectedTasks.clear();
                 mActivity.cancelSelection();
@@ -602,7 +602,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                 // Refresh all sections.
                 refreshTaskList(false);
-            } else if (action.equals(Actions.FILTER_BY_TAGS)) {
+            } else if (action.equals(Intents.FILTER_BY_TAGS)) {
                 // Filter by tags or clear results.
                 if (!mActivity.getSelectedFilterTags().isEmpty()) {
                     filterByTags();
@@ -618,29 +618,29 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                     refreshTaskList(false);
                 }
-            } else if (action.equals(Actions.PERFORM_SEARCH)) {
+            } else if (action.equals(Intents.PERFORM_SEARCH)) {
                 // Update search results.
                 performSearch();
             }
 
             // Filter actions intended only for this section.
             if (isCurrentSection()) {
-                if (action.equals(Actions.ASSIGN_TAGS)) {
+                if (action.equals(Intents.ASSIGN_TAGS)) {
                     // Hide buttons and show tags view.
                     showTags();
-                } else if (action.equals(Actions.DELETE_TASKS)) {
+                } else if (action.equals(Intents.DELETE_TASKS)) {
                     // Delete tasks.
                     deleteSelectedTasks();
-                } else if (action.equals(Actions.SHARE_TASKS)) {
+                } else if (action.equals(Intents.SHARE_TASKS)) {
                     // Send intent to share selected tasks by email.
                     shareTasks();
-                } else if (action.equals(Actions.BACK_PRESSED)) {
+                } else if (action.equals(Intents.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
                         closeTags();
                     } else if (mActivity.isSelectionMode()) {
                         // Send broadcast to update selection UI.
-                        mTasksService.sendBroadcast(Actions.SELECTION_CLEARED);
+                        mTasksService.sendBroadcast(Intents.SELECTION_CLEARED);
                     } else if (mActivity.isSearchActive()) {
                         // Close search and refresh list.
                         mActivity.hideSearch();
