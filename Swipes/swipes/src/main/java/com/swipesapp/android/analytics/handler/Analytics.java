@@ -63,7 +63,7 @@ public class Analytics {
         Tracker tracker = SwipesApplication.getTracker();
         tracker.send(builder.build());
 
-        logDebugMessage("Sent event: " + category + " - " + action + " - " + label);
+        logDebugMessage("Sent event: " + category + " - " + action + " - " + label + " - " + value);
     }
 
     /**
