@@ -59,6 +59,9 @@ public class BaseActivity extends ActionBarActivity {
      */
     @Override
     public void onResume() {
+        // Update Evernote user level dimension.
+        Analytics.sendEvernoteUserLevel(this);
+
         // Send Mailbox status dimension.
         Analytics.sendMailboxStatus(this);
 

@@ -8,6 +8,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -80,6 +81,36 @@ public class Analytics {
                 .build());
 
         logDebugMessage("Sent dimension: User Level - " + userLevel);
+    }
+
+    /**
+     * Sends updated Evernote user level dimension.
+     *
+     * @param context Context instance.
+     */
+    public static void sendEvernoteUserLevel(Context context) {
+        String userLevel = Dimensions.VALUE_EVERNOTE_NOT_INSTALLED;
+        String previousLevel = PreferenceUtils.readStringPreference(PreferenceUtils.EVERNOTE_LEVEL, context);
+
+        if (EvernoteService.getInstance().isAuthenticated()) {
+            // TODO: Get account type from Evernote.
+            userLevel = Dimensions.VALUE_EVERNOTE_LINKED;
+        } else if (DeviceUtils.isAppInstalled(EVERNOTE_PACKAGE, context)) {
+            userLevel = Dimensions.VALUE_EVERNOTE_NOT_LINKED;
+        }
+
+        if (!userLevel.equals(previousLevel)) {
+            PreferenceUtils.saveStringPreference(PreferenceUtils.EVERNOTE_LEVEL, userLevel, context);
+
+            Tracker tracker = SwipesApplication.getTracker();
+            tracker.setScreenName(null);
+            tracker.send(getBaseScreenBuilder()
+                    .setCustomDimension(Dimensions.DIMEN_EVERNOTE_USER_LEVEL, userLevel)
+                    .setNewSession()
+                    .build());
+
+            logDebugMessage("Sent dimension: Evernote User Level - " + userLevel);
+        }
     }
 
     /**

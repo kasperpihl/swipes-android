@@ -43,6 +43,9 @@ public class IntegrationsActivity extends BaseActivity {
         switch (requestCode) {
             case EvernoteSession.REQUEST_CODE_OAUTH:
                 if (resultCode == Activity.RESULT_OK) {
+                    // Update Evernote user level dimension.
+                    Analytics.sendEvernoteUserLevel(this);
+
                     // Refresh UI after Evernote login.
                     recreate();
                 }
@@ -82,6 +85,9 @@ public class IntegrationsActivity extends BaseActivity {
                                 public void onPositive(MaterialDialog dialog) {
                                     // Unlink Evernote account.
                                     EvernoteService.getInstance().logout();
+
+                                    // Update Evernote user level dimension.
+                                    Analytics.sendEvernoteUserLevel(getActivity());
 
                                     // Reload activity.
                                     getActivity().recreate();
@@ -142,6 +148,9 @@ public class IntegrationsActivity extends BaseActivity {
             switch (requestCode) {
                 case Constants.EVERNOTE_LEARN_REQUEST_CODE:
                     if (resultCode == Activity.RESULT_OK) {
+                        // Update Evernote user level dimension.
+                        Analytics.sendEvernoteUserLevel(getActivity());
+
                         // Refresh UI after Evernote login.
                         getActivity().recreate();
                     }

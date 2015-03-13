@@ -24,7 +24,7 @@ public class PreferenceUtils {
     public static final String SENT_DIMENSIONS = "sent_user_dimensions";
     public static final String RECURRING_COUNT = "recurring_tasks_count";
     public static final String TAGS_COUNT = "tags_count";
-    public static final String EVERNOTE_STATUS = "evernote_status";
+    public static final String EVERNOTE_LEVEL = "evernote_level";
     public static final String MAILBOX_STATUS = "mailbox_status";
 
     /**

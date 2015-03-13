@@ -23,6 +23,12 @@ public class Dimensions {
     public static final String VALUE_LEVEL_PLUS = "Plus";
 
     // Evernote user level values.
+    public static final String VALUE_EVERNOTE_NOT_INSTALLED = "Not Installed";
+    public static final String VALUE_EVERNOTE_NOT_LINKED = "Not Linked";
+    public static final String VALUE_EVERNOTE_LINKED = "Linked";
+    public static final String VALUE_EVERNOTE_STANDARD = "Standard";
+    public static final String VALUE_EVERNOTE_PREMIUM = "Premium";
+    public static final String VALUE_EVERNOTE_BUSINESS = "Business";
 
     // Active theme values.
     public static final String VALUE_THEME_DARK = "Dark";
