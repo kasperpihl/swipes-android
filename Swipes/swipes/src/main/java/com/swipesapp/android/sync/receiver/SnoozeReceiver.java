@@ -15,6 +15,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.PreferenceUtils;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
 
 import java.util.ArrayList;
@@ -207,6 +208,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 // Open main activity.
                 Intent tasksIntent = new Intent(context, TasksActivity.class);
                 tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                tasksIntent.putExtra(Constants.EXTRA_FROM_NOTIFICATIONS, true);
                 context.startActivity(tasksIntent);
             }
 

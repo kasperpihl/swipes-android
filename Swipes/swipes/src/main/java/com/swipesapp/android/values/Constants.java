@@ -51,6 +51,11 @@ public class Constants {
     public static final String EXTRA_SHOW_ACTION_STEPS = "SHOW_ACTION_STEPS";
 
     /**
+     * Intent extra for app launched from notifications.
+     */
+    public static final String EXTRA_FROM_NOTIFICATIONS = "FROM_NOTIFICATIONS";
+
+    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;

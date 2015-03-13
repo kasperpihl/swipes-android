@@ -26,6 +26,8 @@ public class PreferenceUtils {
     public static final String TAGS_COUNT = "tags_count";
     public static final String EVERNOTE_LEVEL = "evernote_level";
     public static final String MAILBOX_STATUS = "mailbox_status";
+    public static final String INSTALL_DATE = "app_install_date";
+    public static final String FIRST_LAUNCH = "app_first_launch";
 
     /**
      * Saves a boolean preference.
@@ -160,6 +162,23 @@ public class PreferenceUtils {
         }
 
         return isFirstRun;
+    }
+
+    /**
+     * Determines if the app is launching for the first time.
+     *
+     * @param context Context instance.
+     * @return True if it's the app's first launch.
+     */
+    public static boolean isFirstLaunch(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isFirstLaunch = settings.getString(FIRST_LAUNCH, "").isEmpty();
+
+        if (isFirstLaunch) {
+            settings.edit().putString(FIRST_LAUNCH, "NO").apply();
+        }
+
+        return isFirstLaunch;
     }
 
     /**

@@ -11,9 +11,13 @@ import com.swipesapp.android.analytics.values.Dimensions;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Convenience class to handle analytics calls.
@@ -71,6 +75,7 @@ public class Analytics {
     public static void startUserDimensions(Context context) {
         if (!PreferenceUtils.hasSentUserDimensions(context)) {
             sendUserLevel(context);
+            sendEvernoteUserLevel(context);
             sendActiveTheme(context);
             sendRecurringTasks(context);
             sendNumberOfTags(context);
@@ -242,6 +247,25 @@ public class Analytics {
     private static HitBuilders.EventBuilder getBaseEventBuilder() {
         return new HitBuilders.EventBuilder()
                 .setCustomDimension(Dimensions.DIMEN_PLATFORM, Dimensions.VALUE_PLATFORM);
+    }
+
+    /**
+     * Calculates the number of days since the app was installed.
+     *
+     * @param context Context instance.
+     * @return Number of days.
+     */
+    public static Long getDaysSinceInstall(Context context) {
+        long daysDifference = 0;
+
+        String installDateString = PreferenceUtils.readStringPreference(PreferenceUtils.INSTALL_DATE, context);
+        Date installDate = DateUtils.dateFromSync(installDateString);
+
+        if (installDate != null) {
+            daysDifference = DateUtils.getDateDifference(installDate, new Date(), TimeUnit.DAYS);
+        }
+
+        return daysDifference;
     }
 
     /**

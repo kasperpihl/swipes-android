@@ -44,6 +44,9 @@ import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
@@ -63,8 +66,8 @@ import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 
@@ -216,6 +219,8 @@ public class TasksActivity extends BaseActivity {
         getSupportActionBar().setCustomView(mActionBarView);
 
         performInitialSetup();
+
+        sendAppLaunchEvent();
 
         if (mCurrentSection == null) mCurrentSection = Sections.FOCUS;
 
@@ -436,6 +441,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void performInitialSetup() {
+        // Save install date on first launch.
+        WelcomeHandler.checkFirstLaunch(this);
+
         // Perform migrations when needed.
         MigrationAssistant.performUpgrades(mContext.get());
 
@@ -445,11 +453,19 @@ public class TasksActivity extends BaseActivity {
             showWelcomeDialog();
         }
 
-        // Save welcome tasks if the app is used for the first time.
-        if (PreferenceUtils.isUserFirstRun(this)) {
-            WelcomeHandler welcomeHandler = new WelcomeHandler(this);
-            welcomeHandler.addWelcomeTasks();
-        }
+        // Save welcome tasks on first run for the user.
+        WelcomeHandler.addWelcomeTasks(this);
+    }
+
+    private void sendAppLaunchEvent() {
+        String label = Labels.APP_LAUNCH_DIRECT;
+        long value = Analytics.getDaysSinceInstall(this);
+
+        boolean fromNotifications = getIntent().getBooleanExtra(Constants.EXTRA_FROM_NOTIFICATIONS, false);
+        if (fromNotifications) label = Labels.APP_LAUNCH_LOCAL_NOTIFICATION;
+
+        // Send app launch event.
+        Analytics.sendEvent(Categories.SESSION, Actions.APP_LAUNCH, label, value);
     }
 
     private void handleShareIntent() {

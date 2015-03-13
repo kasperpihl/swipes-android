@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utilitary class for date operations.
@@ -282,6 +283,20 @@ public class DateUtils {
         boolean isSameDay = first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR);
 
         return isSameYear && isSameDay;
+    }
+
+    /**
+     * Get the difference between two dates.
+     *
+     * @param oldest Oldest date
+     * @param newest Newest date
+     * @param unit   Unit in which to express the difference.
+     * @return Difference value, in the provided unit.
+     */
+    public static int getDateDifference(Date oldest, Date newest, TimeUnit unit) {
+        long milliesDifference = newest.getTime() - oldest.getTime();
+
+        return (int) unit.convert(milliesDifference, TimeUnit.MILLISECONDS);
     }
 
     /**
