@@ -31,6 +31,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -50,8 +53,8 @@ import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
@@ -1091,6 +1094,9 @@ public class EditTaskActivity extends FragmentActivity {
         public void completeSubtask(GsonTask task) {
             task.setLocalCompletionDate(new Date());
             saveSubtask(task);
+
+            // Send analytics event.
+            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.COMPLETED_SUBTASK, null, null);
         }
 
         @Override
@@ -1117,6 +1123,9 @@ public class EditTaskActivity extends FragmentActivity {
 
                             if (mSubtasks.isEmpty() && mListView.getVisibility() == View.VISIBLE)
                                 hideSubtasks();
+
+                            // Send analytics event.
+                            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.DELETED_SUBTASK, null, null);
                         }
                     })
                     .show();
@@ -1169,6 +1178,9 @@ public class EditTaskActivity extends FragmentActivity {
             hideKeyboard();
 
             if (mListView.getVisibility() == View.GONE) showSubtasks();
+
+            // Send analytics event.
+            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.ADDED_SUBTASK, Labels.ADDED_FROM_INPUT, (long) title.length());
         }
     }
 
