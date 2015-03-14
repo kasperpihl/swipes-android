@@ -28,6 +28,7 @@ public class PreferenceUtils {
     public static final String MAILBOX_STATUS = "mailbox_status";
     public static final String INSTALL_DATE = "app_install_date";
     public static final String FIRST_LAUNCH = "app_first_launch";
+    public static final String DID_TRY_OUT = "user_did_try_out";
 
     /**
      * Saves a boolean preference.

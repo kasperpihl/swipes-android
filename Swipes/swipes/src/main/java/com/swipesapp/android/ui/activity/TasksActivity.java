@@ -344,6 +344,9 @@ public class TasksActivity extends BaseActivity {
                         askToKeepData();
                     }
 
+                    // Send login event to analytics.
+                    sendLoginEvent();
+
                     // Update user level dimension.
                     Analytics.sendUserLevel(this);
 
@@ -466,6 +469,15 @@ public class TasksActivity extends BaseActivity {
 
         // Send app launch event.
         Analytics.sendEvent(Categories.SESSION, Actions.APP_LAUNCH, label, value);
+    }
+
+    private void sendLoginEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
     }
 
     private void handleShareIntent() {
@@ -1446,6 +1458,15 @@ public class TasksActivity extends BaseActivity {
 
                         // Update user level dimension.
                         Analytics.sendUserLevel(mContext.get());
+
+                        if (!mShouldClearData) {
+                            // User chose to try out. Send event.
+                            Analytics.sendEvent(Categories.ONBOARDING, Actions.TRYING_OUT,
+                                    null, Analytics.getDaysSinceInstall(mContext.get()));
+
+                            // Save try out state.
+                            PreferenceUtils.saveBoolean(PreferenceUtils.DID_TRY_OUT, true, mContext.get());
+                        }
                     }
                 })
                 .show();

@@ -18,6 +18,9 @@ import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -36,6 +39,7 @@ public class SettingsActivity extends BaseActivity {
 
     private static boolean sHasChangedTheme;
     private static boolean sHasChangedAccount;
+    private static boolean sHasLoggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,12 @@ public class SettingsActivity extends BaseActivity {
             setResult(Constants.ACCOUNT_CHANGED_RESULT_CODE);
             sHasChangedAccount = false;
 
+            // Send login event if needed.
+            if (sHasLoggedIn) {
+                sendLoginEvent();
+                sHasLoggedIn = false;
+            }
+
             // Update user level dimension.
             Analytics.sendUserLevel(this);
 
@@ -75,6 +85,15 @@ public class SettingsActivity extends BaseActivity {
         Analytics.sendScreenView(Screens.SCREEN_SETTINGS);
 
         super.onResume();
+    }
+
+    private void sendLoginEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
@@ -184,6 +203,9 @@ public class SettingsActivity extends BaseActivity {
                         PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
                         PreferenceUtils.saveString(PreferenceUtils.FIRST_RUN, "NO", getActivity());
 
+                        // Mark login as performed.
+                        sHasLoggedIn = true;
+
                         if (TasksService.getInstance().countAllTasks() > 0) {
                             // Ask to keep user data.
                             askToKeepData();
@@ -258,6 +280,7 @@ public class SettingsActivity extends BaseActivity {
             // Clear state of initial setup.
             PreferenceUtils.remove(PreferenceUtils.FIRST_RUN, getActivity());
             PreferenceUtils.remove(PreferenceUtils.WELCOME_DIALOG, getActivity());
+            PreferenceUtils.remove(PreferenceUtils.DID_TRY_OUT, getActivity());
         }
 
         private void askToKeepData() {
