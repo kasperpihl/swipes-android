@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
+import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
@@ -40,6 +41,7 @@ public class SettingsActivity extends BaseActivity {
     private static boolean sHasChangedTheme;
     private static boolean sHasChangedAccount;
     private static boolean sHasLoggedIn;
+    private static boolean sHasSignedUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,12 @@ public class SettingsActivity extends BaseActivity {
                 sHasLoggedIn = false;
             }
 
+            // Send signup event if needed.
+            if (sHasSignedUp) {
+                sendSignupEvent();
+                sHasSignedUp = false;
+            }
+
             // Update user level dimension.
             Analytics.sendUserLevel(this);
 
@@ -94,6 +102,15 @@ public class SettingsActivity extends BaseActivity {
 
         // Send login event.
         Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
+    }
+
+    private void sendSignupEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.SIGNED_UP, label, null);
     }
 
     private void sendThemeChangedEvent() {
@@ -213,8 +230,13 @@ public class SettingsActivity extends BaseActivity {
                         PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
                         PreferenceUtils.saveString(PreferenceUtils.FIRST_RUN, "NO", getActivity());
 
-                        // Mark login as performed.
-                        sHasLoggedIn = true;
+                        if (data != null) {
+                            // Mark signup as performed.
+                            sHasSignedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
+                        } else {
+                            // Mark login as performed.
+                            sHasLoggedIn = true;
+                        }
 
                         if (TasksService.getInstance().countAllTasks() > 0) {
                             // Ask to keep user data.
