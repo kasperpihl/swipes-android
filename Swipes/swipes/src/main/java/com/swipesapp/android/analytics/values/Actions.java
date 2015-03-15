@@ -54,6 +54,7 @@ public class Actions {
     // Sharing.
     public static final String SHARE_MESSAGE_OPEN = "Opened";
     public static final String SHARE_MESSAGE_SENT = "Sent";
+    public static final String INVITE_OPEN = "Invite Friends Opened";
 
     // Integrations.
     public static final String LINKED_EVERNOTE = "Linked Evernote";

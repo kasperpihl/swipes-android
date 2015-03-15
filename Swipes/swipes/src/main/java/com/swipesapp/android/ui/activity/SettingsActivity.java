@@ -241,6 +241,9 @@ public class SettingsActivity extends BaseActivity {
                 // If Gmail is not available, fallback to app selector.
                 startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
             }
+
+            // Send analytics event.
+            Analytics.sendEvent(Categories.SHARING, Actions.INVITE_OPEN, null, null);
         }
 
         private void startLogin() {
