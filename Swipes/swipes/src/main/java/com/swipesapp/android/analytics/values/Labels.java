@@ -54,6 +54,7 @@ public class Labels {
     public static final String TAGS_FROM_ADD_TASK = "Add Task";
     public static final String TAGS_FROM_EDIT_TASK = "Edit Task";
     public static final String TAGS_FROM_SELECTION = "Select Tasks";
+    public static final String TAGS_FROM_DELETE_TAG = "Delete Tag";
     public static final String TAGS_FROM_FILTER = "Filter";
     public static final String TAGS_FROM_SHARE_INTENT = "Share Intent";
 
