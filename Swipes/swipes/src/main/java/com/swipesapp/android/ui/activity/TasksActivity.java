@@ -540,6 +540,20 @@ public class TasksActivity extends BaseActivity {
 
         // Send Intercom events.
         IntercomHandler.sendEvent(IntercomEvents.ADDED_TASK, fields);
+
+        // Send tag assigned event.
+        sendTagAssignEvent();
+    }
+
+    private void sendTagAssignEvent() {
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
+        fields.put(IntercomFields.NUMBER_OF_TAGS, mSelectedTags.size());
+        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_ADD_TASK);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ASSIGN_TAGS, fields);
     }
 
     private void sendSharingMessageEvent() {
