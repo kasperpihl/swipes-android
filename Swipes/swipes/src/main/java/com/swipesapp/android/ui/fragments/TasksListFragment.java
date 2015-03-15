@@ -612,6 +612,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Filter by tags or clear results.
                 if (!mActivity.getSelectedFilterTags().isEmpty()) {
                     filterByTags();
+
+                    // Send analytics event.
+                    long value = (long) mActivity.getSelectedFilterTags().size();
+                    Analytics.sendEvent(Categories.WORKSPACES, Actions.FILTER_TAGS, null, value);
                 } else {
                     // Hide old tasks before refreshing.
                     if (mSection == Sections.DONE) {

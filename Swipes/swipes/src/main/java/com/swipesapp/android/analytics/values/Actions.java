@@ -37,6 +37,9 @@ public class Actions {
     public static final String ASSIGNED_TAGS = "Assigned";
     public static final String UNASSIGNED_TAGS = "Unassigned";
 
+    // Workspaces.
+    public static final String FILTER_TAGS = "Filter Tags";
+
     // General.
     public static final String OPEN_EVERNOTE = "Open In Evernote";
     public static final String CLEARED_TASKS = "Cleared Tasks";
