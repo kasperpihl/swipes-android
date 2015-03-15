@@ -17,13 +17,12 @@
         android:id="@+id/snooze_adjust_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/snooze_adjust_hint_margin_bottom"
         android:background="@color/transparent"
         android:ellipsize="end"
         android:gravity="center"
         android:singleLine="true"
         android:text="@string/snooze_adjust_hint"
-        android:textSize="@dimen/text_size_small"
-        android:visibility="gone" />
+        android:textColor="@color/neutral_gray"
+        android:textSize="@dimen/text_size_small" />
 
 </LinearLayout>

@@ -178,9 +178,6 @@ public class SnoozeActivity extends FragmentActivity {
     private void customizeViews() {
         mView.setBackgroundResource(ThemeUtils.getDialogBackground(this));
 
-        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
-        mAdjustHint.setTextColor(getResources().getColor(hintColor));
-
         int textColor = ThemeUtils.getSecondaryTextColor(this);
         int iconColor = ThemeUtils.getTextColor(this);
 

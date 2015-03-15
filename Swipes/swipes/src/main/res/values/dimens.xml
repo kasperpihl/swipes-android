@@ -100,7 +100,6 @@
     <dimen name="snooze_options_margin_vertical">20dp</dimen>
     <dimen name="snooze_options_margin_middle">10dp</dimen>
     <dimen name="snooze_options_margin_sides">10dp</dimen>
-    <dimen name="snooze_adjust_hint_margin_bottom">15dp</dimen>
 
     <!-- Done -->
     <dimen name="done_buttons_max_width">148dp</dimen>icd
