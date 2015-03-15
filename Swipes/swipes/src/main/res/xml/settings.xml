@@ -64,6 +64,37 @@
 
     </PreferenceCategory>
 
+    <!-- Help -->
+    <PreferenceCategory
+        android:key="group_help"
+        android:title="@string/group_help">
+
+        <PreferenceScreen
+            android:key="help_center"
+            android:title="@string/help_center">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://support.swipesapp.com/hc/en-us" />
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key="google_community"
+            android:title="@string/help_google_community">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://plus.google.com/communities/110833959414105515907" />
+
+        </PreferenceScreen>
+
+        <Preference
+            android:key="contact_us"
+            android:title="@string/help_contact_us" />
+
+    </PreferenceCategory>
+
     <!-- Other -->
     <PreferenceCategory
         android:key="group_other"

@@ -1,11 +1,12 @@
 package com.swipesapp.android.ui.activity;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -17,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
@@ -151,6 +153,15 @@ public class SettingsActivity extends BaseActivity {
                 }
             });
 
+            Preference preferenceContact = findPreference("contact_us");
+            preferenceContact.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    // Open support email.
+                    contactUs();
+                    return true;
+                }
+            });
+
             Preference preferenceLogin = findPreference("login");
             preferenceLogin.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
@@ -260,22 +271,35 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private void sendInvite() {
+            // Create share intent.
             Intent inviteIntent = new Intent(Intent.ACTION_SEND);
-            inviteIntent.setType("text/html");
+            inviteIntent.setType("text/plain");
             inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.invite_subject));
             inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.invite_body));
 
-            // Try to open invite directly in Gmail.
-            try {
-                inviteIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-                startActivity(inviteIntent);
-            } catch (ActivityNotFoundException e) {
-                // If Gmail is not available, fallback to app selector.
-                startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
-            }
+            // Open app selector.
+            startActivity(Intent.createChooser(inviteIntent, getString(R.string.invite_chooser_title)));
 
             // Send analytics event.
             Analytics.sendEvent(Categories.SHARING, Actions.INVITE_OPEN, null, null);
+        }
+
+        private void contactUs() {
+            // Load device info.
+            String hint = getString(R.string.help_email_text_hint);
+            String appVersion = "\n\n\n" + "App version: " + getString(R.string.app_version,
+                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+            String deviceData = "\n" + "Device model: " + Build.MANUFACTURER + " " + Build.MODEL;
+            deviceData += "\n" + "Android version: " + Build.VERSION.RELEASE;
+
+            // Create email intent.
+            Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", getString(R.string.help_email_receiver), null));
+            contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.help_email_subject));
+            contactIntent.putExtra(Intent.EXTRA_TEXT, hint + appVersion + deviceData);
+
+            // Open app selector.
+            startActivity(Intent.createChooser(contactIntent, getString(R.string.help_email_chooser_title)));
         }
 
         private void startLogin() {

@@ -58,6 +58,7 @@
     <!-- Settings -->
     <string name="group_cloud">Cloud</string>
     <string name="group_preferences">Preferences</string>
+    <string name="group_help">Help</string>
     <string name="group_other">Other</string>
     <string name="notifications">Notifications</string>
     <string name="vibration">Vibration</string>
@@ -80,6 +81,15 @@
     <string name="preference_no">Cancel</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+
+    <!-- Help -->
+    <string name="help_center">Help Center</string>
+    <string name="help_google_community">Google+ community</string>
+    <string name="help_contact_us">Contact us</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">[Android] Support request</string>
+    <string name="help_email_chooser_title">Contact with:</string>
+    <string name="help_email_text_hint">Describe your problem&#8230;</string>
 
     <!-- Snooze settings -->
     <string name="day_start">Day start</string>
