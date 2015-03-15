@@ -637,14 +637,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Filter actions intended only for this section.
             if (isCurrentSection()) {
                 if (action.equals(Intents.ASSIGN_TAGS)) {
-                    // Hide buttons and show tags view.
-                    showTags();
+                    if (!sSelectedTasks.isEmpty()) {
+                        // Hide buttons and show tags view.
+                        showTags();
+                    }
                 } else if (action.equals(Intents.DELETE_TASKS)) {
-                    // Delete tasks.
-                    deleteSelectedTasks();
+                    if (!sSelectedTasks.isEmpty()) {
+                        // Delete tasks.
+                        deleteSelectedTasks();
+                    }
                 } else if (action.equals(Intents.SHARE_TASKS)) {
                     // Send intent to share selected tasks by email.
-                    shareTasks();
+                    if (!sSelectedTasks.isEmpty()) {
+                        shareTasks();
+                    }
                 } else if (action.equals(Intents.BACK_PRESSED)) {
                     // Don't close the app when assigning tags.
                     if (mTagsArea.getVisibility() == View.VISIBLE) {
@@ -1427,6 +1433,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, (long) sSelectedTasks.size());
     }
 
     public void setDragAndDropEnabled(boolean enabled) {

@@ -949,6 +949,9 @@ public class EditTaskActivity extends FragmentActivity {
         inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, 1l);
     }
 
     private void showRepeatOptions() {
