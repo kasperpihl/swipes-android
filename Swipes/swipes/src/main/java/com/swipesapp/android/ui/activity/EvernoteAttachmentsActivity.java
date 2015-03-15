@@ -238,7 +238,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         // Prepare Intercom fields.
         HashMap<String, Object> fields = new HashMap<>();
         fields.put(IntercomFields.SERVICE, Labels.ATTACHMENT_EVERNOTE);
-        fields.put(IntercomFields.FROM, Labels.ATTACHMENT_MANUAL);
+        fields.put(IntercomFields.FROM, Labels.ATTACHMENT_FROM_MANUAL);
 
         // Send Intercom events.
         IntercomHandler.sendEvent(IntercomEvents.ATTACHMENT, fields);

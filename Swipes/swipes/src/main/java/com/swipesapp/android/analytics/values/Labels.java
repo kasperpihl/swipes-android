@@ -47,8 +47,8 @@ public class Labels {
     // Tasks - Attachment.
     public static final String ATTACHMENT_EVERNOTE = "evernote";
     public static final String ATTACHMENT_DROPBOX = "dropbox";
-    public static final String ATTACHMENT_SWIPES_TAG = "swipes-tag";
-    public static final String ATTACHMENT_MANUAL = "manual";
+    public static final String ATTACHMENT_FROM_SWIPES_TAG = "swipes-tag";
+    public static final String ATTACHMENT_FROM_MANUAL = "manual";
 
     // Tags.
     public static final String TAGS_FROM_ADD_TASK = "Add Task";

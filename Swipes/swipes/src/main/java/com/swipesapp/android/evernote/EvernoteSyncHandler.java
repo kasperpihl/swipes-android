@@ -157,6 +157,8 @@ public class EvernoteSyncHandler {
 
                     sendTaskAddedEvent(false, fTitle);
 
+                    sendAttachmentAddedEvent();
+
                     if (++mCurrentNoteCount >= mTotalNoteCount) {
                         if (null == mRunningError)
                             callback.onSuccess(null);
@@ -606,6 +608,8 @@ public class EvernoteSyncHandler {
                                 todoWithEvernote.removeAttachment(attachment);
                                 todoWithEvernote.addAttachment(new GsonAttachment(null, data, Services.EVERNOTE, attachment.getTitle(), true));
                                 TasksService.getInstance().saveTask(todoWithEvernote, true);
+
+                                sendAttachmentAddedEvent();
                             }
 
                             @Override
@@ -634,4 +638,18 @@ public class EvernoteSyncHandler {
         // Send Intercom events.
         IntercomHandler.sendEvent(intercomAction, fields);
     }
+
+    private void sendAttachmentAddedEvent() {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.ATTACHMENT, Labels.ATTACHMENT_EVERNOTE, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.SERVICE, Labels.ATTACHMENT_EVERNOTE);
+        fields.put(IntercomFields.FROM, Labels.ATTACHMENT_FROM_SWIPES_TAG);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ATTACHMENT, fields);
+    }
+
 }
