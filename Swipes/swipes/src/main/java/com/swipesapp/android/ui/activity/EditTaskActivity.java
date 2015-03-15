@@ -1324,6 +1324,9 @@ public class EditTaskActivity extends FragmentActivity {
             Intent evernoteIntent = new Intent(INTENT_VIEW_NOTE);
             evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
             startActivity(evernoteIntent);
+
+            // Send analytics event.
+            Analytics.sendEvent(Categories.ACTIONS, Actions.OPEN_EVERNOTE, null, null);
         }
     }
 
