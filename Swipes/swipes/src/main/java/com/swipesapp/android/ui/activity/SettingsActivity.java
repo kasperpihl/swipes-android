@@ -57,8 +57,8 @@ public class SettingsActivity extends BaseActivity {
             setResult(Constants.THEME_CHANGED_RESULT_CODE);
             sHasChangedTheme = false;
 
-            // Update theme dimension.
-            Analytics.sendActiveTheme(this);
+            // Send theme change event.
+            sendThemeChangedEvent();
         } else if (sHasChangedAccount) {
             // User has logged in or out. Set result code.
             setResult(Constants.ACCOUNT_CHANGED_RESULT_CODE);
@@ -94,6 +94,16 @@ public class SettingsActivity extends BaseActivity {
 
         // Send login event.
         Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
+    }
+
+    private void sendThemeChangedEvent() {
+        String label = ThemeUtils.isLightTheme(this) ? Labels.THEME_LIGHT : Labels.THEME_DARK;
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SETTINGS, Actions.CHANGED_THEME, label, null);
+
+        // Update theme dimension.
+        Analytics.sendActiveTheme(this);
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
