@@ -47,6 +47,8 @@ public class Labels {
     // Tasks - Attachment.
     public static final String ATTACHMENT_EVERNOTE = "evernote";
     public static final String ATTACHMENT_DROPBOX = "dropbox";
+    public static final String ATTACHMENT_SWIPES_TAG = "swipes-tag";
+    public static final String ATTACHMENT_MANUAL = "manual";
 
     // Tags.
     public static final String TAGS_FROM_ADD_TASK = "Add Task";
@@ -58,6 +60,8 @@ public class Labels {
     // General.
     public static final String DONE_FOR_TODAY = "For Today";
     public static final String DONE_FOR_NOW = "For Now";
+    public static final String DONE_TODAY = "Today";
+    public static final String DONE_NOW = "Now";
 
     // Settings.
     public static final String THEME_DARK = "Dark";
@@ -67,5 +71,9 @@ public class Labels {
     public static final String EVERNOTE_STANDARD = "Standard";
     public static final String EVERNOTE_PREMIUM = "Premium";
     public static final String EVERNOTE_BUSINESS = "Business";
+
+    // Simple Yes/No.
+    public static final String VALUE_YES = "Yes";
+    public static final String VALUE_NO = "No";
 
 }

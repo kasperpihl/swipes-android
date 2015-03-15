@@ -8,8 +8,11 @@ import android.util.Log;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -24,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -617,8 +621,17 @@ public class EvernoteSyncHandler {
 
     private void sendTaskAddedEvent(boolean isSubtask, String title) {
         String action = isSubtask ? Actions.ADDED_SUBTASK : Actions.ADDED_TASK;
+        String intercomAction = isSubtask ? IntercomEvents.ADDED_SUBTASK : IntercomEvents.ADDED_TASK;
 
         // Send analytics event.
         Analytics.sendEvent(Categories.TASKS, action, Labels.ADDED_FROM_EVERNOTE, (long) title.length());
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.LENGHT, (long) title.length());
+        fields.put(IntercomFields.FROM, Labels.ADDED_FROM_EVERNOTE);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(intercomAction, fields);
     }
 }

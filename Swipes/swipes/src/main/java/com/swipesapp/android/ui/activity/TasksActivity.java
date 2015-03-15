@@ -51,6 +51,8 @@ import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.db.migration.MigrationAssistant;
@@ -81,6 +83,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -529,6 +532,29 @@ public class TasksActivity extends BaseActivity {
 
         // Send task added event.
         Analytics.sendEvent(Categories.TASKS, Actions.ADDED_TASK, label, value);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.LENGHT, value);
+        fields.put(IntercomFields.FROM, label);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ADDED_TASK, fields);
+    }
+
+    private void sendSharingMessageEvent() {
+        long value = isDoneForToday() ? 1 : 0;
+        String valueIntercom = isDoneForToday() ? Labels.DONE_TODAY : Labels.DONE_NOW;
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.DONE_FOR_TODAY, valueIntercom);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.SHARE_MESSAGE_OPENED, fields);
     }
 
     private void handleShareIntent() {
@@ -1000,8 +1026,7 @@ public class TasksActivity extends BaseActivity {
         startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)));
 
         // Send analytics event.
-        long value = isDoneForToday() ? 1 : 0;
-        Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
+        sendSharingMessageEvent();
     }
 
     public void setShareMessage(String message) {

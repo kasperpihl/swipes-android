@@ -37,8 +37,11 @@ import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -66,6 +69,7 @@ import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -618,7 +622,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                     // Send analytics event.
                     long value = (long) mActivity.getSelectedFilterTags().size();
-                    Analytics.sendEvent(Categories.WORKSPACES, Actions.FILTER_TAGS, null, value);
+                    sendFilterByTagsEvent(value);
                 } else {
                     // Hide old tasks before refreshing.
                     if (mSection == Sections.DONE) {
@@ -695,7 +699,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Refresh all lists.
                         mActivity.refreshSections();
                         // Send analytics event.
-                        Analytics.sendEvent(Categories.TASKS, Actions.COMPLETED_TASKS, null, 1l);
+                        sendTaskCompletedEvent();
                         break;
                 }
             }
@@ -741,7 +745,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Refresh all lists.
                         mActivity.refreshSections();
                         // Send analytics event.
-                        Analytics.sendEvent(Categories.TASKS, Actions.COMPLETED_TASKS, null, 1l);
+                        sendTaskCompletedEvent();
                         break;
                 }
             }
@@ -791,7 +795,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                 // Send analytics event.
                 String label = checked ? Labels.PRIORITY_ON : Labels.PRIORITY_OFF;
-                Analytics.sendEvent(Categories.TASKS, Actions.PRIORITY, label, null);
+                sendTaskPriorityEvent(label);
             }
         }
 
@@ -956,7 +960,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mTasksService.deleteTasks(sSelectedTasks);
 
                         // Send analytics event.
-                        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, (long) sSelectedTasks.size());
+                        sendDeletedTasksEvent();
 
                         // Clear selection.
                         sSelectedTasks.clear();
@@ -1125,8 +1129,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             mTasksService.createTag(title);
 
                             // Send analytics event.
-                            Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG,
-                                    Labels.TAGS_FROM_SELECTION, (long) title.length());
+                            sendTagAddedEvent((long) title.length());
 
                             // Refresh displayed tags.
                             loadTags();
@@ -1255,7 +1258,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             mTasksService.deleteTag(selectedTag.getId());
 
                             // Send analytics event.
-                            Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_SELECTION, null);
+                            sendTagDeletedEvent();
 
                             // Refresh displayed tags.
                             loadTags();
@@ -1437,7 +1440,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
 
         // Send analytics event.
-        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, (long) sSelectedTasks.size());
+        sendShareTaskEvent();
     }
 
     public boolean isDoneForToday() {
@@ -1460,23 +1463,95 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void sendTagAssignEvents() {
         if (mAssignedTagsCount > 0) {
-            // Send tags assigned event.
-            Analytics.sendEvent(Categories.TAGS, Actions.ASSIGNED_TAGS,
-                    Labels.TAGS_FROM_SELECTION, (long) mAssignedTagsCount);
+            sendTagAssignEvent();
         }
 
         if (mUnassignedTagsCount > 0) {
-            // Send tags unassigned event.
-            Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS,
-                    Labels.TAGS_FROM_SELECTION, (long) mUnassignedTagsCount);
+            sendTagUnassignEvent();
         }
+    }
+
+    private void sendTagAssignEvent() {
+        // Send tags assigned event.
+        Analytics.sendEvent(Categories.TAGS, Actions.ASSIGNED_TAGS,
+                Labels.TAGS_FROM_SELECTION, (long) mAssignedTagsCount);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, sSelectedTasks.size());
+        fields.put(IntercomFields.NUMBER_OF_TAGS, mAssignedTagsCount);
+        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_SELECTION);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ASSIGN_TAGS, fields);
+    }
+
+    private void sendTagUnassignEvent() {
+        // Send tags unassigned event.
+        Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS,
+                Labels.TAGS_FROM_SELECTION, (long) mUnassignedTagsCount);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, sSelectedTasks.size());
+        fields.put(IntercomFields.NUMBER_OF_TAGS, mUnassignedTagsCount);
+        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_SELECTION);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.UNASSIGN_TAGS, fields);
     }
 
     private void sendClearedTasksEvent() {
         String label = mDoneForToday ? Labels.DONE_FOR_TODAY : Labels.DONE_FOR_NOW;
+        String labelIntercom = mDoneForToday ? Labels.DONE_TODAY : Labels.DONE_NOW;
 
         // Send analytics event.
         Analytics.sendEvent(Categories.ACTIONS, Actions.CLEARED_TASKS, label, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.DONE_FOR_TODAY, labelIntercom);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.CLEARED_TASKS, fields);
+    }
+
+    private void sendTaskCompletedEvent() {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.COMPLETED_TASKS, null, 1l);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.COMPLETED_TASKS, fields);
+    }
+
+    private void sendDeletedTasksEvent() {
+        long numberOfTasks = (long) sSelectedTasks.size();
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, numberOfTasks);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, numberOfTasks);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.DELETED_TASKS, fields);
+    }
+
+    private void sendTaskPriorityEvent(String label) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.PRIORITY, label, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.ASSIGNED, label);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.PRIORITY, fields);
     }
 
     private void handleWelcomeDialog() {
@@ -1484,6 +1559,57 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (!PreferenceUtils.hasShownWelcomeScreen(getActivity()) && mSection == Sections.FOCUS) {
             mListView.setAlpha(0f);
         }
+    }
+
+    private void sendTagAddedEvent(long length) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, Labels.TAGS_FROM_SELECTION, length);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.LENGHT, length);
+        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_SELECTION);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
+    }
+
+    private void sendTagDeletedEvent() {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_SELECTION, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_SELECTION);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
+    }
+
+    private void sendFilterByTagsEvent(long value) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.WORKSPACES, Actions.FILTER_TAGS, null, value);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TAGS, value);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.FILTER_TAGS, fields);
+    }
+
+    private void sendShareTaskEvent() {
+        long value = (long) sSelectedTasks.size();
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, value);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.NUMBER_OF_TASKS, value);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.SHARE_TASK_OPENED, fields);
     }
 
 }

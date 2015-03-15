@@ -14,8 +14,11 @@ import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDi
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -28,6 +31,7 @@ import com.swipesapp.android.values.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
@@ -265,7 +269,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        sendSnoozedEvent(Labels.SNOOZED_LATER_TODAY, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_LATER_TODAY, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -292,7 +296,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextDayTreatment(snooze);
 
-        sendSnoozedEvent(Labels.SNOOZED_THIS_EVENING, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_THIS_EVENING, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -316,7 +320,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
         snooze.set(Calendar.MINUTE, mDayStartMinute);
 
-        sendSnoozedEvent(Labels.SNOOZED_TOMORROW, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_TOMORROW, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -341,7 +345,7 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
         snooze.set(Calendar.MINUTE, mDayStartMinute);
 
-        sendSnoozedEvent(Labels.SNOOZED_TWO_DAYS, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_TWO_DAYS, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -368,7 +372,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextWeekTreatment(snooze);
 
-        sendSnoozedEvent(Labels.SNOOZED_THIS_WEEKEND, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_THIS_WEEKEND, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -397,7 +401,7 @@ public class SnoozeActivity extends FragmentActivity {
 
         applyNextWeekTreatment(snooze);
 
-        sendSnoozedEvent(Labels.SNOOZED_NEXT_WEEK, snooze.getTime());
+        sendSnoozedEvent(Labels.SNOOZED_NEXT_WEEK, snooze.getTime(), false);
 
         performChanges(snooze.getTime());
     }
@@ -419,7 +423,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_unspecified)
     protected void unspecified() {
         // Send analytics event.
-        sendSnoozedEvent(Labels.SNOOZED_UNSPECIFIED, null);
+        sendSnoozedEvent(Labels.SNOOZED_UNSPECIFIED, null, false);
 
         // Set date as unspecified.
         performChanges(null);
@@ -428,7 +432,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_unspecified)
     protected boolean unspecifiedAdjust() {
         // Send analytics event.
-        sendSnoozedEvent(Labels.SNOOZED_UNSPECIFIED, null);
+        sendSnoozedEvent(Labels.SNOOZED_UNSPECIFIED, null, false);
 
         // Set date as unspecified.
         performChanges(null);
@@ -474,7 +478,7 @@ public class SnoozeActivity extends FragmentActivity {
 
                 applyNextDayTreatment(snooze);
 
-                sendSnoozedEvent(option, snooze.getTime());
+                sendSnoozedEvent(option, snooze.getTime(), true);
 
                 performChanges(snooze.getTime());
             }
@@ -521,7 +525,7 @@ public class SnoozeActivity extends FragmentActivity {
                 snooze.set(Calendar.MONTH, monthOfYear);
                 snooze.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                sendSnoozedEvent(Labels.SNOOZED_PICK_DATE, snooze.getTime());
+                sendSnoozedEvent(Labels.SNOOZED_PICK_DATE, snooze.getTime(), false);
 
                 performChanges(snooze.getTime());
             }
@@ -560,9 +564,10 @@ public class SnoozeActivity extends FragmentActivity {
         finish();
     }
 
-    private void sendSnoozedEvent(String option, Date schedule) {
+    private void sendSnoozedEvent(String option, Date schedule, boolean timePicker) {
         Date currentSchedule = mTask.getLocalSchedule();
         Long daysAhead = null;
+        String usedPicker = timePicker ? Labels.VALUE_YES : Labels.VALUE_NO;
 
         if (currentSchedule != null && schedule != null) {
             daysAhead = (long) DateUtils.getDateDifference(currentSchedule, schedule, TimeUnit.DAYS);
@@ -570,6 +575,16 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Send analytics event.
         Analytics.sendEvent(Categories.TASKS, Actions.SNOOZED_TASK, option, daysAhead);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.FROM, option);
+        fields.put(IntercomFields.TIME_PICKER, usedPicker);
+
+        if (daysAhead != null) fields.put(IntercomFields.DAYS_AHEAD, daysAhead);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.SNOOZED_TASKS, fields);
     }
 
     public static void applyNextDayTreatment(Calendar snooze) {

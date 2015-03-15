@@ -15,8 +15,11 @@ import android.widget.ListView;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
@@ -31,6 +34,7 @@ import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -196,7 +200,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
                     mTasksService.saveTask(mTask, true);
 
                     // Send analytics event.
-                    Analytics.sendEvent(Categories.TASKS, Actions.ATTACHMENT, Labels.ATTACHMENT_EVERNOTE, null);
+                    sendAttachmentAddedEvent();
 
                     // Send activity result to refresh UI.
                     setResult(RESULT_OK);
@@ -225,6 +229,19 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
     @OnClick(R.id.filter_checkbox)
     protected void filter() {
         loadResults();
+    }
+
+    private void sendAttachmentAddedEvent() {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.ATTACHMENT, Labels.ATTACHMENT_EVERNOTE, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.SERVICE, Labels.ATTACHMENT_EVERNOTE);
+        fields.put(IntercomFields.FROM, Labels.ATTACHMENT_MANUAL);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ATTACHMENT, fields);
     }
 
 }

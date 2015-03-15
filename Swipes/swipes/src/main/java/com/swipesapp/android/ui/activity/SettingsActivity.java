@@ -24,6 +24,8 @@ import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.IntercomEvents;
+import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -38,6 +40,7 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import intercom.intercomsdk.Intercom;
 
@@ -126,6 +129,13 @@ public class SettingsActivity extends BaseActivity {
 
         // Update theme dimension.
         Analytics.sendActiveTheme(this);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.THEME, label);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.CHANGED_THEME, fields);
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {

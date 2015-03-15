@@ -1,7 +1,9 @@
 package com.swipesapp.android.analytics.handler;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.util.PreferenceUtils;
 
 import java.util.HashMap;
@@ -15,9 +17,12 @@ import intercom.intercomsdk.Intercom;
  */
 public class IntercomHandler {
 
+    private static final String LOG_TAG = IntercomHandler.class.getSimpleName();
+
     public static final String API_KEY = "android_sdk-36ef4b52dec031bf012025ff108440e441350295";
     public static final String APP_ID = "yobuz4ff";
 
+    // Custom attributes.
     private static final String ATTR_CUSTOM = "custom_attributes";
     private static final String ATTR_USER_LEVEL = "user_level";
     private static final String ATTR_EVERNOTE_LEVEL = "evernote_user_level";
@@ -40,6 +45,22 @@ public class IntercomHandler {
     }
 
     /**
+     * Sends an Intercom event.
+     *
+     * @param event Event to send.
+     * @param data  Additional data.
+     */
+    public static void sendEvent(String event, HashMap<String, Object> data) {
+        if (data != null) {
+            Intercom.logEvent(event, data);
+        } else {
+            Intercom.logEvent(event);
+        }
+
+        logDebugMessage("Sent Intercom event: " + event);
+    }
+
+    /**
      * Sends updated Intercom attributes.
      *
      * @param context Context instance.
@@ -56,8 +77,20 @@ public class IntercomHandler {
         customAttributes.put(ATTR_MAILBOX_STATUS, PreferenceUtils.readString(PreferenceUtils.MAILBOX_STATUS, context));
 
         attributes.put(ATTR_CUSTOM, customAttributes);
-
         Intercom.updateUser(attributes);
+
+        logDebugMessage("Updated Intercom attributes.");
+    }
+
+    /**
+     * Sends a log message in debug builds.
+     *
+     * @param message Message to log.
+     */
+    private static void logDebugMessage(String message) {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, message);
+        }
     }
 
 }
