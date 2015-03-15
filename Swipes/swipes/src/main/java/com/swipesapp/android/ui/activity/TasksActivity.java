@@ -41,6 +41,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
+import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
@@ -344,8 +345,15 @@ public class TasksActivity extends BaseActivity {
                         askToKeepData();
                     }
 
-                    // Send login event to analytics.
-                    sendLoginEvent();
+                    if (data != null) {
+                        boolean signedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
+
+                        // Send signup event to analytics.
+                        if (signedUp) sendSignupEvent();
+                    } else {
+                        // Send login event to analytics.
+                        sendLoginEvent();
+                    }
 
                     // Update user level dimension.
                     Analytics.sendUserLevel(this);
@@ -478,6 +486,15 @@ public class TasksActivity extends BaseActivity {
 
         // Send login event.
         Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
+    }
+
+    private void sendSignupEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.SIGNED_UP, label, null);
     }
 
     private void sendTaskAddedEvent() {
