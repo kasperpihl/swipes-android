@@ -13,6 +13,7 @@ apply plugin: 'crashlytics'
 
 repositories {
     maven { url 'http://download.crashlytics.com/maven' }
+    flatDir { dirs 'libs' }
 }
 
 android {
@@ -75,4 +76,5 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.6.2.3'
     compile 'com.google.android.gms:play-services-base:6.5.87'
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
+    compile(name: 'intercomsdk-0.8.5', ext: 'aar')
 }
