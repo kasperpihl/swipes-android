@@ -10,6 +10,9 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
@@ -173,6 +176,11 @@ public class SnoozeReceiver extends BroadcastReceiver {
         PreferenceUtils.saveInt(KEY_PREVIOUS_COUNT, sPreviousCount, context);
     }
 
+    private static void sendClickEvent(String action) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.NOTIFICATIONS, action, null, (long) sExpiredTasks.size());
+    }
+
     public static class ActionsReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -195,6 +203,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                     sTasksService.saveTask(task, true);
                 }
+
+                sendClickEvent(Actions.NOTIFICATION_SNOOZED);
             } else if (intent.getAction().equals(Intents.COMPLETE_TASKS)) {
                 // Complete tasks from notification.
                 for (GsonTask task : sExpiredTasks) {
@@ -204,12 +214,16 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                     sTasksService.saveTask(task, true);
                 }
+
+                sendClickEvent(Actions.NOTIFICATION_COMPLETED);
             } else if (intent.getAction().equals(Intents.SHOW_TASKS)) {
                 // Open main activity.
                 Intent tasksIntent = new Intent(context, TasksActivity.class);
                 tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 tasksIntent.putExtra(Constants.EXTRA_FROM_NOTIFICATIONS, true);
                 context.startActivity(tasksIntent);
+
+                sendClickEvent(Actions.NOTIFICATION_SHOW_TASKS);
             }
 
             // Clear expired tasks.

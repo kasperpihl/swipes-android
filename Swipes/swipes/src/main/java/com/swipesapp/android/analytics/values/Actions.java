@@ -61,6 +61,8 @@ public class Actions {
     public static final String LINKED_GMAIL = "Linked Gmail";
 
     // Notifications.
-    public static final String NOTIFICATION_CLICKED = "Notification Clicked";
+    public static final String NOTIFICATION_SHOW_TASKS = "Show Tasks";
+    public static final String NOTIFICATION_SNOOZED = "Snoozed";
+    public static final String NOTIFICATION_COMPLETED = "Completed";
 
 }

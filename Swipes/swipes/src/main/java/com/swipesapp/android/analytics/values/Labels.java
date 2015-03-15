@@ -68,9 +68,4 @@ public class Labels {
     public static final String EVERNOTE_PREMIUM = "Premium";
     public static final String EVERNOTE_BUSINESS = "Business";
 
-    // Notifications.
-    public static final String NOTIFICATION_OPENED = "Opened";
-    public static final String NOTIFICATION_SNOOZED = "Snoozed";
-    public static final String NOTIFICATION_COMPLETED = "Completed";
-
 }

@@ -19,5 +19,6 @@ public class Categories {
     public static final String SHARE_TASK = "Share Task";
     public static final String SHARING = "Sharing";
     public static final String INTEGRATIONS = "Integrations";
+    public static final String NOTIFICATIONS = "Notifications";
 
 }
