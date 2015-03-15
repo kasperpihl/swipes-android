@@ -112,6 +112,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     // Empty view.
     private View mEmptyView;
+    private boolean mDoneForToday;
 
     // Controls the display of old tasks.
     private static boolean sIsShowingOld;
@@ -860,6 +861,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (focusEmptyView.getAlpha() == 0f) {
                 focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
             }
+
+            // Send cleared tasks event.
+            sendClearedTasksEvent();
         }
 
         if (DeviceUtils.isLandscape(getActivity())) {
@@ -872,6 +876,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
             focusEmptyView.setAlpha(0f);
+
+            mDoneForToday = false;
         }
 
         if (DeviceUtils.isLandscape(getActivity())) {
@@ -900,12 +906,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     String nextDate = DateUtils.formatToRecent(nextSchedule, getActivity(), false);
                     nextTaskText.setText(getString(R.string.all_done_today_next, nextDate));
                     allDoneMessage.setText(getString(R.string.all_done_today_message));
+                    mDoneForToday = true;
                 }
             } else {
                 // Show default message.
                 allDoneText.setText(getString(R.string.all_done_today));
                 nextTaskText.setText(getString(R.string.all_done_next_empty));
                 allDoneMessage.setText(getString(R.string.all_done_today_message));
+                mDoneForToday = true;
             }
 
             // Refresh sharing message.
@@ -1439,6 +1447,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS,
                     Labels.TAGS_FROM_SELECTION, (long) mUnassignedTagsCount);
         }
+    }
+
+    private void sendClearedTasksEvent() {
+        String label = mDoneForToday ? Labels.DONE_FOR_TODAY : Labels.DONE_FOR_NOW;
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.ACTIONS, Actions.CLEARED_TASKS, label, null);
     }
 
 }
