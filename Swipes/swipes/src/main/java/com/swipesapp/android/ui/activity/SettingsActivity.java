@@ -36,6 +36,8 @@ import com.swipesapp.android.values.Constants;
 
 import java.lang.ref.WeakReference;
 
+import intercom.intercomsdk.Intercom;
+
 public class SettingsActivity extends BaseActivity {
 
     private static boolean sHasChangedTheme;
@@ -97,7 +99,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void sendLoginEvent() {
         // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
         String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
 
         // Send login event.
@@ -106,7 +108,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void sendSignupEvent() {
         // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
         String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
 
         // Send login event.
@@ -230,12 +232,19 @@ public class SettingsActivity extends BaseActivity {
                         PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
                         PreferenceUtils.saveString(PreferenceUtils.FIRST_RUN, "NO", getActivity());
 
+                        if (PreferenceUtils.hasTriedOut(getActivity())) {
+                            // End anonymous Intercom session.
+                            Intercom.endSession();
+                        }
+
                         if (data != null) {
-                            // Mark signup as performed.
+                            // Mark signup or login as performed.
                             sHasSignedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
-                        } else {
-                            // Mark login as performed.
-                            sHasLoggedIn = true;
+                            sHasLoggedIn = !sHasSignedUp;
+
+                            // Start Intercom session with email.
+                            String email = data.getStringExtra(ParseExtras.EXTRA_USER_EMAIL);
+                            Analytics.beginIntercomSession(email);
                         }
 
                         if (TasksService.getInstance().countAllTasks() > 0) {
@@ -290,6 +299,9 @@ public class SettingsActivity extends BaseActivity {
                         public void onPositive(MaterialDialog dialog) {
                             // Logout Parse user.
                             ParseUser.logOut();
+
+                            // End Intercom session.
+                            Intercom.endSession();
 
                             // Clear user data.
                             TasksService.getInstance().clearAllData();

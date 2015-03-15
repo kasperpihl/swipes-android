@@ -19,6 +19,8 @@ import com.swipesapp.android.util.ThemeUtils;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import intercom.intercomsdk.Intercom;
+
 /**
  * Convenience class to handle analytics calls.
  *
@@ -27,6 +29,9 @@ import java.util.concurrent.TimeUnit;
 public class Analytics {
 
     private static final String LOG_TAG = Analytics.class.getSimpleName();
+
+    public static final String INTERCOM_API_KEY = "android_sdk-36ef4b52dec031bf012025ff108440e441350295";
+    public static final String INTERCOM_APP_ID = "yobuz4ff";
 
     private static final String EVERNOTE_PACKAGE = "com.evernote";
     private static final String MAILBOX_PACKAGE = "com.mailboxapp";
@@ -266,6 +271,19 @@ public class Analytics {
         }
 
         return daysDifference;
+    }
+
+    /**
+     * Starts an Intercom session.
+     *
+     * @param email User email. Pass null for anonymous session.
+     */
+    public static void beginIntercomSession(String email) {
+        if (email != null && !email.isEmpty()) {
+            Intercom.beginSessionWithEmail(email, null);
+        } else {
+            Intercom.beginSessionForAnonymousUser(null);
+        }
     }
 
     /**

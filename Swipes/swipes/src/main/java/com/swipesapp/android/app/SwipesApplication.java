@@ -22,6 +22,8 @@ import com.swipesapp.android.sync.receiver.SnoozeHelper;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 
+import intercom.intercomsdk.Intercom;
+
 /**
  * Swipes custom application class.
  *
@@ -63,6 +65,10 @@ public class SwipesApplication extends Application {
 
         // Start Analytics tracker.
         startTracker(getApplicationContext());
+
+        // Initialize Intercom.
+        Intercom.initialize(getApplicationContext());
+        Intercom.setApiKey(Analytics.INTERCOM_API_KEY, Analytics.INTERCOM_APP_ID);
 
         // Load default user preferences.
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);

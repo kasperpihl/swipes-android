@@ -271,4 +271,15 @@ public class PreferenceUtils {
         return settings.getBoolean(SENT_DIMENSIONS, false);
     }
 
+    /**
+     * Checks if the user has tried out the app.
+     *
+     * @param context Context instance.
+     * @return True if it has tried out.
+     */
+    public static boolean hasTriedOut(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(DID_TRY_OUT, false);
+    }
+
 }

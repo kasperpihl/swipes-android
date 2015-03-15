@@ -88,6 +88,7 @@ import java.util.UUID;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import intercom.intercomsdk.Intercom;
 
 public class TasksActivity extends BaseActivity {
 
@@ -354,14 +355,25 @@ public class TasksActivity extends BaseActivity {
                     // Reset flag.
                     mShouldClearData = false;
 
+                    if (PreferenceUtils.hasTriedOut(this)) {
+                        // End anonymous Intercom session.
+                        Intercom.endSession();
+                    }
+
                     if (data != null) {
                         boolean signedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
+                        String email = data.getStringExtra(ParseExtras.EXTRA_USER_EMAIL);
 
-                        // Send signup event to analytics.
-                        if (signedUp) sendSignupEvent();
-                    } else {
-                        // Send login event to analytics.
-                        sendLoginEvent();
+                        if (signedUp) {
+                            // Send signup event to analytics.
+                            sendSignupEvent();
+                        } else {
+                            // Send login event to analytics.
+                            sendLoginEvent();
+                        }
+
+                        // Start Intercom session with email.
+                        Analytics.beginIntercomSession(email);
                     }
 
                     // Update user level dimension.
@@ -494,7 +506,7 @@ public class TasksActivity extends BaseActivity {
 
     private void sendLoginEvent() {
         // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
         String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
 
         // Send login event.
@@ -503,7 +515,7 @@ public class TasksActivity extends BaseActivity {
 
     private void sendSignupEvent() {
         // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.readBoolean(PreferenceUtils.DID_TRY_OUT, this);
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
         String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
 
         // Send login event.
@@ -1514,6 +1526,9 @@ public class TasksActivity extends BaseActivity {
 
                             // Show navigation menu tutorial.
                             showNavigationTutorial();
+
+                            // Start anonymous Intercom session.
+                            Analytics.beginIntercomSession(null);
                         }
                     }
                 })
