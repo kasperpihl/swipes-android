@@ -10,6 +10,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.client.android.EvernoteSession;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.ui.view.SwipesDialog;
@@ -43,6 +45,9 @@ public class IntegrationsActivity extends BaseActivity {
         switch (requestCode) {
             case EvernoteSession.REQUEST_CODE_OAUTH:
                 if (resultCode == Activity.RESULT_OK) {
+                    // Send Evernote linked event.
+                    Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
+
                     // Update Evernote user level dimension.
                     Analytics.sendEvernoteUserLevel(this);
 
@@ -148,6 +153,9 @@ public class IntegrationsActivity extends BaseActivity {
             switch (requestCode) {
                 case Constants.EVERNOTE_LEARN_REQUEST_CODE:
                     if (resultCode == Activity.RESULT_OK) {
+                        // Send Evernote linked event.
+                        Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
+
                         // Update Evernote user level dimension.
                         Analytics.sendEvernoteUserLevel(getActivity());
 
