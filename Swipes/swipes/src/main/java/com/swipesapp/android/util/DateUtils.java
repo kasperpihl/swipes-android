@@ -294,6 +294,8 @@ public class DateUtils {
      * @return Difference value, in the provided unit.
      */
     public static int getDateDifference(Date oldest, Date newest, TimeUnit unit) {
+        if (oldest == null || newest == null) return 0;
+
         long milliesDifference = newest.getTime() - oldest.getTime();
 
         return (int) unit.convert(milliesDifference, TimeUnit.MILLISECONDS);

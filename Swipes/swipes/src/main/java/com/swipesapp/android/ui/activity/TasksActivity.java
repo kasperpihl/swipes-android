@@ -480,6 +480,14 @@ public class TasksActivity extends BaseActivity {
         Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
     }
 
+    private void sendTaskAddedEvent() {
+        String label = mIntentData != null ? Labels.ADDED_FROM_SHARE_INTENT : Labels.ADDED_FROM_INPUT;
+        long value = mEditTextAddNewTask.getText().length();
+
+        // Send task added event.
+        Analytics.sendEvent(Categories.TASKS, Actions.ADDED_TASK, label, value);
+    }
+
     private void handleShareIntent() {
         // Handle intent from other apps.
         Intent intent = getIntent();
@@ -837,6 +845,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void endAddTaskWorkflow(boolean resetFields) {
+        // Send analytics event.
+        sendTaskAddedEvent();
+
         // Finish if coming from another app.
         if (mIntentData != null) finish();
 

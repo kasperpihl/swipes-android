@@ -14,6 +14,10 @@ import android.widget.ListView;
 
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -190,6 +194,9 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
                     GsonAttachment attachment = new GsonAttachment(null, data, Services.EVERNOTE, note.getTitle(), true);
                     mTask.addAttachment(attachment);
                     mTasksService.saveTask(mTask, true);
+
+                    // Send analytics event.
+                    Analytics.sendEvent(Categories.TASKS, Actions.ATTACHMENT, Labels.ATTACHMENT_EVERNOTE, null);
 
                     // Send activity result to refresh UI.
                     setResult(RESULT_OK);

@@ -228,6 +228,9 @@ public class EditTaskActivity extends FragmentActivity {
         if (!mTask.isDeleted()) {
             if (!mNotes.getText().toString().equals(mTask.getNotes())) {
                 performChanges(true);
+
+                // Send analytics event.
+                sendNoteChangedEvent();
             }
         }
 
@@ -566,6 +569,9 @@ public class EditTaskActivity extends FragmentActivity {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // If the action is a key-up event on the return key, save task changes.
                         performChanges(true);
+
+                        // Send analytics event.
+                        sendNoteChangedEvent();
                     }
                     return true;
                 }
@@ -644,9 +650,6 @@ public class EditTaskActivity extends FragmentActivity {
         mTask.setTags(mAssignedTags);
         mTasksService.saveTask(mTask, true);
 
-        // Update recurring tasks dimension.
-        Analytics.sendRecurringTasks(this);
-
         if (hideKeyboard) hideKeyboard();
 
         updateViews();
@@ -667,6 +670,9 @@ public class EditTaskActivity extends FragmentActivity {
                         // Proceed with delete.
                         mTask.setDeleted(true);
                         mTasksService.deleteTasks(Arrays.asList(mTask));
+
+                        // Send analytics event.
+                        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, 1l);
 
                         // Close activity.
                         finish();
@@ -957,6 +963,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_NEVER);
     }
 
     @OnClick(R.id.repeat_option_day)
@@ -970,6 +978,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_EVERY_DAY);
     }
 
     @OnClick(R.id.repeat_option_mon_fri)
@@ -983,6 +993,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_MONDAY_TO_FRIDAY);
     }
 
     @OnClick(R.id.repeat_option_week)
@@ -996,6 +1008,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_EVERY_WEEK);
     }
 
     @OnClick(R.id.repeat_option_month)
@@ -1009,6 +1023,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_EVERY_MONTH);
     }
 
     @OnClick(R.id.repeat_option_year)
@@ -1022,6 +1038,8 @@ public class EditTaskActivity extends FragmentActivity {
         hideRepeatOptions();
 
         performChanges(false);
+
+        sendRecurringEvent(Labels.RECURRING_EVERY_YEAR);
     }
 
     private void clearRepeatSelections() {
@@ -1289,6 +1307,19 @@ public class EditTaskActivity extends FragmentActivity {
             evernoteIntent.putExtra(EXTRA_EVERNOTE_GUID, guid);
             startActivity(evernoteIntent);
         }
+    }
+
+    private void sendRecurringEvent(String option) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.RECURRING, option, null);
+
+        // Update recurring tasks dimension.
+        Analytics.sendRecurringTasks(this);
+    }
+
+    private void sendNoteChangedEvent() {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, Actions.NOTE, null, (long) mNotes.getText().length());
     }
 
 }

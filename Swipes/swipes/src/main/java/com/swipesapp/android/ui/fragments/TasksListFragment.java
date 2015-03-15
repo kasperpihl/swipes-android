@@ -36,6 +36,10 @@ import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.DynamicListView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -56,8 +60,8 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.Sections;
 
 import java.util.ArrayList;
@@ -675,6 +679,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mRepeatHandler.handleRepeatedTask(task);
                         // Refresh all lists.
                         mActivity.refreshSections();
+                        // Send analytics event.
+                        Analytics.sendEvent(Categories.TASKS, Actions.COMPLETED_TASKS, null, 1l);
                         break;
                 }
             }
@@ -719,6 +725,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mRepeatHandler.handleRepeatedTask(task);
                         // Refresh all lists.
                         mActivity.refreshSections();
+                        // Send analytics event.
+                        Analytics.sendEvent(Categories.TASKS, Actions.COMPLETED_TASKS, null, 1l);
                         break;
                 }
             }
@@ -765,6 +773,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (task != null) {
                 task.setPriority(priority);
                 mTasksService.saveTask(task, true);
+
+                // Send analytics event.
+                String label = checked ? Labels.PRIORITY_ON : Labels.PRIORITY_OFF;
+                Analytics.sendEvent(Categories.TASKS, Actions.PRIORITY, label, null);
             }
         }
 
@@ -920,6 +932,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     public void onPositive(MaterialDialog dialog) {
                         // Proceed with delete.
                         mTasksService.deleteTasks(sSelectedTasks);
+
+                        // Send analytics event.
+                        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, (long) sSelectedTasks.size());
 
                         // Clear selection.
                         sSelectedTasks.clear();
