@@ -74,4 +74,5 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.afollestad:material-dialogs:0.6.2.3'
     compile 'com.google.android.gms:play-services-base:6.5.87'
+    compile 'com.github.amlcurran.showcaseview:library:5.0.0'
 }

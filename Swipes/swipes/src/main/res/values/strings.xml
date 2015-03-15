@@ -291,6 +291,10 @@
     <string name="sync_completed_message">Sync successful!</string>
     <string name="sync_failed_message">Sync failed.</string>
 
+    <!-- Showcase -->
+    <string name="showcase_button_done">GOT IT</string>
+    <string name="navigation_tutorial_text">Tap to navigate between sections.</string>
+
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
         <item quantity="one">Delete task?</item>

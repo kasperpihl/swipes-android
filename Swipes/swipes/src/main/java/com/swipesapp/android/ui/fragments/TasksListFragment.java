@@ -234,6 +234,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, false, getActivity());
         }
 
+        handleWelcomeDialog();
+
         super.onResume();
     }
 
@@ -1442,6 +1444,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         return mDoneForToday;
     }
 
+    public void fadeOutTasksList() {
+        mListView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+    }
+
+    public void fadeInTasksList() {
+        mListView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+    }
+
     public void setDragAndDropEnabled(boolean enabled) {
         if (mSection == Sections.FOCUS) {
             mListView.setDragAndDropEnabled(enabled);
@@ -1467,6 +1477,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Send analytics event.
         Analytics.sendEvent(Categories.ACTIONS, Actions.CLEARED_TASKS, label, null);
+    }
+
+    private void handleWelcomeDialog() {
+        // Hide list view when showing welcome dialog.
+        if (!PreferenceUtils.hasShownWelcomeScreen(getActivity()) && mSection == Sections.FOCUS) {
+            mListView.setAlpha(0f);
+        }
     }
 
 }

@@ -20,6 +20,7 @@
     <item name="dark_background" type="color">#1A1D22</item>
     <item name="light_neutral_background" type="color">#F8F8F9</item>
     <item name="dark_neutral_background" type="color">#24282e</item>
+    <item name="showcase_background" type="color">#33000000</item>
 
     <!-- Text colors -->
     <item name="light_text" type="color">#1B1E23</item>

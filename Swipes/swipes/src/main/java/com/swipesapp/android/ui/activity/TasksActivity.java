@@ -39,6 +39,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fortysevendeg.swipelistview.DynamicViewPager;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
@@ -322,6 +325,9 @@ public class TasksActivity extends BaseActivity {
                     // Perform initial setup again.
                     performInitialSetup();
 
+                    // Reset section.
+                    mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
 
@@ -345,6 +351,9 @@ public class TasksActivity extends BaseActivity {
                         askToKeepData();
                     }
 
+                    // Reset flag.
+                    mShouldClearData = false;
+
                     if (data != null) {
                         boolean signedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
 
@@ -366,6 +375,10 @@ public class TasksActivity extends BaseActivity {
                     mShouldClearData = false;
                     break;
             }
+
+            // Fade in tasks list if needed.
+            TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
+            focusFragment.fadeInTasksList();
         }
     }
 
@@ -1498,6 +1511,9 @@ public class TasksActivity extends BaseActivity {
 
                             // Save try out state.
                             PreferenceUtils.saveBoolean(PreferenceUtils.DID_TRY_OUT, true, mContext.get());
+
+                            // Show navigation menu tutorial.
+                            showNavigationTutorial();
                         }
                     }
                 })
@@ -1582,6 +1598,14 @@ public class TasksActivity extends BaseActivity {
         anim.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
     }
 
+    private void resetNavigationArea() {
+        // Reset action bar colors.
+        transitionNavigationArea(ThemeUtils.getSectionColorDark(mCurrentSection, mContext.get()), Color.WHITE);
+
+        // Hide navigation.
+        hideNavigationMenu();
+    }
+
     private void paintNavigationArea(int color) {
         // Change colors according to state.
         if (mIsShowingNavigation) {
@@ -1615,20 +1639,32 @@ public class TasksActivity extends BaseActivity {
 
     @OnClick(R.id.navigation_later_button)
     protected void navigationLaterClick() {
-        // Navigate to Later section.
-        navigateToSection(Sections.LATER);
+        if (mCurrentSection != Sections.LATER) {
+            // Navigate to Later section.
+            navigateToSection(Sections.LATER);
+        } else {
+            resetNavigationArea();
+        }
     }
 
     @OnClick(R.id.navigation_focus_button)
     protected void navigationFocusClick() {
-        // Navigate to Focus section.
-        navigateToSection(Sections.FOCUS);
+        if (mCurrentSection != Sections.FOCUS) {
+            // Navigate to Focus section.
+            navigateToSection(Sections.FOCUS);
+        } else {
+            resetNavigationArea();
+        }
     }
 
     @OnClick(R.id.navigation_done_button)
     protected void navigationDoneClick() {
-        // Navigate to Done section.
-        navigateToSection(Sections.DONE);
+        if (mCurrentSection != Sections.DONE) {
+            // Navigate to Done section.
+            navigateToSection(Sections.DONE);
+        } else {
+            resetNavigationArea();
+        }
     }
 
     private void navigateToSection(Sections section) {
@@ -1642,6 +1678,70 @@ public class TasksActivity extends BaseActivity {
     private boolean isDoneForToday() {
         TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
         return focusFragment.isDoneForToday();
+    }
+
+    private void showNavigationTutorial() {
+        String tutorialText = getString(R.string.navigation_tutorial_text);
+
+        // Show tutorial.
+        displayShowcaseView(mActionBarView, tutorialText, mNavigationTutorialListener);
+    }
+
+    private OnShowcaseEventListener mNavigationTutorialListener = new OnShowcaseEventListener() {
+        @Override
+        public void onShowcaseViewHide(ShowcaseView showcaseView) {
+            // Fade in tasks list.
+            TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
+            focusFragment.fadeInTasksList();
+
+            // Fade in floating button.
+            mButtonAddTask.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+
+            // Hide navigation menu if needed.
+            if (mIsShowingNavigation) resetNavigationArea();
+
+            // Reset navigation to main section.
+            mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        }
+
+        @Override
+        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+        }
+
+        @Override
+        public void onShowcaseViewShow(ShowcaseView showcaseView) {
+            // Fade out tasks list.
+            TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
+            focusFragment.fadeOutTasksList();
+
+            // Fade out floating button.
+            mButtonAddTask.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        }
+    };
+
+    private void displayShowcaseView(View target, String text, OnShowcaseEventListener listener) {
+        // Load showcase button parameters.
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = getResources().getDimensionPixelSize(R.dimen.showcase_button_margin);
+        params.setMargins(margin, margin, margin, margin);
+
+        // Display showcase.
+        ViewTarget viewTarget = new ViewTarget(target);
+        ShowcaseView showcase = new ShowcaseView.Builder(this, true)
+                .setTarget(viewTarget)
+                .setContentText(text)
+                .setStyle(R.style.Showcase_Theme)
+                .setShowcaseEventListener(listener)
+                .build();
+        showcase.setButtonPosition(params);
+
+        // Apply Lollipop padding fix.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int paddingBottom = getResources().getDimensionPixelSize(R.dimen.showcase_padding_bottom);
+            showcase.setPadding(0, 0, 0, paddingBottom);
+        }
     }
 
 }

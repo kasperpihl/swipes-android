@@ -103,4 +103,18 @@
         <item name="colorPrimaryDark">@color/evernote_brand_dark</item>
     </style>
 
+    <!-- Showcase themes. -->
+    <style name="Showcase_Theme" parent="ShowcaseView">
+        <item name="sv_backgroundColor">@color/showcase_background</item>
+        <item name="sv_showcaseColor">@color/focus_accent</item>
+        <item name="sv_buttonText">@string/showcase_button_done</item>
+        <item name="sv_tintButtonColor">true</item>
+        <item name="sv_detailTextAppearance">@style/Showcase_Detail</item>
+    </style>
+
+    <style name="Showcase_Detail" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/showcase_text_size</item>
+    </style>
+
 </resources>
