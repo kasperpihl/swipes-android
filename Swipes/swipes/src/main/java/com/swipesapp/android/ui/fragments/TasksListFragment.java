@@ -1438,6 +1438,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, (long) sSelectedTasks.size());
     }
 
+    public boolean isDoneForToday() {
+        return mDoneForToday;
+    }
+
     public void setDragAndDropEnabled(boolean enabled) {
         if (mSection == Sections.FOCUS) {
             mListView.setDragAndDropEnabled(enabled);

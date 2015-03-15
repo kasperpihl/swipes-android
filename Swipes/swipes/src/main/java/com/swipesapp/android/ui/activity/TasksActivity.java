@@ -955,6 +955,10 @@ public class TasksActivity extends BaseActivity {
         intent.putExtra(Intent.EXTRA_TEXT, mShareMessage + " // " +
                 getString(R.string.all_done_share_url));
         startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)));
+
+        // Send analytics event.
+        long value = isDoneForToday() ? 1 : 0;
+        Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
     }
 
     public void setShareMessage(String message) {
@@ -1616,6 +1620,11 @@ public class TasksActivity extends BaseActivity {
 
         // Hide navigation.
         hideNavigationMenu();
+    }
+
+    private boolean isDoneForToday() {
+        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
+        return focusFragment.isDoneForToday();
     }
 
 }
