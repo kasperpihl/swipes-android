@@ -107,6 +107,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private static List<GsonTask> sSelectedTasks;
     private static GsonTask sNextTask;
     private List<GsonTag> mAssignedTags;
+    private int mAssignedTagsCount;
+    private int mUnassignedTagsCount;
 
     // Empty view.
     private View mEmptyView;
@@ -1059,6 +1061,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mActivity.refreshSections();
 
         SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
+
+        // Send analytics events.
+        sendTagAssignEvents();
     }
 
     @OnClick(R.id.assign_tags_back_button)
@@ -1098,6 +1103,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         if (!title.isEmpty()) {
                             // Save new tag to database.
                             mTasksService.createTag(title);
+
+                            // Send analytics event.
+                            Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG,
+                                    Labels.TAGS_FROM_SELECTION, (long) title.length());
 
                             // Refresh displayed tags.
                             loadTags();
@@ -1166,6 +1175,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void loadTags() {
         List<GsonTag> tags = mTasksService.loadAllTags();
         mAssignedTags = new ArrayList<GsonTag>();
+        mAssignedTagsCount = 0;
+        mUnassignedTagsCount = 0;
         mTaskTagsContainer.removeAllViews();
 
         // For each tag, add a checkbox as child view.
@@ -1223,6 +1234,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             // Delete tag and unassign it from all tasks.
                             mTasksService.deleteTag(selectedTag.getId());
 
+                            // Send analytics event.
+                            Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_SELECTION, null);
+
                             // Refresh displayed tags.
                             loadTags();
                         }
@@ -1254,6 +1268,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             task.setTags(mAssignedTags);
             mTasksService.saveTask(task, true);
         }
+
+        mAssignedTagsCount++;
     }
 
     private void unassignTag(GsonTag tag) {
@@ -1264,6 +1280,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Remove from selected tags.
         mAssignedTags.remove(tag);
+
+        mUnassignedTagsCount++;
     }
 
     private void filterByTags() {
@@ -1402,6 +1420,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     public void setDragAndDropEnabled(boolean enabled) {
         if (mSection == Sections.FOCUS) {
             mListView.setDragAndDropEnabled(enabled);
+        }
+    }
+
+    private void sendTagAssignEvents() {
+        if (mAssignedTagsCount > 0) {
+            // Send tags assigned event.
+            Analytics.sendEvent(Categories.TAGS, Actions.ASSIGNED_TAGS,
+                    Labels.TAGS_FROM_SELECTION, (long) mAssignedTagsCount);
+        }
+
+        if (mUnassignedTagsCount > 0) {
+            // Send tags unassigned event.
+            Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS,
+                    Labels.TAGS_FROM_SELECTION, (long) mUnassignedTagsCount);
         }
     }
 
