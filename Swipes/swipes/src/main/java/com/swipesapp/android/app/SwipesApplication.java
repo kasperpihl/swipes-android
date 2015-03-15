@@ -13,6 +13,7 @@ import com.parse.ParseFacebookUtils;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
@@ -68,7 +69,7 @@ public class SwipesApplication extends Application {
 
         // Initialize Intercom.
         Intercom.initialize(getApplicationContext());
-        Intercom.setApiKey(Analytics.INTERCOM_API_KEY, Analytics.INTERCOM_APP_ID);
+        Intercom.setApiKey(IntercomHandler.API_KEY, IntercomHandler.APP_ID);
 
         // Load default user preferences.
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);

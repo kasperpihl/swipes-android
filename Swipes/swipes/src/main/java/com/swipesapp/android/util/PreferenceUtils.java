@@ -13,6 +13,7 @@ import com.swipesapp.android.db.migration.MigrationAssistant;
  */
 public class PreferenceUtils {
 
+    // User preferences.
     public static final String THEME_KEY = "settings_theme";
     public static final String FIRST_RUN = "app_first_run";
     public static final String WELCOME_DIALOG = "shown_welcome_screen";
@@ -21,10 +22,14 @@ public class PreferenceUtils {
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
     public static final String TASKS_ADDED_FROM_INTENT = "tasks_added_from_intent";
+
+    // Analytics data.
     public static final String SENT_DIMENSIONS = "sent_user_dimensions";
+    public static final String USER_LEVEL = "user_level";
+    public static final String EVERNOTE_LEVEL = "evernote_level";
+    public static final String ACTIVE_THEME = "active_theme";
     public static final String RECURRING_COUNT = "recurring_tasks_count";
     public static final String TAGS_COUNT = "tags_count";
-    public static final String EVERNOTE_LEVEL = "evernote_level";
     public static final String MAILBOX_STATUS = "mailbox_status";
     public static final String INSTALL_DATE = "app_install_date";
     public static final String FIRST_LAUNCH = "app_first_launch";

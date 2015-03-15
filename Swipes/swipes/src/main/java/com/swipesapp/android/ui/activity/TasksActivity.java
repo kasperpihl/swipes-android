@@ -48,6 +48,7 @@ import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.analytics.values.Labels;
@@ -373,7 +374,7 @@ public class TasksActivity extends BaseActivity {
                         }
 
                         // Start Intercom session with email.
-                        Analytics.beginIntercomSession(email);
+                        IntercomHandler.beginIntercomSession(email);
                     }
 
                     // Update user level dimension.
@@ -1528,7 +1529,7 @@ public class TasksActivity extends BaseActivity {
                             showNavigationTutorial();
 
                             // Start anonymous Intercom session.
-                            Analytics.beginIntercomSession(null);
+                            IntercomHandler.beginIntercomSession(null);
                         }
                     }
                 })

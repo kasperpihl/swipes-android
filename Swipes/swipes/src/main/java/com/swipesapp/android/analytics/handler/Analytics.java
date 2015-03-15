@@ -19,8 +19,6 @@ import com.swipesapp.android.util.ThemeUtils;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import intercom.intercomsdk.Intercom;
-
 /**
  * Convenience class to handle analytics calls.
  *
@@ -29,9 +27,6 @@ import intercom.intercomsdk.Intercom;
 public class Analytics {
 
     private static final String LOG_TAG = Analytics.class.getSimpleName();
-
-    public static final String INTERCOM_API_KEY = "android_sdk-36ef4b52dec031bf012025ff108440e441350295";
-    public static final String INTERCOM_APP_ID = "yobuz4ff";
 
     private static final String EVERNOTE_PACKAGE = "com.evernote";
     private static final String MAILBOX_PACKAGE = "com.mailboxapp";
@@ -97,6 +92,7 @@ public class Analytics {
      */
     public static void sendUserLevel(Context context) {
         String userLevel = Dimensions.VALUE_LEVEL_NONE;
+        String previousLevel = PreferenceUtils.readString(PreferenceUtils.USER_LEVEL, context);
 
         if (PreferenceUtils.hasShownWelcomeScreen(context)) {
             if (ParseUser.getCurrentUser() != null) {
@@ -106,14 +102,20 @@ public class Analytics {
             }
         }
 
-        Tracker tracker = SwipesApplication.getTracker();
-        tracker.setScreenName(null);
-        tracker.send(getBaseScreenBuilder()
-                .setCustomDimension(Dimensions.DIMEN_USER_LEVEL, userLevel)
-                .setNewSession()
-                .build());
+        if (!userLevel.equals(previousLevel)) {
+            PreferenceUtils.saveString(PreferenceUtils.USER_LEVEL, userLevel, context);
 
-        logDebugMessage("Sent dimension: User Level - " + userLevel);
+            Tracker tracker = SwipesApplication.getTracker();
+            tracker.setScreenName(null);
+            tracker.send(getBaseScreenBuilder()
+                    .setCustomDimension(Dimensions.DIMEN_USER_LEVEL, userLevel)
+                    .setNewSession()
+                    .build());
+
+            IntercomHandler.sendIntercomAttributes(context);
+
+            logDebugMessage("Sent dimension: User Level - " + userLevel);
+        }
     }
 
     /**
@@ -142,6 +144,8 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
+            IntercomHandler.sendIntercomAttributes(context);
+
             logDebugMessage("Sent dimension: Evernote User Level - " + userLevel);
         }
     }
@@ -153,15 +157,22 @@ public class Analytics {
      */
     public static void sendActiveTheme(Context context) {
         String theme = ThemeUtils.isLightTheme(context) ? Dimensions.VALUE_THEME_LIGHT : Dimensions.VALUE_THEME_DARK;
+        String previousTheme = PreferenceUtils.readString(PreferenceUtils.ACTIVE_THEME, context);
 
-        Tracker tracker = SwipesApplication.getTracker();
-        tracker.setScreenName(null);
-        tracker.send(getBaseScreenBuilder()
-                .setCustomDimension(Dimensions.DIMEN_ACTIVE_THEME, theme)
-                .setNewSession()
-                .build());
+        if (!theme.equals(previousTheme)) {
+            PreferenceUtils.saveString(PreferenceUtils.ACTIVE_THEME, theme, context);
 
-        logDebugMessage("Sent dimension: Active Theme - " + theme);
+            Tracker tracker = SwipesApplication.getTracker();
+            tracker.setScreenName(null);
+            tracker.send(getBaseScreenBuilder()
+                    .setCustomDimension(Dimensions.DIMEN_ACTIVE_THEME, theme)
+                    .setNewSession()
+                    .build());
+
+            IntercomHandler.sendIntercomAttributes(context);
+
+            logDebugMessage("Sent dimension: Active Theme - " + theme);
+        }
     }
 
     /**
@@ -182,6 +193,8 @@ public class Analytics {
                     .setCustomDimension(Dimensions.DIMEN_RECURRING_TASKS, currentCount)
                     .setNewSession()
                     .build());
+
+            IntercomHandler.sendIntercomAttributes(context);
 
             logDebugMessage("Sent dimension: Recurring Tasks - " + currentCount);
         }
@@ -206,6 +219,8 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
+            IntercomHandler.sendIntercomAttributes(context);
+
             logDebugMessage("Sent dimension: Number of Tags - " + currentCount);
         }
     }
@@ -229,6 +244,8 @@ public class Analytics {
                     .setCustomDimension(Dimensions.DIMEN_MAILBOX_STATUS, status)
                     .setNewSession()
                     .build());
+
+            IntercomHandler.sendIntercomAttributes(context);
 
             logDebugMessage("Sent dimension: Mailbox Status - " + status);
         }
@@ -271,19 +288,6 @@ public class Analytics {
         }
 
         return daysDifference;
-    }
-
-    /**
-     * Starts an Intercom session.
-     *
-     * @param email User email. Pass null for anonymous session.
-     */
-    public static void beginIntercomSession(String email) {
-        if (email != null && !email.isEmpty()) {
-            Intercom.beginSessionWithEmail(email, null);
-        } else {
-            Intercom.beginSessionForAnonymousUser(null);
-        }
     }
 
     /**
