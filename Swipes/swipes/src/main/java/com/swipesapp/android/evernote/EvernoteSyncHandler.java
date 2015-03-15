@@ -7,6 +7,10 @@ import android.util.Log;
 
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
+import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.analytics.values.Actions;
+import com.swipesapp.android.analytics.values.Categories;
+import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -146,6 +150,9 @@ public class EvernoteSyncHandler {
                             fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER,
                             null, null, null, Arrays.asList(attachment), 0);
                     TasksService.getInstance().saveTask(newTodo, true);
+
+                    sendTaskAddedEvent(false, fTitle);
+
                     if (++mCurrentNoteCount >= mTotalNoteCount) {
                         if (null == mRunningError)
                             callback.onSuccess(null);
@@ -413,6 +420,9 @@ public class EvernoteSyncHandler {
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
                         RepeatOptions.NEVER, Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
                 tasksService.saveTask(matchingSubtask, true);
+
+                sendTaskAddedEvent(true, evernoteToDo.getTitle());
+
                 updated = true;
                 isNew = true;
             } else if (null == matchingSubtask.getOrigin()) {
@@ -603,5 +613,12 @@ public class EvernoteSyncHandler {
                 }
             }
         }
+    }
+
+    private void sendTaskAddedEvent(boolean isSubtask, String title) {
+        String action = isSubtask ? Actions.ADDED_SUBTASK : Actions.ADDED_TASK;
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TASKS, action, Labels.ADDED_FROM_EVERNOTE, (long) title.length());
     }
 }
