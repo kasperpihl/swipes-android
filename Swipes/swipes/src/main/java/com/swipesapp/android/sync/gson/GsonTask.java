@@ -369,8 +369,20 @@ public class GsonTask {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof GsonTask) {
-            if (((GsonTask) obj).getTempId().equals(tempId)) {
-                return true;
+            // Compare by temp ID.
+            String objTempId = ((GsonTask) obj).getTempId();
+            if (objTempId != null && tempId != null) {
+                if (objTempId.equals(tempId)) {
+                    return true;
+                }
+            }
+
+            // Compare by object ID.
+            String objObjectId = ((GsonTask) obj).getObjectId();
+            if (objObjectId != null && objectId != null) {
+                if (objObjectId.equals(objectId)) {
+                    return true;
+                }
             }
         }
         return false;

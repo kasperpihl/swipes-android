@@ -214,6 +214,19 @@ public class TasksService {
      */
     private void saveTags(Long taskId, List<GsonTag> gsonTags) {
         if (gsonTags != null) {
+            // Filter tags no longer assigned.
+            GsonTask oldTask = loadTask(taskId);
+            if (oldTask != null) {
+                List<GsonTag> oldTags = oldTask.getTags();
+                oldTags.removeAll(gsonTags);
+
+                // Remove tags not assigned.
+                for (GsonTag tag : oldTags) {
+                    unassignTag(tag.getId(), oldTask.getId());
+                }
+            }
+
+            // Process new or existing tags.
             for (GsonTag tag : gsonTags) {
                 // Load tag based on temp ID or object ID.
                 String tempId = tag.getTempId() != null ? tag.getTempId() : tag.getObjectId();

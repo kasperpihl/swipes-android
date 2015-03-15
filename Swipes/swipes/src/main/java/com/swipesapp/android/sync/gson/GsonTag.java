@@ -121,8 +121,20 @@ public class GsonTag {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof GsonTag) {
-            if (((GsonTag) obj).getTempId().equals(tempId)) {
-                return true;
+            // Compare by temp ID.
+            String objTempId = ((GsonTag) obj).getTempId();
+            if (objTempId != null && tempId != null) {
+                if (objTempId.equals(tempId)) {
+                    return true;
+                }
+            }
+
+            // Compare by object ID.
+            String objObjectId = ((GsonTag) obj).getObjectId();
+            if (objObjectId != null && objectId != null) {
+                if (objObjectId.equals(objectId)) {
+                    return true;
+                }
             }
         }
         return false;
