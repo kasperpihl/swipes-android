@@ -294,7 +294,7 @@ public class EvernoteSyncHandler {
                 // If not - uncomplete in Swipes
                 else {
                     Log.d(LOG_TAG, "uncompleting subtask");
-                    subtask.setCompletionDate(null);
+                    subtask.setLocalCompletionDate(null);
                     tasksService.saveTask(subtask, true);
                     updated = true;
                 }

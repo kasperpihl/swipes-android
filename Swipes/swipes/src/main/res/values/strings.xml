@@ -249,7 +249,7 @@
 
     <!-- Action steps -->
     <string name="edit_task_add_subtask_hint">Add an action step</string>
-    <string name="subtask_hide_caption">Show less action steps</string>
+    <string name="subtask_hide_caption">Show fewer action steps</string>
     <string name="subtask_show_caption">Show all action steps</string>
     <string name="delete_subtask_dialog_title">Delete action step?</string>
     <string name="delete_subtask_dialog_message">This cannot be undone.</string>
