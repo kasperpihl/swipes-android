@@ -627,7 +627,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     // Hide old tasks before refreshing.
                     if (mSection == Sections.DONE) {
                         mHeaderView.setVisibility(View.VISIBLE);
-                        mAdapter.setShowingOld(false);
+                        sIsShowingOld = false;
                     }
 
                     // Hide results footer.
@@ -1329,6 +1329,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         if (mSection == Sections.DONE) {
             mHeaderView.setVisibility(View.GONE);
             mAdapter.setShowingOld(true);
+            sIsShowingOld = true;
         }
 
         // Show results footer.
