@@ -10,6 +10,7 @@ import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
@@ -99,6 +100,11 @@ public class SwipesApplication extends Application {
 
             // HACK: Force replace tracking ID with the debug one.
             sTracker.set("&tid", "UA-41592802-6");
+        }
+
+        ParseUser user = ParseUser.getCurrentUser();
+        if (user != null) {
+            sTracker.set("&uid", user.getObjectId());
         }
     }
 
