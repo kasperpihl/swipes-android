@@ -880,6 +880,8 @@ public class TasksActivity extends BaseActivity {
             PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, true, this);
         }
 
+        sendTaskAddedEvent();
+
         endAddTaskWorkflow(true);
     }
 
@@ -928,9 +930,6 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void endAddTaskWorkflow(boolean resetFields) {
-        // Send analytics event.
-        sendTaskAddedEvent();
-
         // Finish if coming from another app.
         if (mIntentData != null) finish();
 
