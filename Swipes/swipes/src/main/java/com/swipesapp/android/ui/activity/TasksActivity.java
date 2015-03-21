@@ -1285,7 +1285,7 @@ public class TasksActivity extends BaseActivity {
     };
 
     private void loadWorkspacesTags() {
-        List<GsonTag> tags = mTasksService.loadAllAssignedTags();
+        List<GsonTag> tags = mTasksService.loadAllTags();
 
         mWorkspacesTags.removeAllViews();
         mWorkspacesTags.setVisibility(View.VISIBLE);
