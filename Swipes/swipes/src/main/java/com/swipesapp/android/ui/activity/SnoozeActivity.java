@@ -513,21 +513,32 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
+        // Set time for already scheduled task.
+        Date schedule = mTask.getLocalSchedule();
+        if (DateUtils.isNewerThanToday(schedule)) {
+            snooze.setTime(schedule);
+        }
+
         // Hide snooze view.
-        getWindow().getDecorView().animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        mView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
 
         // Create date picker listener.
         CalendarDatePickerDialog.OnDateSetListener dateSetListener = new CalendarDatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(CalendarDatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+            public void onDateSet(CalendarDatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth, boolean adjustTime) {
                 // Set snooze date.
                 snooze.set(Calendar.YEAR, year);
                 snooze.set(Calendar.MONTH, monthOfYear);
                 snooze.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                sendSnoozedEvent(Labels.SNOOZED_PICK_DATE, snooze.getTime(), false);
-
-                performChanges(snooze.getTime());
+                if (adjustTime) {
+                    // Call time picker.
+                    adjustSnoozeTime(snooze, mDayStartHour, mDayStartMinute, Labels.SNOOZED_PICK_DATE);
+                } else {
+                    // Snooze task.
+                    sendSnoozedEvent(Labels.SNOOZED_PICK_DATE, snooze.getTime(), false);
+                    performChanges(snooze.getTime());
+                }
             }
         };
 
@@ -536,7 +547,7 @@ public class SnoozeActivity extends FragmentActivity {
             @Override
             public void onDialogDismiss(DialogInterface dialoginterface) {
                 // Show snooze view.
-                getWindow().getDecorView().animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+                mView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
             }
         };
 
@@ -546,6 +557,7 @@ public class SnoozeActivity extends FragmentActivity {
         dialog.setOnDismissListener(dismissListener);
         dialog.setDoneText(getString(R.string.snooze_done_text));
         dialog.setThemeDark(!ThemeUtils.isLightTheme(this));
+        dialog.setStartDate(snooze);
         dialog.show(getSupportFragmentManager(), DATE_PICKER_TAG);
 
         // Mark schedule as not performed.
