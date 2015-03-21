@@ -58,7 +58,7 @@ public class GsonAttachment {
     }
 
     public Boolean getSync() {
-        return sync == 1;
+        return sync != null && sync == 1;
     }
 
     public void setSync(Boolean sync) {
