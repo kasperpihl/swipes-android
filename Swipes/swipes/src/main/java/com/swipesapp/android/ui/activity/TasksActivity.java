@@ -266,8 +266,13 @@ public class TasksActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        // Forward call to listeners.
-        mTasksService.sendBroadcast(Intents.BACK_PRESSED);
+        if (mWorkspacesView.isShown()) {
+            // Close workspaces and refresh.
+            closeWorkspaces();
+        } else {
+            // Forward call to listeners.
+            mTasksService.sendBroadcast(Intents.BACK_PRESSED);
+        }
     }
 
     @Override
