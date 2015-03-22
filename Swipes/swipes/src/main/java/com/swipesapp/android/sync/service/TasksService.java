@@ -528,6 +528,15 @@ public class TasksService {
     }
 
     /**
+     * Loads tasks with a schedule within the current minute.
+     *
+     * @return List of tasks.
+     */
+    public List<GsonTask> loadExpiringTasks() {
+        return gsonFromTasks(mExtTaskDao.listExpiringTasks());
+    }
+
+    /**
      * Loads completed tasks.
      *
      * @return List of tasks.

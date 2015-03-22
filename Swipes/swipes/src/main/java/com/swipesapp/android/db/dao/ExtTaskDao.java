@@ -63,7 +63,11 @@ public class ExtTaskDao {
     }
 
     public List<Task> listScheduledTasks() {
-        List<Task> tasks = mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.gt(new Date()),
+        Calendar thisMinute = Calendar.getInstance();
+        thisMinute.set(Calendar.SECOND, 59);
+        thisMinute.set(Calendar.MILLISECOND, 999);
+
+        List<Task> tasks = mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.gt(thisMinute.getTime()),
                         TaskDao.Properties.Schedule.isNull()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
                 .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
@@ -79,7 +83,12 @@ public class ExtTaskDao {
     }
 
     public List<Task> listFocusedTasks() {
-        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(new Date()), TaskDao.Properties.CompletionDate.isNull(),
+        Calendar nextMinute = Calendar.getInstance();
+        nextMinute.setTimeInMillis(nextMinute.getTimeInMillis() + 60000);
+        nextMinute.set(Calendar.SECOND, 0);
+        nextMinute.set(Calendar.MILLISECOND, 0);
+
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).orderAsc(TaskDao.Properties.Order)
                 .orderDesc(TaskDao.Properties.CreatedAt).list();
     }
@@ -87,6 +96,23 @@ public class ExtTaskDao {
     public List<Task> listCompletedTasks() {
         return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.isNotNull(), TaskDao.Properties.Deleted.eq(false),
                 TaskDao.Properties.ParentLocalId.isNull()).orderDesc(TaskDao.Properties.CompletionDate).list();
+    }
+
+    public List<Task> listExpiringTasks() {
+        Calendar previousMinute = Calendar.getInstance();
+        previousMinute.setTimeInMillis(previousMinute.getTimeInMillis() - 60000);
+        previousMinute.set(Calendar.SECOND, 59);
+        previousMinute.set(Calendar.MILLISECOND, 999);
+
+        Calendar nextMinute = Calendar.getInstance();
+        nextMinute.setTimeInMillis(nextMinute.getTimeInMillis() + 60000);
+        nextMinute.set(Calendar.SECOND, 0);
+        nextMinute.set(Calendar.MILLISECOND, 0);
+
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.gt(previousMinute.getTime()),
+                TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
+                .orderAsc(TaskDao.Properties.Order).orderDesc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listSubtasksForTask(String objectId) {
@@ -104,28 +130,26 @@ public class ExtTaskDao {
     }
 
     public long countTasksForToday() {
-        Calendar calendarTomorrow = Calendar.getInstance();
-        calendarTomorrow.setTimeInMillis(calendarTomorrow.getTimeInMillis() + 86400000);
-        calendarTomorrow.set(Calendar.HOUR_OF_DAY, 0);
-        calendarTomorrow.set(Calendar.MINUTE, 0);
-        calendarTomorrow.set(Calendar.SECOND, 0);
-        calendarTomorrow.set(Calendar.MILLISECOND, 0);
-        Date tomorrow = calendarTomorrow.getTime();
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.setTimeInMillis(tomorrow.getTimeInMillis() + 86400000);
+        tomorrow.set(Calendar.HOUR_OF_DAY, 0);
+        tomorrow.set(Calendar.MINUTE, 0);
+        tomorrow.set(Calendar.SECOND, 0);
+        tomorrow.set(Calendar.MILLISECOND, 0);
 
-        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(tomorrow), TaskDao.Properties.CompletionDate.isNull(),
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(tomorrow.getTime()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
     }
 
     public long countCompletedTasksToday() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(calendar.getTimeInMillis() - 86400000);
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        Date yesterday = calendar.getTime();
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.setTimeInMillis(yesterday.getTimeInMillis() - 86400000);
+        yesterday.set(Calendar.HOUR_OF_DAY, 23);
+        yesterday.set(Calendar.MINUTE, 59);
+        yesterday.set(Calendar.SECOND, 59);
+        yesterday.set(Calendar.MILLISECOND, 999);
 
-        return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.gt(yesterday), TaskDao.Properties.Deleted.eq(false),
+        return mDao.queryBuilder().where(TaskDao.Properties.CompletionDate.gt(yesterday.getTime()), TaskDao.Properties.Deleted.eq(false),
                 TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
     }
 

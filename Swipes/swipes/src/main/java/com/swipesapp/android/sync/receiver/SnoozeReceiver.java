@@ -52,22 +52,11 @@ public class SnoozeReceiver extends BroadcastReceiver {
         // Reload expired tasks in case the receiver was killed.
         reloadPreviousData(context);
 
-        List<GsonTask> snoozedTasks = sTasksService.loadScheduledTasks();
-
-        Calendar calendar = Calendar.getInstance();
-        long now = calendar.getTimeInMillis();
-
-        // Look for tasks with snooze date within the next minute.
-        for (GsonTask task : snoozedTasks) {
-            if (task.getLocalSchedule() != null) {
-                calendar.setTime(task.getLocalSchedule());
-                long schedule = calendar.getTimeInMillis();
-                long delta = schedule - now;
-
-                // Add task to the list of expired.
-                if (delta >= 0 && delta < 60000 && !sExpiredTasks.contains(task)) {
-                    sExpiredTasks.add(task);
-                }
+        // Load tasks with schedule within the current minute.
+        for (GsonTask task : sTasksService.loadExpiringTasks()) {
+            // Add task to the list of expired.
+            if (!sExpiredTasks.contains(task)) {
+                sExpiredTasks.add(task);
             }
         }
 
