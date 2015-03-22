@@ -1,0 +1,10 @@
+<com.swipesapp.android.ui.view.SwipesTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tag_add_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_marginLeft="@dimen/tags_margin_sides"
+    android:layout_marginRight="@dimen/tags_margin_sides"
+    android:background="@android:color/transparent"
+    android:text="@string/plus_sign"
+    android:textSize="@dimen/tags_add_icon_size" />

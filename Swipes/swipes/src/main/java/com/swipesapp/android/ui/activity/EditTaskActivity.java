@@ -759,14 +759,8 @@ public class EditTaskActivity extends FragmentActivity {
                         String title = input.getText().toString();
 
                         if (!title.isEmpty()) {
-                            // Save new tag to database.
-                            mTasksService.createTag(title);
-
-                            // Send analytics event.
-                            sendTagAddedEvent((long) title.length());
-
-                            // Refresh displayed tags.
-                            loadTags();
+                            // Save new tag.
+                            confirmAddTag(title);
 
                             hideKeyboard();
                         }
@@ -803,11 +797,8 @@ public class EditTaskActivity extends FragmentActivity {
                     String title = v.getText().toString();
 
                     if (!title.isEmpty()) {
-                        // Save new tag to database.
-                        mTasksService.createTag(title);
-
-                        // Refresh displayed tags.
-                        loadTags();
+                        // Save new tag.
+                        confirmAddTag(title);
                     }
 
                     dialog.dismiss();
@@ -815,6 +806,17 @@ public class EditTaskActivity extends FragmentActivity {
                 return true;
             }
         });
+    }
+
+    private void confirmAddTag(String title) {
+        // Save new tag to database.
+        mTasksService.createTag(title);
+
+        // Send analytics event.
+        sendTagAddedEvent((long) title.length());
+
+        // Refresh displayed tags.
+        loadTags();
     }
 
     private LinearLayout customizeAddTagInput(EditText input) {

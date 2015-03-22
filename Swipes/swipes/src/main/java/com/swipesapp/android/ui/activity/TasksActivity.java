@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -69,6 +71,7 @@ import com.swipesapp.android.ui.view.FactorSpeedScroller;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
+import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -581,6 +584,19 @@ public class TasksActivity extends BaseActivity {
 
         // Send Intercom events.
         IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
+    }
+
+    private void sendTagAddedEvent(long length, String from) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, from, length);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.LENGHT, length);
+        fields.put(IntercomFields.FROM, from);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
     }
 
     private void handleShareIntent() {
@@ -1129,6 +1145,14 @@ public class TasksActivity extends BaseActivity {
             // Add child view.
             mAddTaskTagContainer.addView(tagBox);
         }
+
+        // Create add tag button.
+        SwipesTextView button = (SwipesTextView) getLayoutInflater().inflate(R.layout.tag_add_button, null);
+        button.setOnClickListener(mAddTagListener);
+        button.enableTouchFeedback();
+
+        // Add child view.
+        mAddTaskTagContainer.addView(button);
     }
 
     private View.OnClickListener mTagClickListener = new View.OnClickListener() {
@@ -1175,6 +1199,105 @@ public class TasksActivity extends BaseActivity {
             return true;
         }
     };
+
+    View.OnClickListener mAddTagListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Create tag title input.
+            final ActionEditText input = new ActionEditText(mContext.get());
+            input.setHint(getString(R.string.add_tag_dialog_hint));
+            input.setHintTextColor(ThemeUtils.getHintColor(mContext.get()));
+            input.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.requestFocus();
+
+            // Display dialog to save new tag.
+            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+                    .title(R.string.add_tag_dialog_title)
+                    .positiveText(R.string.add_tag_dialog_yes)
+                    .negativeText(R.string.add_tag_dialog_no)
+                    .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
+                    .customView(customizeAddTagInput(input), false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            String title = input.getText().toString();
+
+                            if (!title.isEmpty()) {
+                                // Save new tag.
+                                confirmAddTag(title);
+                            }
+                        }
+                    })
+                    .showListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            // Show keyboard automatically.
+                            showKeyboard();
+                        }
+                    })
+                    .show();
+
+            // Dismiss dialog on back press.
+            input.setListener(new KeyboardBackListener() {
+                @Override
+                public void onKeyboardBackPressed() {
+                    dialog.dismiss();
+                }
+            });
+
+            input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, save changes.
+                        String title = v.getText().toString();
+
+                        if (!title.isEmpty()) {
+                            // Save new tag.
+                            confirmAddTag(title);
+                        }
+
+                        dialog.dismiss();
+                    }
+                    return true;
+                }
+            });
+        }
+    };
+
+    private void confirmAddTag(String title) {
+        // Save new tag to database.
+        mTasksService.createTag(title);
+
+        // Send analytics event.
+        String from = mIsAddingTask ? Labels.TAGS_FROM_ADD_TASK : Labels.TAGS_FROM_FILTER;
+        sendTagAddedEvent((long) title.length(), from);
+
+        // Refresh displayed tags.
+        if (mIsAddingTask) {
+            loadTags();
+        } else {
+            loadWorkspacesTags();
+        }
+    }
+
+    private LinearLayout customizeAddTagInput(EditText input) {
+        // Create layout with margins.
+        LinearLayout layout = new LinearLayout(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int margin = getResources().getDimensionPixelSize(R.dimen.add_tag_input_margin);
+        params.setMargins(margin, 0, margin, 0);
+
+        // Wrap input inside layout.
+        layout.addView(input, params);
+        return layout;
+    }
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, 0);
+    }
 
     private boolean isTagSelected(GsonTag selectedTag) {
         // Check if tag already exists in the list of selected.
@@ -1351,6 +1474,14 @@ public class TasksActivity extends BaseActivity {
             // Add child view.
             mWorkspacesTags.addView(tagBox);
         }
+
+        // Create add tag button.
+        SwipesTextView button = (SwipesTextView) getLayoutInflater().inflate(R.layout.tag_add_button, null);
+        button.setOnClickListener(mAddTagListener);
+        button.enableTouchFeedback();
+
+        // Add child view.
+        mWorkspacesTags.addView(button);
 
         // If the list is empty, show empty view.
         if (tags.isEmpty()) {
