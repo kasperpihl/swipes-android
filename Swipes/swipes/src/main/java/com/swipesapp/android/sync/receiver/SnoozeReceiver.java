@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class SnoozeReceiver extends BroadcastReceiver {
 
-    private static final String KEY_EXPIRED_TASKS = "notifications_expired_tasks";
-    private static final String KEY_PREVIOUS_COUNT = "notifications_previous_count";
+    public static final String KEY_EXPIRED_TASKS = "notifications_expired_tasks";
+    public static final String KEY_PREVIOUS_COUNT = "notifications_previous_count";
 
     private static final String TASKS_SEPARATOR = ", ";
     private static final String TASKS_REGEX = "\\s*,\\s*";
@@ -113,6 +113,10 @@ public class SnoozeReceiver extends BroadcastReceiver {
             completeIntent.setAction(Intents.COMPLETE_TASKS);
             PendingIntent completePendingIntent = PendingIntent.getBroadcast(context, 0, completeIntent, 0);
 
+            // Intent for notification dismiss.
+            Intent deleteIntent = new Intent(context, ActionsReceiver.class);
+            PendingIntent deletePendingIntent = PendingIntent.getBroadcast(context, 0, deleteIntent, 0);
+
             // Load strings based on number of tasks.
             Resources res = context.getResources();
             int size = sExpiredTasks.size();
@@ -124,6 +128,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             builder.setContentIntent(tasksPendingIntent);
             builder.addAction(R.drawable.ic_snooze, snoozeTitle, snoozePendingIntent);
             builder.addAction(R.drawable.ic_complete, completeTitle, completePendingIntent);
+            builder.setDeleteIntent(deletePendingIntent);
 
             // Display task titles for multiple tasks.
             if (size > 1) {
@@ -185,45 +190,54 @@ public class SnoozeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             sTasksService = TasksService.getInstance();
+            String action = intent.getAction();
 
             // Reload expired tasks in case the receiver was killed.
             reloadPreviousData(context);
 
-            if (intent.getAction().equals(Intents.SNOOZE_TASKS)) {
-                // Set snooze time.
-                Calendar snooze = Calendar.getInstance();
-                int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
-                snooze.set(Calendar.HOUR_OF_DAY, laterToday);
+            if (action != null) {
+                switch (action) {
+                    case Intents.SNOOZE_TASKS:
+                        // Set snooze time.
+                        Calendar snooze = Calendar.getInstance();
+                        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+                        snooze.set(Calendar.HOUR_OF_DAY, laterToday);
 
-                SnoozeActivity.applyNextDayTreatment(snooze);
+                        SnoozeActivity.applyNextDayTreatment(snooze);
 
-                // Snooze tasks from notification.
-                for (GsonTask task : sExpiredTasks) {
-                    task.setLocalSchedule(snooze.getTime());
+                        // Snooze tasks from notification.
+                        for (GsonTask task : sExpiredTasks) {
+                            task.setLocalSchedule(snooze.getTime());
 
-                    sTasksService.saveTask(task, true);
+                            sTasksService.saveTask(task, true);
+                        }
+
+                        sendClickEvent(Actions.NOTIFICATION_SNOOZED);
+                        break;
+
+                    case Intents.COMPLETE_TASKS:
+                        // Complete tasks from notification.
+                        for (GsonTask task : sExpiredTasks) {
+                            Date currentDate = new Date();
+                            task.setLocalCompletionDate(currentDate);
+                            task.setLocalSchedule(currentDate);
+
+                            sTasksService.saveTask(task, true);
+                        }
+
+                        sendClickEvent(Actions.NOTIFICATION_COMPLETED);
+                        break;
+
+                    case Intents.SHOW_TASKS:
+                        // Open main activity.
+                        Intent tasksIntent = new Intent(context, TasksActivity.class);
+                        tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        tasksIntent.putExtra(Constants.EXTRA_FROM_NOTIFICATIONS, true);
+                        context.startActivity(tasksIntent);
+
+                        sendClickEvent(Actions.NOTIFICATION_SHOW_TASKS);
+                        break;
                 }
-
-                sendClickEvent(Actions.NOTIFICATION_SNOOZED);
-            } else if (intent.getAction().equals(Intents.COMPLETE_TASKS)) {
-                // Complete tasks from notification.
-                for (GsonTask task : sExpiredTasks) {
-                    Date currentDate = new Date();
-                    task.setLocalCompletionDate(currentDate);
-                    task.setLocalSchedule(currentDate);
-
-                    sTasksService.saveTask(task, true);
-                }
-
-                sendClickEvent(Actions.NOTIFICATION_COMPLETED);
-            } else if (intent.getAction().equals(Intents.SHOW_TASKS)) {
-                // Open main activity.
-                Intent tasksIntent = new Intent(context, TasksActivity.class);
-                tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                tasksIntent.putExtra(Constants.EXTRA_FROM_NOTIFICATIONS, true);
-                context.startActivity(tasksIntent);
-
-                sendClickEvent(Actions.NOTIFICATION_SHOW_TASKS);
             }
 
             // Clear expired tasks.
