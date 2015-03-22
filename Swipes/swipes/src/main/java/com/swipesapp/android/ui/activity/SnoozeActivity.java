@@ -261,7 +261,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_later_today)
     protected void laterToday() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
         int minutes = snooze.get(Calendar.MINUTE);
         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
@@ -277,7 +277,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_later_today)
     protected boolean laterTodayAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
         int currentMinute = snooze.get(Calendar.MINUTE);
 
@@ -290,7 +290,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_this_evening)
     protected void thisEvening() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.HOUR_OF_DAY, mEveningStartHour);
         snooze.set(Calendar.MINUTE, mEveningStartMinute);
 
@@ -304,7 +304,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_this_evening)
     protected boolean thisEveningAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
 
         // Show time picker.
         adjustSnoozeTime(snooze, mEveningStartHour, mEveningStartMinute, Labels.SNOOZED_THIS_EVENING);
@@ -315,7 +315,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_tomorrow)
     protected void tomorrow() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
         snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
         snooze.set(Calendar.MINUTE, mDayStartMinute);
@@ -328,7 +328,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_tomorrow)
     protected boolean tomorrowAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 86400000L);
 
         // Show time picker.
@@ -340,7 +340,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_two_days)
     protected void twoDays() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
         snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
         snooze.set(Calendar.MINUTE, mDayStartMinute);
@@ -353,7 +353,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_two_days)
     protected boolean twoDaysAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.setTimeInMillis(snooze.getTimeInMillis() + 172800000L);
 
         // Show time picker.
@@ -365,7 +365,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_this_weekend)
     protected void thisWeekend() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.DAY_OF_WEEK, mWeekendStartDay);
         snooze.set(Calendar.HOUR_OF_DAY, mWeekendDayStartHour);
         snooze.set(Calendar.MINUTE, mWeekendDayStartMinute);
@@ -380,7 +380,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_this_weekend)
     protected boolean thisWeekendAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.DAY_OF_WEEK, mWeekendStartDay);
 
         applyNextWeekTreatment(snooze);
@@ -394,7 +394,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnClick(R.id.snooze_next_week)
     protected void nextWeek() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.DAY_OF_WEEK, mWeekStartDay);
         snooze.set(Calendar.HOUR_OF_DAY, mDayStartHour);
         snooze.set(Calendar.MINUTE, mDayStartMinute);
@@ -409,7 +409,7 @@ public class SnoozeActivity extends FragmentActivity {
     @OnLongClick(R.id.snooze_next_week)
     protected boolean nextWeekAdjust() {
         // Set snooze time.
-        Calendar snooze = Calendar.getInstance();
+        Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.DAY_OF_WEEK, mWeekStartDay);
 
         applyNextWeekTreatment(snooze);
@@ -509,7 +509,7 @@ public class SnoozeActivity extends FragmentActivity {
 
     private void pickSnoozeDate() {
         // Set snooze time.
-        final Calendar snooze = Calendar.getInstance();
+        final Calendar snooze = getBaseCalendar();
         snooze.set(Calendar.HOUR_OF_DAY, 9);
         snooze.set(Calendar.MINUTE, 0);
 
@@ -635,6 +635,15 @@ public class SnoozeActivity extends FragmentActivity {
             minutes += add;
         }
         return minutes;
+    }
+
+    public static Calendar getBaseCalendar() {
+        // Create calendar with seconds reset.
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar;
     }
 
     private int weekdayFromPrefValue(String prefValue) {

@@ -199,7 +199,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 switch (action) {
                     case Intents.SNOOZE_TASKS:
                         // Set snooze time.
-                        Calendar snooze = Calendar.getInstance();
+                        Calendar snooze = SnoozeActivity.getBaseCalendar();
                         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
                         int minutes = snooze.get(Calendar.MINUTE);
                         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
