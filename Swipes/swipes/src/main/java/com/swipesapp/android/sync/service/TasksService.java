@@ -315,7 +315,9 @@ public class TasksService {
      *
      * @param title Tag title.
      */
-    public void createTag(String title) {
+    public long createTag(String title) {
+        long id = 0;
+
         if (title != null && !title.isEmpty()) {
             Date currentDate = new Date();
             String tempId = title + currentDate.getTime();
@@ -323,13 +325,15 @@ public class TasksService {
             Tag tag = new Tag(null, null, tempId, currentDate, currentDate, title);
 
             // Persist new tag.
-            mExtTagDao.getDao().insert(tag);
+            id = mExtTagDao.getDao().insert(tag);
 
             SyncService.getInstance().saveTagForSync(loadTag(tempId));
 
             // Update number of tags dimension.
             Analytics.sendNumberOfTags(mContext.get());
         }
+
+        return id;
     }
 
     /**

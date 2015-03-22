@@ -810,10 +810,14 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void confirmAddTag(String title) {
         // Save new tag to database.
-        mTasksService.createTag(title);
+        long id = mTasksService.createTag(title);
+        GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
         sendTagAddedEvent((long) title.length());
+
+        // Assign to task.
+        assignTag(tag);
 
         // Refresh displayed tags.
         loadTags();

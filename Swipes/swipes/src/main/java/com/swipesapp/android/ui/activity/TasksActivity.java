@@ -1268,7 +1268,8 @@ public class TasksActivity extends BaseActivity {
 
     private void confirmAddTag(String title) {
         // Save new tag to database.
-        mTasksService.createTag(title);
+        long id = mTasksService.createTag(title);
+        GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
         String from = mIsAddingTask ? Labels.TAGS_FROM_ADD_TASK : Labels.TAGS_FROM_FILTER;
@@ -1276,9 +1277,14 @@ public class TasksActivity extends BaseActivity {
 
         // Refresh displayed tags.
         if (mIsAddingTask) {
+            mSelectedTags.add(tag);
             loadTags();
         } else {
+            mSelectedFilterTags.add(tag);
             loadWorkspacesTags();
+
+            // Refresh workspace results.
+            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
         }
     }
 

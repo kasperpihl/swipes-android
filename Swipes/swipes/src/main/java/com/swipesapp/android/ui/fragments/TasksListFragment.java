@@ -1127,8 +1127,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         if (!title.isEmpty()) {
                             // Save new tag.
                             confirmAddTag(title);
-
-                            hideKeyboard();
                         }
                     }
                 })
@@ -1137,12 +1135,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     public void onShow(DialogInterface dialogInterface) {
                         // Show keyboard automatically.
                         showKeyboard();
-                    }
-                })
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        hideKeyboard();
                     }
                 })
                 .show();
@@ -1176,10 +1168,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void confirmAddTag(String title) {
         // Save new tag to database.
-        mTasksService.createTag(title);
+        long id = mTasksService.createTag(title);
+        GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
         sendTagAddedEvent((long) title.length());
+
+        // Assign to selected tasks.
+        assignTag(tag);
 
         // Refresh displayed tags.
         loadTags();
@@ -1280,6 +1276,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             for (GsonTag tag : task.getTags()) {
                 if (tag.getId().equals(selectedTag.getId())) {
                     assigns++;
+                    break;
                 }
             }
         }
@@ -1287,9 +1284,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void assignTag(GsonTag tag) {
+        mAssignedTags.add(tag);
+
         // Assign to all selected tasks.
         for (GsonTask task : sSelectedTasks) {
-            mAssignedTags.add(tag);
             task.setTags(mAssignedTags);
             mTasksService.saveTask(task, true);
         }
@@ -1389,14 +1387,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private void showKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, 0);
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
-
-        // Remove focus from text views by focusing on list area.
-        mListArea.requestFocus();
     }
 
     private void performSearch() {
