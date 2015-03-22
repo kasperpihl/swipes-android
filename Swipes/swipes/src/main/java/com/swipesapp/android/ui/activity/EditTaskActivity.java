@@ -197,6 +197,7 @@ public class EditTaskActivity extends FragmentActivity {
     private List<GsonTask> mSubtasks;
 
     private Sections mSection;
+    private boolean mShowActionSteps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,8 +225,8 @@ public class EditTaskActivity extends FragmentActivity {
 
         updateViews();
 
-        boolean showActionSteps = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_ACTION_STEPS, false);
-        if (showActionSteps) showSubtasks();
+        mShowActionSteps = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_ACTION_STEPS, false);
+        if (mShowActionSteps) showSubtasks();
     }
 
     @Override
@@ -270,7 +271,7 @@ public class EditTaskActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         // Only close activity when subtasks are collapsed and tags are closed.
-        if (mListView.getVisibility() == View.VISIBLE) {
+        if (mListView.getVisibility() == View.VISIBLE && !mShowActionSteps) {
             hideSubtasks();
         } else if (mTagsArea.getVisibility() == View.VISIBLE) {
             closeTags();
@@ -826,7 +827,8 @@ public class EditTaskActivity extends FragmentActivity {
     private LinearLayout customizeAddTagInput(EditText input) {
         // Create layout with margins.
         LinearLayout layout = new LinearLayout(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         int margin = getResources().getDimensionPixelSize(R.dimen.add_tag_input_margin);
         params.setMargins(margin, 0, margin, 0);
 
@@ -978,12 +980,13 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void hideRepeatOptions() {
         // Animate hide of repeat options.
-        mRepeatOptions.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mRepeatOptions.setVisibility(View.GONE);
-            }
-        });
+        mRepeatOptions.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mRepeatOptions.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @OnClick(R.id.repeat_option_never)
@@ -1220,7 +1223,9 @@ public class EditTaskActivity extends FragmentActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate, currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER, null, null, new ArrayList<GsonTag>(), null, 0);
+            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate,
+                    currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER,
+                    null, null, new ArrayList<GsonTag>(), null, 0);
             mTasksService.saveTask(task, true);
 
             refreshSubtasks();
@@ -1261,20 +1266,21 @@ public class EditTaskActivity extends FragmentActivity {
 
     @OnClick(R.id.subtask_first_button)
     protected void firstSubtaskButtonClick() {
-        mSubtaskFirstItem.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                GsonTask task = getFirstUncompletedSubtask();
+        mSubtaskFirstItem.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        GsonTask task = getFirstUncompletedSubtask();
 
-                if (task != null) {
-                    task.setLocalCompletionDate(new Date());
-                    saveSubtask(task);
-                }
+                        if (task != null) {
+                            task.setLocalCompletionDate(new Date());
+                            saveSubtask(task);
+                        }
 
-                mSubtaskFooter.setAlpha(0f);
-                mSubtaskFooter.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
-            }
-        });
+                        mSubtaskFooter.setAlpha(0f);
+                        mSubtaskFooter.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
+                    }
+                });
     }
 
     private void showSubtasks() {
@@ -1290,19 +1296,22 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void hideSubtasks() {
         // Hide list view with fade animation.
-        mListView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mListView.setVisibility(View.GONE);
+        mListView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mListView.setVisibility(View.GONE);
 
-                // Show edit area with fade animation.
-                mPropertiesView.setVisibility(View.VISIBLE);
-                mPropertiesView.setAlpha(0f);
-                mPropertiesView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
-            }
-        });
+                        // Show edit area with fade animation.
+                        mPropertiesView.setVisibility(View.VISIBLE);
+                        mPropertiesView.setAlpha(0f);
+                        mPropertiesView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
+                    }
+                });
 
         updateViews();
+
+        mShowActionSteps = false;
     }
 
     private GsonTask getFirstUncompletedSubtask() {
