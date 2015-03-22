@@ -109,7 +109,7 @@ public class SnoozeActivity extends FragmentActivity {
     private static final String PREF_WEEKEND_DAY_START = "settings_weekend_day_start";
     private static final String PREF_WEEK_START = "settings_snoozes_week_start_dow";
     private static final String PREF_WEEKEND_START = "settings_snoozes_weekend_start_dow";
-    private static final String PREF_LATER_TODAY = "settings_snoozes_later_today_value";
+    public static final String PREF_LATER_TODAY = "settings_snoozes_later_today_value";
 
     private TasksService mTasksService;
 

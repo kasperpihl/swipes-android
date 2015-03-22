@@ -121,7 +121,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             Resources res = context.getResources();
             int size = sExpiredTasks.size();
             String title = res.getQuantityString(R.plurals.notification_title, size, size > 1 ? size : sExpiredTasks.get(0).getTitle());
-            String snoozeTitle = res.getString(R.string.notification_snooze, 3);
+            String snoozeTitle = res.getString(R.string.notification_snooze, loadSnoozeDelay(context));
             String completeTitle = res.getString(R.string.notification_complete);
 
             builder.setContentTitle(title);
@@ -181,6 +181,12 @@ public class SnoozeReceiver extends BroadcastReceiver {
         PreferenceUtils.saveInt(KEY_PREVIOUS_COUNT, sPreviousCount, context);
     }
 
+    private static int loadSnoozeDelay(Context context) {
+        // Load delay from user preference.
+        String prefLaterToday = PreferenceUtils.readString(SnoozeActivity.PREF_LATER_TODAY, context);
+        return Integer.valueOf(prefLaterToday);
+    }
+
     private static void sendClickEvent(String action) {
         // Send analytics event.
         Analytics.sendEvent(Categories.NOTIFICATIONS, action, null, (long) sExpiredTasks.size());
@@ -200,7 +206,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
                     case Intents.SNOOZE_TASKS:
                         // Set snooze time.
                         Calendar snooze = SnoozeActivity.getBaseCalendar();
-                        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+                        int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + loadSnoozeDelay(context);
                         int minutes = snooze.get(Calendar.MINUTE);
                         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
                         snooze.set(Calendar.MINUTE, SnoozeActivity.roundMinutes(minutes));
