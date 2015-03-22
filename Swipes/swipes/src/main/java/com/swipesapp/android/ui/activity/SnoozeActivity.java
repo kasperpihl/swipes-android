@@ -627,7 +627,7 @@ public class SnoozeActivity extends FragmentActivity {
         return DateUtils.formatDayOfWeek(this, now);
     }
 
-    private int roundMinutes(int minutes) {
+    public static int roundMinutes(int minutes) {
         // Round initial minutes.
         int mod = minutes % 5;
         if (mod != 0) {

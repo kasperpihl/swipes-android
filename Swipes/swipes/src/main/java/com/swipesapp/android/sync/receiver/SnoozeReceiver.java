@@ -201,7 +201,9 @@ public class SnoozeReceiver extends BroadcastReceiver {
                         // Set snooze time.
                         Calendar snooze = Calendar.getInstance();
                         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + 3;
+                        int minutes = snooze.get(Calendar.MINUTE);
                         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
+                        snooze.set(Calendar.MINUTE, SnoozeActivity.roundMinutes(minutes));
 
                         SnoozeActivity.applyNextDayTreatment(snooze);
 
