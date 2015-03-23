@@ -1516,6 +1516,7 @@ public class TasksActivity extends BaseActivity {
                 mSelectedFilterTags.add(selectedTag);
             }
 
+            // Update results.
             mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
         }
     };
@@ -1543,6 +1544,9 @@ public class TasksActivity extends BaseActivity {
 
                             // Refresh displayed tags.
                             loadWorkspacesTags();
+
+                            // Update results.
+                            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
                         }
                     })
                     .show();
