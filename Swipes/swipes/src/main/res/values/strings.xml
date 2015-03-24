@@ -291,9 +291,6 @@
     <!-- Workspaces -->
     <string name="set_workspaces_hint">SET WORKSPACE</string>
     <string name="clear_workspace_button">CLEAR WORKSPACES</string>
-    <string name="later_results_description">scheduled</string>
-    <string name="focus_results_description">current</string>
-    <string name="done_results_description">completed</string>
 
     <!-- Sync -->
     <string name="sync_started_message">Syncing&#8230;</string>
@@ -316,6 +313,18 @@
     <plurals name="workspace_results">
         <item quantity="one">%1$s %2$s task with tags: &lt;b>%3$s&lt;/b></item>
         <item quantity="other">%1$s %2$s tasks with tags: &lt;b>%3$s&lt;/b></item>
+    </plurals>
+    <plurals name="later_results_description">
+        <item quantity="one">scheduled</item>
+        <item quantity="other">scheduled</item>
+    </plurals>
+    <plurals name="focus_results_description">
+        <item quantity="one">current</item>
+        <item quantity="other">current</item>
+    </plurals>
+    <plurals name="done_results_description">
+        <item quantity="one">completed</item>
+        <item quantity="other">completed</item>
     </plurals>
 
 </resources>

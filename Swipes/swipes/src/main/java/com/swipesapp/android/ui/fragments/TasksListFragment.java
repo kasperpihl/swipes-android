@@ -1359,13 +1359,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         switch (mSection) {
             case LATER:
-                session = getString(R.string.later_results_description);
+                session = getResources().getQuantityString(R.plurals.later_results_description, count);
                 break;
             case FOCUS:
-                session = getString(R.string.focus_results_description);
+                session = getResources().getQuantityString(R.plurals.focus_results_description, count);
                 break;
             case DONE:
-                session = getString(R.string.done_results_description);
+                session = getResources().getQuantityString(R.plurals.done_results_description, count);
                 break;
         }
 

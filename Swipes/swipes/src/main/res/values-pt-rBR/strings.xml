@@ -263,9 +263,6 @@ Aproveite!</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">DEFINIR FILTRO</string>
     <string name="clear_workspace_button">LIMPAR FILTRO</string>
-    <string name="later_results_description">agendadas</string>
-    <string name="focus_results_description">atuais</string>
-    <string name="done_results_description">concluídas</string>
     <!-- Sync -->
     <string name="sync_started_message">Sincronizando&#8230;</string>
     <string name="sync_completed_message">Sincronização bem-sucedida!</string>
@@ -285,5 +282,17 @@ Aproveite!</string>
     <plurals name="workspace_results">
         <item quantity="one">%1$s tarefa %2$s com etiquetas: &lt;b>%3$s&lt;/b></item>
         <item quantity="other">%1$s tarefas %2$s com etiquetas: &lt;b>%3$s&lt;/b></item>
+    </plurals>
+    <plurals name="later_results_description">
+        <item quantity="one">agendada</item>
+        <item quantity="other">agendadas</item>
+    </plurals>
+    <plurals name="focus_results_description">
+        <item quantity="one">atual</item>
+        <item quantity="other">atuais</item>
+    </plurals>
+    <plurals name="done_results_description">
+        <item quantity="one">concluída</item>
+        <item quantity="other">concluídas</item>
     </plurals>
 </resources>
