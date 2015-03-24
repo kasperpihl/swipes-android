@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- API keys -->
     <string name="application_id">nf9lMphPOh3jZivxqQaMAg6YLtzlfvRjExUEKST3</string>

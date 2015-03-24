@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
     <string-array name="theme_list">
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
@@ -47,4 +48,5 @@
         <item>5</item>
         <item>6</item>
     </string-array>
+
 </resources>
