@@ -104,15 +104,19 @@ public class ExtTaskDao {
         previousMinute.set(Calendar.SECOND, 59);
         previousMinute.set(Calendar.MILLISECOND, 999);
 
+        Calendar currentMinute = Calendar.getInstance();
+        currentMinute.set(Calendar.SECOND, 0);
+        currentMinute.set(Calendar.MILLISECOND, 0);
+
         Calendar nextMinute = Calendar.getInstance();
         nextMinute.setTimeInMillis(nextMinute.getTimeInMillis() + 60000);
         nextMinute.set(Calendar.SECOND, 0);
         nextMinute.set(Calendar.MILLISECOND, 0);
 
-        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.gt(previousMinute.getTime()),
-                TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
-                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
-                .orderAsc(TaskDao.Properties.Order).orderDesc(TaskDao.Properties.CreatedAt).list();
+        return mDao.queryBuilder().where(TaskDao.Properties.CreatedAt.lt(currentMinute.getTime()),
+                TaskDao.Properties.Schedule.gt(previousMinute.getTime()), TaskDao.Properties.Schedule.lt(nextMinute.getTime()),
+                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
+                .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listSubtasksForTask(String objectId) {
