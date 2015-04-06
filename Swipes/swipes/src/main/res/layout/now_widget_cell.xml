@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/now_widget_cell_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/now_widget_cell_padding"
+    android:paddingTop="@dimen/now_widget_cell_padding">
+
+    <!-- Buttons container -->
+    <Button
+        android:id="@+id/now_widget_complete"
+        android:layout_width="@dimen/task_circles_size"
+        android:layout_height="@dimen/task_circles_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
+
+    <!-- Priority indicator -->
+    <TextView
+        android:id="@+id/now_widget_priority"
+        android:layout_width="10dp"
+        android:layout_height="18dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/focus_accent"
+        android:visibility="gone" />
+
+    <!-- Subtasks count -->
+    <TextView
+        android:id="@+id/now_widget_subtasks"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="-16dp"
+        android:layout_toLeftOf="@id/now_widget_priority"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/neutral_gray"
+        android:textSize="@dimen/text_size_small"
+        android:visibility="gone" />
+
+    <!-- Task title -->
+    <TextView
+        android:id="@+id/now_widget_task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@id/now_widget_subtasks"
+        android:layout_toRightOf="@id/now_widget_complete"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="17sp" />
+
+</RelativeLayout>

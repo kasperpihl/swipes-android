@@ -796,6 +796,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Send analytics event.
                 String label = checked ? Labels.PRIORITY_ON : Labels.PRIORITY_OFF;
                 sendTaskPriorityEvent(label);
+
+                // Refresh widget.
+                TasksActivity.refreshWidgets(getActivity());
             }
         }
 
@@ -841,6 +844,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mActivity.cancelSelection();
 
             refreshTaskList(false);
+
+            // Refresh widget.
+            TasksActivity.refreshWidgets(getActivity());
         }
     }
 

@@ -155,6 +155,21 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name="com.swipesapp.android.widget.NowWidgetProvider"
+            android:label="@string/now_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/now_widget_info" />
+        </receiver>
+
+        <service
+            android:name="com.swipesapp.android.widget.NowWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="17aee5fa869f24b705e00dba6d43c51becf5c7e4" />

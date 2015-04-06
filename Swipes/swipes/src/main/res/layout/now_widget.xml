@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Tasks list -->
+    <ListView
+        android:id="@+id/now_widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:paddingBottom="@dimen/now_widget_cell_padding"
+        android:paddingTop="@dimen/now_widget_cell_padding" />
+
+    <!-- Empty view -->
+    <include layout="@layout/now_widget_empty" />
+
+    <!-- Shadow and toolbar area -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clickable="true">
+
+        <!-- Toolbar -->
+        <include layout="@layout/now_widget_toolbar" />
+
+        <!-- Toolbar shadow -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_shadow_height"
+            android:background="@drawable/toolbar_shadow_background_reverse" />
+
+    </FrameLayout>
+
+</FrameLayout>

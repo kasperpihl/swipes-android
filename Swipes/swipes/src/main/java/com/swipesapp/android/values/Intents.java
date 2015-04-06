@@ -77,4 +77,9 @@ public class Intents {
      */
     public static final String PERFORM_SEARCH = "com.swipesapp.android.ACTION_PERFORM_SEARCH";
 
+    /**
+     * Notifies listeners to add task.
+     */
+    public static final String ADD_TASK = "com.swipesapp.android.ACTION_ADD_TASK";
+
 }

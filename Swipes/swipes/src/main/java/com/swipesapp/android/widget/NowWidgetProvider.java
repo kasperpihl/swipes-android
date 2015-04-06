@@ -1,0 +1,143 @@
+package com.swipesapp.android.widget;
+
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.RemoteViews;
+
+import com.swipesapp.android.R;
+import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.TasksActivity;
+import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Intents;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Provider for the Swipes Now widget.
+ *
+ * @author Felipe Bari
+ */
+public class NowWidgetProvider extends AppWidgetProvider {
+
+    public static AppWidgetManager sManager;
+    public static int[] sWidgetIds;
+
+    private TasksService mTasksService;
+
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // Update references.
+        sManager = appWidgetManager;
+        sWidgetIds = appWidgetIds;
+
+        // Load service.
+        mTasksService = TasksService.getInstance();
+        if (mTasksService == null) mTasksService = TasksService.newInstance(context);
+
+        // Perform loop for each widget belonging to this provider.
+        for (int appWidgetId : sWidgetIds) {
+            // Initialize widget layout.
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.now_widget);
+
+            // Setup tasks list.
+            setupTasksList(appWidgetId, views, context);
+
+            // Setup toolbar at the bottom.
+            setupToolbar(views, context);
+
+            // Update empty view messages.
+            updateEmptyView(views, context);
+
+            // Tell AppWidgetManager to update current widget.
+            sManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    private void setupTasksList(int appWidgetId, RemoteViews views, Context context) {
+        // Intent to start the widget service.
+        Intent intent = new Intent(context, NowWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
+        // Set the remote adapter to populate data.
+        views.setRemoteAdapter(R.id.now_widget_list, intent);
+
+        // Set the empty view.
+        views.setEmptyView(R.id.now_widget_list, R.id.now_widget_empty);
+
+        // Set backgrounds according to theme.
+        int background = ThemeUtils.isLightTheme(context) ?
+                R.drawable.widget_tasks_background_light : R.drawable.widget_tasks_background_dark;
+
+        views.setInt(R.id.now_widget_list, "setBackgroundResource", background);
+        views.setInt(R.id.now_widget_empty, "setBackgroundResource", background);
+
+        // Set text colors.
+        int color = ThemeUtils.getSecondaryTextColor(context);
+        views.setInt(R.id.now_widget_all_done, "setTextColor", color);
+        views.setInt(R.id.now_widget_next_task, "setTextColor", color);
+    }
+
+    private void setupToolbar(RemoteViews views, Context context) {
+        // Show tasks intent.
+        Intent tasksIntent = new Intent(context, TasksActivity.class);
+        tasksIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent tasksPendingIntent = PendingIntent.getActivity(context, 0, tasksIntent, 0);
+
+        // Add task intent.
+        Intent addIntent = new Intent(context, TasksActivity.class);
+        addIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        addIntent.setAction(Intents.ADD_TASK);
+        PendingIntent addPendingIntent = PendingIntent.getActivity(context, 0, addIntent, 0);
+
+        // Attach click listeners to buttons.
+        views.setOnClickPendingIntent(R.id.now_widget_show_tasks, tasksPendingIntent);
+        views.setOnClickPendingIntent(R.id.now_widget_add_task, addPendingIntent);
+        views.setOnClickPendingIntent(R.id.now_widget_count_area, tasksPendingIntent);
+
+        // Retrieve tasks count.
+        int completedToday = mTasksService.countTasksCompletedToday();
+        int tasksToday = mTasksService.countTasksForToday() + completedToday;
+
+        // Display tasks count.
+        if (tasksToday > 0) {
+            views.setTextViewText(R.id.now_widget_tasks_done, String.valueOf(completedToday));
+            views.setTextViewText(R.id.now_widget_tasks_count, String.valueOf(tasksToday));
+        } else {
+            views.setTextViewText(R.id.now_widget_tasks_done, "");
+            views.setTextViewText(R.id.now_widget_tasks_count, "");
+        }
+    }
+
+    private void updateEmptyView(RemoteViews views, Context context) {
+        // Load next scheduled task.
+        List<GsonTask> tasks = mTasksService.loadScheduledTasks();
+        GsonTask nextTask = !tasks.isEmpty() ? tasks.get(0) : null;
+
+        if (nextTask != null && nextTask.getLocalSchedule() != null) {
+            Date nextSchedule = nextTask.getLocalSchedule();
+
+            // Set text according to the next scheduled task.
+            if (DateUtils.isToday(nextSchedule)) {
+                views.setTextViewText(R.id.now_widget_all_done, context.getString(R.string.all_done_now));
+                String nextDate = DateUtils.getTimeAsString(context, nextSchedule);
+                views.setTextViewText(R.id.now_widget_next_task, context.getString(R.string.all_done_now_next, nextDate));
+            } else {
+                views.setTextViewText(R.id.now_widget_all_done, context.getString(R.string.all_done_today));
+                String nextDate = DateUtils.formatToRecent(nextSchedule, context, false);
+                views.setTextViewText(R.id.now_widget_next_task, context.getString(R.string.all_done_today_next, nextDate));
+            }
+        } else {
+            // Show default message.
+            views.setTextViewText(R.id.now_widget_all_done, context.getString(R.string.all_done_today));
+            views.setTextViewText(R.id.now_widget_next_task, context.getString(R.string.all_done_next_empty));
+        }
+    }
+
+}

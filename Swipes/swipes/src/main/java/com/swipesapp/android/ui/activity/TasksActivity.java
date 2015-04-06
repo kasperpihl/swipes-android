@@ -5,7 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.Application;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -80,6 +83,7 @@ import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
 import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
+import com.swipesapp.android.widget.NowWidgetProvider;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -609,7 +613,8 @@ public class TasksActivity extends BaseActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
 
-        if (action != null && (action.equals(Intent.ACTION_SEND) || action.equals(Intent.ACTION_SEND_MULTIPLE))) {
+        if (action != null && (action.equals(Intent.ACTION_SEND) ||
+                action.equals(Intent.ACTION_SEND_MULTIPLE) || action.equals(Intents.ADD_TASK))) {
 
             String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
             String notes = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -795,10 +800,29 @@ public class TasksActivity extends BaseActivity {
     };
 
     public void refreshSections() {
+        // Refresh lists without animation.
         for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
-            // Refresh list without animation.
             fragment.refreshTaskList(false);
         }
+
+        // Refresh app widgets.
+        refreshWidgets(this);
+    }
+
+    public static void refreshWidgets(Context context) {
+        // Load manager and IDs.
+        Application application = ((Activity) context).getApplication();
+        AppWidgetManager manager = AppWidgetManager.getInstance(application);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(application, NowWidgetProvider.class));
+
+        // Update widget intent.
+        Intent intent = new Intent(context, NowWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+
+        // Send update broadcast.
+        context.sendBroadcast(intent);
+        manager.notifyAppWidgetViewDataChanged(ids, R.id.now_widget_list);
     }
 
     public Sections getCurrentSection() {
@@ -914,6 +938,8 @@ public class TasksActivity extends BaseActivity {
         }
 
         sendTaskAddedEvent();
+
+        refreshWidgets(this);
 
         endAddTaskWorkflow(true);
     }

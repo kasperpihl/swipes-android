@@ -240,6 +240,9 @@ public class SettingsActivity extends BaseActivity {
                 // Theme has changed. Save state.
                 sHasChangedTheme = true;
 
+                // Refresh widget.
+                TasksActivity.refreshWidgets(getActivity());
+
                 // Reload activity.
                 getActivity().recreate();
             }

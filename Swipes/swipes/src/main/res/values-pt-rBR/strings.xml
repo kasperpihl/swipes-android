@@ -19,7 +19,7 @@
     <string name="action_settings">Configurações</string>
     <string name="schedule">Mais Tarde</string>
     <string name="done">Concluído</string>
-    <string name="focus_title">HOJE</string>
+    <string name="focus_title">AGORA</string>
     <string name="later_title">MAIS TARDE</string>
     <string name="done_title">CONCLUÍDO</string>
     <string name="overview_title">VISÃO GERAL</string>
