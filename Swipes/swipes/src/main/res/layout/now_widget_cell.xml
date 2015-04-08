@@ -20,7 +20,7 @@
     <!-- Priority indicator -->
     <TextView
         android:id="@+id/now_widget_priority"
-        android:layout_width="10dp"
+        android:layout_width="8dp"
         android:layout_height="18dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
