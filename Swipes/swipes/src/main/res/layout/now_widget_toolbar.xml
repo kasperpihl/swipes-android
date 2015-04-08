@@ -14,51 +14,45 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
-        android:orientation="horizontal">
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <!-- Tasks count -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/now_widget_tasks_progress"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-2dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/now_widget_tasks_done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="1dp"
-                android:background="@android:color/white" />
-
-            <!-- TODO: Show "NO" instead of count when there are no tasks. -->
-            <TextView
-                android:id="@+id/now_widget_tasks_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/now_widget_empty_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/now_widget_empty_count_label"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <!-- Count label -->
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
-            android:maxLines="2"
+            android:singleLine="true"
             android:text="@string/now_widget_tasks_count_label"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 

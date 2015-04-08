@@ -22,7 +22,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:maxLines="2"
-        android:textSize="18sp" />
+        android:textSize="19sp" />
 
     <!-- Next task label -->
     <TextView
