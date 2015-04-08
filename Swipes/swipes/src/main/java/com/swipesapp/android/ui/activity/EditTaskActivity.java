@@ -199,6 +199,9 @@ public class EditTaskActivity extends FragmentActivity {
     private Sections mSection;
     private boolean mShowActionSteps;
 
+    private boolean mOpenedFromWidget;
+    private boolean mIsShowingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,6 +230,8 @@ public class EditTaskActivity extends FragmentActivity {
 
         mShowActionSteps = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_ACTION_STEPS, false);
         if (mShowActionSteps) showSubtasks();
+
+        mOpenedFromWidget = getIntent().getBooleanExtra(Constants.EXTRA_FROM_WIDGET, false);
     }
 
     @Override
@@ -266,6 +271,9 @@ public class EditTaskActivity extends FragmentActivity {
                     break;
             }
         }
+
+        // Reset state flag.
+        mIsShowingDialog = false;
     }
 
     @Override
@@ -297,6 +305,11 @@ public class EditTaskActivity extends FragmentActivity {
         unregisterReceiver(mReceiver);
 
         super.onPause();
+    }
+
+    protected void onUserLeaveHint() {
+        // Close when opened from the widget and user presses the home key.
+        if (mOpenedFromWidget && !mIsShowingDialog) finish();
     }
 
     private void setupViews() {
@@ -701,6 +714,9 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Override animation.
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+        // Set state flag.
+        mIsShowingDialog = true;
     }
 
     private void openSnoozeSelector() {
@@ -708,6 +724,9 @@ public class EditTaskActivity extends FragmentActivity {
         Intent intent = new Intent(this, SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, mTask.getId());
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+
+        // Set state flag.
+        mIsShowingDialog = true;
     }
 
     private void closeTags() {

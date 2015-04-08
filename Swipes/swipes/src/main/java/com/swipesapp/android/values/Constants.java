@@ -56,6 +56,11 @@ public class Constants {
     public static final String EXTRA_FROM_NOTIFICATIONS = "FROM_NOTIFICATIONS";
 
     /**
+     * Intent extra for launches from widgets.
+     */
+    public static final String EXTRA_FROM_WIDGET = "FROM_WIDGET";
+
+    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;

@@ -92,6 +92,7 @@ public class NowWidgetProvider extends AppWidgetProvider {
             openIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
             openIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
             openIntent.putExtra(Constants.EXTRA_SHOW_ACTION_STEPS, Intents.WIDGET_OPEN_SUBTASKS.equals(action));
+            openIntent.putExtra(Constants.EXTRA_FROM_WIDGET, true);
 
             // Show task details.
             context.startActivity(openIntent);
