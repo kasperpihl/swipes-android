@@ -304,6 +304,7 @@
     <!-- Widgets -->
     <string name="now_widget_label">Swipes Now</string>
     <string name="now_widget_tasks_count_label">TASKS\nTODAY</string>
+    <string name="now_widget_complete_message">Task completed!</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

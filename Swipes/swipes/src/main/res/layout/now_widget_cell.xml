@@ -36,7 +36,7 @@
         android:layout_marginLeft="-16dp"
         android:layout_toLeftOf="@id/now_widget_priority"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingRight="20dp"
         android:textColor="@color/neutral_gray"
         android:textSize="@dimen/text_size_small"
         android:visibility="gone" />

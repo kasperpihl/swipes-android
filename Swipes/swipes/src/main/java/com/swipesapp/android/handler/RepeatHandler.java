@@ -1,7 +1,5 @@
 package com.swipesapp.android.handler;
 
-import android.content.Context;
-
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
@@ -22,7 +20,7 @@ public class RepeatHandler {
 
     private TasksService mTasksService;
 
-    public RepeatHandler(Context context) {
+    public RepeatHandler() {
         mTasksService = TasksService.getInstance();
     }
 

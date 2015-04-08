@@ -7,15 +7,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.swipesapp.android.R;
+import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
+import com.swipesapp.android.values.Sections;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,22 +32,16 @@ import java.util.List;
  */
 public class NowWidgetProvider extends AppWidgetProvider {
 
-    public static AppWidgetManager sManager;
-    public static int[] sWidgetIds;
-
-    private TasksService mTasksService;
+    private static TasksService sTasksService;
+    private static long sLastToastTime;
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // Update references.
-        sManager = appWidgetManager;
-        sWidgetIds = appWidgetIds;
-
         // Load service.
-        mTasksService = TasksService.getInstance();
-        if (mTasksService == null) mTasksService = TasksService.newInstance(context);
+        sTasksService = TasksService.getInstance();
+        if (sTasksService == null) sTasksService = TasksService.newInstance(context);
 
         // Perform loop for each widget belonging to this provider.
-        for (int appWidgetId : sWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
             // Initialize widget layout.
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.now_widget);
 
@@ -55,8 +55,49 @@ public class NowWidgetProvider extends AppWidgetProvider {
             updateEmptyView(views, context);
 
             // Tell AppWidgetManager to update current widget.
-            sManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+    }
+
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        Long taskId = intent.getLongExtra(Constants.EXTRA_TASK_ID, 0);
+
+        // Filter widget actions.
+        if (Intents.WIDGET_COMPLETE_TASK.equals(action)) {
+            sTasksService = TasksService.getInstance();
+
+            // Complete task.
+            GsonTask task = sTasksService.loadTask(taskId);
+            task.setLocalCompletionDate(new Date());
+            sTasksService.saveTask(task, true);
+
+            // Handle repeat.
+            RepeatHandler repeatHandler = new RepeatHandler();
+            repeatHandler.handleRepeatedTask(task);
+
+            // Show success message.
+            long now = Calendar.getInstance().getTimeInMillis();
+            if (now - sLastToastTime > 2000) {
+                Toast.makeText(context, context.getString(R.string.now_widget_complete_message), Toast.LENGTH_SHORT).show();
+                sLastToastTime = now;
+            }
+
+            // Refresh widget.
+            TasksActivity.refreshWidgets(context);
+        } else if (Intents.WIDGET_OPEN_TASK.equals(action) || Intents.WIDGET_OPEN_SUBTASKS.equals(action)) {
+            // Open task intent.
+            Intent openIntent = new Intent(context, EditTaskActivity.class);
+            openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            openIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
+            openIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
+            openIntent.putExtra(Constants.EXTRA_SHOW_ACTION_STEPS, Intents.WIDGET_OPEN_SUBTASKS.equals(action));
+
+            // Show task details.
+            context.startActivity(openIntent);
+        }
+
+        super.onReceive(context, intent);
     }
 
     private void setupTasksList(int appWidgetId, RemoteViews views, Context context) {
@@ -70,6 +111,13 @@ public class NowWidgetProvider extends AppWidgetProvider {
 
         // Set the empty view.
         views.setEmptyView(R.id.now_widget_list, R.id.now_widget_empty);
+
+        // Widget action intent.
+        Intent actionIntent = new Intent(context, NowWidgetProvider.class);
+        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, actionIntent, 0);
+
+        // Attach intent template.
+        views.setPendingIntentTemplate(R.id.now_widget_list, actionPendingIntent);
 
         // Set backgrounds according to theme.
         int background = ThemeUtils.isLightTheme(context) ?
@@ -92,7 +140,7 @@ public class NowWidgetProvider extends AppWidgetProvider {
 
         // Add task intent.
         Intent addIntent = new Intent(context, TasksActivity.class);
-        addIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        addIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         addIntent.setAction(Intents.ADD_TASK);
         PendingIntent addPendingIntent = PendingIntent.getActivity(context, 0, addIntent, 0);
 
@@ -102,8 +150,8 @@ public class NowWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.now_widget_count_area, tasksPendingIntent);
 
         // Retrieve tasks count.
-        int completedToday = mTasksService.countTasksCompletedToday();
-        int tasksToday = mTasksService.countTasksForToday() + completedToday;
+        int completedToday = sTasksService.countTasksCompletedToday();
+        int tasksToday = sTasksService.countTasksForToday() + completedToday;
 
         // Display tasks count.
         if (tasksToday > 0) {
@@ -117,7 +165,7 @@ public class NowWidgetProvider extends AppWidgetProvider {
 
     private void updateEmptyView(RemoteViews views, Context context) {
         // Load next scheduled task.
-        List<GsonTask> tasks = mTasksService.loadScheduledTasks();
+        List<GsonTask> tasks = sTasksService.loadScheduledTasks();
         GsonTask nextTask = !tasks.isEmpty() ? tasks.get(0) : null;
 
         if (nextTask != null && nextTask.getLocalSchedule() != null) {

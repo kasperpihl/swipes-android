@@ -172,7 +172,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mTasksService = TasksService.getInstance();
 
-        mRepeatHandler = new RepeatHandler(getActivity());
+        mRepeatHandler = new RepeatHandler();
 
         sSelectedTasks = new ArrayList<GsonTask>();
 

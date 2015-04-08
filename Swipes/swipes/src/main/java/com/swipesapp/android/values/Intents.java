@@ -82,4 +82,19 @@ public class Intents {
      */
     public static final String ADD_TASK = "com.swipesapp.android.ACTION_ADD_TASK";
 
+    /**
+     * Notifies widgets to complete a task.
+     */
+    public static final String WIDGET_COMPLETE_TASK = "com.swipesapp.android.WIDGET_COMPLETE_TASK";
+
+    /**
+     * Notifies widgets to open a task.
+     */
+    public static final String WIDGET_OPEN_TASK = "com.swipesapp.android.WIDGET_OPEN_TASK";
+
+    /**
+     * Notifies widgets to open subtasks of a task.
+     */
+    public static final String WIDGET_OPEN_SUBTASKS = "com.swipesapp.android.WIDGET_OPEN_SUBTASKS";
+
 }

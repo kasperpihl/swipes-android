@@ -10,6 +10,8 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Intents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +57,11 @@ public class NowWidgetFactory implements RemoteViewsFactory {
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.now_widget_cell);
 
         // Load task data.
-        String taskId = mTasks.get(position).getTempId();
+        Long taskId = mTasks.get(position).getId();
+        String tempId = mTasks.get(position).getTempId();
         String title = mTasks.get(position).getTitle();
         Integer priority = mTasks.get(position).getPriority();
-        int subtasks = mTasksService.countUncompletedSubtasksForTask(taskId);
+        int subtasks = mTasksService.countUncompletedSubtasksForTask(tempId);
 
         // Setup properties.
         views.setTextViewText(R.id.now_widget_task_title, title);
@@ -85,9 +88,32 @@ public class NowWidgetFactory implements RemoteViewsFactory {
                 R.drawable.checkbox_light : R.drawable.checkbox_dark;
         views.setInt(R.id.now_widget_complete, "setBackgroundResource", checkbox);
 
-        // TODO: Setup buttons.
+        // Setup view click actions.
+        setupActions(views, taskId);
 
         return views;
+    }
+
+    private void setupActions(RemoteViews views, Long taskId) {
+        // Fill complete task intent.
+        Intent completeIntent = new Intent();
+        completeIntent.setAction(Intents.WIDGET_COMPLETE_TASK);
+        completeIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
+
+        // Fill open task intent.
+        Intent taskIntent = new Intent();
+        taskIntent.setAction(Intents.WIDGET_OPEN_TASK);
+        taskIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
+
+        // Fill open subtasks intent.
+        Intent subtasksIntent = new Intent();
+        subtasksIntent.setAction(Intents.WIDGET_OPEN_SUBTASKS);
+        subtasksIntent.putExtra(Constants.EXTRA_TASK_ID, taskId);
+
+        // Attach fill intents.
+        views.setOnClickFillInIntent(R.id.now_widget_complete, completeIntent);
+        views.setOnClickFillInIntent(R.id.now_widget_task_title, taskIntent);
+        views.setOnClickFillInIntent(R.id.now_widget_subtasks, subtasksIntent);
     }
 
     public RemoteViews getLoadingView() {

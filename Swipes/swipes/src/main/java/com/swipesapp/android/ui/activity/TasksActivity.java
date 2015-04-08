@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -811,9 +810,8 @@ public class TasksActivity extends BaseActivity {
 
     public static void refreshWidgets(Context context) {
         // Load manager and IDs.
-        Application application = ((Activity) context).getApplication();
-        AppWidgetManager manager = AppWidgetManager.getInstance(application);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(application, NowWidgetProvider.class));
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, NowWidgetProvider.class));
 
         // Update widget intent.
         Intent intent = new Intent(context, NowWidgetProvider.class);
