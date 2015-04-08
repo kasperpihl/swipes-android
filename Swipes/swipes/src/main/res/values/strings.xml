@@ -305,7 +305,7 @@
     <string name="now_widget_label">Swipes Now</string>
     <string name="now_widget_tasks_count_label">TODAY</string>
     <string name="now_widget_empty_count_label">NO TASKS</string>
-    <string name="now_widget_tasks_count_format">%1$s/%2$s</string>
+    <string name="now_widget_progress_separator">/</string>
     <string name="now_widget_complete_message">Task completed!</string>
 
     <!-- Plurals -->

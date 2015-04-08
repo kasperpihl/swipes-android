@@ -155,11 +155,12 @@ public class NowWidgetProvider extends AppWidgetProvider {
         // Retrieve tasks count.
         int completedToday = sTasksService.countTasksCompletedToday();
         int tasksToday = sTasksService.countTasksForToday() + completedToday;
-        String progress = context.getString(R.string.now_widget_tasks_count_format, completedToday, tasksToday);
 
         // Display tasks count.
         if (tasksToday > 0) {
-            views.setTextViewText(R.id.now_widget_tasks_progress, progress);
+            views.setTextViewText(R.id.now_widget_tasks_completed, String.valueOf(completedToday));
+            views.setTextViewText(R.id.now_widget_tasks_today, String.valueOf(tasksToday));
+
             views.setViewVisibility(R.id.now_widget_tasks_progress, View.VISIBLE);
             views.setViewVisibility(R.id.now_widget_empty_count, View.GONE);
         } else {
