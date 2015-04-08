@@ -246,6 +246,9 @@ public class EditTaskActivity extends FragmentActivity {
             }
         }
 
+        // Refresh widget.
+        TasksActivity.refreshWidgets(this);
+
         setResult(Activity.RESULT_OK);
 
         super.finish();
