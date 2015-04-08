@@ -83,8 +83,9 @@ public class NowWidgetProvider extends AppWidgetProvider {
                 sLastToastTime = now;
             }
 
-            // Refresh widget.
+            // Refresh widget and tasks.
             TasksActivity.refreshWidgets(context);
+            TasksActivity.setPendingRefresh();
         } else if (Intents.WIDGET_OPEN_TASK.equals(action) || Intents.WIDGET_OPEN_SUBTASKS.equals(action)) {
             // Open task intent.
             Intent openIntent = new Intent(context, EditTaskActivity.class);

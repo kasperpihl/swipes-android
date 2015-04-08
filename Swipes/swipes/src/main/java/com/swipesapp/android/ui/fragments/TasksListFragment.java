@@ -230,14 +230,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         getActivity().registerReceiver(mTasksReceiver, filter);
 
-        // Refresh if tasks were added from intent.
-        if (mSection == Sections.FOCUS && PreferenceUtils.hasAddedTasksFromIntent(getActivity())) {
-            refreshTaskList(false);
-
-            // Reset preference.
-            PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, false, getActivity());
-        }
-
         handleWelcomeDialog();
 
         super.onResume();

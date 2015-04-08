@@ -200,6 +200,7 @@ public class TasksActivity extends BaseActivity {
     private String mShareMessage;
 
     private boolean mWasRestored;
+    private static boolean sHasPendingRefresh;
 
     private String[] mIntentData;
 
@@ -294,6 +295,11 @@ public class TasksActivity extends BaseActivity {
         if (mWasRestored) {
             // Reset section.
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
+        }
+
+        // Refresh lists if needed.
+        if (sHasPendingRefresh) {
+            refreshSections();
         }
 
         // Restore section colors.
@@ -801,7 +807,7 @@ public class TasksActivity extends BaseActivity {
     public void refreshSections() {
         // Refresh lists without animation.
         for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
-            fragment.refreshTaskList(false);
+            if (fragment != null) fragment.refreshTaskList(false);
         }
 
         // Refresh app widgets.
@@ -932,7 +938,7 @@ public class TasksActivity extends BaseActivity {
 
         if (mIntentData != null) {
             Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
-            PreferenceUtils.saveBoolean(PreferenceUtils.TASKS_ADDED_FROM_INTENT, true, this);
+            sHasPendingRefresh = true;
         }
 
         sendTaskAddedEvent();
@@ -2042,6 +2048,11 @@ public class TasksActivity extends BaseActivity {
             int paddingBottom = getResources().getDimensionPixelSize(R.dimen.showcase_padding_bottom);
             showcase.setPadding(0, 0, 0, paddingBottom);
         }
+    }
+
+    public static void setPendingRefresh() {
+        // Set flag to refresh lists.
+        sHasPendingRefresh = true;
     }
 
 }

@@ -21,7 +21,6 @@ public class PreferenceUtils {
     public static final String VIBRATIONS_KEY = "settings_enable_vibration";
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
-    public static final String TASKS_ADDED_FROM_INTENT = "tasks_added_from_intent";
 
     // Analytics data.
     public static final String SENT_DIMENSIONS = "sent_user_dimensions";
@@ -255,17 +254,6 @@ public class PreferenceUtils {
     public static boolean isEvernoteSyncEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(EVERNOTE_SYNC_KEY, true);
-    }
-
-    /**
-     * Check if tasks were added from ACTION_SEND intent.
-     *
-     * @param context Context instance.
-     * @return True if tasks were added.
-     */
-    public static boolean hasAddedTasksFromIntent(Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(TASKS_ADDED_FROM_INTENT, false);
     }
 
     /**
