@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
@@ -181,6 +182,8 @@ public class SnoozeActivity extends FragmentActivity {
 
     private void customizeViews() {
         mView.setBackgroundResource(ThemeUtils.getDialogBackground(this));
+
+        if (BuildConfig.DEBUG) mAdjustHint.setVisibility(View.GONE);
 
         int textColor = ThemeUtils.getSecondaryTextColor(this);
         int iconColor = ThemeUtils.getTextColor(this);
