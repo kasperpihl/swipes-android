@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -32,6 +35,9 @@ import java.util.List;
  * @author Felipe Bari
  */
 public class NowWidgetProvider extends AppWidgetProvider {
+
+    public static final String WIDTH_KEY = "now_widget_width";
+    public static final int SMALL_WIDTH = 180;
 
     private static TasksService sTasksService;
     private static long sLastToastTime;
@@ -103,6 +109,19 @@ public class NowWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
     }
 
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
+                                          int appWidgetId, Bundle newOptions) {
+        // Get view width on Jelly Bean and up.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            // Save resized width for later.
+            int width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+            PreferenceUtils.saveInt(WIDTH_KEY, width, context);
+
+            // Call widget update.
+            TasksActivity.refreshWidgets(context);
+        }
+    }
+
     private void setupTasksList(int appWidgetId, RemoteViews views, Context context) {
         // Intent to start the widget service.
         Intent intent = new Intent(context, NowWidgetService.class);
@@ -170,6 +189,13 @@ public class NowWidgetProvider extends AppWidgetProvider {
 
         // Show progress area.
         views.setViewVisibility(R.id.now_widget_count_area, View.VISIBLE);
+
+        // Load current width.
+        int width = PreferenceUtils.readInt(WIDTH_KEY, context);
+
+        // Hide or show views based on width.
+        int visibility = width > 0 && width < SMALL_WIDTH ? View.GONE : View.VISIBLE;
+        views.setViewVisibility(R.id.now_widget_show_tasks, visibility);
     }
 
     private void updateEmptyView(RemoteViews views, Context context) {

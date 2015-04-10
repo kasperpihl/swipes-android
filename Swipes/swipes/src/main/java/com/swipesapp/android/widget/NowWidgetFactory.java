@@ -9,6 +9,7 @@ import android.widget.RemoteViewsService.RemoteViewsFactory;
 import com.swipesapp.android.R;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -76,7 +77,20 @@ public class NowWidgetFactory implements RemoteViewsFactory {
         if (subtasks > 0) {
             views.setTextViewText(R.id.now_widget_subtasks, String.valueOf(subtasks));
             views.setViewVisibility(R.id.now_widget_subtasks, View.VISIBLE);
+
+            // HACK: Use invisible priority to align right margin.
+            if (priority == null || priority == 0) {
+                views.setViewVisibility(R.id.now_widget_priority, View.INVISIBLE);
+            }
         } else {
+            views.setViewVisibility(R.id.now_widget_subtasks, View.GONE);
+        }
+
+        // Load current width.
+        int width = PreferenceUtils.readInt(NowWidgetProvider.WIDTH_KEY, mContext);
+
+        // Hide views based on width.
+        if (width > 0 && width < NowWidgetProvider.SMALL_WIDTH) {
             views.setViewVisibility(R.id.now_widget_subtasks, View.GONE);
         }
 

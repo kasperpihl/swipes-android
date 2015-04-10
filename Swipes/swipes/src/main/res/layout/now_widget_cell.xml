@@ -17,29 +17,35 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp" />
 
-    <!-- Priority indicator -->
-    <TextView
-        android:id="@+id/now_widget_priority"
-        android:layout_width="8dp"
-        android:layout_height="18dp"
+    <LinearLayout
+        android:id="@+id/now_widget_properties_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@color/focus_accent"
-        android:visibility="gone" />
+        android:orientation="horizontal">
 
-    <!-- Subtasks count -->
-    <TextView
-        android:id="@+id/now_widget_subtasks"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="-16dp"
-        android:layout_toLeftOf="@id/now_widget_priority"
-        android:paddingLeft="16dp"
-        android:paddingRight="20dp"
-        android:textColor="@color/neutral_gray"
-        android:textSize="@dimen/text_size_small"
-        android:visibility="gone" />
+        <!-- Subtasks count -->
+        <TextView
+            android:id="@+id/now_widget_subtasks"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/neutral_gray"
+            android:textSize="@dimen/text_size_small"
+            android:visibility="gone" />
+
+        <!-- Priority indicator -->
+        <TextView
+            android:id="@+id/now_widget_priority"
+            android:layout_width="8dp"
+            android:layout_height="18dp"
+            android:background="@color/focus_accent"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <!-- Task title -->
     <TextView
@@ -48,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
-        android:layout_toLeftOf="@id/now_widget_subtasks"
+        android:layout_toLeftOf="@id/now_widget_properties_area"
         android:layout_toRightOf="@id/now_widget_complete"
         android:ellipsize="end"
         android:maxLines="2"

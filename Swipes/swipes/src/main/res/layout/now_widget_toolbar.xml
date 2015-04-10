@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginTop="@dimen/toolbar_shadow_height"
     android:background="@drawable/widget_toolbar_background"
-    android:baselineAligned="false"
-    android:orientation="horizontal"
-    android:weightSum="1">
+    android:baselineAligned="false">
 
     <LinearLayout
         android:id="@+id/now_widget_count_area"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:gravity="center_vertical"
@@ -44,7 +43,6 @@
                 android:layout_marginRight="3dp"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/now_widget_progress_separator"
                 android:textColor="@android:color/white"
@@ -80,7 +78,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical"
             android:singleLine="true"
             android:text="@string/now_widget_tasks_count_label"
             android:textColor="@android:color/white"
@@ -89,38 +86,35 @@
     </LinearLayout>
 
     <!-- Toolbar buttons -->
-    <RelativeLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="30dp"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
-        android:layout_weight="1">
-
-        <Button
-            android:id="@+id/now_widget_add_task"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/widget_circle"
-            android:stateListAnimator="@null"
-            android:text="+"
-            android:textColor="@color/focus_accent"
-            android:textSize="23sp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/now_widget_show_tasks"
             android:layout_width="31dp"
             android:layout_height="31dp"
-            android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@id/now_widget_add_task"
             android:background="@drawable/widget_circle"
             android:stateListAnimator="@null"
             android:text="="
             android:textColor="@color/focus_accent"
             android:textSize="23sp" />
 
-    </RelativeLayout>
+        <Button
+            android:id="@+id/now_widget_add_task"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:background="@drawable/widget_circle"
+            android:stateListAnimator="@null"
+            android:text="+"
+            android:textColor="@color/focus_accent"
+            android:textSize="23sp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
