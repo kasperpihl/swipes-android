@@ -7,12 +7,68 @@
     android:background="@drawable/widget_toolbar_background"
     android:baselineAligned="false">
 
+    <!-- Toolbar buttons -->
+    <LinearLayout
+        android:id="@+id/now_widget_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Show tasks -->
+        <FrameLayout
+            android:id="@+id/now_widget_show_tasks"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="-16dp"
+            android:background="@drawable/widget_button_selector"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="@dimen/now_widget_buttons_size"
+                android:layout_height="@dimen/now_widget_buttons_size"
+                android:layout_gravity="center"
+                android:background="@drawable/widget_circle"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="="
+                android:textColor="@color/focus_accent"
+                android:textSize="23sp" />
+        </FrameLayout>
+
+        <!-- Add task -->
+        <FrameLayout
+            android:id="@+id/now_widget_add_task"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_button_selector"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:layout_width="@dimen/now_widget_buttons_size"
+                android:layout_height="@dimen/now_widget_buttons_size"
+                android:layout_gravity="center"
+                android:background="@drawable/widget_circle"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="@color/focus_accent"
+                android:textSize="23sp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
     <!-- Progress area -->
     <LinearLayout
         android:id="@+id/now_widget_count_area"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
+        android:layout_marginRight="-16dp"
+        android:layout_toLeftOf="@id/now_widget_buttons"
         android:background="@drawable/widget_button_selector"
         android:gravity="center_vertical"
         android:orientation="vertical"
@@ -84,59 +140,6 @@
             android:text="@string/now_widget_tasks_count_label"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <!-- Toolbar buttons -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <!-- Show tasks -->
-        <FrameLayout
-            android:id="@+id/now_widget_show_tasks"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="-16dp"
-            android:background="@drawable/widget_button_selector"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <TextView
-                android:layout_width="@dimen/now_widget_buttons_size"
-                android:layout_height="@dimen/now_widget_buttons_size"
-                android:layout_gravity="center"
-                android:background="@drawable/widget_circle"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="="
-                android:textColor="@color/focus_accent"
-                android:textSize="23sp" />
-        </FrameLayout>
-
-        <!-- Add task -->
-        <FrameLayout
-            android:id="@+id/now_widget_add_task"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/widget_button_selector"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <TextView
-                android:layout_width="@dimen/now_widget_buttons_size"
-                android:layout_height="@dimen/now_widget_buttons_size"
-                android:layout_gravity="center"
-                android:background="@drawable/widget_circle"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="+"
-                android:textColor="@color/focus_accent"
-                android:textSize="23sp" />
-        </FrameLayout>
 
     </LinearLayout>
 
