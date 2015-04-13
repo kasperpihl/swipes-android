@@ -2,7 +2,6 @@
 <resources>
 
     <!-- Tasks list -->
-    <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_item_height">65dp</dimen>
     <dimen name="list_item_height_large">85dp</dimen>
     <dimen name="list_item_shadow_size">7dp</dimen>
@@ -15,9 +14,6 @@
     <dimen name="task_icons_margin_top">3dp</dimen>
     <dimen name="task_label_padding_left">20dp</dimen>
     <dimen name="task_label_padding_right">8dp</dimen>
-    <dimen name="add_task_button_size">60sp</dimen>
-    <dimen name="gradient_height">35dp</dimen>
-    <dimen name="button_container_height">@dimen/toolbar_height</dimen>
     <dimen name="list_padding_bottom">88dp</dimen>
     <dimen name="list_default_padding">16dp</dimen>
     <dimen name="list_padding_top">@dimen/list_default_padding</dimen>
@@ -26,7 +22,6 @@
     <dimen name="pager_margin_sides">-16dp</dimen>
     <dimen name="landscape_header_height">@dimen/toolbar_height</dimen>
     <dimen name="landscape_header_margin_top">@dimen/list_default_padding</dimen>
-    <dimen name="landscape_header_delta">5dp</dimen>
     <dimen name="task_back_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="navigation_menu_height">65dp</dimen>
     <dimen name="navigation_menu_button_margin">16dp</dimen>
@@ -49,7 +44,6 @@
     <!-- Edit -->
     <dimen name="edit_bar_buttons_size">@dimen/action_buttons_size</dimen>
     <dimen name="edit_bar_height">@dimen/toolbar_height</dimen>
-    <dimen name="edit_bar_buttons_width">50dp</dimen>
     <dimen name="edit_bar_buttons_margin">4dp</dimen>
     <dimen name="edit_bar_margin_edges">10dp</dimen>
     <dimen name="edit_task_title_max_height">130dp</dimen>
@@ -75,7 +69,6 @@
     <dimen name="subtask_counter_padding_left">16dp</dimen>
     <dimen name="subtask_counter_padding_right">24dp</dimen>
     <dimen name="subtask_margin_sides">16dp</dimen>
-    <dimen name="subtask_icon_size">22sp</dimen>
     <dimen name="subtask_footer_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="subtask_add_icon_size">37sp</dimen>
     <dimen name="subtask_add_icon_margin_sides">8dp</dimen>
@@ -154,6 +147,5 @@
     <dimen name="search_bar_height">@dimen/toolbar_height</dimen>
     <dimen name="navigation_bar_height">48dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>
