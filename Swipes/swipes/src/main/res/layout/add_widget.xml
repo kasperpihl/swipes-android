@@ -15,7 +15,7 @@
         android:elevation="3dp"
         android:gravity="center"
         android:text="+"
-        android:textColor="@color/swipes_brand"
+        android:textColor="@color/add_widget_selector"
         android:textSize="33sp" />
 
     <!-- Description -->

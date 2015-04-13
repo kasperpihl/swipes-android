@@ -12,7 +12,7 @@ import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.values.Intents;
 
 /**
- * Provider for the Swipes Quick Add widget.
+ * Provider for the Add to Swipes widget.
  *
  * @author Felipe Bari
  */
