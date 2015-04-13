@@ -127,6 +127,9 @@
 
     <!-- Widgets -->
     <dimen name="now_widget_cell_padding">7dp</dimen>
+    <dimen name="now_widget_toolbar_height">56dp</dimen>
+    <dimen name="now_widget_buttons_size">31dp</dimen>
+    <dimen name="now_widget_subtasks_circle">30dp</dimen>
 
     <!-- Components -->
     <dimen name="text_size_small">14sp</dimen>

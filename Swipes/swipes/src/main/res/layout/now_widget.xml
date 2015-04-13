@@ -9,7 +9,7 @@
         android:id="@+id/now_widget_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="@dimen/now_widget_toolbar_height"
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="0dp"

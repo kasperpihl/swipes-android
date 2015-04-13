@@ -4,7 +4,7 @@
     android:id="@+id/now_widget_empty"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="60dp"
+    android:layout_marginBottom="@dimen/now_widget_toolbar_height"
     android:background="@drawable/widget_tasks_background_light"
     android:gravity="center"
     android:orientation="vertical">

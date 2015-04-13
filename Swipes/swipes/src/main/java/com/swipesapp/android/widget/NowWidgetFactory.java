@@ -98,9 +98,17 @@ public class NowWidgetFactory implements RemoteViewsFactory {
         int color = ThemeUtils.getTextColor(mContext);
         views.setInt(R.id.now_widget_task_title, "setTextColor", color);
 
+        int cellBackground = ThemeUtils.isLightTheme(mContext) ?
+                R.drawable.widget_cell_selector_light : R.drawable.widget_cell_selector_dark;
+        views.setInt(R.id.now_widget_task_title, "setBackgroundResource", cellBackground);
+
         int checkbox = ThemeUtils.isLightTheme(mContext) ?
-                R.drawable.checkbox_light : R.drawable.checkbox_dark;
+                R.drawable.widget_checkbox_light : R.drawable.widget_checkbox_dark;
         views.setInt(R.id.now_widget_complete, "setBackgroundResource", checkbox);
+
+        int subtasksBackground = ThemeUtils.isLightTheme(mContext) ?
+                R.drawable.widget_subtasks_selector_light : R.drawable.widget_subtasks_selector_dark;
+        views.setInt(R.id.now_widget_subtasks, "setBackgroundResource", subtasksBackground);
 
         // Setup view click actions.
         setupActions(views, taskId);

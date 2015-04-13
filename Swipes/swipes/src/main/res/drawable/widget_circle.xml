@@ -5,6 +5,6 @@
     <solid android:color="@android:color/white" />
 
     <size
-        android:width="31dp"
-        android:height="31dp" />
+        android:width="@dimen/now_widget_buttons_size"
+        android:height="@dimen/now_widget_buttons_size" />
 </shape>

@@ -307,6 +307,8 @@
     <string name="now_widget_empty_count_label">NO TASKS</string>
     <string name="now_widget_progress_separator">/</string>
     <string name="now_widget_complete_message">Task completed!</string>
+    <string name="add_widget_label">Swipes Quick Add</string>
+    <string name="add_widget_description">Add to Swipes</string>
 
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">

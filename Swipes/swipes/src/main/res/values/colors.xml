@@ -16,6 +16,8 @@
     <!-- Background colors -->
     <item name="light_highlight" type="color">#66999999</item>
     <item name="dark_highlight" type="color">#40CCCCCC</item>
+    <item name="light_ripple" type="color">#999999</item>
+    <item name="dark_ripple" type="color">#CCCCCC</item>
     <item name="light_background" type="color">#FFFFFF</item>
     <item name="dark_background" type="color">#1A1D22</item>
     <item name="light_neutral_background" type="color">#F8F8F9</item>
@@ -45,6 +47,9 @@
     <item name="neutral_header_light" type="color">#FAFAFA</item>
     <item name="neutral_header_dark" type="color">#2B3139</item>
     <item name="neutral_gray" type="color">#9E9E9E</item>
-    <item name="toolbar_ripple_color" type="color">#CCCCCC</item>
+    <item name="toolbar_highlight" type="color">#40CCCCCC</item>
+    <item name="toolbar_ripple" type="color">#CCCCCC</item>
+    <item name="widget_toolbar_highlight" type="color">#40A1A1A1</item>
+    <item name="widget_toolbar_ripple" type="color">#A1A1A1</item>
 
 </resources>

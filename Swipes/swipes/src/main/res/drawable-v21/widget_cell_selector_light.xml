@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:color="@color/toolbar_ripple"
+    android:color="@color/light_ripple"
     tools:targetApi="21">
     <item
         android:id="@android:id/mask"
-        android:drawable="@drawable/navigation_menu_selected" />
+        android:drawable="@drawable/widget_cell_selected_light" />
 </ripple>

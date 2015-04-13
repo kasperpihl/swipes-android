@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/dark_highlight" />
+    <solid android:color="@color/toolbar_highlight" />
     <padding
         android:bottom="@dimen/toolbar_pressed_padding_vertical"
         android:left="@dimen/toolbar_pressed_padding_sides"
