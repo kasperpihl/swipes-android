@@ -122,6 +122,11 @@ public class NowWidgetProvider extends AppWidgetProvider {
         }
     }
 
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        // Clear saved width.
+        PreferenceUtils.remove(WIDTH_KEY, context);
+    }
+
     private void setupTasksList(int appWidgetId, RemoteViews views, Context context) {
         // Intent to start the widget service.
         Intent intent = new Intent(context, NowWidgetService.class);
