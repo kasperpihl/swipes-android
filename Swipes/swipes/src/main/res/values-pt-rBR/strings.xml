@@ -6,8 +6,6 @@
     <string name="welcome_task_three">Toque para mostrar detalhes</string>
     <string name="welcome_tag_one">casa</string>
     <string name="welcome_tag_two">compras</string>
-    <string name="welcome_login_button">ENTRE OU CADASTRE-SE</string>
-    <string name="welcome_try_button"><u>Continuar testando o Swipes</u></string>
     <string name="welcome_first_branding">Foque. Deslize. Conquiste.</string>
     <string name="welcome_second_branding">Lista de tarefas para grandes conquistas</string>
     <string name="welcome_dialog_title">Bem-vindo ao Swipes!</string>
@@ -16,9 +14,6 @@
     <string name="welcome_dialog_no">Testar</string>
     <!-- Sections -->
     <string name="app_name">Swipes</string>
-    <string name="action_settings">Configurações</string>
-    <string name="schedule">Mais Tarde</string>
-    <string name="done">Concluído</string>
     <string name="focus_title">AGORA</string>
     <string name="later_title">MAIS TARDE</string>
     <string name="done_title">CONCLUÍDO</string>
@@ -32,7 +27,6 @@
     <string name="title_activity_about">Sobre</string>
     <string name="title_activity_evernote_learn">Integração ao Evernote</string>
     <string name="title_activity_evernote_attachments">Anexos do Evernote</string>
-    <string name="double_slash_divider">//</string>
     <!-- Empty view -->
     <string name="all_done_now">= TUDO FEITO POR AGORA =</string>
     <string name="all_done_today">= TUDO FEITO POR HOJE =</string>
@@ -59,11 +53,7 @@
     <string name="location">Localização</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
-    <string name="settings_plus">Plus</string>
-    <string name="policies">Política de Privacidade</string>
     <string name="snoozes">Adiamentos</string>
-    <string name="set">Definir</string>
-    <string name="cancel">Cancelar</string>
     <string name="settings_login">Entre ou cadastre-se</string>
     <string name="settings_logout">Sair</string>
     <string name="settings_integrations">Integrações</string>
@@ -228,9 +218,6 @@ Aproveite!</string>
     <string name="repeat_year_description">Todo ano em %1$s%2$s às %3$s</string>
     <string name="edit_task_tags_default_text">Definir etiquetas</string>
     <string name="edit_task_notes_default_text">Adicionar notas</string>
-    <string name="edit_task_share_action">Compartilhar</string>
-    <string name="edit_task_delete_action">Excluir</string>
-    <string name="edit_task_evernote_action">Anexar Evernote</string>
     <string name="edit_task_evernote_attached">ANEXADO</string>
     <!-- Action steps -->
     <string name="edit_task_add_subtask_hint">Adicionar subtarefa</string>
@@ -270,6 +257,14 @@ Aproveite!</string>
     <!-- Showcase -->
     <string name="showcase_button_done">ENTENDI</string>
     <string name="navigation_tutorial_text">Toque para navegar entre seções.</string>
+    <!-- Widgets -->
+    <string name="now_widget_label">Swipes Agora</string>
+    <string name="now_widget_tasks_count_label">HOJE</string>
+    <string name="now_widget_empty_count_label">SEM TAREFAS</string>
+    <string name="now_widget_progress_separator">/</string>
+    <string name="now_widget_complete_message">Tarefa concluída!</string>
+    <string name="add_widget_label">Swipes Adição Rápida</string>
+    <string name="add_widget_description">Adicionar ao Swipes</string>
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
         <item quantity="one">Excluir tarefa?</item>
