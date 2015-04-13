@@ -8,7 +8,8 @@ import com.swipesapp.android.util.PreferenceUtils;
 
 import java.util.HashMap;
 
-import intercom.intercomsdk.Intercom;
+import io.intercom.android.sdk.Intercom;
+import io.intercom.android.sdk.identity.Registration;
 
 /**
  * Convenience class to handle Intercom calls.
@@ -38,9 +39,9 @@ public class IntercomHandler {
      */
     public static void beginIntercomSession(String email) {
         if (email != null && !email.isEmpty()) {
-            Intercom.beginSessionWithEmail(email, null);
+            Intercom.client().registerIdentifiedUser(new Registration().withEmail(email));
         } else {
-            Intercom.beginSessionForAnonymousUser(null);
+            Intercom.client().registerUnidentifiedUser();
         }
     }
 
@@ -52,9 +53,9 @@ public class IntercomHandler {
      */
     public static void sendEvent(String event, HashMap<String, Object> data) {
         if (data != null) {
-            Intercom.logEvent(event, data);
+            Intercom.client().logEvent(event, data);
         } else {
-            Intercom.logEvent(event);
+            Intercom.client().logEvent(event);
         }
 
         logDebugMessage("Sent Intercom event: " + event);
@@ -77,7 +78,7 @@ public class IntercomHandler {
         customAttributes.put(ATTR_MAILBOX_STATUS, PreferenceUtils.readString(PreferenceUtils.MAILBOX_STATUS, context));
 
         attributes.put(ATTR_CUSTOM, customAttributes);
-        Intercom.updateUser(attributes);
+        Intercom.client().updateUser(attributes);
 
         logDebugMessage("Updated Intercom attributes.");
     }
