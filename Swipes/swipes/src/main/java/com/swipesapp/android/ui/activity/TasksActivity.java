@@ -98,7 +98,7 @@ import java.util.UUID;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import intercom.intercomsdk.Intercom;
+import io.intercom.android.sdk.Intercom;
 
 public class TasksActivity extends BaseActivity {
 
@@ -378,7 +378,7 @@ public class TasksActivity extends BaseActivity {
 
                     if (PreferenceUtils.hasTriedOut(this)) {
                         // End anonymous Intercom session.
-                        Intercom.endSession();
+                        Intercom.client().reset();
                     }
 
                     if (data != null) {

@@ -42,7 +42,7 @@ import com.swipesapp.android.values.Constants;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
-import intercom.intercomsdk.Intercom;
+import io.intercom.android.sdk.Intercom;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -259,7 +259,7 @@ public class SettingsActivity extends BaseActivity {
 
                         if (PreferenceUtils.hasTriedOut(getActivity())) {
                             // End anonymous Intercom session.
-                            Intercom.endSession();
+                            Intercom.client().reset();
                         }
 
                         if (data != null) {
@@ -339,7 +339,7 @@ public class SettingsActivity extends BaseActivity {
                             ParseUser.logOut();
 
                             // End Intercom session.
-                            Intercom.endSession();
+                            Intercom.client().reset();
 
                             // Clear user data.
                             TasksService.getInstance().clearAllData();
