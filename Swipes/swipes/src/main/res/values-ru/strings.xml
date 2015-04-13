@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Welcome -->
+    <string name="welcome_task_one">Смахните вправо и задача будет помечена выполненной</string>
+    <string name="welcome_task_two">Смахните влево и задача будет помечена отложенной</string>
+    <string name="welcome_task_three">Коснитесь для отображения подробностей</string>
+    <string name="welcome_tag_one">дом</string>
+    <string name="welcome_tag_two">список покупок</string>
+    <string name="welcome_first_branding">Фокусируйся. Выполняй. Достигай.</string>
+    <string name="welcome_second_branding">Список дел, созданный для будущих свершений</string>
+    <string name="welcome_dialog_title">Приветствуем в Swipes!</string>
+    <string name="welcome_dialog_message">Хотите испытать приложение или же сразу войти в Ваш аккаунт?</string>
+    <string name="welcome_dialog_yes">Войти</string>
+    <string name="welcome_dialog_no">Испытать</string>
+    <!-- Sections -->
+    <string name="app_name">Swipes</string>
+    <string name="focus_title">СЕЙЧАС</string>
+    <string name="later_title">ПОЗЖЕ</string>
+    <string name="done_title">ВЫПОЛНЕНО</string>
+    <string name="overview_title">ОБЗОР</string>
+    <string name="title_share_intent">Добавить в Swipes</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="title_activity_integrations">Интеграция</string>
+    <string name="title_activity_snooze_settings">Откладывать</string>
+    <string name="title_activity_edit_task">Изменить задачу</string>
+    <string name="title_activity_snooze_task">Отложить задачу</string>
+    <string name="title_activity_about">О приложении</string>
+    <string name="title_activity_evernote_learn">Интеграция с Evernote</string>
+    <string name="title_activity_evernote_attachments">Вложения Evernote</string>
+    <!-- Empty view -->
+    <string name="all_done_now">= ВСЁ УЖЕ СДЕЛАНО =</string>
+    <string name="all_done_today">= НА СЕГОДНЯ ВСЁ СДЕЛАНО =</string>
+    <string name="all_done_now_next">След. задача на @ %s</string>
+    <string name="all_done_today_next">След. задача на %s</string>
+    <string name="all_done_next_empty">Запланированных задач нет</string>
+    <string name="all_done_today_message">Ура! Обязанности как рукой сняло, пора\nрасслабиться! #ПлодотворныйДень</string>
+    <string name="all_done_now_message">Пора отдохнуть! Я покончил с делами\nкак босс. #ПлодотворныйДень</string>
+    <string name="all_done_share_url">swipesapp.com</string>
+    <!-- Tasks list -->
+    <string name="tasks_list_login_action">Войти или зарегистрироваться</string>
+    <string name="tasks_list_multi_select_action">Множ. выбор</string>
+    <string name="tasks_list_search_action">Поиск</string>
+    <string name="tasks_list_workspaces_action">Категории</string>
+    <string name="tasks_list_settings_action">Настройки</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s сегодня</string>
+    <!-- Settings -->
+    <string name="group_cloud">Облако</string>
+    <string name="group_preferences">Параметры</string>
+    <string name="group_help">Справка</string>
+    <string name="group_other">Прочее</string>
+    <string name="notifications">Уведомления</string>
+    <string name="vibration">Вибрация</string>
+    <string name="location">Местоположение</string>
+    <string name="theme">Тема</string>
+    <string name="settings_theme_dialog_title">Тема</string>
+    <string name="snoozes">Откладывание</string>
+    <string name="settings_login">Войти или зарегистрироваться</string>
+    <string name="settings_logout">Выйти</string>
+    <string name="settings_integrations">Интеграция</string>
+    <string name="settings_sync">Синхронизировать</string>
+    <string name="settings_sync_summary">Посл. обновление: %s</string>
+    <string name="switch_on">ДА</string>
+    <string name="switch_off">НЕТ</string>
+    <string name="preference_yes">Выберите</string>
+    <string name="preference_no">Отмена</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <!-- Help -->
+    <string name="help_center">Центр поддержки</string>
+    <string name="help_google_community">Сообщество Google+</string>
+    <string name="help_contact_us">Связаться с нами</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">[Android] Support request</string>
+    <string name="help_email_chooser_title">Связаться с:</string>
+    <string name="help_email_text_hint">Опишите Вашу проблему&#8230;</string>
+    <!-- Snooze settings -->
+    <string name="day_start">Начало дня</string>
+    <string name="evening_start">Вечер</string>
+    <string name="weekend_day_start">Время начала выходных</string>
+    <string name="week_start">Начало недели</string>
+    <string name="weekend_start">Начало выходных</string>
+    <string name="settings_weekend_start_dialog_title">Начало выходных</string>
+    <string name="settings_week_start_dialog_title">Начало недели</string>
+    <string name="settings_later_today">Позже сегодня</string>
+    <string name="settings_later_today_dialog_title">Позже сегодня</string>
+    <string name="later_today_1h">+1 час</string>
+    <string name="later_today_2h">+2 часа</string>
+    <string name="later_today_3h">+3 часа</string>
+    <string name="later_today_4h">+4 часа</string>
+    <string name="later_today_5h">+5 часов</string>
+    <string name="later_today_6h">+6 часов</string>
+    <!-- Evernote -->
+    <string name="evernote_link_account">Evernote</string>
+    <string name="evernote_link_account_detail">Нажмите для подключения аккаунта</string>
+    <string name="evernote_unlink_account">Evernote (подключено)</string>
+    <string name="evernote_unlink_account_detail">Нажмите для отсоединения</string>
+    <string name="evernote_sync_device">Синхронизация с Evernote на этом устройстве</string>
+    <string name="evernote_auto_import">Автоматический импорт заметок с тегом \"swipes\"</string>
+    <string name="evernote_sync_personal">Синхронизация с дневниками, которыми вы поделились</string>
+    <string name="evernote_sync_business">Синхронизация с Evernote Business</string>
+    <string name="evernote_open_importer">Открыть импортёр Evernote</string>
+    <string name="evernote_learn_more">Узнать больше</string>
+    <string name="evernote_learn_more_title_left">ИНТЕГРАЦИЯ С</string>
+    <string name="evernote_learn_more_title_right">EVERNOTE</string>
+    <string name="evernote_what_it_is">ЧТО ЭТО</string>
+    <string name="evernote_what_it_is_description">Интеграция позволит синхронизировать Ваши заметки со списками между Evernote и Swipes</string>
+    <string name="evernote_how_it_works">КАК ЭТО РАБОТАЕТ</string>
+    <string name="evernote_how_it_works_detail">Присвойте тег \"swipes\" вашей заметке в Evernote.
+Мы перенесём её в Swypes со всеми подпунктами в виде списка дел.</string>
+    <string name="evernote_get_started">ПРИСТУПИМ</string>
+    <string name="evernote_unlink_dialog_title">Отсоединить Evernote?</string>
+    <string name="evernote_unlink_dialog_message">Все задачи будут отсоединены.</string>
+    <string name="evernote_unlink_dialog_yes">Отсоединить</string>
+    <string name="evernote_unlink_dialog_no">Отмена</string>
+    <string name="evernote_untitled_note">Заметка без названия</string>
+    <!-- Attachments -->
+    <string name="evernote_search_hint">Поиск заметок</string>
+    <string name="evernote_filter_description">Только заметки с задачами</string>
+    <!-- About -->
+    <string name="about">О программе</string>
+    <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">Разработано командой Swipes</string>
+    <string name="about_app_version">Версия приложения</string>
+    <string name="about_policies">Лицензионное соглашение</string>
+    <string name="about_policies_detail">Нажмите для загрузки лиц. соглашения</string>
+    <string name="about_oss">Лицензии Open Source</string>
+    <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
+    <!-- Invite -->
+    <string name="settings_invite">Пригласить друзей в Swipes</string>
+    <string name="invite_subject">Мне кажется, тебе понравится это приложение</string>
+    <string name="invite_body">Здорово,\n\n
+        Я тут нашёл новое приложение - Swipes, оно помогает мне привести дела в порядок. \n\n
+        В нём легко планировать день и отмечать выполненные задачи или откладывать их.
+        Я думаю, тебе оно понравится.\n\n
+        Оно здесь
+http://play.google.com/store/apps/details?id=com.swipesapp.android and download.\n\n
+        Пользуйся с удовольствием!</string>
+    <string name="invite_chooser_title">Пригласить с помощью:</string>
+    <!-- Share -->
+    <string name="share_message_subject">Задачи для выполнения</string>
+    <string name="share_message_header">"Задачи: "</string>
+    <string name="share_message_footer_sent_from">Отправлено из Swipes - списка дел для будущих свершений.</string>
+    <string name="share_message_footer_get_swipes">Бесплатное приложение для IPhone и Android -
+http://swipesapp.com</string>
+    <string name="share_message_circle">◯&#160;</string>
+    <string name="share_chooser_title">Поделиться с помощью:</string>
+    <!-- Actions -->
+    <string name="dialog_yes">Да</string>
+    <string name="dialog_no">Нет</string>
+    <string name="delete_task_dialog_text">Это действие необратимо.</string>
+    <string name="delete_task_dialog_yes">Удалить</string>
+    <string name="delete_task_dialog_no">Отмена</string>
+    <string name="add_task_hint">Добавить задачу</string>
+    <string name="show_old">К СТАРЫМ ЗАДАЧАМ</string>
+    <string name="clear_old">СТЕРЕТЬ СТАРЫЕ ЗАДАЧИ</string>
+    <string name="clear_old_dialog_title">Удалить старые задачи?</string>
+    <string name="clear_old_dialog_text">Это действие необратимо.</string>
+    <string name="clear_old_dialog_yes">Удалить</string>
+    <string name="clear_old_dialog_no">Отмена</string>
+    <string name="search_hint">Поиск</string>
+    <string name="logout_dialog_title">Выйти из этого аккаунта?</string>
+    <string name="logout_dialog_message">Swipes перестанет синхронизировать задачи и сотрёт Ваши данные с этого устройства.</string>
+    <string name="logout_dialog_yes">Выйти</string>
+    <string name="logout_dialog_no">Отмена</string>
+    <string name="keep_data_dialog_title">Сохранить данные из тестового периода?</string>
+    <string name="keep_data_dialog_message">Swipes может сохранить данные из тестового периода на сервере.</string>
+    <string name="keep_data_dialog_yes">Оставить данные</string>
+    <string name="keep_data_dialog_no">Стереть данные</string>
+    <string name="share_intent_add_confirm">Задача создана!</string>
+    <!-- Scheduler -->
+    <string name="date_today">сегодня,&#160;</string>
+    <string name="date_tomorrow">завтра,&#160;</string>
+    <string name="date_yesterday">вчера,&#160;</string>
+    <string name="date_unspecified">Не определено</string>
+    <string name="snooze_later_today">Позже сегодня</string>
+    <string name="snooze_this_evening">Этим вечером</string>
+    <string name="snooze_tomorrow_eve">Завтрашний вечер</string>
+    <string name="snooze_tomorrow">Завтра</string>
+    <string name="snooze_two_days_default">Понедельник</string>
+    <string name="snooze_this_weekend">Эти выходные</string>
+    <string name="snooze_next_week">След. неделя</string>
+    <string name="snooze_unspecified">Не определено</string>
+    <string name="snooze_at_location">Где</string>
+    <string name="snooze_pick_date">Выберите дату</string>
+    <string name="snooze_done_text">ОТЛОЖИТЬ</string>
+    <string name="snooze_adjust_hint">Длительное нажатие для изменения времени</string>
+    <!-- Week days -->
+    <string name="sunday_full">Воскресенье</string>
+    <string name="monday_full">Понедельник</string>
+    <string name="tuesday_full">Вторник</string>
+    <string name="wednesday_full">Среда</string>
+    <string name="thursday_full">Четверг</string>
+    <string name="friday_full">Пятница</string>
+    <string name="saturday_full">Суббота</string>
+    <!-- Months -->
+    <string name="january_full">Январь</string>
+    <string name="february_full">Февраль</string>
+    <string name="march_full">Март</string>
+    <string name="april_full">Апрель</string>
+    <string name="may_full">Май</string>
+    <string name="june_full">Июнь</string>
+    <string name="july_full">Июль</string>
+    <string name="august_full">Август</string>
+    <string name="september_full">Сентябрь</string>
+    <string name="october_full">Октябрь</string>
+    <string name="november_full">Ноябрь</string>
+    <string name="december_full">Декабрь</string>
+    <!-- Numerals -->
+    <string name="month_first_suffix">%s-й</string>
+    <string name="month_second_suffix">%s-й</string>
+    <string name="month_third_suffix">%s-й</string>
+    <string name="month_default_suffix">%s-й</string>
+    <!-- Edit task -->
+    <string name="edit_task_repeat_choice_mode">Повторять каждый&#8230;</string>
+    <string name="repeat_never_description">Не повторять</string>
+    <string name="repeat_day_description">Каждый день в %s</string>
+    <string name="repeat_mon_fri_description">Каждый будний день в %s</string>
+    <string name="repeat_week_description">Каждый %1$s в %2$s</string>
+    <string name="repeat_month_description">Каждое %1$s число месяца в %2$s</string>
+    <string name="repeat_year_description">Каждый %1$s %2$s числа в %3$s</string>
+    <string name="edit_task_tags_default_text">Добавить теги</string>
+    <string name="edit_task_notes_default_text">Заметки</string>
+    <string name="edit_task_evernote_attached">ПРИКРЕПЛЕНО</string>
+    <!-- Action steps -->
+    <string name="edit_task_add_subtask_hint">Добавить подпункт</string>
+    <string name="subtask_hide_caption">Свернуть</string>
+    <string name="subtask_show_caption">Развернуть</string>
+    <string name="delete_subtask_dialog_title">Удалить подпункт?</string>
+    <string name="delete_subtask_dialog_message">Это действие необратимо.</string>
+    <string name="delete_subtask_dialog_yes">Удалить</string>
+    <string name="delete_subtask_dialog_no">Отмена</string>
+    <!-- Repeating -->
+    <string name="repeat_option_never">никогда</string>
+    <string name="repeat_option_day">день</string>
+    <string name="repeat_option_mon_fri">будний день</string>
+    <string name="repeat_option_week">неделю</string>
+    <string name="repeat_option_month">месяц</string>
+    <string name="repeat_option_year">год</string>
+    <!-- Notifications -->
+    <string name="notification_snooze">Отложить +%d ч</string>
+    <string name="notification_complete">Выполнено</string>
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">Добавить тег</string>
+    <string name="add_tag_dialog_hint">Название тега</string>
+    <string name="add_tag_dialog_yes">Сохранить</string>
+    <string name="add_tag_dialog_no">Отмена</string>
+    <string name="delete_tag_dialog_title">Удалить тег \"%s\"?</string>
+    <string name="delete_tag_dialog_message">Это действие необратимо.</string>
+    <string name="delete_tag_dialog_yes">Удалить</string>
+    <string name="delete_tag_dialog_no">Отмена</string>
+    <string name="empty_tags_hint">Теги не назначены</string>
+    <!-- Workspaces -->
+    <string name="set_workspaces_hint">ВЫБРАТЬ КАТЕГОРИЮ</string>
+    <string name="clear_workspace_button">ОТКЛЮЧИТЬ КАТЕГОРИИ</string>
+    <!-- Sync -->
+    <string name="sync_started_message">Синхронизация&#8230;</string>
+    <string name="sync_completed_message">Синхронизация успешна!</string>
+    <string name="sync_failed_message">Синхронизация не удалась.</string>
+    <!-- Showcase -->
+    <string name="showcase_button_done">ПОНЯТНО</string>
+    <string name="navigation_tutorial_text">Нажмите для перемещения между разделами.</string>
+    <!-- Widgets -->
+    <string name="now_widget_label">Swipes \"Сейчас\"</string>
+    <string name="now_widget_tasks_count_label">НА СЕГОДНЯ</string>
+    <string name="now_widget_empty_count_label">НЕТ ЗАДАЧ</string>
+    <string name="now_widget_progress_separator">/</string>
+    <string name="now_widget_complete_message">Задача выполнена!</string>
+    <string name="add_widget_label">Добавить в Swipes</string>
+    <string name="add_widget_description">Доб. задачу</string>
+    <!-- Plurals -->
+    <plurals name="delete_task_dialog_title">
+        <item quantity="one">Удалить %d задачу?</item>
+        <item quantity="other">Удалить %d задач?</item>
+        <item quantity="few">Удалить %d задачи?</item>
+        <item quantity="many">Удалить %d задач?</item>
+    </plurals>
+    <plurals name="notification_title">
+        <item quantity="one">%s</item>
+        <item quantity="other">У вас %s новых задач</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+    </plurals>
+    <plurals name="workspace_results">
+        <item quantity="one">%1$s %2$s задача с тегами: &lt;b>%3$s&lt;/b></item>
+        <item quantity="other">%1$s %2$s задач с тегами: &lt;b>%3$s&lt;/b></item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+    </plurals>
+    <plurals name="later_results_description">
+        <item quantity="one">запланированная</item>
+        <item quantity="other">запланированных</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+    </plurals>
+    <plurals name="focus_results_description">
+        <item quantity="one">текущая</item>
+        <item quantity="other">текущих</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+    </plurals>
+    <plurals name="done_results_description">
+        <item quantity="one">выполненная</item>
+        <item quantity="other">выполненных</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+    </plurals>
+</resources>
