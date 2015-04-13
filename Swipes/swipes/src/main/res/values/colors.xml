@@ -2,6 +2,7 @@
 <resources>
 
     <!-- Section colors -->
+    <item name="swipes_brand" type="color">#FC5537</item>
     <item name="done_accent" type="color">#8CC152</item>
     <item name="done_accent_dark" type="color">#6BA42E</item>
     <item name="later_accent" type="color">#FC5830</item>

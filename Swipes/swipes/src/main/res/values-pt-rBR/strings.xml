@@ -263,8 +263,8 @@ Aproveite!</string>
     <string name="now_widget_empty_count_label">SEM TAREFAS</string>
     <string name="now_widget_progress_separator">/</string>
     <string name="now_widget_complete_message">Tarefa concluída!</string>
-    <string name="add_widget_label">Swipes Adição Rápida</string>
-    <string name="add_widget_description">Adicionar ao Swipes</string>
+    <string name="add_widget_label">Adicionar ao Swipes</string>
+    <string name="add_widget_description">Nova Tarefa</string>
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
         <item quantity="one">Excluir tarefa?</item>
