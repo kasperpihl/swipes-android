@@ -543,7 +543,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 new RefreshTask().execute(animateRefresh);
             } else {
                 // Workspace is active. Reload filter.
-                filterByTags();
+                new FilterTask().execute();
             }
         }
     }
@@ -657,7 +657,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             } else if (action.equals(Intents.FILTER_BY_TAGS)) {
                 // Filter by tags or clear results.
                 if (!mActivity.getSelectedFilterTags().isEmpty()) {
-                    filterByTags();
+                    new FilterTask().execute();
 
                     // Send analytics event.
                     long value = (long) mActivity.getSelectedFilterTags().size();
@@ -1352,24 +1352,59 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mUnassignedTagsCount++;
     }
 
-    private void filterByTags() {
-        // Load tasks for each selected tag ("OR" filter).
-        Set<GsonTask> filteredTasks = new LinkedHashSet<>();
-        for (GsonTag tag : mActivity.getSelectedFilterTags()) {
-            filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
+    private class FilterTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Load tasks for each selected tag ("OR" filter).
+            Set<GsonTask> filteredTasks = new LinkedHashSet<>();
+            for (GsonTag tag : mActivity.getSelectedFilterTags()) {
+                filteredTasks.addAll(mTasksService.loadTasksForTag(tag.getId(), mSection));
+            }
+
+            // Find tasks not containing all selected tags.
+            Set<GsonTask> tasksToRemove = new LinkedHashSet<>();
+            for (GsonTask task : filteredTasks) {
+                if (!task.getTags().containsAll(mActivity.getSelectedFilterTags())) {
+                    tasksToRemove.add(task);
+                }
+            }
+
+            // Apply "AND" filter by default (remove tasks not matching).
+            filteredTasks.removeAll(tasksToRemove);
+
+            // Update list of tasks.
+            mTasks = new ArrayList<>(filteredTasks);
+
+            // Keep tasks selected after refresh.
+            keepSelection();
+
+            return null;
         }
 
-        // Find tasks not containing all selected tags.
-        Set<GsonTask> tasksToRemove = new LinkedHashSet<>();
-        for (GsonTask task : filteredTasks) {
-            if (!task.getTags().containsAll(mActivity.getSelectedFilterTags())) {
-                tasksToRemove.add(task);
+        @Override
+        protected void onPostExecute(Void result) {
+            // Avoid updating while swiping screens or when a refresh is pending.
+            if (!mActivity.isSwipingScreens() && !TasksActivity.hasPendingRefresh()) {
+                // Update adapter with new data.
+                updateFilterAdapter();
+            } else {
+                // Mark update as pending.
+                TasksActivity.setPendingRefresh();
             }
         }
 
-        // Apply "AND" filter by default (remove tasks not matching).
-        filteredTasks.removeAll(tasksToRemove);
+        @Override
+        protected void onPreExecute() {
+            // Nothing is loaded before refresh.
+        }
 
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            // No need to show progress.
+        }
+    }
+
+    public void updateFilterAdapter() {
         // Make sure old tasks are shown.
         if (mSection == Sections.DONE) {
             mHeaderView.setVisibility(View.GONE);
@@ -1381,12 +1416,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         showWorkspaceResults();
 
         // Update results count.
-        updateResultsDescription(filteredTasks.size());
+        updateResultsDescription(mTasks.size());
 
         // Refresh list with filtered tasks.
-        List<GsonTask> list = new ArrayList<>(filteredTasks);
-        mListView.setContentList(list);
-        mAdapter.update(list, false);
+        mListView.setContentList(mTasks);
+        mAdapter.update(mTasks, false);
     }
 
     private void hideWorkspaceResults() {

@@ -695,8 +695,16 @@ public class TasksActivity extends BaseActivity {
         sHasPendingRefresh = false;
 
         // Update adapters with lists already loaded.
-        for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
-            if (fragment != null) fragment.updateAdapter(false);
+        if (mSelectedFilterTags.isEmpty()) {
+            // Perform regular update.
+            for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
+                if (fragment != null) fragment.updateAdapter(false);
+            }
+        } else {
+            // Perform filters update.
+            for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
+                if (fragment != null) fragment.updateFilterAdapter();
+            }
         }
     }
 
@@ -1077,6 +1085,9 @@ public class TasksActivity extends BaseActivity {
 
             Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
             mButtonAddTask.startAnimation(slideUp);
+        } else {
+            // Update lists.
+            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
         }
 
         // Enable drag and drop.
