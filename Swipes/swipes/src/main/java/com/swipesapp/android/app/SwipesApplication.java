@@ -2,6 +2,7 @@ package com.swipesapp.android.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
@@ -38,6 +39,11 @@ public class SwipesApplication extends Application {
     private static final String DB_NAME = "swipes-db";
 
     private static Tracker sTracker;
+
+    private static Handler sHandler;
+    private static Runnable sRunnable;
+
+    private static boolean sWasInBackground = true;
 
     @Override
     public void onCreate() {
@@ -109,6 +115,30 @@ public class SwipesApplication extends Application {
 
     public static Tracker getTracker() {
         return sTracker;
+    }
+
+    public static void startBackgroundTimer() {
+        sHandler = new Handler();
+        sRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Mark application as gone to background.
+                sWasInBackground = true;
+            }
+        };
+        sHandler.postDelayed(sRunnable, 2000);
+    }
+
+    public static void stopBackgroundTimer() {
+        // Cancel background timer.
+        if (sHandler != null) sHandler.removeCallbacks(sRunnable);
+
+        // Mark application as in foreground.
+        sWasInBackground = false;
+    }
+
+    public static boolean wasInBackground() {
+        return sWasInBackground;
     }
 
 }

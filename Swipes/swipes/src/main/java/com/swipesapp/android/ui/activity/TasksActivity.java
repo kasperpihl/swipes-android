@@ -56,6 +56,7 @@ import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -170,6 +171,7 @@ public class TasksActivity extends BaseActivity {
 
     private float mPreviousOffset;
     private boolean mHasChangedTab;
+    private boolean mIsSwipingScreens;
 
     private String mShareMessage;
 
@@ -181,7 +183,6 @@ public class TasksActivity extends BaseActivity {
     private boolean mIsSearchActive;
     private String mSearchQuery;
 
-    private boolean mShouldSkipSync;
     private boolean mShouldClearData;
 
     private boolean mIsShowingNavigation;
@@ -249,11 +250,6 @@ public class TasksActivity extends BaseActivity {
 
         registerReceiver(mTasksReceiver, filter);
 
-        // Start sync if allowed to.
-        if (!mShouldSkipSync) {
-            startSync();
-        }
-
         if (mWasRestored) {
             // Reset section.
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
@@ -267,13 +263,23 @@ public class TasksActivity extends BaseActivity {
         // Restore section colors.
         setupSystemBars(mCurrentSection);
 
-        // Clear restoration flag.
+        // Clear activity state flags.
         mWasRestored = false;
 
         // Send screen view event.
         Analytics.sendScreenView(mCurrentSection.getScreenName());
 
         super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        // Start sync when coming from the background.
+        if (SwipesApplication.wasInBackground()) {
+            startSync();
+        }
+
+        super.onStart();
     }
 
     @Override
@@ -317,14 +323,14 @@ public class TasksActivity extends BaseActivity {
 
                     // Refresh all lists.
                     refreshSections(true);
+
+                    // Start syncing.
+                    startSync();
                     break;
             }
         } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
-                    // Block sync.
-                    mShouldSkipSync = true;
-
                     // Login successful.
                     if (mShouldClearData) {
                         // Clear data immediately.
@@ -561,6 +567,15 @@ public class TasksActivity extends BaseActivity {
                 }
 
                 mActionBarView.setAlpha(1f);
+
+                if (sHasPendingRefresh) {
+                    // Finish refreshing lists.
+                    refreshAdapters();
+                }
+
+                mIsSwipingScreens = false;
+            } else {
+                mIsSwipingScreens = true;
             }
         }
 
@@ -632,6 +647,10 @@ public class TasksActivity extends BaseActivity {
         mPreviousOffset = positionOffset;
     }
 
+    public boolean isSwipingScreens() {
+        return mIsSwipingScreens;
+    }
+
     private BroadcastReceiver mTasksReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -644,13 +663,16 @@ public class TasksActivity extends BaseActivity {
     };
 
     public void refreshSections(boolean refreshWidgets) {
+        // Clear pending refresh flag.
+        sHasPendingRefresh = false;
+
         // Refresh lists without animation.
         for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
             if (fragment != null) fragment.refreshTaskList(false);
         }
 
         // Refresh app widgets.
-        refreshWidgets(this);
+        if (refreshWidgets) refreshWidgets(this);
     }
 
     public static void refreshWidgets(Context context) {
@@ -666,6 +688,16 @@ public class TasksActivity extends BaseActivity {
         // Send update broadcast.
         context.sendBroadcast(intent);
         manager.notifyAppWidgetViewDataChanged(ids, R.id.now_widget_list);
+    }
+
+    private void refreshAdapters() {
+        // Clear pending refresh flag.
+        sHasPendingRefresh = false;
+
+        // Update adapters with lists already loaded.
+        for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
+            if (fragment != null) fragment.updateAdapter(false);
+        }
     }
 
     public Sections getCurrentSection() {
@@ -1369,9 +1401,6 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void performInitialSync() {
-        // Unblock sync.
-        mShouldSkipSync = false;
-
         // Perform initial sync.
         startSync();
     }
@@ -1649,6 +1678,10 @@ public class TasksActivity extends BaseActivity {
     public static void setPendingRefresh() {
         // Set flag to refresh lists.
         sHasPendingRefresh = true;
+    }
+
+    public static boolean hasPendingRefresh() {
+        return sHasPendingRefresh;
     }
 
     private void sendAppLaunchEvent() {

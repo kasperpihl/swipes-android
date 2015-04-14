@@ -16,6 +16,7 @@ import android.view.WindowManager;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.util.ColorUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.ThemeUtils;
@@ -66,6 +67,26 @@ public class BaseActivity extends ActionBarActivity {
         Analytics.sendMailboxStatus(this);
 
         super.onResume();
+    }
+
+    /**
+     * Stops background check timer.
+     */
+    @Override
+    public void onStart() {
+        SwipesApplication.stopBackgroundTimer();
+
+        super.onStart();
+    }
+
+    /**
+     * Starts background check timer.
+     */
+    @Override
+    public void onStop() {
+        SwipesApplication.startBackgroundTimer();
+
+        super.onStop();
     }
 
     /**

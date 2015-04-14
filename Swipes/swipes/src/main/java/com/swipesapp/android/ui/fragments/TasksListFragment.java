@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.InputType;
@@ -91,6 +92,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     // Section the fragment belongs to.
     private Sections mSection;
+
+    // List of tasks.
+    private List<GsonTask> mTasks;
 
     // Customized list view to display tasks.
     private DynamicListView mListView;
@@ -244,22 +248,24 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check if request code is the one from snooze task.
-        if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    // Task has been snoozed. Refresh all task lists.
+        if (isCurrentSection()) {
+            // Check if request code is the one from snooze task.
+            if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // Task has been snoozed. Refresh all task lists.
+                        mActivity.refreshSections(true);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // Snooze has been canceled. Refresh tasks with animation.
+                        refreshTaskList(true);
+                        break;
+                }
+            } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    // Refresh all tasks after editing.
                     mActivity.refreshSections(true);
-                    break;
-                case Activity.RESULT_CANCELED:
-                    // Snooze has been canceled. Refresh tasks with animation.
-                    refreshTaskList(true);
-                    break;
-            }
-        } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                // Refresh all tasks after editing.
-                mActivity.refreshSections(true);
+                }
             }
         }
     }
@@ -533,33 +539,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Only refresh as usual when workspace is inactive.
             if (mActivity.getSelectedFilterTags().isEmpty()) {
-                List<GsonTask> tasks;
-
-                // Update adapter with new data.
-                switch (mSection) {
-                    case LATER:
-                        tasks = mTasksService.loadScheduledTasks();
-                        keepSelection(tasks);
-                        mAdapter.update(tasks, animateRefresh);
-
-                        // Refresh empty view.
-                        sNextTask = !tasks.isEmpty() ? tasks.get(0) : null;
-                        mActivity.updateEmptyView();
-                        break;
-                    case FOCUS:
-                        tasks = mTasksService.loadFocusedTasks();
-                        keepSelection(tasks);
-                        mListView.setContentList(tasks);
-                        mAdapter.update(tasks, animateRefresh);
-                        break;
-                    case DONE:
-                        tasks = mTasksService.loadCompletedTasks();
-                        keepSelection(tasks);
-                        handleDoneButtons(tasks);
-                        mAdapter.setShowingOld(sIsShowingOld);
-                        mAdapter.update(tasks, animateRefresh);
-                        break;
-                }
+                // Refresh asynchronously.
+                new RefreshTask().execute(animateRefresh);
             } else {
                 // Workspace is active. Reload filter.
                 filterByTags();
@@ -567,9 +548,75 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private void keepSelection(List<GsonTask> tasks) {
+    private class RefreshTask extends AsyncTask<Boolean, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            // Load new data.
+            switch (mSection) {
+                case LATER:
+                    mTasks = mTasksService.loadScheduledTasks();
+                    break;
+                case FOCUS:
+                    mTasks = mTasksService.loadFocusedTasks();
+                    break;
+                case DONE:
+                    mTasks = mTasksService.loadCompletedTasks();
+                    break;
+            }
+
+            // Keep tasks selected after refresh.
+            keepSelection();
+
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Boolean animateRefresh) {
+            // Avoid updating while swiping screens or when a refresh is pending.
+            if (!mActivity.isSwipingScreens() && !TasksActivity.hasPendingRefresh()) {
+                // Update adapter with new data.
+                updateAdapter(animateRefresh);
+            } else {
+                // Mark update as pending.
+                TasksActivity.setPendingRefresh();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // Nothing is loaded before refresh.
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            // No need to show progress.
+        }
+    }
+
+    public void updateAdapter(boolean animateRefresh) {
+        switch (mSection) {
+            case LATER:
+                mAdapter.update(mTasks, animateRefresh);
+
+                // Refresh empty view.
+                sNextTask = !mTasks.isEmpty() ? mTasks.get(0) : null;
+                mActivity.updateEmptyView();
+                break;
+            case FOCUS:
+                mListView.setContentList(mTasks);
+                mAdapter.update(mTasks, animateRefresh);
+                break;
+            case DONE:
+                handleDoneButtons(mTasks);
+                mAdapter.setShowingOld(sIsShowingOld);
+                mAdapter.update(mTasks, animateRefresh);
+                break;
+        }
+    }
+
+    private void keepSelection() {
         for (GsonTask selected : sSelectedTasks) {
-            for (GsonTask task : tasks) {
+            for (GsonTask task : mTasks) {
                 if (selected.getTempId().equals(task.getTempId())) {
                     task.setSelected(true);
                     break;
@@ -986,9 +1033,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 }
 
                 // Show old tasks.
-                List<GsonTask> tasks = mTasksService.loadCompletedTasks();
-                keepSelection(tasks);
-                mAdapter.showOld(tasks, mListViewHeight);
+                mTasks = mTasksService.loadCompletedTasks();
+                keepSelection();
+                mAdapter.showOld(mTasks, mListViewHeight);
 
                 // Set old tasks as shown.
                 sIsShowingOld = true;
