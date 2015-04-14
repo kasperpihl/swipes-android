@@ -59,7 +59,7 @@ public class BaseActivity extends ActionBarActivity {
      * Updates relevant analytics dimensions.
      */
     @Override
-    public void onResume() {
+    protected void onResume() {
         // Update Evernote user level dimension.
         Analytics.sendEvernoteUserLevel(this);
 
@@ -73,7 +73,7 @@ public class BaseActivity extends ActionBarActivity {
      * Stops background check timer.
      */
     @Override
-    public void onStart() {
+    protected void onStart() {
         SwipesApplication.stopBackgroundTimer();
 
         super.onStart();
@@ -83,7 +83,7 @@ public class BaseActivity extends ActionBarActivity {
      * Starts background check timer.
      */
     @Override
-    public void onStop() {
+    protected void onStop() {
         SwipesApplication.startBackgroundTimer();
 
         super.onStop();

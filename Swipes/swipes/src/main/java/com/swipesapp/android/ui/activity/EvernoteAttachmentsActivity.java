@@ -21,6 +21,7 @@ import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.OnEvernoteCallback;
 import com.swipesapp.android.sync.gson.GsonAttachment;
@@ -87,6 +88,20 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         setupListView();
 
         customizeViews();
+    }
+
+    @Override
+    protected void onStart() {
+        SwipesApplication.stopBackgroundTimer();
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        SwipesApplication.startBackgroundTimer();
+
+        super.onStop();
     }
 
     private void setupListView() {

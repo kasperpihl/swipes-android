@@ -23,7 +23,7 @@ public class SnoozeSettingsActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         // Send screen view event.
         Analytics.sendScreenView(Screens.SCREEN_SNOOZES);
 

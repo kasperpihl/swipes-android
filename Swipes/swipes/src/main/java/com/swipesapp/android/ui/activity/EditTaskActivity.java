@@ -38,6 +38,7 @@ import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -308,6 +309,20 @@ public class EditTaskActivity extends FragmentActivity {
         unregisterReceiver(mReceiver);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        SwipesApplication.stopBackgroundTimer();
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        SwipesApplication.startBackgroundTimer();
+
+        super.onStop();
     }
 
     protected void onUserLeaveHint() {

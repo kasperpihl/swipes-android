@@ -243,7 +243,7 @@ public class TasksActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         // Create filter and start receiver.
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intents.TASKS_CHANGED);
@@ -273,7 +273,7 @@ public class TasksActivity extends BaseActivity {
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         // Start sync when coming from the background.
         if (SwipesApplication.wasInBackground()) {
             startSync();
@@ -283,7 +283,7 @@ public class TasksActivity extends BaseActivity {
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         // Stop receiver.
         unregisterReceiver(mTasksReceiver);
 

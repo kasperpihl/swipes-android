@@ -21,6 +21,7 @@ import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
@@ -155,6 +156,20 @@ public class SnoozeActivity extends FragmentActivity {
         super.finish();
 
         overridePendingTransition(0, 0);
+    }
+
+    @Override
+    protected void onStart() {
+        SwipesApplication.stopBackgroundTimer();
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        SwipesApplication.startBackgroundTimer();
+
+        super.onStop();
     }
 
     private void loadPreferences() {
