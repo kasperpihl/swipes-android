@@ -22,8 +22,9 @@
     <string name="title_activity_settings">Configurações</string>
     <string name="title_activity_integrations">Integrações</string>
     <string name="title_activity_snooze_settings">Adiamentos</string>
-    <string name="title_activity_edit_task">Editar tarefa</string>
-    <string name="title_activity_snooze_task">Adiar tarefa</string>
+    <string name="title_activity_add_tasks">Adicionar Tarefa</string>
+    <string name="title_activity_edit_task">Editar Tarefa</string>
+    <string name="title_activity_snooze_task">Adiar Tarefa</string>
     <string name="title_activity_about">Sobre</string>
     <string name="title_activity_evernote_learn">Integração ao Evernote</string>
     <string name="title_activity_evernote_attachments">Anexos do Evernote</string>
@@ -165,6 +166,7 @@ Aproveite!</string>
     <string name="keep_data_dialog_yes">Manter dados</string>
     <string name="keep_data_dialog_no">Limpar dados</string>
     <string name="share_intent_add_confirm">Tarefa criada!</string>
+    <string name="delete_single_task">Excluir tarefa?</string>
     <!-- Scheduler -->
     <string name="date_today">hoje,&#160;</string>
     <string name="date_tomorrow">amanhã,&#160;</string>

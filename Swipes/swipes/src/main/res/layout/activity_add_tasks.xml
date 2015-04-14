@@ -3,16 +3,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/add_task_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:visibility="gone">
+    android:layout_height="match_parent">
+
+    <!-- Toolbar -->
+    <include layout="@layout/toolbar" />
 
     <!-- Fields area -->
     <RelativeLayout
         android:id="@+id/add_task_fields_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/add_task_fields_height"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible">
 
         <LinearLayout
             android:id="@+id/add_task_priority_container"
@@ -23,7 +25,7 @@
             android:paddingRight="@dimen/add_task_priority_padding">
 
             <CheckBox
-                android:id="@+id/button_add_task_priority"
+                android:id="@+id/add_task_priority"
                 android:layout_width="@dimen/task_circles_size"
                 android:layout_height="@dimen/task_circles_size"
                 android:layout_gravity="center_vertical"
@@ -44,7 +46,7 @@
             android:textSize="@dimen/add_task_confirm_size" />
 
         <com.swipesapp.android.ui.view.ActionEditText
-            android:id="@+id/edit_text_add_task_content"
+            android:id="@+id/add_task_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/button_confirm_add_task"
@@ -58,7 +60,7 @@
 
     <!-- Tags area -->
     <com.swipesapp.android.ui.view.FlowLayout
-        android:id="@+id/add_task_tag_container"
+        android:id="@+id/add_task_tags_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/add_task_fields_container"
@@ -66,6 +68,7 @@
         android:layout_marginBottom="@dimen/add_task_tags_margin_bottom"
         android:layout_marginLeft="@dimen/tags_margin_sides"
         android:layout_marginRight="@dimen/tags_margin_sides"
-        android:layout_marginTop="@dimen/add_task_tags_margin_top" />
+        android:layout_marginTop="@dimen/add_task_tags_margin_top"
+        android:visibility="invisible" />
 
 </RelativeLayout>

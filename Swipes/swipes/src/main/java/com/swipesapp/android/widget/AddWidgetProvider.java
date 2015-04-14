@@ -8,7 +8,8 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.swipesapp.android.R;
-import com.swipesapp.android.ui.activity.TasksActivity;
+import com.swipesapp.android.ui.activity.AddTasksActivity;
+import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
 
 /**
@@ -25,9 +26,10 @@ public class AddWidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.add_widget);
 
             // Add task intent.
-            Intent addIntent = new Intent(context, TasksActivity.class);
+            Intent addIntent = new Intent(context, AddTasksActivity.class);
             addIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             addIntent.setAction(Intents.ADD_TASK);
+            addIntent.putExtra(Constants.EXTRA_FROM_WIDGET, true);
             PendingIntent addPendingIntent = PendingIntent.getActivity(context, 0, addIntent, 0);
 
             // Attach click listener to button.

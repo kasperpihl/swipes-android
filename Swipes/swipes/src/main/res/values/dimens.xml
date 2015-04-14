@@ -147,5 +147,6 @@
     <dimen name="search_bar_height">@dimen/toolbar_height</dimen>
     <dimen name="navigation_bar_height">48dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="keyboard_minimum_height">100dp</dimen>
 
 </resources>

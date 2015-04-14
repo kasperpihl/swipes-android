@@ -1,86 +1,76 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tasks_area"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     tools:context="com.swipesapp.android.ui.activity.TasksActivity">
 
-    <!-- Tasks area -->
-    <RelativeLayout
-        android:id="@+id/tasks_area"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Toolbar -->
+        <include layout="@layout/toolbar" />
+
+        <!-- Search bar -->
+        <include layout="@layout/search_bar" />
+
+    </FrameLayout>
+
+    <!-- Shadow and content area -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusableInTouchMode="true">
+        android:layout_below="@id/toolbar_area">
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/toolbar_area"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <!-- Toolbar -->
-            <include layout="@layout/toolbar" />
-
-            <!-- Search bar -->
-            <include layout="@layout/search_bar" />
-
-        </FrameLayout>
-
-        <!-- Shadow and content area -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/toolbar_area">
-
-            <RelativeLayout
+            <!-- Fragments area -->
+            <com.fortysevendeg.swipelistview.DynamicViewPager
+                android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/pager_padding_sides"
+                android:paddingRight="@dimen/pager_padding_sides" />
 
-                <!-- Fragments area -->
-                <com.fortysevendeg.swipelistview.DynamicViewPager
-                    android:id="@+id/pager"
+            <!-- Buttons area -->
+            <LinearLayout
+                android:id="@+id/action_buttons_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingLeft="@dimen/pager_padding_sides"
-                    android:paddingRight="@dimen/pager_padding_sides" />
+                    android:layout_height="wrap_content">
 
-                <!-- Buttons area -->
-                <LinearLayout
-                    android:id="@+id/action_buttons_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="vertical">
+                    <!-- Add task button -->
+                    <include layout="@layout/add_task_button" />
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <!-- Edit bar -->
+                    <include layout="@layout/edit_bar" />
 
-                        <!-- Add task button -->
-                        <include layout="@layout/add_task_button" />
+                    <!-- Workspace area -->
+                    <include layout="@layout/workspaces_view" />
 
-                        <!-- Edit bar -->
-                        <include layout="@layout/edit_bar" />
+                </FrameLayout>
 
-                        <!-- Workspace area -->
-                        <include layout="@layout/workspaces_view" />
+            </LinearLayout>
 
-                    </FrameLayout>
+        </RelativeLayout>
 
-                </LinearLayout>
+        <!-- Toolbar shadow -->
+        <include layout="@layout/toolbar_shadow" />
 
-            </RelativeLayout>
+        <!-- Navigation menu -->
+        <include layout="@layout/navigation_menu" />
 
-            <!-- Toolbar shadow -->
-            <include layout="@layout/toolbar_shadow" />
-
-            <!-- Navigation menu -->
-            <include layout="@layout/navigation_menu" />
-
-        </FrameLayout>
-
-    </RelativeLayout>
-
-    <!-- Add task area -->
-    <include layout="@layout/add_tasks_view" />
+    </FrameLayout>
 
 </RelativeLayout>

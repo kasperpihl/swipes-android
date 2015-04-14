@@ -249,7 +249,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     // Task has been snoozed. Refresh all task lists.
-                    mActivity.refreshSections();
+                    mActivity.refreshSections(true);
                     break;
                 case Activity.RESULT_CANCELED:
                     // Snooze has been canceled. Refresh tasks with animation.
@@ -259,7 +259,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // Refresh all tasks after editing.
-                mActivity.refreshSections();
+                mActivity.refreshSections(true);
             }
         }
     }
@@ -680,7 +680,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         task.setLocalSchedule(new Date());
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
-                        mActivity.refreshSections();
+                        mActivity.refreshSections(true);
                         break;
                     case FOCUS:
                         // Move task from Focus to Done.
@@ -689,7 +689,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Handle repeat.
                         mRepeatHandler.handleRepeatedTask(task);
                         // Refresh all lists.
-                        mActivity.refreshSections();
+                        mActivity.refreshSections(true);
                         // Send analytics event.
                         sendTaskCompletedEvent();
                         break;
@@ -715,7 +715,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         task.setLocalCompletionDate(null);
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
-                        mActivity.refreshSections();
+                        mActivity.refreshSections(true);
                         break;
                 }
             }
@@ -735,7 +735,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Handle repeat.
                         mRepeatHandler.handleRepeatedTask(task);
                         // Refresh all lists.
-                        mActivity.refreshSections();
+                        mActivity.refreshSections(true);
                         // Send analytics event.
                         sendTaskCompletedEvent();
                         break;
@@ -965,7 +965,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mActivity.updateSelectionCount(sSelectedTasks.size());
 
                         // Refresh all task lists.
-                        mActivity.refreshSections();
+                        mActivity.refreshSections(true);
                     }
                 })
                 .show();
@@ -1080,7 +1080,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mActivity.getViewPager().setSwipeable(true);
 
         // Refresh all task lists.
-        mActivity.refreshSections();
+        mActivity.refreshSections(true);
 
         SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
 

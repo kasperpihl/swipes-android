@@ -61,6 +61,11 @@ public class Constants {
     public static final String EXTRA_FROM_WIDGET = "FROM_WIDGET";
 
     /**
+     * Intent extra for tag IDs.
+     */
+    public static final String EXTRA_TAG_IDS = "TAG_IDS";
+
+    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;

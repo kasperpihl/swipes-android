@@ -686,7 +686,7 @@ public class EditTaskActivity extends FragmentActivity {
     protected void deleteTask() {
         // Display confirmation dialog.
         new SwipesDialog.Builder(this)
-                .title(getResources().getQuantityString(R.plurals.delete_task_dialog_title, 1, 1))
+                .title(getResources().getString(R.string.delete_single_task))
                 .content(R.string.delete_task_dialog_text)
                 .positiveText(R.string.delete_task_dialog_yes)
                 .negativeText(R.string.delete_task_dialog_no)

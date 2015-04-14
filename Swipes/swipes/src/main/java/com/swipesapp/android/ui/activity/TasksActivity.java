@@ -2,7 +2,6 @@ package com.swipesapp.android.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -20,7 +19,6 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,7 +37,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fortysevendeg.swipelistview.DynamicViewPager;
@@ -80,7 +77,6 @@ import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
-import com.swipesapp.android.values.RepeatOptions;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.widget.NowWidgetProvider;
 
@@ -88,12 +84,10 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -114,24 +108,12 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
 
-    @InjectView(R.id.add_task_container)
-    RelativeLayout mAddTaskContainer;
-
-    @InjectView(R.id.edit_text_add_task_content)
-    ActionEditText mEditTextAddNewTask;
-
-    @InjectView(R.id.button_add_task_priority)
-    CheckBox mButtonAddTaskPriority;
-
     @InjectView(R.id.edit_tasks_bar)
     FrameLayout mEditTasksBar;
     @InjectView(R.id.edit_bar_area)
     RelativeLayout mEditBarArea;
     @InjectView(R.id.edit_bar_selection_count)
     TextView mEditBarCount;
-
-    @InjectView(R.id.add_task_tag_container)
-    FlowLayout mAddTaskTagContainer;
 
     @InjectView(R.id.action_buttons_container)
     LinearLayout mActionButtonsContainer;
@@ -178,31 +160,21 @@ public class TasksActivity extends BaseActivity {
     private SyncService mSyncService;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     private Sections mCurrentSection;
 
-    private Set<GsonTag> mSelectedTags;
     private Set<GsonTag> mSelectedFilterTags;
-
-    // Used by animator to store tags container position.
-    private float mTagsTranslationY;
 
     private View mActionBarView;
     private TextView mActionBarTitle;
     private SwipesButton mActionBarIcon;
 
     private float mPreviousOffset;
-
     private boolean mHasChangedTab;
-
-    private boolean mIsAddingTask;
 
     private String mShareMessage;
 
     private boolean mWasRestored;
     private static boolean sHasPendingRefresh;
-
-    private String[] mIntentData;
 
     private boolean mIsSelectionMode;
 
@@ -245,21 +217,11 @@ public class TasksActivity extends BaseActivity {
         // Define a custom duration to the page scroller, providing a more natural feel.
         customizeScroller();
 
-        mSelectedTags = new LinkedHashSet<>();
         mSelectedFilterTags = new LinkedHashSet<>();
-
-        mTagsTranslationY = mAddTaskTagContainer.getTranslationY();
-
-        int hintColor = ThemeUtils.isLightTheme(this) ? R.color.light_hint : R.color.dark_hint;
-        mEditTextAddNewTask.setHintTextColor(getResources().getColor(hintColor));
-
-        mEditTextAddNewTask.setListener(mKeyboardBackListener);
 
         customizeSelectionColors();
 
         loadSearchBar();
-
-        handleShareIntent();
     }
 
     @Override
@@ -299,7 +261,7 @@ public class TasksActivity extends BaseActivity {
 
         // Refresh lists if needed.
         if (sHasPendingRefresh) {
-            refreshSections();
+            refreshSections(false);
         }
 
         // Restore section colors.
@@ -354,7 +316,7 @@ public class TasksActivity extends BaseActivity {
                     invalidateOptionsMenu();
 
                     // Refresh all lists.
-                    refreshSections();
+                    refreshSections(true);
                     break;
             }
         } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {
@@ -514,128 +476,6 @@ public class TasksActivity extends BaseActivity {
         WelcomeHandler.addWelcomeTasks(this);
     }
 
-    private void sendAppLaunchEvent() {
-        String label = Labels.APP_LAUNCH_DIRECT;
-        long value = Analytics.getDaysSinceInstall(this);
-
-        boolean fromNotifications = getIntent().getBooleanExtra(Constants.EXTRA_FROM_NOTIFICATIONS, false);
-        if (fromNotifications) label = Labels.APP_LAUNCH_LOCAL_NOTIFICATION;
-
-        // Send app launch event.
-        Analytics.sendEvent(Categories.SESSION, Actions.APP_LAUNCH, label, value);
-    }
-
-    private void sendLoginEvent() {
-        // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
-        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
-
-        // Send login event.
-        Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
-    }
-
-    private void sendSignupEvent() {
-        // Check if user tried out the app.
-        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
-        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
-
-        // Send login event.
-        Analytics.sendEvent(Categories.ONBOARDING, Actions.SIGNED_UP, label, null);
-    }
-
-    private void sendTaskAddedEvent() {
-        String label = mIntentData != null ? Labels.ADDED_FROM_SHARE_INTENT : Labels.ADDED_FROM_INPUT;
-        long value = mEditTextAddNewTask.getText().length();
-
-        // Send task added event.
-        Analytics.sendEvent(Categories.TASKS, Actions.ADDED_TASK, label, value);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, value);
-        fields.put(IntercomFields.FROM, label);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_TASK, fields);
-
-        // Send tag assigned event.
-        sendTagAssignEvent();
-    }
-
-    private void sendTagAssignEvent() {
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-        fields.put(IntercomFields.NUMBER_OF_TAGS, mSelectedTags.size());
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_ADD_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ASSIGN_TAGS, fields);
-    }
-
-    private void sendSharingMessageEvent() {
-        long value = isDoneForToday() ? 1 : 0;
-        String valueIntercom = isDoneForToday() ? Labels.DONE_TODAY : Labels.DONE_NOW;
-
-        // Send analytics event.
-        Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.DONE_FOR_TODAY, valueIntercom);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.SHARE_MESSAGE_OPENED, fields);
-    }
-
-    private void sendTagDeletedEvent(String from) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, from, null);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.FROM, from);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
-    }
-
-    private void sendTagAddedEvent(long length, String from) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, from, length);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, length);
-        fields.put(IntercomFields.FROM, from);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
-    }
-
-    private void handleShareIntent() {
-        // Handle intent from other apps.
-        Intent intent = getIntent();
-        String action = intent.getAction();
-
-        if (action != null && (action.equals(Intent.ACTION_SEND) ||
-                action.equals(Intent.ACTION_SEND_MULTIPLE) || action.equals(Intents.ADD_TASK))) {
-
-            String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-            String notes = intent.getStringExtra(Intent.EXTRA_TEXT);
-
-            if (title == null || title.isEmpty()) title = "";
-
-            if (notes != null && !notes.startsWith("http")) {
-                notes = notes.replaceAll("http[^ ]+$", "");
-            }
-
-            mIntentData = new String[]{title, notes};
-
-            startAddTaskWorkflow();
-        }
-    }
-
     private void setupActionBarCustomView() {
         // Inflate custom view.
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -748,8 +588,7 @@ public class TasksActivity extends BaseActivity {
             toColor = ThemeUtils.getSectionColorDark(to, mContext.get());
 
             // Blend the colors and adjust the status bar.
-            blended = ColorUtils.blendColors(fromColor, toColor, positionOffset);
-            if (!mIsAddingTask) themeStatusBar(blended);
+            themeStatusBar(ColorUtils.blendColors(fromColor, toColor, positionOffset));
 
             // Adjust navigation area.
             paintNavigationArea(blended);
@@ -799,12 +638,12 @@ public class TasksActivity extends BaseActivity {
             // Filter intent actions.
             if (intent.getAction().equals(Intents.TASKS_CHANGED)) {
                 // Perform refresh of all sections.
-                refreshSections();
+                refreshSections(true);
             }
         }
     };
 
-    public void refreshSections() {
+    public void refreshSections(boolean refreshWidgets) {
         // Refresh lists without animation.
         for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
             if (fragment != null) fragment.refreshTaskList(false);
@@ -910,130 +749,24 @@ public class TasksActivity extends BaseActivity {
         }
     };
 
-    @OnClick(R.id.add_task_priority_container)
-    protected void togglePriority() {
-        boolean checked = mButtonAddTaskPriority.isChecked();
-        mButtonAddTaskPriority.setChecked(!checked);
-    }
-
-    @OnClick(R.id.button_confirm_add_task)
-    protected void confirmAddTask() {
-        Date currentDate = new Date();
-        String title = mEditTextAddNewTask.getText().toString();
-        Integer priority = mButtonAddTaskPriority.isChecked() ? 1 : 0;
-        String tempId = UUID.randomUUID().toString();
-        String notes = null;
-        List<GsonTag> tags = new ArrayList<>();
-        tags.addAll(mSelectedTags);
-
-        if (mIntentData != null) {
-            notes = mIntentData[1];
-        }
-
-        if (!title.isEmpty()) {
-            GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
-            mTasksService.saveTask(task, true);
-        }
-
-        if (mIntentData != null) {
-            Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
-            sHasPendingRefresh = true;
-        }
-
-        sendTaskAddedEvent();
-
-        refreshWidgets(this);
-
-        endAddTaskWorkflow(true);
-    }
-
     @OnClick(R.id.button_add_task)
     protected void startAddTaskWorkflow() {
-        // Set flag.
-        mIsAddingTask = true;
-
         // Go to main fragment if needed.
         if (mCurrentSection != Sections.FOCUS) {
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
-        // Fade out the tasks.
-        mTasksArea.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(ThemeUtils.getSectionColorDark(mCurrentSection, this), ThemeUtils.getStatusBarColor(this));
-
-        // Show and hide keyboard automatically.
-        mEditTextAddNewTask.setOnFocusChangeListener(mFocusListener);
-        mEditTextAddNewTask.setOnEditorActionListener(mEnterListener);
-
-        // Display edit text.
-        mEditTextAddNewTask.setVisibility(View.VISIBLE);
-        mEditTextAddNewTask.setFocusable(true);
-        mEditTextAddNewTask.setFocusableInTouchMode(true);
-        mEditTextAddNewTask.requestFocus();
-        mEditTextAddNewTask.bringToFront();
-
-        // Display add task area.
-        mAddTaskContainer.setVisibility(View.VISIBLE);
-
-        // Display tags area.
-        animateTags(false);
-        loadTags();
-
-        // Load title from other apps.
-        if (mIntentData != null) {
-            String title = mIntentData[0];
-            mEditTextAddNewTask.setText(title);
-        }
-    }
-
-    @OnClick(R.id.add_task_container)
-    protected void addTaskAreaClick() {
-        if (mIntentData == null) endAddTaskWorkflow(false);
-    }
-
-    private void endAddTaskWorkflow(boolean resetFields) {
-        // Finish if coming from another app.
-        if (mIntentData != null) finish();
-
-        // Reset flag.
-        mIsAddingTask = false;
-
-        // Remove focus and hide text view.
-        mEditTextAddNewTask.clearFocus();
-        mEditTextAddNewTask.setVisibility(View.GONE);
-
-        // Reset fields.
-        if (resetFields) {
-            mEditTextAddNewTask.setText("");
-            mButtonAddTaskPriority.setChecked(false);
-            mSelectedTags.clear();
+        // Prepare selected filter tags.
+        ArrayList<Integer> tagIds = new ArrayList<>();
+        for (GsonTag tag : mSelectedFilterTags) {
+            tagIds.add(tag.getId().intValue());
         }
 
-        // Hide add task area.
-        mAddTaskContainer.setVisibility(View.GONE);
+        // Call add task activity.
+        Intent intent = new Intent(this, AddTasksActivity.class);
+        intent.putIntegerArrayListExtra(Constants.EXTRA_TAG_IDS, tagIds);
 
-        // Hide tags area.
-        animateTags(true);
-
-        // Fade in the tasks.
-        mTasksArea.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG);
-        transitionStatusBar(ThemeUtils.getStatusBarColor(this), ThemeUtils.getSectionColorDark(Sections.FOCUS, this));
-
-        // Refresh main task list.
-        TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
-        focusFragment.refreshTaskList(false);
-    }
-
-    private void animateTags(boolean isHiding) {
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-
-        float fromY = isHiding ? mAddTaskTagContainer.getY() : -displaymetrics.heightPixels;
-        float toY = isHiding ? -displaymetrics.heightPixels : mTagsTranslationY;
-
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mAddTaskTagContainer, "translationY", fromY, toY);
-        animator.setDuration(Constants.ANIMATION_DURATION_LONG).start();
+        startActivity(intent);
     }
 
     @OnClick(R.id.button_assign_tags)
@@ -1053,38 +786,6 @@ public class TasksActivity extends BaseActivity {
         // Send a broadcast to share selected tasks. The fragment should handle it.
         mTasksService.sendBroadcast(Intents.SHARE_TASKS);
     }
-
-    private View.OnFocusChangeListener mFocusListener = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (hasFocus) {
-                imm.showSoftInput(mEditTextAddNewTask, InputMethodManager.SHOW_IMPLICIT);
-            } else {
-                imm.hideSoftInputFromWindow(mEditTextAddNewTask.getWindowToken(), 0);
-            }
-        }
-    };
-
-    private TextView.OnEditorActionListener mEnterListener =
-            new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // If the action is a key-up event on the return key, save new task.
-                        confirmAddTask();
-                    }
-                    return true;
-                }
-            };
-
-    private KeyboardBackListener mKeyboardBackListener = new KeyboardBackListener() {
-        @Override
-        public void onKeyboardBackPressed() {
-            // Back button has been pressed. Get back to the list.
-            endAddTaskWorkflow(false);
-        }
-    };
 
     public void shareOnFacebook(View v) {
         // TODO: Call sharing flow.
@@ -1154,84 +855,6 @@ public class TasksActivity extends BaseActivity {
 
         @Override
         public void onAnimationRepeat(Animation animation) {
-        }
-    };
-
-    private void loadTags() {
-        List<GsonTag> tags = mTasksService.loadAllTags();
-        mAddTaskTagContainer.removeAllViews();
-
-        mSelectedTags.addAll(mSelectedFilterTags);
-
-        // For each tag, add a checkbox as child view.
-        for (GsonTag tag : tags) {
-            int resource = ThemeUtils.isLightTheme(this) ? R.layout.tag_box_light : R.layout.tag_box_dark;
-            CheckBox tagBox = (CheckBox) getLayoutInflater().inflate(resource, null);
-            tagBox.setText(tag.getTitle());
-            tagBox.setId(tag.getId().intValue());
-
-            // Set listener to assign tag.
-            tagBox.setOnClickListener(mTagClickListener);
-            tagBox.setOnLongClickListener(mTagDeleteListener);
-
-            // Pre-select tag if needed.
-            if (mSelectedTags.contains(tag)) tagBox.setChecked(true);
-
-            // Add child view.
-            mAddTaskTagContainer.addView(tagBox);
-        }
-
-        // Create add tag button.
-        SwipesTextView button = (SwipesTextView) getLayoutInflater().inflate(R.layout.tag_add_button, null);
-        button.setOnClickListener(mAddTagListener);
-        button.enableTouchFeedback();
-
-        // Add child view.
-        mAddTaskTagContainer.addView(button);
-    }
-
-    private View.OnClickListener mTagClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
-
-            // Add or remove from list of selected tags.
-            if (isTagSelected(selectedTag)) {
-                removeSelectedTag(selectedTag);
-            } else {
-                mSelectedTags.add(selectedTag);
-            }
-        }
-    };
-
-    private View.OnLongClickListener mTagDeleteListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-            final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
-
-            // Display dialog to delete tag.
-            new SwipesDialog.Builder(mContext.get())
-                    .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
-                    .content(R.string.delete_tag_dialog_message)
-                    .positiveText(R.string.delete_tag_dialog_yes)
-                    .negativeText(R.string.delete_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            // Delete tag and unassign it from all tasks.
-                            mTasksService.deleteTag(selectedTag.getId());
-
-                            // Send analytics event.
-                            sendTagDeletedEvent(Labels.TAGS_FROM_ADD_TASK);
-
-                            // Refresh displayed tags.
-                            loadTags();
-                        }
-                    })
-                    .show();
-
-            return true;
         }
     };
 
@@ -1307,20 +930,13 @@ public class TasksActivity extends BaseActivity {
         GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
-        String from = mIsAddingTask ? Labels.TAGS_FROM_ADD_TASK : Labels.TAGS_FROM_FILTER;
-        sendTagAddedEvent((long) title.length(), from);
+        sendTagAddedEvent((long) title.length(), Labels.TAGS_FROM_FILTER);
 
-        // Refresh displayed tags.
-        if (mIsAddingTask) {
-            mSelectedTags.add(tag);
-            loadTags();
-        } else {
-            mSelectedFilterTags.add(tag);
-            loadWorkspacesTags();
+        mSelectedFilterTags.add(tag);
+        loadWorkspacesTags();
 
-            // Refresh workspace results.
-            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
-        }
+        // Refresh workspace results.
+        mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
     }
 
     private LinearLayout customizeAddTagInput(EditText input) {
@@ -1338,26 +954,6 @@ public class TasksActivity extends BaseActivity {
     private void showKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, 0);
-    }
-
-    private boolean isTagSelected(GsonTag selectedTag) {
-        // Check if tag already exists in the list of selected.
-        for (GsonTag tag : mSelectedTags) {
-            if (tag.getId().equals(selectedTag.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void removeSelectedTag(GsonTag selectedTag) {
-        // Find and remove tag from the list of selected.
-        List<GsonTag> selected = new ArrayList<GsonTag>(mSelectedTags);
-        for (GsonTag tag : selected) {
-            if (tag.getId().equals(selectedTag.getId())) {
-                mSelectedTags.remove(tag);
-            }
-        }
     }
 
     // HACK: Use activity to notify the middle fragment.
@@ -1411,9 +1007,6 @@ public class TasksActivity extends BaseActivity {
 
         // Clear selected tags.
         mSelectedFilterTags.clear();
-
-        // Update lists.
-        mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
     }
 
     @OnClick(R.id.button_confirm_workspace)
@@ -1484,6 +1077,9 @@ public class TasksActivity extends BaseActivity {
         @Override
         public void onAnimationEnd(Animation animation) {
             mWorkspacesView.setVisibility(View.GONE);
+
+            // Update lists.
+            mTasksService.sendBroadcast(Intents.FILTER_BY_TAGS);
         }
 
         @Override
@@ -1754,7 +1350,7 @@ public class TasksActivity extends BaseActivity {
         mTasksService.clearAllData();
 
         // Refresh lists.
-        refreshSections();
+        refreshSections(true);
     }
 
     private void saveDataForSync() {
@@ -2053,6 +1649,75 @@ public class TasksActivity extends BaseActivity {
     public static void setPendingRefresh() {
         // Set flag to refresh lists.
         sHasPendingRefresh = true;
+    }
+
+    private void sendAppLaunchEvent() {
+        String label = Labels.APP_LAUNCH_DIRECT;
+        long value = Analytics.getDaysSinceInstall(this);
+
+        boolean fromNotifications = getIntent().getBooleanExtra(Constants.EXTRA_FROM_NOTIFICATIONS, false);
+        if (fromNotifications) label = Labels.APP_LAUNCH_LOCAL_NOTIFICATION;
+
+        // Send app launch event.
+        Analytics.sendEvent(Categories.SESSION, Actions.APP_LAUNCH, label, value);
+    }
+
+    private void sendLoginEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.LOGGED_IN, label, null);
+    }
+
+    private void sendSignupEvent() {
+        // Check if user tried out the app.
+        boolean didTryOut = PreferenceUtils.hasTriedOut(this);
+        String label = didTryOut ? Labels.TRY_OUT_YES : Labels.TRY_OUT_NO;
+
+        // Send login event.
+        Analytics.sendEvent(Categories.ONBOARDING, Actions.SIGNED_UP, label, null);
+    }
+
+    private void sendSharingMessageEvent() {
+        long value = isDoneForToday() ? 1 : 0;
+        String valueIntercom = isDoneForToday() ? Labels.DONE_TODAY : Labels.DONE_NOW;
+
+        // Send analytics event.
+        Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.DONE_FOR_TODAY, valueIntercom);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.SHARE_MESSAGE_OPENED, fields);
+    }
+
+    public static void sendTagDeletedEvent(String from) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, from, null);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.FROM, from);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
+    }
+
+    public static void sendTagAddedEvent(long length, String from) {
+        // Send analytics event.
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, from, length);
+
+        // Prepare Intercom fields.
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put(IntercomFields.LENGHT, length);
+        fields.put(IntercomFields.FROM, from);
+
+        // Send Intercom events.
+        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
     }
 
 }

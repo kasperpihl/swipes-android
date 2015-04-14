@@ -26,6 +26,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.swipesapp.android.ui.activity.AddTasksActivity"
+            android:label="@string/title_activity_add_tasks"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.swipesapp.android.ui.activity.TasksActivity" />
+
             <intent-filter android:label="@string/title_share_intent">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

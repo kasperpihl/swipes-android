@@ -16,6 +16,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.handler.RepeatHandler;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.ui.activity.AddTasksActivity;
 import com.swipesapp.android.ui.activity.EditTaskActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.DateUtils;
@@ -93,6 +94,7 @@ public class NowWidgetProvider extends AppWidgetProvider {
             // Refresh widget and tasks.
             TasksActivity.refreshWidgets(context);
             TasksActivity.setPendingRefresh();
+
         } else if (Intents.WIDGET_OPEN_TASK.equals(action) || Intents.WIDGET_OPEN_SUBTASKS.equals(action)) {
             // Open task intent.
             Intent openIntent = new Intent(context, EditTaskActivity.class);
@@ -166,9 +168,10 @@ public class NowWidgetProvider extends AppWidgetProvider {
         PendingIntent tasksPendingIntent = PendingIntent.getActivity(context, 0, tasksIntent, 0);
 
         // Add task intent.
-        Intent addIntent = new Intent(context, TasksActivity.class);
+        Intent addIntent = new Intent(context, AddTasksActivity.class);
         addIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         addIntent.setAction(Intents.ADD_TASK);
+        addIntent.putExtra(Constants.EXTRA_FROM_WIDGET, true);
         PendingIntent addPendingIntent = PendingIntent.getActivity(context, 0, addIntent, 0);
 
         // Attach click listeners to buttons.

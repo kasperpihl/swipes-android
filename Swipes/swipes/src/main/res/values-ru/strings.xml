@@ -22,8 +22,9 @@
     <string name="title_activity_settings">Настройки</string>
     <string name="title_activity_integrations">Интеграция</string>
     <string name="title_activity_snooze_settings">Откладывать</string>
-    <string name="title_activity_edit_task">Изменить задачу</string>
-    <string name="title_activity_snooze_task">Отложить задачу</string>
+    <string name="title_activity_add_tasks">Добавить Задачу</string>
+    <string name="title_activity_edit_task">Изменить Задачу</string>
+    <string name="title_activity_snooze_task">Отложить Задачу</string>
     <string name="title_activity_about">О приложении</string>
     <string name="title_activity_evernote_learn">Интеграция с Evernote</string>
     <string name="title_activity_evernote_attachments">Вложения Evernote</string>
@@ -167,6 +168,7 @@ http://swipesapp.com</string>
     <string name="keep_data_dialog_yes">Оставить данные</string>
     <string name="keep_data_dialog_no">Стереть данные</string>
     <string name="share_intent_add_confirm">Задача создана!</string>
+    <string name="delete_single_task">Удалить задачу?</string>
     <!-- Scheduler -->
     <string name="date_today">сегодня,&#160;</string>
     <string name="date_tomorrow">завтра,&#160;</string>
