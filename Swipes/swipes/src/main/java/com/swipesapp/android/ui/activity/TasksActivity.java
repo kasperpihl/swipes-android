@@ -578,6 +578,7 @@ public class TasksActivity extends BaseActivity {
                 if (mCalledAddTask) {
                     // Call add task screen.
                     callAddTask();
+                    mCalledAddTask = false;
                 }
 
                 mIsSwipingScreens = false;
