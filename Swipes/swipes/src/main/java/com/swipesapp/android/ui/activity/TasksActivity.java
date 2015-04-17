@@ -173,6 +173,8 @@ public class TasksActivity extends BaseActivity {
     private boolean mHasChangedTab;
     private boolean mIsSwipingScreens;
 
+    private boolean mCalledAddTask;
+
     private String mShareMessage;
 
     private boolean mWasRestored;
@@ -573,6 +575,11 @@ public class TasksActivity extends BaseActivity {
                     refreshAdapters();
                 }
 
+                if (mCalledAddTask) {
+                    // Call add task screen.
+                    callAddTask();
+                }
+
                 mIsSwipingScreens = false;
             } else {
                 mIsSwipingScreens = true;
@@ -796,6 +803,11 @@ public class TasksActivity extends BaseActivity {
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
         }
 
+        // Set flag to call add task after scrolling ends.
+        mCalledAddTask = true;
+    }
+
+    private void callAddTask() {
         // Prepare selected filter tags.
         ArrayList<Integer> tagIds = new ArrayList<>();
         for (GsonTag tag : mSelectedFilterTags) {
