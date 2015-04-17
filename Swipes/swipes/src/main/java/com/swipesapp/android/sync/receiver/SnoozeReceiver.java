@@ -61,8 +61,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
         }
 
         if (sExpiredTasks.size() > sPreviousCount) {
-            // Broadcast tasks changed.
-            sTasksService.sendBroadcast(Intents.TASKS_CHANGED);
+            // Refresh tasks and widgets.
+            refreshContent(context);
 
             // Send notification if allowed to.
             sendNotification(context);
@@ -176,6 +176,14 @@ public class SnoozeReceiver extends BroadcastReceiver {
         return Integer.valueOf(prefLaterToday);
     }
 
+    private static void refreshContent(Context context) {
+        // Broadcast tasks changed.
+        sTasksService.sendBroadcast(Intents.TASKS_CHANGED);
+
+        // Refresh app widgets.
+        TasksActivity.refreshWidgets(context);
+    }
+
     private static void sendClickEvent(String action) {
         // Send analytics event.
         Analytics.sendEvent(Categories.NOTIFICATIONS, action, null, (long) sExpiredTasks.size());
@@ -209,6 +217,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
                             sTasksService.saveTask(task, true);
                         }
 
+                        refreshContent(context);
+
                         sendClickEvent(Actions.NOTIFICATION_SNOOZED);
                         break;
 
@@ -221,6 +231,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
                             sTasksService.saveTask(task, true);
                         }
+
+                        refreshContent(context);
 
                         sendClickEvent(Actions.NOTIFICATION_COMPLETED);
                         break;
