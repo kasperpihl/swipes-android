@@ -11,8 +11,11 @@ import android.widget.Scroller;
  */
 public class FactorSpeedScroller extends Scroller {
 
-    private static final int SCROLL_DURATION = 300;
+    public static final int DURATION_MEDIUM = 300;
+    public static final int DURATION_SHORT = 180;
     private static final double SCROLL_FACTOR = 2;
+
+    private int mDuration = DURATION_MEDIUM;
 
     public FactorSpeedScroller(Context context) {
         super(context);
@@ -21,7 +24,11 @@ public class FactorSpeedScroller extends Scroller {
     @Override
     public void startScroll(int startX, int startY, int dx, int dy, int duration) {
         // Ignore received duration, use custom one instead.
-        super.startScroll(startX, startY, dx, dy, (int) (SCROLL_DURATION * SCROLL_FACTOR));
+        super.startScroll(startX, startY, dx, dy, (int) (mDuration * SCROLL_FACTOR));
+    }
+
+    public void setDuration(int duration) {
+        mDuration = duration;
     }
 
 }

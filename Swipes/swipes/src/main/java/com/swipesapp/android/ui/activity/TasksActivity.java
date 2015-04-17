@@ -162,6 +162,7 @@ public class TasksActivity extends BaseActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Sections mCurrentSection;
+    private FactorSpeedScroller mScroller;
 
     private Set<GsonTag> mSelectedFilterTags;
 
@@ -578,6 +579,9 @@ public class TasksActivity extends BaseActivity {
                 if (mCalledAddTask) {
                     // Call add task screen.
                     callAddTask();
+
+                    // Reset flag and scroller speed.
+                    mScroller.setDuration(FactorSpeedScroller.DURATION_MEDIUM);
                     mCalledAddTask = false;
                 }
 
@@ -729,7 +733,8 @@ public class TasksActivity extends BaseActivity {
             // HACK: Use reflection to access the scroller and customize it.
             Field scroller = ViewPager.class.getDeclaredField("mScroller");
             scroller.setAccessible(true);
-            scroller.set(mViewPager, new FactorSpeedScroller(this));
+            mScroller = new FactorSpeedScroller(this);
+            scroller.set(mViewPager, mScroller);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Something went wrong accessing field \"mScroller\" inside ViewPager class", e);
         }
@@ -801,11 +806,15 @@ public class TasksActivity extends BaseActivity {
     protected void startAddTaskWorkflow() {
         // Go to main fragment if needed.
         if (mCurrentSection != Sections.FOCUS) {
+            // Use short scroll duration for faster input.
+            mScroller.setDuration(FactorSpeedScroller.DURATION_SHORT);
             mViewPager.setCurrentItem(Sections.FOCUS.getSectionNumber());
-        }
 
-        // Set flag to call add task after scrolling ends.
-        mCalledAddTask = true;
+            // Set flag to call add task after scrolling ends.
+            mCalledAddTask = true;
+        } else {
+            callAddTask();
+        }
     }
 
     private void callAddTask() {
