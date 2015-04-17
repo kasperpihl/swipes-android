@@ -114,8 +114,9 @@ public class ExtTaskDao {
         nextMinute.set(Calendar.MILLISECOND, 0);
 
         return mDao.queryBuilder().where(TaskDao.Properties.CreatedAt.lt(currentMinute.getTime()),
-                TaskDao.Properties.Schedule.gt(previousMinute.getTime()), TaskDao.Properties.Schedule.lt(nextMinute.getTime()),
-                TaskDao.Properties.CompletionDate.isNull(), TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
+                TaskDao.Properties.UpdatedAt.lt(currentMinute.getTime()), TaskDao.Properties.Schedule.gt(previousMinute.getTime()),
+                TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
                 .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
     }
 
