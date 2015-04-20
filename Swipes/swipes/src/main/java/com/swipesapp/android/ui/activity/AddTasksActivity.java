@@ -83,10 +83,7 @@ public class AddTasksActivity extends BaseActivity {
     private static String sTitle;
     private static boolean sPriority;
 
-    // Used by animators to store view positions.
-    private float mTagsTranslationY;
-    private float mFieldsTranslationY;
-    private boolean mHasShownKeyboard;
+    private boolean mHasStartedTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +115,6 @@ public class AddTasksActivity extends BaseActivity {
         }
 
         mOpenedFromWidget = getIntent().getBooleanExtra(Constants.EXTRA_FROM_WIDGET, false);
-
-        mTagsTranslationY = mTagsContainer.getTranslationY();
-        mFieldsTranslationY = mFieldsContainer.getTranslationY();
 
         handleShareIntent();
 
@@ -277,13 +271,15 @@ public class AddTasksActivity extends BaseActivity {
             @Override
             public void run() {
                 // Animate tags from top to bottom.
-                animateView(mTagsContainer, mTagsTranslationY, false);
+                animateView(mTagsContainer, mTagsContainer.getTranslationY(), false);
 
                 // Animate fields from bottom to top.
-                animateView(mFieldsContainer, mFieldsTranslationY, true);
+                animateView(mFieldsContainer, mFieldsContainer.getTranslationY(), true);
+
+                // Flag timer as finished.
+                mHasStartedTimer = false;
             }
         };
-        handler.postDelayed(runnable, 400);
 
         // HACK: Wait for keyboard to appear to avoid breaking animation.
         mContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -295,14 +291,23 @@ public class AddTasksActivity extends BaseActivity {
                 // Use layout height difference to detect keyboard.
                 if (heightDiff > minKeyboardHeight) {
                     // Animate tags from top to bottom.
-                    animateView(mTagsContainer, mTagsTranslationY, false);
+                    animateView(mTagsContainer, mTagsContainer.getTranslationY(), false);
 
                     // Animate fields from bottom to top.
-                    animateView(mFieldsContainer, mFieldsTranslationY, true);
+                    animateView(mFieldsContainer, mFieldsContainer.getTranslationY(), true);
 
-                    // Animation was triggered. Cancel timer and layout listener.
+                    // Animation was triggered. Cancel timer.
                     handler.removeCallbacks(runnable);
+                    mHasStartedTimer = false;
+
+                    // Remove layout listener.
                     mContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else if (!mHasStartedTimer) {
+                    // No keyboard yet. Start fallback timer.
+                    handler.postDelayed(runnable, 400);
+
+                    // Flag timer as started.
+                    mHasStartedTimer = true;
                 }
             }
         });
