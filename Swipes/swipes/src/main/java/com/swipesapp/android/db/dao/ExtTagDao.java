@@ -41,7 +41,7 @@ public class ExtTagDao {
     }
 
     public List<Tag> listAllTags() {
-        return mDao.queryBuilder().list();
+        return mDao.queryBuilder().orderAsc(TagDao.Properties.Title).list();
     }
 
     public long countAllTags() {
