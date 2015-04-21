@@ -636,21 +636,17 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Filter intent actions.
             if (action.equals(Intents.TAB_CHANGED)) {
-                if (!mActivity.isSelectionMode()) {
-                    // Enable or disable swiping.
-                    boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
-                    mListView.setSwipeEnabled(enabled);
-                }
+                // Enable or disable swiping.
+                boolean enabled = isCurrentSection() || DeviceUtils.isLandscape(getActivity());
+                mListView.setSwipeEnabled(enabled);
             } else if (action.equals(Intents.SELECTION_STARTED)) {
-                // TODO: Disable swiping.
-//                mListView.setSwipeEnabled(false);
+                // TODO: Enable multi-swiping (after it's implemented).
             } else if (action.equals(Intents.SELECTION_CLEARED)) {
                 // Clear selected tasks and stop selection mode.
                 sSelectedTasks.clear();
                 mActivity.cancelSelection();
 
-                // TODO: Enable swiping.
-//                mListView.setSwipeEnabled(true);
+                // TODO: Disable multi-swiping.
 
                 // Refresh all sections.
                 refreshTaskList(false);
