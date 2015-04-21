@@ -6,10 +6,11 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.swipesapp.android.ui.view.SwipesButton
+    <com.swipesapp.android.ui.view.SwipesTextView
         android:id="@+id/action_bar_icon"
-        android:layout_width="@dimen/toolbar_buttons_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/toolbar_icon_margin_sides"
         android:background="@color/transparent"
         android:clickable="false"
         android:text="@string/focus_full"

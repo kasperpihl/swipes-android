@@ -83,9 +83,9 @@
 
     <!-- Workspaces -->
     <dimen name="workspace_results_margin_sides">16dp</dimen>
-    <dimen name="workspace_results_margin_top">40dp</dimen>
-    <dimen name="workspace_results_margin_bottom">140dp</dimen>
+    <dimen name="workspace_results_margin_top">30dp</dimen>
     <dimen name="workspace_results_button_margin_top">10dp</dimen>
+    <dimen name="workspace_results_margin_bottom">0dp</dimen>
 
     <!-- Scheduler -->
     <dimen name="snooze_options_icon_size">44sp</dimen>
@@ -142,6 +142,7 @@
     <dimen name="toolbar_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="toolbar_buttons_width">50dp</dimen>
     <dimen name="toolbar_title_margin_sides">16dp</dimen>
+    <dimen name="toolbar_icon_margin_sides">8dp</dimen>
     <dimen name="toolbar_pressed_padding_vertical">4dp</dimen>
     <dimen name="toolbar_pressed_padding_sides">8dp</dimen>
     <dimen name="search_bar_height">@dimen/toolbar_height</dimen>

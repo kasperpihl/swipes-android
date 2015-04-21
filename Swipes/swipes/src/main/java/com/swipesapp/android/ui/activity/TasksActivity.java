@@ -168,7 +168,7 @@ public class TasksActivity extends BaseActivity {
 
     private View mActionBarView;
     private TextView mActionBarTitle;
-    private SwipesButton mActionBarIcon;
+    private SwipesTextView mActionBarIcon;
 
     private float mPreviousOffset;
     private boolean mHasChangedTab;
@@ -490,7 +490,7 @@ public class TasksActivity extends BaseActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         mActionBarView = inflater.inflate(R.layout.action_bar_custom_view, null);
         mActionBarTitle = (TextView) mActionBarView.findViewById(R.id.action_bar_title);
-        mActionBarIcon = (SwipesButton) mActionBarView.findViewById(R.id.action_bar_icon);
+        mActionBarIcon = (SwipesTextView) mActionBarView.findViewById(R.id.action_bar_icon);
 
         // Enable navigation menu on portrait only.
         if (DeviceUtils.isLandscape(this)) {
@@ -507,7 +507,6 @@ public class TasksActivity extends BaseActivity {
 
     private void setupSystemBars(Sections section) {
         // Setup toolbar icon.
-        mActionBarIcon.disableTouchFeedback();
         if (!mIsShowingNavigation) mActionBarIcon.setTextColor(Color.WHITE);
 
         // Make ActionBar transparent.

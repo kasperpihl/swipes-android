@@ -58,8 +58,8 @@ import com.swipesapp.android.ui.listener.ListContentsListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlatButton;
 import com.swipesapp.android.ui.view.FlowLayout;
-import com.swipesapp.android.ui.view.SwipesButton;
 import com.swipesapp.android.ui.view.SwipesDialog;
+import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.DeviceUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -155,7 +155,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     TextView mLandscapeHeaderTitle;
 
     @InjectView(R.id.action_bar_icon)
-    SwipesButton mLandscapeHeaderIcon;
+    SwipesTextView mLandscapeHeaderIcon;
 
     public static TasksListFragment newInstance(int sectionNumber) {
         TasksListFragment fragment = new TasksListFragment();
@@ -310,7 +310,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mLandscapeHeaderTitle.setText(mSection.getSectionTitle(getActivity()));
         mLandscapeHeaderIcon.setText(mSection.getSectionIcon(getActivity()));
         mLandscapeHeaderIcon.setTextColor(Color.WHITE);
-        mLandscapeHeaderIcon.disableTouchFeedback();
 
         // Disable edge effect.
         if (DeviceUtils.isTablet(getActivity())) {
