@@ -21,6 +21,7 @@ import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.util.ListUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
 import com.swipesapp.android.values.Services;
@@ -724,6 +725,18 @@ public class TasksService {
             }
 
             if (isFromSection && !task.isDeleted()) tasks.add(task);
+        }
+
+        switch (section) {
+            case LATER:
+                ListUtils.sortScheduledTasks(tasks);
+                break;
+            case FOCUS:
+                ListUtils.sortFocusedTasks(tasks);
+                break;
+            case DONE:
+                ListUtils.sortCompletedTasks(tasks);
+                break;
         }
 
         return tasks;
