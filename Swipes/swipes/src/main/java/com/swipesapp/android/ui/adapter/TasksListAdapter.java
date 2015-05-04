@@ -9,11 +9,9 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -60,6 +58,7 @@ public class TasksListAdapter extends BaseAdapter {
 
     private boolean mIsDraggingCell;
     private boolean mIsShowingOld;
+    private boolean mIsLabelVisible;
 
     // Determines if old tasks will be animated into the screen.
     private boolean mAnimateOld;
@@ -129,10 +128,9 @@ public class TasksListAdapter extends BaseAdapter {
 
             holder.parentView = (RelativeLayout) row.findViewById(R.id.cell_parent_view);
             holder.containerView = (FrameLayout) row.findViewById(R.id.swipe_container);
-            holder.frontView = (LinearLayout) row.findViewById(R.id.swipe_front);
+            holder.frontView = (RelativeLayout) row.findViewById(R.id.swipe_front);
             holder.backView = (RelativeLayout) row.findViewById(R.id.swipe_back);
             holder.propertiesContainer = (RelativeLayout) row.findViewById(R.id.task_properties);
-            holder.rightContainer = (RelativeLayout) row.findViewById(R.id.task_right_container);
             holder.priorityButton = (CheckBox) row.findViewById(R.id.button_task_priority);
             holder.selectedIndicator = row.findViewById(R.id.selected_indicator);
             holder.title = (TextView) row.findViewById(R.id.task_title);
@@ -155,8 +153,6 @@ public class TasksListAdapter extends BaseAdapter {
 
         animateOldTask(holder, position);
 
-        realignProperties(holder, row);
-
         return row;
     }
 
@@ -178,6 +174,7 @@ public class TasksListAdapter extends BaseAdapter {
         boolean selected = tasks.get(position).isSelected();
         String taskId = tasks.get(position).getTempId();
         int subtasksCount = TasksService.getInstance().countUncompletedSubtasksForTask(taskId);
+        mIsLabelVisible = false;
 
         // Set date for dividers.
         if (tasks.size() == 1) {
@@ -195,13 +192,6 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Set task title.
         holder.title.setText(title);
-
-        // Set cell height based on title size.
-        if (holder.title.getLineCount() > 1) {
-            setCellHeight(holder, R.dimen.list_item_height_large);
-        } else {
-            setCellHeight(holder, R.dimen.list_item_height);
-        }
 
         // Set priority.
         if (priority != null) holder.priorityButton.setChecked(priority == 1);
@@ -274,14 +264,19 @@ public class TasksListAdapter extends BaseAdapter {
         holder.subtasksCount.setTextColor(mContext.get().getResources().getColor(R.color.neutral_gray));
         holder.containerView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
 
-        // Set shadowed background according to position.
-        setShadowBackground(holder, position);
-
         // Set label divider.
         setLabelDivider(holder, position);
 
-        // Apply padding to properties on the right.
-        setPropertiesPadding(holder);
+        // Determine cell height based on title size and label visibility.
+        int cellHeight = getCellHeight(holder);
+
+        // Set cell height.
+        ViewGroup.LayoutParams containerParams = holder.containerView.getLayoutParams();
+        containerParams.height = cellHeight;
+        holder.containerView.setLayoutParams(containerParams);
+
+        // Set shadowed background according to position.
+        setShadowBackground(holder, position, cellHeight);
     }
 
     private void customizeViewForSection(TaskHolder holder, int position, List<GsonTask> tasks) {
@@ -330,14 +325,13 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    private void setShadowBackground(TaskHolder holder, int position) {
+    private void setShadowBackground(TaskHolder holder, int position, int cellHeight) {
         Resources res = mContext.get().getResources();
 
-        // Get component heights.
-        int cellHeight = holder.title.getLineCount() > 1 ?
-                R.dimen.list_item_height_large : R.dimen.list_item_height;
+        // Get shadow height.
         int shadowSize = R.dimen.list_item_shadow_size;
 
+        // Hide shadows as needed.
         if (getCount() > 1 && mSection == Sections.LATER && mCurrentDate == null) {
             if (mPreviousDate != null) {
 
@@ -398,11 +392,11 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Apply side shadow heights.
         ViewGroup.LayoutParams leftParams = holder.leftShadow.getLayoutParams();
-        leftParams.height = res.getDimensionPixelSize(cellHeight);
+        leftParams.height = cellHeight;
         holder.leftShadow.setLayoutParams(leftParams);
 
         ViewGroup.LayoutParams rightParams = holder.rightShadow.getLayoutParams();
-        rightParams.height = res.getDimensionPixelSize(cellHeight);
+        rightParams.height = cellHeight;
         holder.rightShadow.setLayoutParams(rightParams);
 
         // Hide first top shadow on landscape mode.
@@ -420,45 +414,51 @@ public class TasksListAdapter extends BaseAdapter {
     }
 
     private void setLabelDivider(TaskHolder holder, int position) {
-        // Set text and color according to section.
-        switch (mSection) {
-            case LATER:
-                // Set text as schedule day.
-                holder.label.setBackgroundResource(R.drawable.cell_label_later);
-                holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
-                break;
-            case FOCUS:
-                // Set text as progress for the day.
-                int completedToday = TasksService.getInstance().countTasksCompletedToday();
-                int tasksToday = TasksService.getInstance().countTasksForToday() + completedToday;
-                String labelText = mContext.get().getString(R.string.tasks_cell_label_focus, completedToday, tasksToday);
-
-                holder.label.setBackgroundResource(R.drawable.cell_label_focus);
-                holder.label.setText(labelText);
-                break;
-            case DONE:
-                // Set text as completion day.
-                holder.label.setBackgroundResource(R.drawable.cell_label_done);
-                holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
-                break;
-        }
-
+        // Determine label visibility.
         if (position == 0) {
             // First row. Show label divider.
-            holder.label.setVisibility(View.VISIBLE);
+            mIsLabelVisible = true;
 
         } else if (getCount() == 1 || (mSection != Sections.FOCUS &&
                 (!DateUtils.isSameDay(mCurrentDate, mPreviousDate) && !DateUtils.isSameDay(mCurrentDate, mNextDate)))) {
 
             if (!(mPreviousDate == null && mNextDate == null)) {
                 // Group has one item. Show label divider.
-                holder.label.setVisibility(View.VISIBLE);
+                mIsLabelVisible = true;
             }
         } else if (mSection != Sections.FOCUS && !DateUtils.isSameDay(mCurrentDate, mPreviousDate)) {
 
             if (!(mPreviousDate == null && mNextDate == null)) {
                 // First row. Show label divider.
-                holder.label.setVisibility(View.VISIBLE);
+                mIsLabelVisible = true;
+            }
+        }
+
+        if (mIsLabelVisible) {
+            // Show label.
+            holder.label.setVisibility(View.VISIBLE);
+
+            // Set text and color according to section.
+            switch (mSection) {
+                case LATER:
+                    // Set text as schedule day.
+                    holder.label.setBackgroundResource(R.drawable.cell_label_later);
+                    holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
+                    break;
+                case FOCUS:
+                    // Set text as progress for the day.
+                    int completedToday = TasksService.getInstance().countTasksCompletedToday();
+                    int tasksToday = TasksService.getInstance().countTasksForToday() + completedToday;
+                    String labelText = mContext.get().getString(R.string.tasks_cell_label_focus, completedToday, tasksToday);
+
+                    holder.label.setBackgroundResource(R.drawable.cell_label_focus);
+                    holder.label.setText(labelText);
+                    break;
+                case DONE:
+                    // Set text as completion day.
+                    holder.label.setBackgroundResource(R.drawable.cell_label_done);
+                    holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
+                    break;
             }
         }
     }
@@ -480,18 +480,26 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    private void setCellHeight(TaskHolder holder, int dimension) {
-        // Set cell container height.
-        ViewGroup.LayoutParams containerParams = holder.containerView.getLayoutParams();
-        containerParams.height = mContext.get().getResources().getDimensionPixelSize(dimension);
-        holder.containerView.setLayoutParams(containerParams);
+    private int getCellHeight(TaskHolder holder) {
+        Resources res = mContext.get().getResources();
+
+        // Determine height based on title size.
+        int heightDimen = holder.title.getLineCount() > 1 ?
+                R.dimen.list_item_height_large : R.dimen.list_item_height;
+        int cellHeight = res.getDimensionPixelSize(heightDimen);
+
+        // Add label height when needed.
+        if (mIsLabelVisible) {
+            cellHeight += res.getDimensionPixelSize(R.dimen.task_label_height);
+        }
+
+        return cellHeight;
     }
 
-    private void setParentHeight(TaskHolder holder, int cellDimen, int topShadowDimen, int bottomShadowDimen) {
+    private void setParentHeight(TaskHolder holder, int cellHeight, int topShadowDimen, int bottomShadowDimen) {
         Resources res = mContext.get().getResources();
 
         // Load child heights.
-        int cellHeight = cellDimen != 0 ? res.getDimensionPixelSize(cellDimen) : 0;
         int topShadowHeight = topShadowDimen != 0 ? res.getDimensionPixelSize(topShadowDimen) : 0;
         int bottomShadowHeight = bottomShadowDimen != 0 ? res.getDimensionPixelSize(bottomShadowDimen) : 0;
         int marginHeight = bottomShadowDimen != 0 ? res.getDimensionPixelSize(R.dimen.list_item_margin_bottom) : 0;
@@ -502,64 +510,9 @@ public class TasksListAdapter extends BaseAdapter {
         holder.parentView.setLayoutParams(parentParams);
     }
 
-    private void setPropertiesPadding(TaskHolder holder) {
-        Resources res = mContext.get().getResources();
-        boolean isLabelVisible = holder.label.getVisibility() == View.VISIBLE;
-        boolean isCounterVisible = holder.subtasksCount.getVisibility() == View.VISIBLE;
-
-        if (isLabelVisible) {
-            // Apply padding to group label.
-            int paddingLeft = res.getDimensionPixelSize(R.dimen.task_label_padding_left);
-            int paddingRight = res.getDimensionPixelSize(R.dimen.task_label_padding_right);
-            holder.label.setPadding(paddingLeft, 0, paddingRight, 0);
-        }
-
-        if (isCounterVisible) {
-            // Apply padding to subtasks counter.
-            int paddingLeft = res.getDimensionPixelSize(R.dimen.subtask_counter_padding_left);
-            int paddingRight = res.getDimensionPixelSize(R.dimen.subtask_counter_padding_right);
-            holder.subtasksCount.setPadding(paddingLeft, 0, paddingRight, 0);
-        }
-
-        if (!isLabelVisible && !isCounterVisible) {
-            // Apply padding to properties container.
-            int paddingRight = res.getDimensionPixelSize(R.dimen.task_properties_container_padding);
-            holder.propertiesContainer.setPadding(0, 0, paddingRight, 0);
-        }
-    }
-
-    private void realignProperties(final TaskHolder holder, View row) {
-        // Align things manually when both the label and counter are visible.
-        if (holder.label.getVisibility() == View.VISIBLE && holder.subtasksCount.getVisibility() == View.VISIBLE) {
-            // Avoid recycling the container.
-            holder.rightContainer = (RelativeLayout) row.findViewById(R.id.task_right_container);
-
-            // Wait until container can be measured.
-            final ViewTreeObserver observer = holder.rightContainer.getViewTreeObserver();
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    // Align subtasks counter to the right.
-                    RelativeLayout.LayoutParams countParams = (RelativeLayout.LayoutParams) holder.subtasksCount.getLayoutParams();
-                    countParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    holder.subtasksCount.setLayoutParams(countParams);
-
-                    // Set a fixed container width based on its first measure.
-                    ViewGroup.LayoutParams containerParams = holder.rightContainer.getLayoutParams();
-                    containerParams.width = holder.rightContainer.getWidth();
-                    holder.rightContainer.setLayoutParams(containerParams);
-
-                    // Remove listener.
-                    if (observer.isAlive()) observer.removeGlobalOnLayoutListener(this);
-                }
-            });
-        }
-    }
-
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         if (!mIsDraggingCell) {
-            // Reset cell.
             holder.frontView.setBackgroundColor(Color.TRANSPARENT);
             holder.frontView.setVisibility(View.VISIBLE);
             holder.backView.setVisibility(View.GONE);
@@ -722,10 +675,9 @@ public class TasksListAdapter extends BaseAdapter {
         // Containers.
         RelativeLayout parentView;
         FrameLayout containerView;
-        LinearLayout frontView;
+        RelativeLayout frontView;
         RelativeLayout backView;
         RelativeLayout propertiesContainer;
-        RelativeLayout rightContainer;
 
         // Priority and selection.
         CheckBox priorityButton;

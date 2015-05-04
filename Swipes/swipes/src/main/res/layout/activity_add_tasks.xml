@@ -55,7 +55,8 @@
             android:hint="@string/add_task_hint"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
-            android:textCursorDrawable="@null" />
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/task_title_size" />
     </RelativeLayout>
 
     <!-- Tags area -->

@@ -1,5 +1,0 @@
-<View xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/selected_indicator"
-    android:layout_width="5dp"
-    android:layout_height="match_parent"
-    android:clickable="false" />

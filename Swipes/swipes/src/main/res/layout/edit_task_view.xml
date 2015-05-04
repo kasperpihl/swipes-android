@@ -39,7 +39,7 @@
             android:inputType="textMultiLine|textCapSentences"
             android:maxHeight="@dimen/edit_task_title_max_height"
             android:scrollHorizontally="false"
-            android:textSize="@dimen/text_size_medium" />
+            android:textSize="@dimen/task_title_size" />
     </RelativeLayout>
 
     <!-- Subtasks area -->

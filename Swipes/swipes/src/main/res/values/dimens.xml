@@ -2,6 +2,7 @@
 <resources>
 
     <!-- Tasks list -->
+    <dimen name="task_title_size">17.5sp</dimen>
     <dimen name="list_item_height">65dp</dimen>
     <dimen name="list_item_height_large">85dp</dimen>
     <dimen name="list_item_shadow_size">7dp</dimen>
@@ -14,6 +15,7 @@
     <dimen name="task_icons_margin_top">3dp</dimen>
     <dimen name="task_label_padding_left">20dp</dimen>
     <dimen name="task_label_padding_right">8dp</dimen>
+    <dimen name="task_label_height">20dp</dimen>
     <dimen name="list_padding_bottom">88dp</dimen>
     <dimen name="list_default_padding">16dp</dimen>
     <dimen name="list_padding_top">@dimen/list_default_padding</dimen>

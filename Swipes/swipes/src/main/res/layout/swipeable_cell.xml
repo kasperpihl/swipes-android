@@ -25,7 +25,7 @@
     <View
         android:id="@+id/cell_left_shadow"
         android:layout_width="@dimen/list_item_shadow_size"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="0dp"
         android:layout_above="@id/cell_bottom_shadow"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/cell_top_shadow"
@@ -35,7 +35,7 @@
     <View
         android:id="@+id/cell_right_shadow"
         android:layout_width="@dimen/list_item_shadow_size"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="0dp"
         android:layout_above="@id/cell_bottom_shadow"
         android:layout_alignParentRight="true"
         android:layout_below="@id/cell_top_shadow"
@@ -45,7 +45,7 @@
     <FrameLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="0dp"
         android:layout_above="@id/cell_bottom_shadow"
         android:layout_below="@id/cell_top_shadow"
         android:layout_toLeftOf="@id/cell_right_shadow"
@@ -80,113 +80,132 @@
         </RelativeLayout>
 
         <!-- Front view -->
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/swipe_front"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/selected_indicator" />
-
-            <!-- Priority container -->
-            <LinearLayout
-                android:id="@+id/task_priority_container"
+            <!-- Group label -->
+            <TextView
+                android:id="@+id/task_label"
                 android:layout_width="wrap_content"
+                android:layout_height="@dimen/task_label_height"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/cell_label_focus"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:paddingLeft="@dimen/task_label_padding_left"
+                android:paddingRight="@dimen/task_label_padding_right"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_small"
+                android:visibility="gone" />
+
+            <!-- Selection indicator -->
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/selected_indicator"
+                android:layout_width="5dp"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/task_priority_padding"
-                android:paddingRight="@dimen/task_priority_padding">
+                android:layout_alignParentLeft="true"
+                android:clickable="false" />
 
-                <CheckBox
-                    android:id="@+id/button_task_priority"
-                    android:layout_width="@dimen/task_circles_size"
-                    android:layout_height="@dimen/task_circles_size"
-                    android:layout_gravity="center_vertical"
-                    android:button="@null"
-                    android:clickable="false"
-                    android:focusable="false" />
-            </LinearLayout>
+            <!-- Task properties -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/task_label"
+                android:layout_toRightOf="@id/selected_indicator"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingRight="@dimen/task_properties_container_padding"
+                android:weightSum="1">
 
-            <!-- Task properties container -->
-            <RelativeLayout
-                android:id="@+id/task_properties"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/task_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textSize="@dimen/text_size_medium" />
-
-                <TextView
-                    android:id="@+id/task_time"
+                <!-- Priority container -->
+                <LinearLayout
+                    android:id="@+id/task_priority_container"
                     android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/task_priority_padding"
+                    android:paddingRight="@dimen/task_priority_padding">
+
+                    <CheckBox
+                        android:id="@+id/button_task_priority"
+                        android:layout_width="@dimen/task_circles_size"
+                        android:layout_height="@dimen/task_circles_size"
+                        android:layout_gravity="center_vertical"
+                        android:button="@null"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </LinearLayout>
+
+                <!-- Task details container -->
+                <RelativeLayout
+                    android:id="@+id/task_properties"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/task_title"
-                    android:layout_marginRight="@dimen/task_properties_margin"
-                    android:textColor="@color/focus_accent"
-                    android:textSize="@dimen/text_size_small"
-                    android:visibility="gone" />
+                    android:layout_weight="1">
 
-                <com.swipesapp.android.ui.view.SwipesTextView
-                    android:id="@+id/task_icons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/task_title"
-                    android:layout_marginRight="@dimen/task_properties_margin"
-                    android:layout_marginTop="@dimen/task_icons_margin_top"
-                    android:layout_toRightOf="@id/task_time"
-                    android:text="@string/edit_location"
-                    android:textColor="@color/neutral_gray"
-                    android:textSize="@dimen/task_icons_size"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/task_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="@dimen/task_title_size" />
 
-                <TextView
-                    android:id="@+id/task_tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/task_title"
-                    android:layout_toRightOf="@id/task_icons"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/neutral_gray"
-                    android:textSize="@dimen/text_size_small"
-                    android:visibility="gone" />
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/task_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/task_title"
+                        android:layout_marginRight="@dimen/task_properties_margin"
+                        android:textColor="@color/focus_accent"
+                        android:textSize="@dimen/text_size_small"
+                        android:visibility="gone" />
 
-            <RelativeLayout
-                android:id="@+id/task_right_container"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                    <com.swipesapp.android.ui.view.SwipesTextView
+                        android:id="@+id/task_icons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/task_title"
+                        android:layout_marginRight="@dimen/task_properties_margin"
+                        android:layout_marginTop="@dimen/task_icons_margin_top"
+                        android:layout_toRightOf="@id/task_time"
+                        android:text="@string/edit_location"
+                        android:textColor="@color/neutral_gray"
+                        android:textSize="@dimen/task_icons_size"
+                        android:visibility="gone" />
 
-                <!-- Group label -->
-                <TextView
-                    android:id="@+id/task_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cell_label_focus"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_small"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/task_tags"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/task_title"
+                        android:layout_toRightOf="@id/task_icons"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/neutral_gray"
+                        android:textSize="@dimen/text_size_small"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
-                <!-- Subtasks counter -->
+                <!-- Subtasks count -->
                 <TextView
                     android:id="@+id/task_subtask_count"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="-16dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/subtask_counter_padding_left"
+                    android:paddingRight="@dimen/subtask_counter_padding_right"
                     android:textSize="@dimen/text_size_small"
                     android:visibility="gone" />
-            </RelativeLayout>
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </FrameLayout>
 

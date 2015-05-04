@@ -83,6 +83,8 @@ public class AddTasksActivity extends BaseActivity {
     private static String sTitle;
     private static boolean sPriority;
 
+    private float mTagsTranslationY;
+    private float mFieldsTranslationY;
     private boolean mHasStartedTimer;
 
     @Override
@@ -115,6 +117,9 @@ public class AddTasksActivity extends BaseActivity {
         }
 
         mOpenedFromWidget = getIntent().getBooleanExtra(Constants.EXTRA_FROM_WIDGET, false);
+
+        mTagsTranslationY = mTagsContainer.getTranslationY();
+        mFieldsTranslationY = mFieldsContainer.getTranslationY();
 
         handleShareIntent();
 
@@ -271,10 +276,10 @@ public class AddTasksActivity extends BaseActivity {
             @Override
             public void run() {
                 // Animate tags from top to bottom.
-                animateView(mTagsContainer, mTagsContainer.getTranslationY(), false);
+                animateView(mTagsContainer, mTagsTranslationY, false);
 
                 // Animate fields from bottom to top.
-                animateView(mFieldsContainer, mFieldsContainer.getTranslationY(), true);
+                animateView(mFieldsContainer, mFieldsTranslationY, true);
 
                 // Flag timer as finished.
                 mHasStartedTimer = false;
@@ -291,10 +296,10 @@ public class AddTasksActivity extends BaseActivity {
                 // Use layout height difference to detect keyboard.
                 if (heightDiff > minKeyboardHeight) {
                     // Animate tags from top to bottom.
-                    animateView(mTagsContainer, mTagsContainer.getTranslationY(), false);
+                    animateView(mTagsContainer, mTagsTranslationY, false);
 
                     // Animate fields from bottom to top.
-                    animateView(mFieldsContainer, mFieldsContainer.getTranslationY(), true);
+                    animateView(mFieldsContainer, mFieldsTranslationY, true);
 
                     // Animation was triggered. Cancel timer.
                     handler.removeCallbacks(runnable);
