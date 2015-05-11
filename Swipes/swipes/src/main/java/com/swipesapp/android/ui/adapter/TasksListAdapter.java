@@ -326,8 +326,6 @@ public class TasksListAdapter extends BaseAdapter {
     }
 
     private void setShadowBackground(TaskHolder holder, int position, int cellHeight) {
-        Resources res = mContext.get().getResources();
-
         // Get shadow height.
         int shadowSize = R.dimen.list_item_shadow_size;
 

@@ -92,7 +92,6 @@
                 android:layout_height="@dimen/task_label_height"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:background="@drawable/cell_label_focus"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:paddingLeft="@dimen/task_label_padding_left"

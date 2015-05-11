@@ -83,7 +83,6 @@ public class AddTasksActivity extends BaseActivity {
     private static String sTitle;
     private static boolean sPriority;
 
-    private float mTagsTranslationY;
     private float mFieldsTranslationY;
     private boolean mHasStartedTimer;
 
@@ -118,7 +117,6 @@ public class AddTasksActivity extends BaseActivity {
 
         mOpenedFromWidget = getIntent().getBooleanExtra(Constants.EXTRA_FROM_WIDGET, false);
 
-        mTagsTranslationY = mTagsContainer.getTranslationY();
         mFieldsTranslationY = mFieldsContainer.getTranslationY();
 
         handleShareIntent();
@@ -276,7 +274,7 @@ public class AddTasksActivity extends BaseActivity {
             @Override
             public void run() {
                 // Animate tags from top to bottom.
-                animateView(mTagsContainer, mTagsTranslationY, false);
+                animateView(mTagsContainer, 0, false);
 
                 // Animate fields from bottom to top.
                 animateView(mFieldsContainer, mFieldsTranslationY, true);
@@ -296,7 +294,7 @@ public class AddTasksActivity extends BaseActivity {
                 // Use layout height difference to detect keyboard.
                 if (heightDiff > minKeyboardHeight) {
                     // Animate tags from top to bottom.
-                    animateView(mTagsContainer, mTagsTranslationY, false);
+                    animateView(mTagsContainer, 0, false);
 
                     // Animate fields from bottom to top.
                     animateView(mFieldsContainer, mFieldsTranslationY, true);
