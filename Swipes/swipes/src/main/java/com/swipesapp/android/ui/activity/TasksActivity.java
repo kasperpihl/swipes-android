@@ -222,6 +222,7 @@ public class TasksActivity extends BaseActivity {
         customizeScroller();
 
         mSelectedFilterTags = new LinkedHashSet<>();
+        mSearchQuery = "";
 
         customizeSelectionColors();
 
@@ -705,16 +706,25 @@ public class TasksActivity extends BaseActivity {
         // Clear pending refresh flag.
         sHasPendingRefresh = false;
 
+        // Find out current refresh type.
+        boolean isFilter = !mSelectedFilterTags.isEmpty();
+        boolean isSearch = !mSearchQuery.isEmpty();
+
         // Update adapters with lists already loaded.
-        if (mSelectedFilterTags.isEmpty()) {
+        if (!isFilter && !isSearch) {
             // Perform regular update.
             for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
                 if (fragment != null) fragment.updateAdapter(false);
             }
-        } else {
+        } else if (isFilter) {
             // Perform filters update.
             for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
                 if (fragment != null) fragment.updateFilterAdapter();
+            }
+        } else {
+            // Perform search update.
+            for (TasksListFragment fragment : mSectionsPagerAdapter.getFragments()) {
+                if (fragment != null) fragment.updateSearchAdapter();
             }
         }
     }

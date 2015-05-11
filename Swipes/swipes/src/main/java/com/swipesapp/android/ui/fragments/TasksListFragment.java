@@ -536,13 +536,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Block refresh while swiping.
         if (!mListView.isSwiping()) {
 
+            // Find out current refresh type.
+            boolean isFilter = !mActivity.getSelectedFilterTags().isEmpty();
+            boolean isSearch = !mActivity.getSearchQuery().isEmpty();
+
             // Only refresh as usual when workspace is inactive.
-            if (mActivity.getSelectedFilterTags().isEmpty()) {
+            if (!isFilter && !isSearch) {
                 // Refresh asynchronously.
                 new RefreshTask().execute(animateRefresh);
-            } else {
+            } else if (isFilter) {
                 // Workspace is active. Reload filter.
                 new FilterTask().execute();
+            } else {
+                // Search is active. Reload results.
+                new SearchTask().execute();
             }
         }
     }
@@ -671,7 +678,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 }
             } else if (action.equals(Intents.PERFORM_SEARCH)) {
                 // Update search results.
-                performSearch();
+                new SearchTask().execute();
             }
 
             // Filter actions intended only for this section.
@@ -1463,9 +1470,44 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         imm.toggleSoftInput(0, 0);
     }
 
-    private void performSearch() {
+    private class SearchTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Update list of tasks from query.
+            String query = mActivity.getSearchQuery();
+            mTasks = mTasksService.searchTasks(query, mSection);
+
+            // Keep tasks selected after refresh.
+            keepSelection();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // Avoid updating while swiping screens or when a refresh is pending.
+            if (!mActivity.isSwipingScreens() && !TasksActivity.hasPendingRefresh()) {
+                // Update adapter with new data.
+                updateSearchAdapter();
+            } else {
+                // Mark update as pending.
+                TasksActivity.setPendingRefresh();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // Nothing is loaded before refresh.
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            // No need to show progress.
+        }
+    }
+
+    public void updateSearchAdapter() {
         String query = mActivity.getSearchQuery();
-        List<GsonTask> results = mTasksService.searchTasks(query, mSection);
 
         if (mSection == Sections.DONE) {
             if (!query.isEmpty()) {
@@ -1480,8 +1522,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         // Refresh list with results.
-        mListView.setContentList(results);
-        mAdapter.update(results, false);
+        mListView.setContentList(mTasks);
+        mAdapter.update(mTasks, false);
     }
 
     private void shareTasks() {
