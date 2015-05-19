@@ -131,7 +131,7 @@ public class TasksActivity extends BaseActivity {
     @InjectView(R.id.action_bar_search)
     LinearLayout mSearchBar;
     @InjectView(R.id.action_bar_close_search)
-    SwipesButton mSearchClose;
+    SwipesTextView mSearchClose;
     @InjectView(R.id.action_bar_search_field)
     ActionEditText mSearchField;
 
@@ -1262,6 +1262,7 @@ public class TasksActivity extends BaseActivity {
     private void loadSearchBar() {
         mSearchClose.setOnClickListener(mCloseSearchListener);
         mSearchClose.setTextColor(Color.WHITE);
+        mSearchClose.enableTouchFeedback();
 
         mSearchField.setOnFocusChangeListener(mSearchFocusListener);
         mSearchField.addTextChangedListener(mSearchTypeListener);
