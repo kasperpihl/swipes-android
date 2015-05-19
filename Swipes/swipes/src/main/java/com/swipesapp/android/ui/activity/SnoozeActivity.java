@@ -511,6 +511,9 @@ public class SnoozeActivity extends FragmentActivity {
             }
         };
 
+        // Make sure start time is valid.
+        startHour = apply24HourTreatment(startHour);
+
         // Show time picker dialog.
         RadialTimePickerDialog dialog = new RadialTimePickerDialog();
         dialog.setStartTime(startHour, startMinute);
@@ -633,6 +636,16 @@ public class SnoozeActivity extends FragmentActivity {
             // Add a week to the snooze time.
             snooze.setTimeInMillis(snooze.getTimeInMillis() + 604800000L);
         }
+    }
+
+    private int apply24HourTreatment(int hourOfDay) {
+        // Check if hour is above the 24 limit.
+        if (hourOfDay > 24) {
+            // Reduce hour to the proper time in the morning. Time is still today, but
+            // the next day treatment will move it to tomorrow when called.
+            hourOfDay = hourOfDay - 24;
+        }
+        return hourOfDay;
     }
 
     private String getTwoDaysTitle() {
