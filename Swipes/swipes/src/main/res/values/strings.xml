@@ -40,6 +40,12 @@
     <string name="all_done_today_message">Hooray! All tasks swiped away, time to \nrelax. #ProductiveDay</string>
     <string name="all_done_now_message">Time for a break! I\'ve been swiping \ntasks like a boss. #ProductiveDay</string>
     <string name="all_done_share_url">swipesapp.com</string>
+    <string name="later_empty_workspace">No scheduled tasks with tags: &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">No current tasks with tags: &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_workspace">No completed tasks with tags: &lt;b>%1$s&lt;/b></string>
+    <string name="later_empty_search">No scheduled tasks found for &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_search">No current tasks found for &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_search">No completed tasks found for &lt;b>%1$s&lt;/b></string>
 
     <!-- Tasks list -->
     <string name="tasks_list_login_action">Log in or register</string>
@@ -308,21 +314,17 @@
         <item quantity="one">%s</item>
         <item quantity="other">You have %s new tasks</item>
     </plurals>
-    <plurals name="workspace_results">
-        <item quantity="one">%1$s %2$s task with tags: &lt;b>%3$s&lt;/b></item>
-        <item quantity="other">%1$s %2$s tasks with tags: &lt;b>%3$s&lt;/b></item>
+    <plurals name="later_workspace_results">
+        <item quantity="one">%1$s scheduled task with tags: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s scheduled tasks with tags: &lt;b>%2$s&lt;/b></item>
     </plurals>
-    <plurals name="later_results_description">
-        <item quantity="one">scheduled</item>
-        <item quantity="other">scheduled</item>
+    <plurals name="focus_workspace_results">
+        <item quantity="one">%1$s current task with tags: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s current tasks with tags: &lt;b>%2$s&lt;/b></item>
     </plurals>
-    <plurals name="focus_results_description">
-        <item quantity="one">current</item>
-        <item quantity="other">current</item>
-    </plurals>
-    <plurals name="done_results_description">
-        <item quantity="one">completed</item>
-        <item quantity="other">completed</item>
+    <plurals name="done_workspace_results">
+        <item quantity="one">%1$s completed task with tags: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s completed tasks with tags: &lt;b>%2$s&lt;/b></item>
     </plurals>
 
 </resources>

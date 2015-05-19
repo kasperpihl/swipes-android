@@ -122,11 +122,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private View mEmptyView;
     private boolean mDoneForToday;
 
+    private TextView mEmptyResultsText;
+    private FlatButton mEmptyClearWorkspaceButton;
+
     // Controls the display of old tasks.
     private static boolean sIsShowingOld;
 
     // Footer views.
-    private LinearLayout mResultsView;
     private TextView mResultsText;
     private FlatButton mClearWorkspaceButton;
 
@@ -191,6 +193,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             case LATER:
                 setupView(rootView, R.layout.tasks_later_empty_view);
                 configureLaterView(mAdapter);
+                configureEmptyView();
                 break;
             case FOCUS:
                 setupView(rootView, R.layout.tasks_focus_empty_view);
@@ -201,6 +204,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             case DONE:
                 setupView(rootView, R.layout.tasks_done_empty_view);
                 configureDoneView(mAdapter);
+                configureEmptyView();
                 break;
         }
 
@@ -319,12 +323,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void setupResultsFooter() {
         // Add filter views.
-        mResultsView = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.results_footer, null);
-        mResultsText = (TextView) mResultsView.findViewById(R.id.workspace_results);
-        mListView.addFooterView(mResultsView);
+        View resultsView = getActivity().getLayoutInflater().inflate(R.layout.results_footer, null);
+        mResultsText = (TextView) resultsView.findViewById(R.id.workspace_results);
+        mListView.addFooterView(resultsView);
 
         // Add clear listener.
-        mClearWorkspaceButton = (FlatButton) mResultsView.findViewById(R.id.clear_workspace_button);
+        mClearWorkspaceButton = (FlatButton) resultsView.findViewById(R.id.clear_workspace_button);
         mClearWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -499,6 +503,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     R.drawable.ic_twitter_light : R.drawable.ic_twitter_dark);
             setButtonSelector(twitterShare);
         }
+
+        // Setup results footer.
+        View emptyResultsView = mEmptyView.findViewById(R.id.results_footer);
+        mEmptyResultsText = (TextView) emptyResultsView.findViewById(R.id.workspace_results);
+
+        // Add clear listener.
+        mEmptyClearWorkspaceButton = (FlatButton) emptyResultsView.findViewById(R.id.clear_workspace_button);
+        mEmptyClearWorkspaceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Clear workspace.
+                mActivity.closeWorkspaces();
+            }
+        });
     }
 
     private void setButtonSelector(final View button) {
@@ -911,8 +929,19 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void showEmptyView() {
+        boolean isFilter = !mActivity.getSelectedFilterTags().isEmpty();
+        boolean isSearch = !mActivity.getSearchQuery().isEmpty();
+
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
+            RelativeLayout emptyMainArea = (RelativeLayout) focusEmptyView.findViewById(R.id.all_done_main_area);
+            RelativeLayout emptySocialArea = (RelativeLayout) focusEmptyView.findViewById(R.id.all_done_social_area);
+            SwipesTextView emptyViewIcon = (SwipesTextView) focusEmptyView.findViewById(R.id.tasks_empty_view_icon);
+
+            // Set visibility of sharing and icon.
+            emptyMainArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
+            emptySocialArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
+            emptyViewIcon.setVisibility(isSearch || isFilter ? View.VISIBLE : View.GONE);
 
             updateEmptyView();
 
@@ -929,6 +958,21 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Hide landscape header.
             mLandscapeHeader.setVisibility(View.GONE);
         }
+
+        if (isFilter) {
+            // Show workspace result.
+            mEmptyResultsText.setVisibility(View.VISIBLE);
+            mEmptyClearWorkspaceButton.setVisibility(View.VISIBLE);
+        } else if (isSearch) {
+            // Show search result.
+            updateResultsDescription(0);
+            mEmptyResultsText.setVisibility(View.VISIBLE);
+            mEmptyClearWorkspaceButton.setVisibility(View.GONE);
+        } else {
+            // Hide results.
+            mEmptyResultsText.setVisibility(View.GONE);
+            mEmptyClearWorkspaceButton.setVisibility(View.GONE);
+        }
     }
 
     private void hideEmptyView() {
@@ -943,6 +987,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Show landscape header.
             mLandscapeHeader.setVisibility(View.VISIBLE);
         }
+
+        mEmptyResultsText.setVisibility(View.GONE);
+        mEmptyClearWorkspaceButton.setVisibility(View.GONE);
     }
 
     public void updateEmptyView() {
@@ -1436,21 +1483,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void updateResultsDescription(int count) {
-        String session = "";
-
-        switch (mSection) {
-            case LATER:
-                session = getResources().getQuantityString(R.plurals.later_results_description, count);
-                break;
-            case FOCUS:
-                session = getResources().getQuantityString(R.plurals.focus_results_description, count);
-                break;
-            case DONE:
-                session = getResources().getQuantityString(R.plurals.done_results_description, count);
-                break;
-        }
-
         String tags = null;
+
         for (GsonTag tag : mActivity.getSelectedFilterTags()) {
             if (tags == null) {
                 tags = tag.getTitle();
@@ -1459,10 +1493,44 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             }
         }
 
-        String description = getResources().getQuantityString(R.plurals.workspace_results, count, String.valueOf(count), session, tags);
+        int descriptionId = 0;
+        int searchDescriptionId = 0;
+        int filterDescriptionId = 0;
+
+        switch (mSection) {
+            case LATER:
+                descriptionId = R.plurals.later_workspace_results;
+                searchDescriptionId = R.string.later_empty_search;
+                filterDescriptionId = R.string.later_empty_workspace;
+                break;
+            case FOCUS:
+                descriptionId = R.plurals.focus_workspace_results;
+                searchDescriptionId = R.string.focus_empty_search;
+                filterDescriptionId = R.string.focus_empty_workspace;
+                break;
+            case DONE:
+                descriptionId = R.plurals.done_workspace_results;
+                searchDescriptionId = R.string.done_empty_search;
+                filterDescriptionId = R.string.done_empty_workspace;
+                break;
+        }
+
+        String description = getResources().getQuantityString(descriptionId, count, String.valueOf(count), tags);
+
+        if (count == 0) {
+            boolean isSearch = !mActivity.getSearchQuery().isEmpty();
+
+            if (isSearch) {
+                description = getString(searchDescriptionId, mActivity.getSearchQuery());
+            } else {
+                description = getString(filterDescriptionId, tags);
+            }
+        }
+
         CharSequence styledDescription = Html.fromHtml(description);
 
         mResultsText.setText(styledDescription);
+        mEmptyResultsText.setText(styledDescription);
     }
 
     private void showKeyboard() {

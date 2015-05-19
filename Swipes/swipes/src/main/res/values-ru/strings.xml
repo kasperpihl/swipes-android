@@ -62,7 +62,7 @@
     <string name="settings_sync_summary">Посл. обновление: %s</string>
     <string name="switch_on">ДА</string>
     <string name="switch_off">НЕТ</string>
-    <string name="preference_yes">Выберите</string>
+    <string name="preference_yes">Выбрать</string>
     <string name="preference_no">Отмена</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
@@ -152,9 +152,9 @@ http://swipesapp.com</string>
     <string name="delete_task_dialog_yes">Удалить</string>
     <string name="delete_task_dialog_no">Отмена</string>
     <string name="add_task_hint">Добавить задачу</string>
-    <string name="show_old">К СТАРЫМ ЗАДАЧАМ</string>
-    <string name="clear_old">СТЕРЕТЬ СТАРЫЕ ЗАДАЧИ</string>
-    <string name="clear_old_dialog_title">Удалить старые задачи?</string>
+    <string name="show_old">К ВЫП. ЗАДАЧАМ</string>
+    <string name="clear_old">СТЕРЕТЬ ВЫП. ЗАДАЧИ</string>
+    <string name="clear_old_dialog_title">Удалить выполненные задачи?</string>
     <string name="clear_old_dialog_text">Это действие необратимо.</string>
     <string name="clear_old_dialog_yes">Удалить</string>
     <string name="clear_old_dialog_no">Отмена</string>
@@ -183,7 +183,7 @@ http://swipesapp.com</string>
     <string name="snooze_next_week">След. неделя</string>
     <string name="snooze_unspecified">Не определено</string>
     <string name="snooze_at_location">Где</string>
-    <string name="snooze_pick_date">Выберите дату</string>
+    <string name="snooze_pick_date">Выбрать дату</string>
     <string name="snooze_done_text">ОТЛОЖИТЬ</string>
     <string name="snooze_adjust_hint">Длительное нажатие для изменения времени</string>
     <!-- Week days -->
@@ -224,10 +224,10 @@ http://swipesapp.com</string>
     <string name="edit_task_notes_default_text">Заметки</string>
     <string name="edit_task_evernote_attached">ПРИКРЕПЛЕНО</string>
     <!-- Action steps -->
-    <string name="edit_task_add_subtask_hint">Добавить подпункт</string>
+    <string name="edit_task_add_subtask_hint">Добавить подзадачу</string>
     <string name="subtask_hide_caption">Свернуть</string>
     <string name="subtask_show_caption">Развернуть</string>
-    <string name="delete_subtask_dialog_title">Удалить подпункт?</string>
+    <string name="delete_subtask_dialog_title">Удалить подзадачу?</string>
     <string name="delete_subtask_dialog_message">Это действие необратимо.</string>
     <string name="delete_subtask_dialog_yes">Удалить</string>
     <string name="delete_subtask_dialog_no">Отмена</string>
@@ -279,30 +279,6 @@ http://swipesapp.com</string>
     <plurals name="notification_title">
         <item quantity="one">%s</item>
         <item quantity="other">У вас %s новых задач</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-    </plurals>
-    <plurals name="workspace_results">
-        <item quantity="one">%1$s %2$s задача с тегами: &lt;b>%3$s&lt;/b></item>
-        <item quantity="other">%1$s %2$s задач с тегами: &lt;b>%3$s&lt;/b></item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-    </plurals>
-    <plurals name="later_results_description">
-        <item quantity="one">запланированная</item>
-        <item quantity="other">запланированных</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-    </plurals>
-    <plurals name="focus_results_description">
-        <item quantity="one">текущая</item>
-        <item quantity="other">текущих</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-    </plurals>
-    <plurals name="done_results_description">
-        <item quantity="one">выполненная</item>
-        <item quantity="other">выполненных</item>
         <item quantity="few"></item>
         <item quantity="many"></item>
     </plurals>

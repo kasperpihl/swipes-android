@@ -37,6 +37,12 @@
     <string name="all_done_today_message">Viva! Todas as tarefas deslizadas, hora de\nrelaxar. #DiaProdutivo</string>
     <string name="all_done_now_message">Hora de uma pausa! Deslizei tarefas\nlike a boss. #DiaProdutivo</string>
     <string name="all_done_share_url">swipesapp.com</string>
+    <string name="later_empty_workspace">Nenhuma tarefa agendada com etiquetas: &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">Nenhuma tarefa atual com etiquetas: &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_workspace">Nenhuma tarefa concluída com etiquetas: &lt;b>%1$s&lt;/b></string>
+    <string name="later_empty_search">Nenhuma tarefa agendada encontrada para &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_search">Nenhuma tarefa atual encontrada para &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_search">Nenhuma tarefa concluída encontrada para &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
     <string name="tasks_list_login_action">Entre ou cadastre-se</string>
     <string name="tasks_list_multi_select_action">Selecionar</string>
@@ -276,20 +282,16 @@ Aproveite!</string>
         <item quantity="one">%s</item>
         <item quantity="other">Você tem %s novas tarefas</item>
     </plurals>
-    <plurals name="workspace_results">
-        <item quantity="one">%1$s tarefa %2$s com etiquetas: &lt;b>%3$s&lt;/b></item>
-        <item quantity="other">%1$s tarefas %2$s com etiquetas: &lt;b>%3$s&lt;/b></item>
+    <plurals name="later_workspace_results">
+        <item quantity="one">%1$s tarefa agendada com etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tarefas agendadas com etiquetas: &lt;b>%2$s&lt;/b></item>
     </plurals>
-    <plurals name="later_results_description">
-        <item quantity="one">agendada</item>
-        <item quantity="other">agendadas</item>
+    <plurals name="focus_workspace_results">
+        <item quantity="one">%1$s tarefa atual com etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tarefas atuais com etiquetas: &lt;b>%2$s&lt;/b></item>
     </plurals>
-    <plurals name="focus_results_description">
-        <item quantity="one">atual</item>
-        <item quantity="other">atuais</item>
-    </plurals>
-    <plurals name="done_results_description">
-        <item quantity="one">concluída</item>
-        <item quantity="other">concluídas</item>
+    <plurals name="done_workspace_results">
+        <item quantity="one">%1$s tarefa concluída com etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tarefas concluídas com etiquetas: &lt;b>%2$s&lt;/b></item>
     </plurals>
 </resources>

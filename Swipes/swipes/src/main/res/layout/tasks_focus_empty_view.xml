@@ -11,90 +11,129 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- All done image -->
-        <ImageView
-            android:id="@+id/all_done_image"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/all_done_main_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- All done image -->
+            <ImageView
+                android:id="@+id/all_done_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/empty_view_margin_vertical"
+                android:layout_marginTop="@dimen/empty_view_image_margin_top"
+                android:src="@drawable/date_stamp_background" />
+
+            <!-- All done label -->
+            <TextView
+                android:id="@+id/text_all_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/all_done_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/empty_view_margin_vertical"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/empty_view_margin_vertical"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:textSize="22sp" />
+
+            <!-- Next task label -->
+            <TextView
+                android:id="@+id/text_next_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_all_done"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/empty_view_margin_vertical"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/empty_view_margin_vertical"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/all_done_social_area"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/empty_view_margin_vertical"
-            android:layout_marginTop="@dimen/empty_view_image_margin_top"
-            android:src="@drawable/date_stamp_background" />
+            android:layout_below="@id/all_done_main_area">
 
-        <!-- All done label -->
-        <TextView
-            android:id="@+id/text_all_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/all_done_image"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/empty_view_margin_vertical"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/empty_view_margin_vertical"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="2"
-            android:textSize="22sp" />
+            <!-- All done message -->
+            <TextView
+                android:id="@+id/text_all_done_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/empty_view_margin_vertical"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/empty_view_margin_vertical"
+                android:gravity="center"
+                android:textSize="16sp" />
 
-        <!-- Next task label -->
-        <TextView
-            android:id="@+id/text_next_task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_all_done"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/empty_view_margin_vertical"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/empty_view_margin_vertical"
-            android:textSize="14sp" />
+            <!-- Share button -->
+            <Button
+                android:id="@+id/button_share"
+                android:layout_width="@dimen/social_buttons_diameter"
+                android:layout_height="@dimen/social_buttons_diameter"
+                android:layout_below="@id/text_all_done_message"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/social_buttons_margin"
+                android:onClick="shareAll" />
 
-        <!-- All done message -->
-        <TextView
-            android:id="@+id/text_all_done_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_next_task"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/empty_view_margin_vertical"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/empty_view_margin_vertical"
-            android:gravity="center"
-            android:textSize="16sp" />
+            <!-- Social buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_all_done_message"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone">
 
-        <!-- Share button -->
-        <Button
-            android:id="@+id/button_share"
-            android:layout_width="@dimen/social_buttons_diameter"
-            android:layout_height="@dimen/social_buttons_diameter"
-            android:layout_below="@id/text_all_done_message"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/social_buttons_margin"
-            android:onClick="shareAll" />
+                <Button
+                    android:id="@+id/button_facebook_share"
+                    android:layout_width="@dimen/social_buttons_diameter"
+                    android:layout_height="@dimen/social_buttons_diameter"
+                    android:layout_margin="@dimen/social_buttons_margin"
+                    android:onClick="shareOnFacebook" />
 
-        <!-- Social buttons -->
+                <Button
+                    android:id="@+id/button_twitter_share"
+                    android:layout_width="@dimen/social_buttons_diameter"
+                    android:layout_height="@dimen/social_buttons_diameter"
+                    android:layout_margin="@dimen/social_buttons_margin"
+                    android:onClick="shareOnTwitter" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_all_done_message"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_facebook_share"
-                android:layout_width="@dimen/social_buttons_diameter"
-                android:layout_height="@dimen/social_buttons_diameter"
-                android:layout_margin="@dimen/social_buttons_margin"
-                android:onClick="shareOnFacebook" />
+            <!-- Icon for empty search result -->
+            <com.swipesapp.android.ui.view.SwipesTextView
+                android:id="@+id/tasks_empty_view_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/focus_full"
+                android:textColor="@color/focus_accent"
+                android:textSize="@dimen/empty_view_icon_size" />
 
-            <Button
-                android:id="@+id/button_twitter_share"
-                android:layout_width="@dimen/social_buttons_diameter"
-                android:layout_height="@dimen/social_buttons_diameter"
-                android:layout_margin="@dimen/social_buttons_margin"
-                android:onClick="shareOnTwitter" />
+            <!-- Workspace results -->
+            <include
+                layout="@layout/results_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/empty_view_results_margin_top" />
+
         </LinearLayout>
 
     </RelativeLayout>

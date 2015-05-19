@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/done_empty_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.swipesapp.android.ui.view.SwipesTextView
-        android:id="@+id/tasks_done_empty_view_done_icon"
+        android:id="@+id/tasks_empty_view_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:background="@android:color/transparent"
         android:text="@string/done_full"
         android:textColor="@color/done_accent"
         android:textSize="@dimen/empty_view_icon_size" />
-</RelativeLayout>
+
+    <include
+        layout="@layout/results_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/empty_view_results_margin_top" />
+
+</LinearLayout>
