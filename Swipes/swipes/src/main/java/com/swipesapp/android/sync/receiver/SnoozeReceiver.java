@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.swipesapp.android.R;
@@ -82,10 +83,12 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
             // Turn on vibration if allowed.
             if (PreferenceUtils.isVibrationEnabled(context)) {
-                builder.setDefaults(Notification.DEFAULT_ALL);
-            } else {
-                builder.setDefaults(Notification.DEFAULT_SOUND);
+                builder.setDefaults(Notification.DEFAULT_VIBRATE);
             }
+
+            // Set custom notification sound.
+            String filesPath = "android.resource://" + context.getPackageName() + "/";
+            builder.setSound(Uri.parse(filesPath + R.raw.notification_default));
 
             // Intent to open app.
             Intent tasksIntent = new Intent(context, ActionsReceiver.class);
