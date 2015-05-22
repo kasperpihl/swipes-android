@@ -121,6 +121,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
             builder.addAction(R.drawable.ic_snooze, snoozeTitle, snoozePendingIntent);
             builder.addAction(R.drawable.ic_complete, completeTitle, completePendingIntent);
             builder.setDeleteIntent(deletePendingIntent);
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
             // Display task titles for multiple tasks.
             if (size > 1) {
