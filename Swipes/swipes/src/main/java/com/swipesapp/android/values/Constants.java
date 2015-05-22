@@ -66,6 +66,16 @@ public class Constants {
     public static final String EXTRA_TAG_IDS = "TAG_IDS";
 
     /**
+     * Intent extra for snooze time.
+     */
+    public static final String EXTRA_SNOOZE_TIME = "SNOOZE_TIME";
+
+    /**
+     * Intent extra for scheduler new task mode.
+     */
+    public static final String EXTRA_NEW_TASK_MODE = "NEW_TASK_MODE";
+
+    /**
      * Request code for task snooze.
      */
     public static final int SNOOZE_REQUEST_CODE = 1;

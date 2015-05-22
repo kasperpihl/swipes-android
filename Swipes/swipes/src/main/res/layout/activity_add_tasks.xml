@@ -45,11 +45,23 @@
             android:text="@string/left_arrow"
             android:textSize="@dimen/add_task_confirm_size" />
 
+        <com.swipesapp.android.ui.view.SwipesCheckbox
+            android:id="@+id/add_task_snooze_checkbox"
+            android:layout_width="@dimen/add_task_snooze_width"
+            android:layout_height="match_parent"
+            android:layout_marginRight="-8dp"
+            android:layout_toLeftOf="@id/button_confirm_add_task"
+            android:background="@null"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/later_full"
+            android:textSize="@dimen/add_task_snooze_size" />
+
         <com.swipesapp.android.ui.view.ActionEditText
             android:id="@+id/add_task_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/button_confirm_add_task"
+            android:layout_toLeftOf="@id/add_task_snooze_checkbox"
             android:layout_toRightOf="@id/add_task_priority_container"
             android:background="@color/transparent"
             android:hint="@string/add_task_hint"

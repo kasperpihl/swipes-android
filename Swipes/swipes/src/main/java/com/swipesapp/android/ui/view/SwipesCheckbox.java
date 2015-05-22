@@ -5,45 +5,50 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.CheckBox;
 
+import com.swipesapp.android.R;
+import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 
-public class SwipesTextView extends TextView {
+public class SwipesCheckbox extends CheckBox {
 
-    private Context mContext;
     private static Typeface sTypeface;
 
-    public SwipesTextView(Context context) {
+    public SwipesCheckbox(Context context) {
         super(context);
         init(context);
     }
 
-    public SwipesTextView(Context context, AttributeSet attrs) {
+    public SwipesCheckbox(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public SwipesTextView(Context context, AttributeSet attrs, int defStyle) {
+    public SwipesCheckbox(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
 
     private void init(Context context) {
-        mContext = context;
         if (sTypeface == null) {
-            synchronized (SwipesTextView.class) {
+            synchronized (SwipesCheckbox.class) {
                 if (sTypeface == null) {
-                    sTypeface = Typeface.createFromAsset(mContext.getAssets(), Constants.FONT_NAME);
+                    sTypeface = Typeface.createFromAsset(context.getAssets(), Constants.FONT_NAME);
                 }
             }
         }
-        this.setTypeface(sTypeface);
+
+        int color = ThemeUtils.isLightTheme(context) ? R.color.checkbox_text_selector_light : R.color.checkbox_text_selector_light;
+        setTextColor(context.getResources().getColorStateList(color));
+
+        setTypeface(sTypeface);
+        enableTouchFeedback();
     }
 
     public void enableTouchFeedback() {
         // Create selector based on touch state.
-        setOnTouchListener(new View.OnTouchListener() {
+        setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
@@ -59,6 +64,11 @@ public class SwipesTextView extends TextView {
                 return false;
             }
         });
+    }
+
+    public void disableTouchFeedback() {
+        // Remove touch listener.
+        setOnTouchListener(null);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -73,6 +75,9 @@ public class AddTasksActivity extends BaseActivity {
     @InjectView(R.id.add_task_tags_container)
     FlowLayout mTagsContainer;
 
+    @InjectView(R.id.add_task_snooze_checkbox)
+    CheckBox mSnoozeCheckbox;
+
     private WeakReference<Context> mContext;
     private TasksService mTasksService;
 
@@ -85,6 +90,8 @@ public class AddTasksActivity extends BaseActivity {
 
     private float mFieldsTranslationY;
     private boolean mHasStartedTimer;
+
+    private Date mSnoozeTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +146,22 @@ public class AddTasksActivity extends BaseActivity {
     protected void onUserLeaveHint() {
         // Close when opened from the widget and user presses the home key.
         if (mOpenedFromWidget) cancelAddTask();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.SNOOZE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Set snooze time.
+                if (data != null) {
+                    String date = data.getStringExtra(Constants.EXTRA_SNOOZE_TIME);
+                    mSnoozeTime = DateUtils.dateFromSync(date);
+                }
+            } else {
+                // Uncheck snooze checkbox.
+                mSnoozeCheckbox.setChecked(false);
+            }
+        }
     }
 
     private void handleShareIntent() {
@@ -206,10 +229,13 @@ public class AddTasksActivity extends BaseActivity {
             notes = mIntentData[1];
         }
 
+        // Set snooze time if not manually selected.
+        if (mSnoozeTime == null) mSnoozeTime = currentDate;
+
         // Save new task.
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, currentDate, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
+                    priority, null, mSnoozeTime, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
             mTasksService.saveTask(task, true);
         }
 
@@ -526,6 +552,20 @@ public class AddTasksActivity extends BaseActivity {
             if (tag.getId().equals(selectedTag.getId())) {
                 sSelectedTags.remove(tag);
             }
+        }
+    }
+
+    @OnClick(R.id.add_task_snooze_checkbox)
+    protected void setSnooze() {
+        if (mSnoozeTime == null) {
+            // Call snooze activity.
+            Intent intent = new Intent(this, SnoozeActivity.class);
+            intent.putExtra(Constants.EXTRA_TASK_ID, 0);
+            intent.putExtra(Constants.EXTRA_NEW_TASK_MODE, true);
+            startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+        } else {
+            // Remove snooze.
+            mSnoozeTime = null;
         }
     }
 

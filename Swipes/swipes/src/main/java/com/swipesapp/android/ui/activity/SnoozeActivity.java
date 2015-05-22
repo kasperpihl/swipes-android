@@ -1,6 +1,7 @@
 package com.swipesapp.android.ui.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
@@ -131,6 +132,8 @@ public class SnoozeActivity extends FragmentActivity {
 
     private int mLaterTodayDelay;
 
+    private boolean mNewTaskMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,8 +146,9 @@ public class SnoozeActivity extends FragmentActivity {
         mTasksService = TasksService.getInstance();
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
+        mNewTaskMode = getIntent().getBooleanExtra(Constants.EXTRA_NEW_TASK_MODE, false);
 
-        mTask = mTasksService.loadTask(id);
+        if (!mNewTaskMode) mTask = mTasksService.loadTask(id);
 
         loadPreferences();
 
@@ -535,9 +539,11 @@ public class SnoozeActivity extends FragmentActivity {
         snooze.set(Calendar.MINUTE, 0);
 
         // Set time for already scheduled task.
-        Date schedule = mTask.getLocalSchedule();
-        if (DateUtils.isNewerThanToday(schedule)) {
-            snooze.setTime(schedule);
+        if (!mNewTaskMode) {
+            Date schedule = mTask.getLocalSchedule();
+            if (DateUtils.isNewerThanToday(schedule)) {
+                snooze.setTime(schedule);
+            }
         }
 
         // Hide snooze view.
@@ -586,19 +592,29 @@ public class SnoozeActivity extends FragmentActivity {
     }
 
     private void performChanges(Date schedule) {
-        // Perform task changes.
-        mTask.setLocalSchedule(schedule);
-        mTask.setLocalCompletionDate(null);
-        mTasksService.saveTask(mTask, true);
+        if (mNewTaskMode) {
+            // Add snooze time to intent as string.
+            String date = DateUtils.dateToSync(schedule);
+            Intent data = new Intent();
+            data.putExtra(Constants.EXTRA_SNOOZE_TIME, date);
 
-        // Mark schedule as performed.
-        setResult(RESULT_OK);
+            // Mark schedule as performed and return time.
+            setResult(RESULT_OK, data);
+        } else {
+            // Perform task changes.
+            mTask.setLocalSchedule(schedule);
+            mTask.setLocalCompletionDate(null);
+            mTasksService.saveTask(mTask, true);
+
+            // Mark schedule as performed.
+            setResult(RESULT_OK);
+        }
 
         finish();
     }
 
     private void sendSnoozedEvent(String option, Date schedule, boolean timePicker) {
-        Date currentSchedule = mTask.getLocalSchedule();
+        Date currentSchedule = mNewTaskMode ? new Date() : mTask.getLocalSchedule();
         Long daysAhead = null;
         String usedPicker = timePicker ? Labels.VALUE_YES : Labels.VALUE_NO;
 
