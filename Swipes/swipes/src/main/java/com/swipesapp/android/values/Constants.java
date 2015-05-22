@@ -106,6 +106,11 @@ public class Constants {
     public static final int EVERNOTE_LEARN_REQUEST_CODE = 6;
 
     /**
+     * Request code for add task screen.
+     */
+    public static final int ADD_TASK_REQUEST_CODE = 7;
+
+    /**
      * Result code for theme changed.
      */
     public static final int THEME_CHANGED_RESULT_CODE = 1;
@@ -114,5 +119,10 @@ public class Constants {
      * Result code for account changed.
      */
     public static final int ACCOUNT_CHANGED_RESULT_CODE = 2;
+
+    /**
+     * Result code for snoozed task added.
+     */
+    public static final int ADDED_SNOOZED_TASK_RESULT_CODE = 1;
 
 }

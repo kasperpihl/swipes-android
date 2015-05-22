@@ -259,6 +259,11 @@ public class AddTasksActivity extends BaseActivity {
         // Fade out views.
         hideViews();
 
+        // Set result after adding a snoozed task.
+        if (mSnoozeCheckbox.isChecked()) {
+            setResult(Constants.ADDED_SNOOZED_TASK_RESULT_CODE);
+        }
+
         finish();
     }
 

@@ -384,6 +384,20 @@ public class TasksActivity extends BaseActivity {
             // Fade in tasks list if needed.
             TasksListFragment focusFragment = mSectionsPagerAdapter.getFragment(Sections.FOCUS);
             focusFragment.fadeInTasksList();
+
+        } else if (requestCode == Constants.ADD_TASK_REQUEST_CODE) {
+            // Check if added task was snoozed.
+            if (resultCode == Constants.ADDED_SNOOZED_TASK_RESULT_CODE) {
+                // Wait for fade animation to complete.
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Move to later section.
+                        mScroller.setDuration(FactorSpeedScroller.DURATION_LONG);
+                        mViewPager.setCurrentItem(Sections.LATER.getSectionNumber());
+                    }
+                }, Constants.ANIMATION_DURATION_MEDIUM);
+            }
         }
     }
 
@@ -580,10 +594,12 @@ public class TasksActivity extends BaseActivity {
                     // Call add task screen.
                     callAddTask();
 
-                    // Reset flag and scroller speed.
-                    mScroller.setDuration(FactorSpeedScroller.DURATION_MEDIUM);
+                    // Reset flag.
                     mCalledAddTask = false;
                 }
+
+                // Reset scroller speed.
+                mScroller.setDuration(FactorSpeedScroller.DURATION_MEDIUM);
 
                 mIsSwipingScreens = false;
             } else {
@@ -837,7 +853,7 @@ public class TasksActivity extends BaseActivity {
         Intent intent = new Intent(this, AddTasksActivity.class);
         intent.putIntegerArrayListExtra(Constants.EXTRA_TAG_IDS, tagIds);
 
-        startActivity(intent);
+        startActivityForResult(intent, Constants.ADD_TASK_REQUEST_CODE);
     }
 
     @OnClick(R.id.button_assign_tags)

@@ -13,6 +13,7 @@ public class FactorSpeedScroller extends Scroller {
 
     public static final int DURATION_MEDIUM = 300;
     public static final int DURATION_SHORT = 180;
+    public static final int DURATION_LONG = 400;
     private static final double SCROLL_FACTOR = 2;
 
     private int mDuration = DURATION_MEDIUM;
