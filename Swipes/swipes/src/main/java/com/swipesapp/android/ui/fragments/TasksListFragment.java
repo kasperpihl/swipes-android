@@ -517,6 +517,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 mActivity.closeWorkspaces();
             }
         });
+
+        // Hide results initially.
+        hideEmptyResults();
     }
 
     private void setButtonSelector(final View button) {
@@ -689,8 +692,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         sIsShowingOld = false;
                     }
 
-                    // Hide results footer.
+                    // Hide results footers.
                     hideWorkspaceResults();
+                    hideEmptyResults();
 
                     refreshTaskList(false);
                 }
@@ -948,6 +952,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Animate empty view.
             if (focusEmptyView.getAlpha() == 0f) {
                 focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+
+                fadeOutTasksList();
             }
 
             // Send cleared tasks event.
@@ -970,15 +976,20 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             mEmptyClearWorkspaceButton.setVisibility(View.GONE);
         } else {
             // Hide results.
-            mEmptyResultsText.setVisibility(View.GONE);
-            mEmptyClearWorkspaceButton.setVisibility(View.GONE);
+            hideEmptyResults();
         }
     }
 
     private void hideEmptyView() {
         if (mSection == Sections.FOCUS) {
             ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
-            focusEmptyView.setAlpha(0f);
+
+            // Animate empty view.
+            if (focusEmptyView.getAlpha() == 1f) {
+                focusEmptyView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+
+                fadeInTasksList();
+            }
 
             mDoneForToday = false;
         }
@@ -987,7 +998,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Show landscape header.
             mLandscapeHeader.setVisibility(View.VISIBLE);
         }
+    }
 
+    public void hideEmptyResults() {
         mEmptyResultsText.setVisibility(View.GONE);
         mEmptyClearWorkspaceButton.setVisibility(View.GONE);
     }
@@ -1462,7 +1475,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         // Show results footer.
-        showWorkspaceResults();
+        if (!mTasks.isEmpty()) showWorkspaceResults();
 
         // Update results count.
         updateResultsDescription(mTasks.size());
@@ -1625,10 +1638,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     public void fadeOutTasksList() {
+        mListView.setAlpha(1f);
         mListView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
     }
 
     public void fadeInTasksList() {
+        mListView.setAlpha(0f);
         mListView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
     }
 
