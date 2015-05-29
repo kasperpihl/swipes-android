@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -18,7 +16,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
-import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
@@ -166,8 +163,8 @@ public class SettingsActivity extends BaseActivity {
             Preference preferenceContact = findPreference("contact_us");
             preferenceContact.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // Open support email.
-                    contactUs();
+                    // Open Intercom chat.
+                    Intercom.client().displayMessageComposer();
                     return true;
                 }
             });
@@ -295,24 +292,6 @@ public class SettingsActivity extends BaseActivity {
 
             // Send analytics event.
             Analytics.sendEvent(Categories.SHARING, Actions.INVITE_OPEN, null, null);
-        }
-
-        private void contactUs() {
-            // Load device info.
-            String hint = getString(R.string.help_email_text_hint);
-            String appVersion = "\n\n\n" + "App version: " + getString(R.string.app_version,
-                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
-            String deviceData = "\n" + "Device model: " + Build.MANUFACTURER + " " + Build.MODEL;
-            deviceData += "\n" + "Android version: " + Build.VERSION.RELEASE;
-
-            // Create email intent.
-            Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto", getString(R.string.help_email_receiver), null));
-            contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.help_email_subject));
-            contactIntent.putExtra(Intent.EXTRA_TEXT, hint + appVersion + deviceData);
-
-            // Open app selector.
-            startActivity(Intent.createChooser(contactIntent, getString(R.string.help_email_chooser_title)));
         }
 
         private void startLogin() {
