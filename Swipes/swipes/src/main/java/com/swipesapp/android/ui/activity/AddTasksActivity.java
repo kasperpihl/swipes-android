@@ -87,11 +87,10 @@ public class AddTasksActivity extends BaseActivity {
     private static Set<GsonTag> sSelectedTags;
     private static String sTitle;
     private static boolean sPriority;
+    private static Date sSnoozeTime;
 
     private float mFieldsTranslationY;
     private boolean mHasStartedTimer;
-
-    private Date mSnoozeTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +154,7 @@ public class AddTasksActivity extends BaseActivity {
                 // Set snooze time.
                 if (data != null) {
                     String date = data.getStringExtra(Constants.EXTRA_SNOOZE_TIME);
-                    mSnoozeTime = DateUtils.dateFromSync(date);
+                    sSnoozeTime = DateUtils.dateFromSync(date);
                 }
             } else {
                 // Uncheck snooze checkbox.
@@ -200,6 +199,7 @@ public class AddTasksActivity extends BaseActivity {
         // Restore state of fields.
         if (sTitle != null) mEditTextTitle.setText(sTitle);
         mButtonPriority.setChecked(sPriority);
+        mSnoozeCheckbox.setChecked(sSnoozeTime != null);
 
         // Load title from other apps.
         if (mIntentData != null) {
@@ -230,12 +230,12 @@ public class AddTasksActivity extends BaseActivity {
         }
 
         // Set snooze time if not manually selected.
-        if (mSnoozeTime == null) mSnoozeTime = currentDate;
+        if (sSnoozeTime == null) sSnoozeTime = currentDate;
 
         // Save new task.
         if (!title.isEmpty()) {
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
-                    priority, null, mSnoozeTime, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
+                    priority, null, sSnoozeTime, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
             mTasksService.saveTask(task, true);
         }
 
@@ -251,6 +251,7 @@ public class AddTasksActivity extends BaseActivity {
         sTitle = null;
         sPriority = false;
         sSelectedTags.clear();
+        sSnoozeTime = null;
 
         // Refresh widget and tasks.
         TasksActivity.refreshWidgets(this);
@@ -562,7 +563,7 @@ public class AddTasksActivity extends BaseActivity {
 
     @OnClick(R.id.add_task_snooze_checkbox)
     protected void setSnooze() {
-        if (mSnoozeTime == null) {
+        if (sSnoozeTime == null) {
             // Call snooze activity.
             Intent intent = new Intent(this, SnoozeActivity.class);
             intent.putExtra(Constants.EXTRA_TASK_ID, 0);
@@ -570,7 +571,7 @@ public class AddTasksActivity extends BaseActivity {
             startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
         } else {
             // Remove snooze.
-            mSnoozeTime = null;
+            sSnoozeTime = null;
         }
     }
 

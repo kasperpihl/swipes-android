@@ -35,7 +35,7 @@
     <dimen name="add_task_fields_height">48dp</dimen>
     <dimen name="add_task_tags_margin_bottom">30dp</dimen>
     <dimen name="add_task_tags_margin_top">20dp</dimen>
-    <dimen name="add_task_snooze_size">@dimen/action_buttons_size</dimen>
+    <dimen name="add_task_snooze_size">25sp</dimen>
     <dimen name="add_task_snooze_width">52dp</dimen>
 
     <!-- Empty view -->
