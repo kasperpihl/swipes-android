@@ -175,6 +175,8 @@ public class TasksActivity extends BaseActivity {
     private boolean mIsSwipingScreens;
 
     private boolean mCalledAddTask;
+    private String mAddedTaskId;
+    private boolean mHasAddedSnoozedTask;
 
     private String mShareMessage;
 
@@ -386,17 +388,46 @@ public class TasksActivity extends BaseActivity {
             focusFragment.fadeInTasksList();
 
         } else if (requestCode == Constants.ADD_TASK_REQUEST_CODE) {
-            // Check if added task was snoozed.
-            if (resultCode == Constants.ADDED_SNOOZED_TASK_RESULT_CODE) {
-                // Wait for fade animation to complete.
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Move to later section.
-                        mScroller.setDuration(FactorSpeedScroller.DURATION_LONG);
-                        mViewPager.setCurrentItem(Sections.LATER.getSectionNumber());
+            if (resultCode != RESULT_CANCELED) {
+                // Load added task ID.
+                mAddedTaskId = data.getStringExtra(Constants.EXTRA_TASK_ID);
+
+                // Check if added task was snoozed.
+                if (resultCode == Constants.ADDED_SNOOZED_TASK_RESULT_CODE) {
+                    // Auto-scroll by default when workspace is inactive.
+                    boolean shouldScroll = mSelectedFilterTags.isEmpty();
+
+                    if (!shouldScroll) {
+                        GsonTask task = mTasksService.loadTask(mAddedTaskId);
+
+                        // When a workspace is active, make sure the added task is visible (i.e. has one
+                        // of the selected tags) before auto-scrolling.
+                        for (GsonTag filterTag : mSelectedFilterTags) {
+                            for (GsonTag tag : task.getTags()) {
+                                if (tag.getTempId().equals(filterTag.getTempId())) {
+                                    // Tag found. Task is visible, auto-scroll can happen.
+                                    shouldScroll = true;
+                                }
+                            }
+                        }
                     }
-                }, Constants.ANIMATION_DURATION_MEDIUM);
+
+                    if (shouldScroll) {
+                        // Wait for fade animation to complete.
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Move to later section.
+                                mScroller.setDuration(FactorSpeedScroller.DURATION_LONG);
+                                mViewPager.setCurrentItem(Sections.LATER.getSectionNumber());
+                            }
+                        }, Constants.ANIMATION_DURATION_MEDIUM);
+
+                    }
+
+                    // Mark added task as snoozed.
+                    mHasAddedSnoozedTask = true;
+                }
             }
         }
     }
@@ -1741,6 +1772,20 @@ public class TasksActivity extends BaseActivity {
 
     public static boolean hasPendingRefresh() {
         return sHasPendingRefresh;
+    }
+
+    public String getAddedTaskId() {
+        // ID of the last added task. Can be null very often.
+        return mAddedTaskId;
+    }
+
+    public boolean hasAddedSnoozedTask() {
+        return mHasAddedSnoozedTask;
+    }
+
+    public void clearAddedSnozedTask() {
+        // Clear flag after adding a snoozed task.
+        mHasAddedSnoozedTask = false;
     }
 
     private void sendAppLaunchEvent() {

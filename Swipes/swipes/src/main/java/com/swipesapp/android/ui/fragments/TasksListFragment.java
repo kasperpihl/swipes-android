@@ -132,6 +132,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private TextView mResultsText;
     private FlatButton mClearWorkspaceButton;
 
+    // List position of last added task.
+    private int mAddedTaskPosition;
+
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
 
@@ -594,6 +597,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Keep tasks selected after refresh.
             keepSelection();
 
+            // Find last added task for scrolling.
+            if (mSection == Sections.LATER && mActivity.hasAddedSnoozedTask()) {
+                mAddedTaskPosition = findLastAddedTask();
+            }
+
             return params[0];
         }
 
@@ -628,6 +636,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Refresh empty view.
                 sNextTask = !mTasks.isEmpty() ? mTasks.get(0) : null;
                 mActivity.updateEmptyView();
+
+                // Scroll to last added task.
+                scrollToLastAdded();
+
+                // Clear flag after scrolling.
+                mActivity.clearAddedSnozedTask();
                 break;
             case FOCUS:
                 mListView.setContentList(mTasks);
@@ -649,6 +663,27 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     break;
                 }
             }
+        }
+    }
+
+    private int findLastAddedTask() {
+        int position = 0;
+        for (int x = 0; x < mTasks.size(); x++) {
+            GsonTask task = mTasks.get(x);
+            if (task.getTempId().equals(mActivity.getAddedTaskId())) {
+                // Return list position of last added task.
+                position = x;
+                break;
+            }
+        }
+        return position;
+    }
+
+    private void scrollToLastAdded() {
+        if (mActivity.hasAddedSnoozedTask()) {
+            // Scroll to position and clear it.
+            mListView.setSelection(mAddedTaskPosition);
+            mAddedTaskPosition = 0;
         }
     }
 
@@ -1440,6 +1475,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             // Keep tasks selected after refresh.
             keepSelection();
 
+            // Find last added task for scrolling.
+            if (mSection == Sections.LATER && mActivity.hasAddedSnoozedTask()) {
+                mAddedTaskPosition = findLastAddedTask();
+            }
+
             return null;
         }
 
@@ -1483,6 +1523,14 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Refresh list with filtered tasks.
         mListView.setContentList(mTasks);
         mAdapter.update(mTasks, false);
+
+        if (mSection == Sections.LATER) {
+            // Scroll to last added task.
+            scrollToLastAdded();
+
+            // Clear flag after scrolling.
+            mActivity.clearAddedSnozedTask();
+        }
     }
 
     private void hideWorkspaceResults() {
