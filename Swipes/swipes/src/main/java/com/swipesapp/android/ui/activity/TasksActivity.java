@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -463,9 +462,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         // HACK: Show action icons.
-        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+        if (menu != null) {
             if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
                 try {
                     Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
@@ -477,7 +476,7 @@ public class TasksActivity extends BaseActivity {
             }
         }
 
-        return super.onMenuOpened(featureId, menu);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
