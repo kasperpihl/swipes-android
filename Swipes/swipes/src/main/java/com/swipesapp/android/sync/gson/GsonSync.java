@@ -29,6 +29,9 @@ public class GsonSync {
     private String lastUpdate;
 
     @Expose(deserialize = false)
+    private String syncId;
+
+    @Expose(deserialize = false)
     private GsonObjects objects;
 
     // Response fields.
@@ -46,12 +49,13 @@ public class GsonSync {
     @Expose(serialize = false)
     private List<GsonTag> tags;
 
-    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, GsonObjects objects) {
+    public GsonSync(String sessionToken, String platform, String version, Boolean changesOnly, String lastUpdate, String syncId, GsonObjects objects) {
         this.sessionToken = sessionToken;
         this.platform = platform;
         this.version = version;
         this.changesOnly = changesOnly;
         this.lastUpdate = lastUpdate;
+        this.syncId = syncId;
         this.objects = objects;
     }
 

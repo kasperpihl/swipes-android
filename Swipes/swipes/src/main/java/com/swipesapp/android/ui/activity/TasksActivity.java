@@ -280,7 +280,7 @@ public class TasksActivity extends BaseActivity {
     @Override
     protected void onStart() {
         // Start sync when coming from the background.
-        if (SwipesApplication.wasInBackground()) {
+        if (SwipesApplication.isInBackground()) {
             startSync();
         }
 

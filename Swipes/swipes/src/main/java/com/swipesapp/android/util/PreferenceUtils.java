@@ -21,6 +21,7 @@ public class PreferenceUtils {
     public static final String VIBRATIONS_KEY = "settings_enable_vibration";
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
+    public static final String LAST_SYNC_ID = "last_sync_id";
 
     // Analytics data.
     public static final String SENT_DIMENSIONS = "sent_user_dimensions";

@@ -27,6 +27,7 @@ import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
+import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Intents;
@@ -34,6 +35,7 @@ import com.swipesapp.android.values.Intents;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -282,9 +284,13 @@ public class SyncService {
         String version = String.valueOf(BuildConfig.VERSION_CODE);
         String lastUpdate = PreferenceUtils.getSyncLastUpdate(mContext.get());
 
+        // Generate and save unique sync ID.
+        String syncId = UUID.randomUUID().toString();
+        PreferenceUtils.saveString(PreferenceUtils.LAST_SYNC_ID, syncId, mContext.get());
+
         // Append objects in the current batch.
         GsonObjects objects = new GsonObjects(gsonTags, gsonTasks);
-        GsonSync request = new GsonSync(sessionToken, PLATFORM, version, changesOnly, lastUpdate, objects);
+        GsonSync request = new GsonSync(sessionToken, PLATFORM, version, changesOnly, lastUpdate, syncId, objects);
 
         return request;
     }
@@ -358,6 +364,11 @@ public class SyncService {
 
                     // Refresh local content.
                     TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
+
+                    // Force widget refresh if app is in the background.
+                    if (SwipesApplication.isInBackground()) {
+                        TasksActivity.refreshWidgets(mContext.get());
+                    }
 
                     // Update recurring tasks dimension.
                     Analytics.sendRecurringTasks(mContext.get());

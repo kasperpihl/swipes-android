@@ -11,6 +11,7 @@ import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
@@ -43,7 +44,7 @@ public class SwipesApplication extends Application {
     private static Handler sHandler;
     private static Runnable sRunnable;
 
-    private static boolean sWasInBackground = true;
+    private static boolean sIsInBackground = true;
 
     @Override
     public void onCreate() {
@@ -56,6 +57,7 @@ public class SwipesApplication extends Application {
         Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
         ParseFacebookUtils.initialize(getString(R.string.facebook_app_id));
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         // Initialize database session.
         startDaoSession(getApplicationContext());
@@ -123,7 +125,7 @@ public class SwipesApplication extends Application {
             @Override
             public void run() {
                 // Mark application as gone to background.
-                sWasInBackground = true;
+                sIsInBackground = true;
             }
         };
         sHandler.postDelayed(sRunnable, 2000);
@@ -134,11 +136,11 @@ public class SwipesApplication extends Application {
         if (sHandler != null) sHandler.removeCallbacks(sRunnable);
 
         // Mark application as in foreground.
-        sWasInBackground = false;
+        sIsInBackground = false;
     }
 
-    public static boolean wasInBackground() {
-        return sWasInBackground;
+    public static boolean isInBackground() {
+        return sIsInBackground;
     }
 
 }
