@@ -55,6 +55,7 @@ public class GsonTask {
     private Long id;
     private long itemId;
     private boolean isSelected;
+    private int subtasksCount;
 
     // Local dates.
     private Date localCreatedAt;
@@ -291,6 +292,14 @@ public class GsonTask {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public void setSubtasksCount(int count) {
+        this.subtasksCount = count;
+    }
+
+    public int getSubtasksCount() {
+        return subtasksCount;
     }
 
     public String getCreatedAt() {

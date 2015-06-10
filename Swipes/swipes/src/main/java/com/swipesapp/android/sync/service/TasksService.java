@@ -941,7 +941,14 @@ public class TasksService {
 
         if (tasks != null) {
             for (Task task : tasks) {
-                gsonTasks.add(GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(), task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(), task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(), task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()), loadAttachmentsForTask(task.getId()), task.getId()));
+                GsonTask gsonTask = GsonTask.gsonForLocal(task.getId(), task.getObjectId(), task.getTempId(), task.getParentLocalId(),
+                        task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
+                        task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(),
+                        task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()),
+                        loadAttachmentsForTask(task.getId()), task.getId());
+
+                gsonTask.setSubtasksCount(countUncompletedSubtasksForTask(task.getTempId()));
+                gsonTasks.add(gsonTask);
             }
         }
 
@@ -959,7 +966,8 @@ public class TasksService {
 
         if (tags != null) {
             for (Tag tag : tags) {
-                gsonTags.add(GsonTag.gsonForLocal(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(), tag.getUpdatedAt(), tag.getTitle()));
+                gsonTags.add(GsonTag.gsonForLocal(tag.getId(), tag.getObjectId(), tag.getTempId(), tag.getCreatedAt(),
+                        tag.getUpdatedAt(), tag.getTitle()));
             }
         }
 
@@ -977,7 +985,8 @@ public class TasksService {
 
         if (attachments != null) {
             for (Attachment attachment : attachments) {
-                gsonAttachments.add(new GsonAttachment(attachment.getId(), attachment.getIdentifier(), attachment.getService(), attachment.getTitle(), attachment.getSync()));
+                gsonAttachments.add(new GsonAttachment(attachment.getId(), attachment.getIdentifier(), attachment.getService(),
+                        attachment.getTitle(), attachment.getSync()));
             }
         }
 
@@ -995,7 +1004,11 @@ public class TasksService {
 
         if (gsonTasks != null) {
             for (GsonTask gsonTask : gsonTasks) {
-                tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(), gsonTask.getLocalCreatedAt(), gsonTask.getLocalUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(), gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getLocalCompletionDate(), gsonTask.getLocalSchedule(), gsonTask.getLocation(), gsonTask.getLocalRepeatDate(), gsonTask.getRepeatOption(), gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
+                tasks.add(new Task(gsonTask.getId(), gsonTask.getObjectId(), gsonTask.getTempId(), gsonTask.getParentLocalId(),
+                        gsonTask.getLocalCreatedAt(), gsonTask.getLocalUpdatedAt(), gsonTask.isDeleted(), gsonTask.getTitle(),
+                        gsonTask.getNotes(), gsonTask.getOrder(), gsonTask.getPriority(), gsonTask.getLocalCompletionDate(),
+                        gsonTask.getLocalSchedule(), gsonTask.getLocation(), gsonTask.getLocalRepeatDate(), gsonTask.getRepeatOption(),
+                        gsonTask.getOrigin(), gsonTask.getOriginIdentifier()));
             }
         }
 
@@ -1013,7 +1026,8 @@ public class TasksService {
 
         if (gsonTags != null) {
             for (GsonTag gsonTag : gsonTags) {
-                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getLocalCreatedAt(), gsonTag.getLocalUpdatedAt(), gsonTag.getTitle()));
+                tags.add(new Tag(gsonTag.getId(), gsonTag.getObjectId(), gsonTag.getTempId(), gsonTag.getLocalCreatedAt(),
+                        gsonTag.getLocalUpdatedAt(), gsonTag.getTitle()));
             }
         }
 
@@ -1031,7 +1045,8 @@ public class TasksService {
 
         if (gsonAttachments != null) {
             for (GsonAttachment gsonAttachment : gsonAttachments) {
-                attachments.add(new Attachment(gsonAttachment.getId(), gsonAttachment.getIdentifier(), gsonAttachment.getService(), gsonAttachment.getTitle(), gsonAttachment.getSync(), taskId));
+                attachments.add(new Attachment(gsonAttachment.getId(), gsonAttachment.getIdentifier(), gsonAttachment.getService(),
+                        gsonAttachment.getTitle(), gsonAttachment.getSync(), taskId));
             }
         }
 

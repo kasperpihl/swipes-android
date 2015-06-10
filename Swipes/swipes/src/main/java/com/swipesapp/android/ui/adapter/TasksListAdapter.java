@@ -172,8 +172,7 @@ public class TasksListAdapter extends BaseAdapter {
         Date repeatDate = tasks.get(position).getLocalRepeatDate();
         Integer priority = tasks.get(position).getPriority();
         boolean selected = tasks.get(position).isSelected();
-        String taskId = tasks.get(position).getTempId();
-        int subtasksCount = TasksService.getInstance().countUncompletedSubtasksForTask(taskId);
+        int subtasksCount = tasks.get(position).getSubtasksCount();
         mIsLabelVisible = false;
 
         // Set date for dividers.
