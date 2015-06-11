@@ -25,6 +25,7 @@ import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
@@ -269,6 +270,9 @@ public class SettingsActivity extends BaseActivity {
                             IntercomHandler.beginIntercomSession(email);
                         }
 
+                        // Subscribe to push channels.
+                        SwipesApplication.subscribePush();
+
                         if (TasksService.getInstance().countAllTasks() > 0) {
                             // Ask to keep user data.
                             askToKeepData();
@@ -316,6 +320,9 @@ public class SettingsActivity extends BaseActivity {
                         public void onPositive(MaterialDialog dialog) {
                             // Logout Parse user.
                             ParseUser.logOut();
+
+                            // Unsubscribe from push channels.
+                            SwipesApplication.unsubscribePush();
 
                             // End Intercom session.
                             Intercom.client().reset();

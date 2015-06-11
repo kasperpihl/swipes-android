@@ -22,9 +22,12 @@ import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
+import com.swipesapp.android.sync.receiver.PushReceiver;
 import com.swipesapp.android.sync.receiver.SnoozeHelper;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+
+import java.util.List;
 
 import io.intercom.android.sdk.Intercom;
 
@@ -57,7 +60,9 @@ public class SwipesApplication extends Application {
         Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
         ParseFacebookUtils.initialize(getString(R.string.facebook_app_id));
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
-        ParseInstallation.getCurrentInstallation().saveInBackground();
+
+        // Subscribe to push channels.
+        subscribePush();
 
         // Initialize database session.
         startDaoSession(getApplicationContext());
@@ -141,6 +146,35 @@ public class SwipesApplication extends Application {
 
     public static boolean isInBackground() {
         return sIsInBackground;
+    }
+
+    public static void subscribePush() {
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+
+        if (user != null) {
+            List<?> channels = installation.getList(PushReceiver.KEY_CHANNELS);
+
+            if (channels == null || !channels.contains(user.getObjectId())) {
+                // User is logged in. Subscribe to push channel.
+                installation.add(PushReceiver.KEY_CHANNELS, user.getObjectId());
+
+                if (BuildConfig.DEBUG) {
+                    // Also subscribe to debug channel when needed.
+                    installation.add(PushReceiver.KEY_CHANNELS, PushReceiver.CHANNEL_DEV);
+                }
+            }
+        }
+
+        installation.saveInBackground();
+    }
+
+    public static void unsubscribePush() {
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+
+        // Unsubscribe from all channels.
+        installation.remove(PushReceiver.KEY_CHANNELS);
+        installation.saveInBackground();
     }
 
 }
