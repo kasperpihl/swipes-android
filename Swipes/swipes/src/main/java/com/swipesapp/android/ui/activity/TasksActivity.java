@@ -373,6 +373,9 @@ public class TasksActivity extends BaseActivity {
                     // Update user level dimension.
                     Analytics.sendUserLevel(this);
 
+                    // Subscribe to push channels.
+                    SwipesApplication.subscribePush();
+
                     // Change visibility of login menu.
                     invalidateOptionsMenu();
                     break;
