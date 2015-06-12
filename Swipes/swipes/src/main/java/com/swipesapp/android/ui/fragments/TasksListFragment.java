@@ -183,6 +183,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         mRepeatHandler = new RepeatHandler();
 
+        mTasks = new ArrayList<GsonTask>();
         sSelectedTasks = new ArrayList<GsonTask>();
 
         int sectionNumber = args.getInt(ARG_SECTION_NUMBER, Sections.FOCUS.getSectionNumber());
@@ -1077,7 +1078,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void handleDoneButtons(List<GsonTask> completedTasks) {
         // Load date of the oldest completed task.
-        GsonTask oldestTask = !completedTasks.isEmpty() ? completedTasks.get(completedTasks.size() - 1) : null;
+        GsonTask oldestTask = completedTasks != null && !completedTasks.isEmpty() ?
+                completedTasks.get(completedTasks.size() - 1) : null;
         Date completionDate = oldestTask != null ? oldestTask.getLocalCompletionDate() : null;
 
         // Only display buttons in the done section and when the oldest completed task is older than today.
