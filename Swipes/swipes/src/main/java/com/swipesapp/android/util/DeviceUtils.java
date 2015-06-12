@@ -28,8 +28,12 @@ public class DeviceUtils {
      * @return True if in landscape mode.
      */
     public static boolean isLandscape(Context context) {
-        Configuration config = context.getResources().getConfiguration();
-        return config.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        boolean isLandscape = false;
+        if (context != null) {
+            Configuration config = context.getResources().getConfiguration();
+            isLandscape = config.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        }
+        return isLandscape;
     }
 
     /**
