@@ -168,9 +168,9 @@
     <string name="share_intent_add_confirm">已创建任务！</string>
     <string name="delete_single_task">删除任务？</string>
     <!-- Scheduler -->
-    <string name="date_today">今天，&#160;</string>
-    <string name="date_tomorrow">明天，&#160;</string>
-    <string name="date_yesterday">昨天，&#160;</string>
+    <string name="date_today">今天</string>
+    <string name="date_tomorrow">明天</string>
+    <string name="date_yesterday">昨天</string>
     <string name="date_unspecified">不明确的</string>
     <string name="snooze_later_today">今天晚些</string>
     <string name="snooze_this_evening">今天早上</string>

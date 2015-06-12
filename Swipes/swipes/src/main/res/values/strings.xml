@@ -193,9 +193,9 @@
     <string name="delete_single_task">Delete task?</string>
 
     <!-- Scheduler -->
-    <string name="date_today">today,&#160;</string>
-    <string name="date_tomorrow">tomorrow,&#160;</string>
-    <string name="date_yesterday">yesterday,&#160;</string>
+    <string name="date_today">today</string>
+    <string name="date_tomorrow">tomorrow</string>
+    <string name="date_yesterday">yesterday</string>
     <string name="date_unspecified">Unspecified</string>
     <string name="snooze_later_today">Later Today</string>
     <string name="snooze_this_evening">This Evening</string>

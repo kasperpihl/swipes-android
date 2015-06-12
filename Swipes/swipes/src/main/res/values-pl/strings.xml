@@ -169,9 +169,9 @@ Enjoy!</string>
     <string name="share_intent_add_confirm">Zadanie utworzone!</string>
     <string name="delete_single_task">Usunąć zadanie?</string>
     <!-- Scheduler -->
-    <string name="date_today">dzisiaj,&#160;</string>
-    <string name="date_tomorrow">jutro,&#160;</string>
-    <string name="date_yesterday">wczoraj,&#160;</string>
+    <string name="date_today">dzisiaj</string>
+    <string name="date_tomorrow">jutro</string>
+    <string name="date_yesterday">wczoraj</string>
     <string name="date_unspecified">Nieokreślony</string>
     <string name="snooze_later_today">Jeszcze dziś</string>
     <string name="snooze_this_evening">Dziś wieczorem</string>

@@ -174,9 +174,9 @@ Aproveite!</string>
     <string name="share_intent_add_confirm">Tarefa criada!</string>
     <string name="delete_single_task">Excluir tarefa?</string>
     <!-- Scheduler -->
-    <string name="date_today">hoje,&#160;</string>
-    <string name="date_tomorrow">amanhã,&#160;</string>
-    <string name="date_yesterday">ontem,&#160;</string>
+    <string name="date_today">hoje</string>
+    <string name="date_tomorrow">amanhã</string>
+    <string name="date_yesterday">ontem</string>
     <string name="date_unspecified">Indefinido</string>
     <string name="snooze_later_today">Mais Tarde</string>
     <string name="snooze_this_evening">Hoje à Noite</string>

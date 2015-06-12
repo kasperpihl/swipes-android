@@ -170,9 +170,9 @@ http://swipesapp.com</string>
     <string name="share_intent_add_confirm">Задача создана!</string>
     <string name="delete_single_task">Удалить задачу?</string>
     <!-- Scheduler -->
-    <string name="date_today">сегодня,&#160;</string>
-    <string name="date_tomorrow">завтра,&#160;</string>
-    <string name="date_yesterday">вчера,&#160;</string>
+    <string name="date_today">сегодня</string>
+    <string name="date_tomorrow">завтра</string>
+    <string name="date_yesterday">вчера</string>
     <string name="date_unspecified">Не определено</string>
     <string name="snooze_later_today">Позже сегодня</string>
     <string name="snooze_this_evening">Этим вечером</string>

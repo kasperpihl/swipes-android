@@ -47,6 +47,9 @@ public class DateUtils {
     // Timezone for syncing.
     public static final String TIMEZONE_SYNC = "UTC";
 
+    // Separator for recent date.
+    public static final String DATE_SEPARATOR = ", ";
+
     /**
      * Returns formatted time for a given date. Format will be "HH:mm" or "hh:mm a",
      * depending on the device's 24-hour format setting.
@@ -120,16 +123,16 @@ public class DateUtils {
 
         if (providedDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
             // Date is today.
-            date = context.getString(R.string.date_today) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_today) + DATE_SEPARATOR + getTimeAsString(context, rawDate);
         } else if (providedDate.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
             // Date is tomorrow.
-            date = context.getString(R.string.date_tomorrow) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_tomorrow) + DATE_SEPARATOR + getTimeAsString(context, rawDate);
         } else if (providedDate.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) && providedDate.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR)) {
             // Date was yesterday.
-            date = context.getString(R.string.date_yesterday) + getTimeAsString(context, rawDate);
+            date = context.getString(R.string.date_yesterday) + DATE_SEPARATOR + getTimeAsString(context, rawDate);
         } else if (isWithinWeek(providedDate.getTime())) {
             // Date is within a week.
-            date = formatDayOfWeek(context, providedDate) + ", " + getTimeAsString(context, rawDate);
+            date = formatDayOfWeek(context, providedDate) + DATE_SEPARATOR + getTimeAsString(context, rawDate);
         } else {
             // Date is some other day. Always capitalize first letter.
             return Character.toUpperCase(date.charAt(0)) + date.substring(1);
