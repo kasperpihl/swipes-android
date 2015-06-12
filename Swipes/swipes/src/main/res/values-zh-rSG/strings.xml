@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Welcome -->
+    <string name="welcome_task_one">右划来标记完成</string>
+    <string name="welcome_task_two">左划来标记稍后</string>
+    <string name="welcome_task_three">点击以查看详情</string>
+    <string name="welcome_tag_one">生活</string>
+    <string name="welcome_tag_two">购物</string>
+    <string name="welcome_first_branding">聚焦·滑动·梦想成真</string>
+    <string name="welcome_second_branding">专为高效的人而生</string>
+    <string name="welcome_dialog_title">欢迎使用 Swipes!</string>
+    <string name="welcome_dialog_message">您是打算先试用还是登录您的帐号直接使用？</string>
+    <string name="welcome_dialog_yes">登录</string>
+    <string name="welcome_dialog_no">试用</string>
+    <!-- Sections -->
+    <string name="app_name">Swipes</string>
+    <string name="focus_title">进行中</string>
+    <string name="later_title">稍后做</string>
+    <string name="done_title">已完成</string>
+    <string name="overview_title">概览</string>
+    <string name="title_share_intent">添加到 Swipes</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="title_activity_integrations">整合</string>
+    <string name="title_activity_snooze_settings">稍后做</string>
+    <string name="title_activity_add_tasks">添加任务</string>
+    <string name="title_activity_edit_task">编辑任务</string>
+    <string name="title_activity_snooze_task">推迟任务</string>
+    <string name="title_activity_about">关于</string>
+    <string name="title_activity_evernote_learn">印象笔记整合</string>
+    <string name="title_activity_evernote_attachments">印象笔记附件</string>
+    <!-- Empty view -->
+    <string name="all_done_now">= 现在的任务已完成 =</string>
+    <string name="all_done_today">= 今天的任务已完成 =</string>
+    <string name="all_done_now_next">下一个任务 @ %s</string>
+    <string name="all_done_today_next">下一个任务 %s</string>
+    <string name="all_done_next_empty">近期没有任务</string>
+    <string name="all_done_today_message">欧耶！任务已经全部完成，放松一下。 #高效的一天</string>
+    <string name="all_done_now_message">休息一下！我正在像BOSS一样完成任务。 #高效的一天</string>
+    <string name="all_done_share_url">swipesapp.com</string>
+    <!-- Tasks list -->
+    <string name="tasks_list_login_action">登录或注册</string>
+    <string name="tasks_list_multi_select_action">多选</string>
+    <string name="tasks_list_search_action">搜索</string>
+    <string name="tasks_list_workspaces_action">标签</string>
+    <string name="tasks_list_settings_action">设置</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s 今天</string>
+    <!-- Settings -->
+    <string name="group_cloud">云端</string>
+    <string name="group_preferences">个性化</string>
+    <string name="group_help">帮助</string>
+    <string name="group_other">其他</string>
+    <string name="notifications">通知</string>
+    <string name="vibration">震动</string>
+    <string name="location">位置</string>
+    <string name="theme">主题</string>
+    <string name="settings_theme_dialog_title">主题</string>
+    <string name="snoozes">稍后</string>
+    <string name="settings_login">登录或注册</string>
+    <string name="settings_logout">注销</string>
+    <string name="settings_integrations">整合</string>
+    <string name="settings_sync">同步</string>
+    <string name="settings_sync_summary">最后更新: %s</string>
+    <string name="switch_on">是</string>
+    <string name="switch_off">不</string>
+    <string name="preference_yes">选择</string>
+    <string name="preference_no">取消</string>
+    <string name="theme_light">亮色</string>
+    <string name="theme_dark">暗色</string>
+    <!-- Help -->
+    <string name="help_center">帮助中心</string>
+    <string name="help_google_community">Google+ 社区</string>
+    <string name="help_contact_us">联系我们</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">[Android] Support request</string>
+    <string name="help_email_chooser_title">联系:</string>
+    <string name="help_email_text_hint">描述你的问题&#8230;</string>
+    <!-- Snooze settings -->
+    <string name="day_start">开始天</string>
+    <string name="evening_start">早晨开始</string>
+    <string name="weekend_day_start">周末开始</string>
+    <string name="week_start">周一开始</string>
+    <string name="weekend_start">周末开始</string>
+    <string name="settings_weekend_start_dialog_title">周末开始</string>
+    <string name="settings_week_start_dialog_title">周一开始</string>
+    <string name="settings_later_today">今天晚些时候</string>
+    <string name="settings_later_today_dialog_title">今天晚些时候</string>
+    <string name="later_today_1h">+1小时</string>
+    <string name="later_today_2h">+2小时</string>
+    <string name="later_today_3h">+3小时</string>
+    <string name="later_today_4h">+4小时</string>
+    <string name="later_today_5h">+5小时</string>
+    <string name="later_today_6h">+6小时</string>
+    <!-- Evernote -->
+    <string name="evernote_link_account">印象笔记</string>
+    <string name="evernote_link_account_detail">点击链接账户</string>
+    <string name="evernote_unlink_account">印象笔记 (已关联)</string>
+    <string name="evernote_unlink_account_detail">点击断开</string>
+    <string name="evernote_sync_device">在该设备上同步印象笔记</string>
+    <string name="evernote_auto_import">自动通过\"swipes\"标签导入</string>
+    <string name="evernote_sync_personal">同步个人笔记</string>
+    <string name="evernote_sync_business">同步印象笔记商业笔记</string>
+    <string name="evernote_open_importer">打开印象笔记导入</string>
+    <string name="evernote_learn_more">了解更多</string>
+    <string name="evernote_learn_more_title_left">印象笔记</string>
+    <string name="evernote_learn_more_title_right">整合</string>
+    <string name="evernote_what_it_is">它是什么</string>
+    <string name="evernote_what_it_is_description">这种整合可以将你的笔记从印象笔记同步到Swipes。</string>
+    <string name="evernote_how_it_works">它如何工作</string>
+    <string name="evernote_how_it_works_detail">Assign the \"swipes\" tag to a note in Evernote.
+        我们将会把它作为一个任务添加到 Swipes，并同步所有内容。</string>
+    <string name="evernote_get_started">开始</string>
+    <string name="evernote_unlink_dialog_title">断开与印象笔记的连接？</string>
+    <string name="evernote_unlink_dialog_message">所有的任务将被断开。</string>
+    <string name="evernote_unlink_dialog_yes">断开连接</string>
+    <string name="evernote_unlink_dialog_no">取消</string>
+    <string name="evernote_untitled_note">无标题笔记</string>
+    <!-- Attachments -->
+    <string name="evernote_search_hint">搜索笔记</string>
+    <string name="evernote_filter_description">只有任务里的笔记</string>
+    <!-- About -->
+    <string name="about">关于</string>
+    <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">这个APP来自</string>
+    <string name="about_app_version">应用版本</string>
+    <string name="about_policies">隐私声明</string>
+    <string name="about_policies_detail">点击下载隐私声明</string>
+    <string name="about_oss">打开资源许可</string>
+    <string name="about_oss_licenses">时间偏好的功能在Apache的许可下使用基于CommonsWare代码。</string>
+    <!-- Invite -->
+    <string name="settings_invite">邀请朋友使用 Swipes</string>
+    <string name="invite_subject">看看这个很酷的APP</string>
+    <string name="invite_body">嗨，\n\n
+        我正在试用这个APP - Swipes，安排我的一天。\n\n
+        它通过滑动来推迟或者完成任务，可以很容易地计划一天。
+        我想它可能正式你需要的。\n\n
+        点击这里开下载 http://play.google.com/store/apps/details?id=com.swipesapp.android 。\n\n
+        玩的愉快！</string>
+    <string name="invite_chooser_title">邀请:</string>
+    <!-- Share -->
+    <string name="share_message_subject">任务完成</string>
+    <string name="share_message_header">任务:\n\n</string>
+    <string name="share_message_footer_sent_from">通过Swipes（高效的任务列表）发送</string>
+    <string name="share_message_footer_get_swipes">免费的 iPhone 和 Android app - http://swipesapp.com</string>
+    <string name="share_message_circle">◯&#160;</string>
+    <string name="share_chooser_title">分享到:</string>
+    <!-- Actions -->
+    <string name="dialog_yes">是</string>
+    <string name="dialog_no">不</string>
+    <string name="delete_task_dialog_text">此操作不能撤销。</string>
+    <string name="delete_task_dialog_yes">删除</string>
+    <string name="delete_task_dialog_no">取消</string>
+    <string name="add_task_hint">添加一个新任务</string>
+    <string name="show_old">显示旧的任务</string>
+    <string name="clear_old">清除旧的任务</string>
+    <string name="clear_old_dialog_title">删除旧的任务？</string>
+    <string name="clear_old_dialog_text">此操作不能撤销。</string>
+    <string name="clear_old_dialog_yes">删除</string>
+    <string name="clear_old_dialog_no">取消</string>
+    <string name="search_hint">搜索</string>
+    <string name="logout_dialog_title">注销你的账户？</string>
+    <string name="logout_dialog_message">Swipes 将会停止同步并且从这个设备上清除你的数据。</string>
+    <string name="logout_dialog_yes">注销</string>
+    <string name="logout_dialog_no">取消</string>
+    <string name="keep_data_dialog_title">从试用期保存数据？</string>
+    <string name="keep_data_dialog_message">Swipes 可以同步你从云端测试期的数据。</string>
+    <string name="keep_data_dialog_yes">保存数据</string>
+    <string name="keep_data_dialog_no">清除数据</string>
+    <string name="share_intent_add_confirm">已创建任务！</string>
+    <string name="delete_single_task">删除任务？</string>
+    <!-- Scheduler -->
+    <string name="date_today">今天，&#160;</string>
+    <string name="date_tomorrow">明天，&#160;</string>
+    <string name="date_yesterday">昨天，&#160;</string>
+    <string name="date_unspecified">不明确的</string>
+    <string name="snooze_later_today">今天晚些</string>
+    <string name="snooze_this_evening">今天早上</string>
+    <string name="snooze_tomorrow_eve">明天早上</string>
+    <string name="snooze_tomorrow">明天</string>
+    <string name="snooze_two_days_default">周一</string>
+    <string name="snooze_this_weekend">这周末</string>
+    <string name="snooze_next_week">下周</string>
+    <string name="snooze_unspecified">不明确的</string>
+    <string name="snooze_at_location">在位置</string>
+    <string name="snooze_pick_date">选择日期</string>
+    <string name="snooze_done_text">稍后</string>
+    <string name="snooze_adjust_hint">按住调整时间</string>
+    <!-- Week days -->
+    <string name="sunday_full">周日</string>
+    <string name="monday_full">周一</string>
+    <string name="tuesday_full">周二</string>
+    <string name="wednesday_full">周三</string>
+    <string name="thursday_full">周四</string>
+    <string name="friday_full">周五</string>
+    <string name="saturday_full">周六</string>
+    <!-- Months -->
+    <string name="january_full">一月</string>
+    <string name="february_full">二月</string>
+    <string name="march_full">三月</string>
+    <string name="april_full">四月</string>
+    <string name="may_full">五月</string>
+    <string name="june_full">六月</string>
+    <string name="july_full">七月</string>
+    <string name="august_full">八月</string>
+    <string name="september_full">九月</string>
+    <string name="october_full">十月</string>
+    <string name="november_full">十一月</string>
+    <string name="december_full">十二月</string>
+    <!-- Numerals -->
+    <string name="month_first_suffix">%sst</string>
+    <string name="month_second_suffix">%snd</string>
+    <string name="month_third_suffix">%srd</string>
+    <string name="month_default_suffix">%sth</string>
+    <!-- Edit task -->
+    <string name="edit_task_repeat_choice_mode">每重复&#8230;</string>
+    <string name="repeat_never_description">不重复</string>
+    <string name="repeat_day_description">每天的 %s</string>
+    <string name="repeat_mon_fri_description">每周一到周五的 %s</string>
+    <string name="repeat_week_description">每个 %1$s 的 %2$s</string>
+    <string name="repeat_month_description">每月 %1$s 的 %2$s</string>
+    <string name="repeat_year_description">每年 %1$s %2$s 的 %3$s</string>
+    <string name="edit_task_tags_default_text">设置标签</string>
+    <string name="edit_task_notes_default_text">添加笔记</string>
+    <string name="edit_task_evernote_attached">附加</string>
+    <!-- Action steps -->
+    <string name="edit_task_add_subtask_hint">添加一个新步骤</string>
+    <string name="subtask_hide_caption">显示少量的步骤</string>
+    <string name="subtask_show_caption">显示所有的步骤</string>
+    <string name="delete_subtask_dialog_title">删除步骤？</string>
+    <string name="delete_subtask_dialog_message">此操作不能撤销。</string>
+    <string name="delete_subtask_dialog_yes">删除</string>
+    <string name="delete_subtask_dialog_no">取消</string>
+    <!-- Repeating -->
+    <string name="repeat_option_never">从不</string>
+    <string name="repeat_option_day">每天</string>
+    <string name="repeat_option_mon_fri">工作日</string>
+    <string name="repeat_option_week">每周</string>
+    <string name="repeat_option_month">每月</string>
+    <string name="repeat_option_year">每年</string>
+    <!-- Notifications -->
+    <string name="notification_snooze">稍后 +%dh</string>
+    <string name="notification_complete">完成</string>
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">添加新标签</string>
+    <string name="add_tag_dialog_hint">标签标题</string>
+    <string name="add_tag_dialog_yes">保存</string>
+    <string name="add_tag_dialog_no">取消</string>
+    <string name="delete_tag_dialog_title">删除标签 \"%s\"?</string>
+    <string name="delete_tag_dialog_message">此操作不能撤销。</string>
+    <string name="delete_tag_dialog_yes">删除</string>
+    <string name="delete_tag_dialog_no">取消</string>
+    <string name="empty_tags_hint">没有指定的标签</string>
+    <!-- Workspaces -->
+    <string name="set_workspaces_hint">设置标签</string>
+    <string name="clear_workspace_button">清除标签</string>
+    <!-- Sync -->
+    <string name="sync_started_message">同步&#8230;</string>
+    <string name="sync_completed_message">同步成功！</string>
+    <string name="sync_failed_message">同步失败。</string>
+    <!-- Showcase -->
+    <string name="showcase_button_done">知道了</string>
+    <string name="navigation_tutorial_text">点击选项旁的导航。</string>
+    <!-- Widgets -->
+    <string name="now_widget_label">现在滑动</string>
+    <string name="now_widget_tasks_count_label">今天</string>
+    <string name="now_widget_empty_count_label">无任务</string>
+    <string name="now_widget_progress_separator">/</string>
+    <string name="now_widget_complete_message">任务完成！</string>
+    <string name="add_widget_label">添加到 Swipes</string>
+    <string name="add_widget_description">新任务</string>
+    <!-- Plurals -->
+    <plurals name="delete_task_dialog_title">
+        <item quantity="other">删除 %d 个任务？</item>
+    </plurals>
+    <plurals name="notification_title">
+        <item quantity="other">你还有 %s 个新任务</item>
+    </plurals>
+</resources>
