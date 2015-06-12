@@ -1199,28 +1199,15 @@ public class EditTaskActivity extends FragmentActivity {
 
         @Override
         public void deleteSubtask(final GsonTask task) {
-            // Display dialog to delete subtask.
-            new SwipesDialog.Builder(mContext.get())
-                    .title(R.string.delete_subtask_dialog_title)
-                    .content(R.string.delete_subtask_dialog_message)
-                    .positiveText(R.string.delete_subtask_dialog_yes)
-                    .negativeText(R.string.delete_subtask_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            // Delete subtask.
-                            task.setDeleted(true);
-                            saveSubtask(task);
+            // Delete subtask.
+            task.setDeleted(true);
+            saveSubtask(task);
 
-                            if (mSubtasks.isEmpty() && mListView.getVisibility() == View.VISIBLE)
-                                hideSubtasks();
+            if (mSubtasks.isEmpty() && mListView.getVisibility() == View.VISIBLE)
+                hideSubtasks();
 
-                            // Send analytics event.
-                            sendSubtaskDeletedEvent();
-                        }
-                    })
-                    .show();
+            // Send analytics event.
+            sendSubtaskDeletedEvent();
         }
 
         @Override

@@ -126,7 +126,8 @@ public class SubtasksAdapter extends BaseAdapter {
                         task.setTitle(v.getText().toString());
                         mListener.editSubtask(task);
                     } else {
-                        v.setText(task.getTitle());
+                        // Delete subtask.
+                        mListener.deleteSubtask(task);
                     }
 
                     hideKeyboard();
@@ -141,7 +142,8 @@ public class SubtasksAdapter extends BaseAdapter {
                 hideKeyboard();
 
                 if (holder.title.getText().length() <= 0) {
-                    holder.title.setText(task.getTitle());
+                    // Delete subtask.
+                    mListener.deleteSubtask(task);
                 }
             }
         });
