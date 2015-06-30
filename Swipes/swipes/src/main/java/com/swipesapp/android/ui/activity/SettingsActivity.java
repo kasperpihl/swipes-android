@@ -342,6 +342,7 @@ public class SettingsActivity extends BaseActivity {
         private void resetPreferences() {
             // Reset user preferences.
             PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
+            PreferenceManager.setDefaultValues(getActivity(), R.xml.options, true);
             PreferenceManager.setDefaultValues(getActivity(), R.xml.snooze_settings, true);
             PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
 

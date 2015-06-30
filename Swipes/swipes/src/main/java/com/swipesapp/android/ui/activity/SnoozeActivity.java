@@ -107,13 +107,6 @@ public class SnoozeActivity extends FragmentActivity {
     private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
     private static final String DATE_PICKER_TAG = "SNOOZE_DATE_PICKER";
 
-    private static final String PREF_DAY_START = "settings_day_start";
-    private static final String PREF_EVENING_START = "settings_evening_start";
-    private static final String PREF_WEEKEND_DAY_START = "settings_weekend_day_start";
-    private static final String PREF_WEEK_START = "settings_snoozes_week_start_dow";
-    private static final String PREF_WEEKEND_START = "settings_snoozes_weekend_start_dow";
-    public static final String PREF_LATER_TODAY = "settings_snoozes_later_today_value";
-
     private TasksService mTasksService;
 
     private GsonTask mTask;
@@ -177,25 +170,25 @@ public class SnoozeActivity extends FragmentActivity {
     }
 
     private void loadPreferences() {
-        String prefDayStart = PreferenceUtils.readString(PREF_DAY_START, this);
+        String prefDayStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_DAY_START, this);
         mDayStartHour = TimePreference.getHour(prefDayStart);
         mDayStartMinute = TimePreference.getMinute(prefDayStart);
 
-        String prefEveningStart = PreferenceUtils.readString(PREF_EVENING_START, this);
+        String prefEveningStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_EVENING_START, this);
         mEveningStartHour = TimePreference.getHour(prefEveningStart);
         mEveningStartMinute = TimePreference.getMinute(prefEveningStart);
 
-        String prefWeekendDayStart = PreferenceUtils.readString(PREF_WEEKEND_DAY_START, this);
+        String prefWeekendDayStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEKEND_DAY_START, this);
         mWeekendDayStartHour = TimePreference.getHour(prefWeekendDayStart);
         mWeekendDayStartMinute = TimePreference.getMinute(prefWeekendDayStart);
 
-        String prefWeekStart = PreferenceUtils.readString(PREF_WEEK_START, this);
-        mWeekStartDay = weekdayFromPrefValue(prefWeekStart);
+        String prefWeekStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEK_START, this);
+        mWeekStartDay = DateUtils.weekdayFromPrefValue(prefWeekStart);
 
-        String prefWeekendStart = PreferenceUtils.readString(PREF_WEEKEND_START, this);
-        mWeekendStartDay = weekdayFromPrefValue(prefWeekendStart);
+        String prefWeekendStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEKEND_START, this);
+        mWeekendStartDay = DateUtils.weekdayFromPrefValue(prefWeekendStart);
 
-        String prefLaterToday = PreferenceUtils.readString(PREF_LATER_TODAY, this);
+        String prefLaterToday = PreferenceUtils.readString(PreferenceUtils.SNOOZE_LATER_TODAY, this);
         mLaterTodayDelay = Integer.valueOf(prefLaterToday);
     }
 
@@ -691,27 +684,6 @@ public class SnoozeActivity extends FragmentActivity {
         calendar.set(Calendar.MILLISECOND, 0);
 
         return calendar;
-    }
-
-    private int weekdayFromPrefValue(String prefValue) {
-        switch (prefValue.toLowerCase()) {
-            case "sunday":
-                return Calendar.SUNDAY;
-            case "monday":
-                return Calendar.MONDAY;
-            case "tuesday":
-                return Calendar.TUESDAY;
-            case "wednesday":
-                return Calendar.WEDNESDAY;
-            case "thursday":
-                return Calendar.THURSDAY;
-            case "friday":
-                return Calendar.FRIDAY;
-            case "saturday":
-                return Calendar.SATURDAY;
-            default:
-                return 0;
-        }
     }
 
 }

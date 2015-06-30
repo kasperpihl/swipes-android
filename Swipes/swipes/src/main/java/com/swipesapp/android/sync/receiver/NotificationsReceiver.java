@@ -1,6 +1,5 @@
 package com.swipesapp.android.sync.receiver;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -18,6 +17,8 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
+import com.swipesapp.android.ui.view.TimePreference;
+import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -29,11 +30,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Receiver for the snooze alarm intent.
+ * Receiver for the notifications alarm intent.
  *
  * @author Felipe Bari
  */
-public class SnoozeReceiver extends BroadcastReceiver {
+public class NotificationsReceiver extends BroadcastReceiver {
 
     public static final String KEY_EXPIRED_TASKS = "notifications_expired_tasks";
     public static final String KEY_PREVIOUS_COUNT = "notifications_previous_count";
@@ -73,28 +74,13 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
         // Persist expired tasks in case the receiver is killed.
         saveCurrentData(context);
+
+        // Handle daily and weekly messages.
+        sendPlanningReminders(context);
     }
 
     private void sendNotification(Context context) {
         if (PreferenceUtils.areNotificationsEnabled(context)) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setSmallIcon(R.drawable.ic_notification);
-            builder.setAutoCancel(true);
-
-            // Turn on vibration if allowed.
-            if (PreferenceUtils.isVibrationEnabled(context)) {
-                builder.setDefaults(Notification.DEFAULT_VIBRATE);
-            }
-
-            // Set custom notification sound.
-            String filesPath = "android.resource://" + context.getPackageName() + "/";
-            builder.setSound(Uri.parse(filesPath + R.raw.notification_default));
-
-            // Intent to open app.
-            Intent tasksIntent = new Intent(context, ActionsReceiver.class);
-            tasksIntent.setAction(Intents.SHOW_TASKS);
-            PendingIntent tasksPendingIntent = PendingIntent.getBroadcast(context, 0, tasksIntent, 0);
-
             // Intent for the snooze button.
             Intent snoozeIntent = new Intent(context, ActionsReceiver.class);
             snoozeIntent.setAction(Intents.SNOOZE_TASKS);
@@ -116,12 +102,12 @@ public class SnoozeReceiver extends BroadcastReceiver {
             String snoozeTitle = res.getString(R.string.notification_snooze, loadSnoozeDelay(context));
             String completeTitle = res.getString(R.string.notification_complete);
 
+            // Customize builder.
+            NotificationCompat.Builder builder = getDefaultBuilder(context);
             builder.setContentTitle(title);
-            builder.setContentIntent(tasksPendingIntent);
             builder.addAction(R.drawable.ic_snooze, snoozeTitle, snoozePendingIntent);
             builder.addAction(R.drawable.ic_complete, completeTitle, completePendingIntent);
             builder.setDeleteIntent(deletePendingIntent);
-            builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
             // Display task titles for multiple tasks.
             if (size > 1) {
@@ -136,6 +122,33 @@ public class SnoozeReceiver extends BroadcastReceiver {
             sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             sNotificationManager.notify(0, builder.build());
         }
+    }
+
+    private static NotificationCompat.Builder getDefaultBuilder(Context context) {
+        // Create default builder.
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.drawable.ic_notification);
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+
+        // Turn on vibration if allowed.
+        if (PreferenceUtils.isVibrationEnabled(context)) {
+            builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
+        }
+
+        // Set custom notification sound.
+        String filesPath = "android.resource://" + context.getPackageName() + "/";
+        builder.setSound(Uri.parse(filesPath + R.raw.notification_default));
+
+        // Intent to open app.
+        Intent tasksIntent = new Intent(context, ActionsReceiver.class);
+        tasksIntent.setAction(Intents.SHOW_TASKS);
+        PendingIntent tasksPendingIntent = PendingIntent.getBroadcast(context, 0, tasksIntent, 0);
+
+        // Set default intent.
+        builder.setContentIntent(tasksPendingIntent);
+
+        return builder;
     }
 
     private static void reloadPreviousData(Context context) {
@@ -176,7 +189,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
     private static int loadSnoozeDelay(Context context) {
         // Load delay from user preference.
-        String prefLaterToday = PreferenceUtils.readString(SnoozeActivity.PREF_LATER_TODAY, context);
+        String prefLaterToday = PreferenceUtils.readString(PreferenceUtils.SNOOZE_LATER_TODAY, context);
         return Integer.valueOf(prefLaterToday);
     }
 
@@ -186,6 +199,104 @@ public class SnoozeReceiver extends BroadcastReceiver {
 
         // Refresh app widgets.
         TasksActivity.refreshWidgets(context);
+    }
+
+    private static void sendPlanningReminders(Context context) {
+        if (PreferenceUtils.areNotificationsEnabled(context)) {
+            // Determine if it's time for a daily reminder.
+            if (PreferenceUtils.isDailyReminderEnabled(context) && isDailyReminderTime(context)) {
+                // Check number of tasks for today.
+                if (sTasksService.countTasksForDay(new Date()) <= 1) {
+                    String title = context.getString(R.string.reminder_daily_title);
+                    String message = context.getString(R.string.reminder_daily_message);
+
+                    // Send daily reminder.
+                    sendReminder(title, message, 1, context);
+                }
+            }
+
+            // Determine if it's time for an evening reminder.
+            if (PreferenceUtils.isDailyReminderEnabled(context) && isEveningReminderTime(context)) {
+                int tasksForNow = sTasksService.countTasksForNow();
+                int tasksForToday = sTasksService.countTasksForToday();
+
+                // Determine if there are tasks left.
+                if (tasksForNow > 0 && tasksForNow == tasksForToday) {
+                    String title = context.getResources().getQuantityString(R.plurals.reminder_evening_title, tasksForNow);
+                    String message = context.getResources().getQuantityString(R.plurals.reminder_evening_message, tasksForNow, tasksForNow);
+
+                    // Send evening reminder.
+                    sendReminder(title, message, 2, context);
+                }
+            }
+
+            // Determine if it's time for a weekly reminder.
+            if (PreferenceUtils.isWeeklyReminderEnabled(context) && isWeeklyReminderTime(context)) {
+                Calendar tomorrow = Calendar.getInstance();
+                tomorrow.setTimeInMillis(tomorrow.getTimeInMillis() + 86400000);
+
+                // Check number of tasks for tomorrow.
+                if (sTasksService.countTasksForDay(tomorrow.getTime()) <= 1) {
+                    String title = context.getString(R.string.reminder_weekly_title);
+                    String message = context.getString(R.string.reminder_weekly_message);
+
+                    // Send weekly reminder.
+                    sendReminder(title, message, 3, context);
+                }
+            }
+        }
+    }
+
+    private static boolean isDailyReminderTime(Context context) {
+        // Load day start preference.
+        String prefWeekendDayStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEKEND_DAY_START, context);
+        int weekendDayStartHour = TimePreference.getHour(prefWeekendDayStart);
+        int weekendDayStartMinute = TimePreference.getMinute(prefWeekendDayStart);
+
+        // Check if current time is the same as preference.
+        Calendar now = Calendar.getInstance();
+        boolean isSameHour = now.get(Calendar.HOUR_OF_DAY) == weekendDayStartHour;
+        boolean isSameMinute = now.get(Calendar.MINUTE) == weekendDayStartMinute;
+
+        return isSameHour && isSameMinute;
+    }
+
+    private static boolean isEveningReminderTime(Context context) {
+        // Load evening start preference.
+        String prefEveningStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_EVENING_START, context);
+        int eveningStartHour = TimePreference.getHour(prefEveningStart);
+        int eveningStartMinute = TimePreference.getMinute(prefEveningStart);
+
+        // Check if current time is the same as preference.
+        Calendar now = Calendar.getInstance();
+        boolean isSameHour = now.get(Calendar.HOUR_OF_DAY) == eveningStartHour;
+        boolean isSameMinute = now.get(Calendar.MINUTE) == eveningStartMinute;
+
+        return isSameHour && isSameMinute;
+    }
+
+    private static boolean isWeeklyReminderTime(Context context) {
+        // Load week start preference.
+        String prefWeekStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEK_START, context);
+        int weekStartDay = DateUtils.weekdayFromPrefValue(prefWeekStart);
+
+        // Check if current time is evening of the day before the week starts.
+        Calendar now = Calendar.getInstance();
+        int dayBeforeWeekStart = weekStartDay - 1 == 0 ? Calendar.SATURDAY : weekStartDay - 1;
+        boolean isDayBeforeWeekStart = now.get(Calendar.DAY_OF_WEEK) == dayBeforeWeekStart;
+
+        return isDayBeforeWeekStart && isEveningReminderTime(context);
+    }
+
+    private static void sendReminder(String title, String content, int id, Context context) {
+        // Customize builder.
+        NotificationCompat.Builder builder = getDefaultBuilder(context);
+        builder.setContentTitle(title);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+
+        // Send notification.
+        sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        sNotificationManager.notify(id, builder.build());
     }
 
     private static void sendClickEvent(String action) {

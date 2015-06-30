@@ -3,7 +3,7 @@ package com.swipesapp.android.db.migration;
 import android.content.Context;
 
 import com.swipesapp.android.sync.gson.GsonTask;
-import com.swipesapp.android.sync.receiver.SnoozeReceiver;
+import com.swipesapp.android.sync.receiver.NotificationsReceiver;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
@@ -90,8 +90,8 @@ public class MigrationAssistant {
     private static void upgradeToV21(Context context) {
         if (!PreferenceUtils.hasUpgradedToVersion(21, context)) {
             // Clear notification data.
-            PreferenceUtils.remove(SnoozeReceiver.KEY_EXPIRED_TASKS, context);
-            PreferenceUtils.remove(SnoozeReceiver.KEY_PREVIOUS_COUNT, context);
+            PreferenceUtils.remove(NotificationsReceiver.KEY_EXPIRED_TASKS, context);
+            PreferenceUtils.remove(NotificationsReceiver.KEY_PREVIOUS_COUNT, context);
 
             // Mark as upgraded.
             PreferenceUtils.saveBoolean(V21_UPGRADE_KEY, true, context);

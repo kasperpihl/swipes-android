@@ -2,10 +2,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Preferences -->
+    <string name="default_theme_setting">light</string>
+    <bool name="default_enable_location">true</bool>
+
+    <!-- Options -->
+    <bool name="default_enable_background_sync">true</bool>
+    <bool name="default_scroll_to_added_task">true</bool>
     <bool name="default_enable_notifications">true</bool>
     <bool name="default_enable_vibration">true</bool>
-    <bool name="default_enable_location">true</bool>
-    <string name="default_theme_setting">light</string>
+    <bool name="default_enable_daily_reminder">true</bool>
+    <bool name="default_enable_weekly_reminder">true</bool>
 
     <!-- Snooze preferences -->
     <string name="default_day_start">09:00</string>

@@ -146,6 +146,27 @@ public class ExtTaskDao {
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
     }
 
+    public long countTasksForNow() {
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(new Date()), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
+    }
+
+    public long countTasksForDay(Date day) {
+        Calendar givenDay = Calendar.getInstance();
+        givenDay.setTime(day);
+        givenDay.set(Calendar.HOUR_OF_DAY, 0);
+        givenDay.set(Calendar.MINUTE, 0);
+        givenDay.set(Calendar.SECOND, 0);
+        givenDay.set(Calendar.MILLISECOND, 0);
+
+        Calendar nextDay = Calendar.getInstance();
+        nextDay.setTimeInMillis(givenDay.getTimeInMillis() + 86400000);
+
+        return mDao.queryBuilder().where(TaskDao.Properties.Schedule.gt(givenDay.getTime()),
+                TaskDao.Properties.Schedule.lt(nextDay.getTime()), TaskDao.Properties.CompletionDate.isNull(),
+                TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).buildCount().count();
+    }
+
     public long countCompletedTasksToday() {
         Calendar yesterday = Calendar.getInstance();
         yesterday.setTimeInMillis(yesterday.getTimeInMillis() - 86400000);

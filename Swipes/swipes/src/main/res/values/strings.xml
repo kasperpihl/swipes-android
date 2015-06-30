@@ -22,6 +22,7 @@
     <string name="overview_title">OVERVIEW</string>
     <string name="title_share_intent">Add to Swipes</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_options">Options</string>
     <string name="title_activity_integrations">Integrations</string>
     <string name="title_activity_snooze_settings">Snoozes</string>
     <string name="title_activity_add_tasks">Add Task</string>
@@ -60,6 +61,7 @@
     <string name="group_preferences">Preferences</string>
     <string name="group_help">Help</string>
     <string name="group_other">Other</string>
+    <string name="options">Options</string>
     <string name="notifications">Notifications</string>
     <string name="vibration">Vibration</string>
     <string name="location">Location</string>
@@ -77,6 +79,22 @@
     <string name="preference_no">Cancel</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+
+    <!-- Options -->
+    <string name="group_tweaks">Tweaks</string>
+    <string name="group_notifications">@string/notifications</string>
+    <string name="options_background_sync">Background sync</string>
+    <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
+    <string name="options_scroll_to_added">Scroll to added</string>
+    <string name="options_scroll_to_added_detail">Auto-scroll to focus on the newest added task.</string>
+    <string name="options_snoozed_tasks">Snoozed tasks</string>
+    <string name="options_snoozed_tasks_detail">Notify of snoozed tasks on their selected time.</string>
+    <string name="options_daily_reminder">Daily reminder</string>
+    <string name="options_daily_reminder_detail">Show a daily reminder to plan the day.</string>
+    <string name="options_weekly_reminder">Weekly reminder</string>
+    <string name="options_weekly_reminder_detail">Show a weekly reminder to plan the week.</string>
+    <string name="options_vibration">@string/vibration</string>
+    <string name="options_vibration_detail">Vibrate when notifications are shown.</string>
 
     <!-- Help -->
     <string name="help_center">Help Center</string>
@@ -271,6 +289,10 @@
     <!-- Notifications -->
     <string name="notification_snooze">Snooze +%dh</string>
     <string name="notification_complete">Complete</string>
+    <string name="reminder_daily_title">Plan your day?</string>
+    <string name="reminder_daily_message">Good morning! Start your productive day with a plan.</string>
+    <string name="reminder_weekly_title">Plan your week?</string>
+    <string name="reminder_weekly_message">Good evening! Start your productive week with a plan tonight.</string>
 
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Add new tag</string>
@@ -325,6 +347,14 @@
     <plurals name="done_workspace_results">
         <item quantity="one">%1$s completed task with tags: &lt;b>%2$s&lt;/b></item>
         <item quantity="other">%1$s completed tasks with tags: &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="one">Task left today</item>
+        <item quantity="other">Tasks left today</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="one">You have a task left for today. Want to see it?</item>
+        <item quantity="other">You have %s tasks left for today. Anything important?</item>
     </plurals>
 
 </resources>

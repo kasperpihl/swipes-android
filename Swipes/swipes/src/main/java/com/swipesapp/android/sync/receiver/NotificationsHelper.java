@@ -13,12 +13,12 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.values.Intents;
 
 /**
- * Helper for handling the snooze alarm. Automatically starts the alarm when
+ * Helper for handling the notifications alarm. Automatically starts the alarm when
  * the device boots and provides a convenience call to start it at will.
  *
  * @author Felipe Bari
  */
-public class SnoozeHelper extends BroadcastReceiver {
+public class NotificationsHelper extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,8 +26,8 @@ public class SnoozeHelper extends BroadcastReceiver {
             // Initialize Crashlytics.
             Crashlytics.start(context);
 
-            // Start snooze alarm.
-            createSnoozeAlarm(context);
+            // Start notifications alarm.
+            createNotificationsAlarm(context);
 
             // Initialize database session.
             SwipesApplication.startDaoSession(context);
@@ -41,9 +41,9 @@ public class SnoozeHelper extends BroadcastReceiver {
         }
     }
 
-    public static void createSnoozeAlarm(Context context) {
+    public static void createNotificationsAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, SnoozeReceiver.class);
+        Intent intent = new Intent(context, NotificationsReceiver.class);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         // Trigger the alarm after a minute.

@@ -574,6 +574,24 @@ public class TasksService {
     }
 
     /**
+     * Counts all tasks for now.
+     *
+     * @return Number of tasks for now.
+     */
+    public int countTasksForNow() {
+        return (int) mExtTaskDao.countTasksForNow();
+    }
+
+    /**
+     * Counts all tasks for a given day.
+     *
+     * @return Number of tasks for given day.
+     */
+    public int countTasksForDay(Date day) {
+        return (int) mExtTaskDao.countTasksForDay(day);
+    }
+
+    /**
      * Counts all recurring tasks.
      *
      * @return Number of recurring tasks. Deleted tasks are not considered.

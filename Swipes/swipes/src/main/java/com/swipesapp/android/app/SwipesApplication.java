@@ -22,8 +22,8 @@ import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
+import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.sync.receiver.PushReceiver;
-import com.swipesapp.android.sync.receiver.SnoozeHelper;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 
@@ -75,8 +75,8 @@ public class SwipesApplication extends Application {
         EvernoteService.newInstance(getApplicationContext());
         EvernoteSyncHandler.newInstance(getApplicationContext());
 
-        // Start snooze alarm.
-        SnoozeHelper.createSnoozeAlarm(getApplicationContext());
+        // Start notifications alarm.
+        NotificationsHelper.createNotificationsAlarm(getApplicationContext());
 
         // Start Analytics tracker.
         startTracker(getApplicationContext());
@@ -86,6 +86,7 @@ public class SwipesApplication extends Application {
 
         // Load default user preferences.
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.options, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.snooze_settings, true);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.integrations, true);
 

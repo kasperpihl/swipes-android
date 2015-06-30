@@ -13,6 +13,7 @@ public class Screens {
     public static final String SCREEN_DONE = "Done Tab";
     public static final String SCREEN_EDIT_TASK = "Edit Task";
     public static final String SCREEN_SETTINGS = "Settings";
+    public static final String SCREEN_OPTIONS = "Options Menu";
     public static final String SCREEN_INTEGRATIONS = "Integrations Menu";
     public static final String SCREEN_EVERNOTE_LEARN = "Evernote Learn More";
     public static final String SCREEN_SNOOZES = "Snoozes Menu";

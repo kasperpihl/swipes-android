@@ -466,4 +466,31 @@ public class DateUtils {
         return calendar.getTime();
     }
 
+    /**
+     * Returns a weekday from a saved snooze preference.
+     *
+     * @param prefValue Preference key.
+     * @return Matching weekday.
+     */
+    public static int weekdayFromPrefValue(String prefValue) {
+        switch (prefValue.toLowerCase()) {
+            case "sunday":
+                return Calendar.SUNDAY;
+            case "monday":
+                return Calendar.MONDAY;
+            case "tuesday":
+                return Calendar.TUESDAY;
+            case "wednesday":
+                return Calendar.WEDNESDAY;
+            case "thursday":
+                return Calendar.THURSDAY;
+            case "friday":
+                return Calendar.FRIDAY;
+            case "saturday":
+                return Calendar.SATURDAY;
+            default:
+                return 0;
+        }
+    }
+
 }

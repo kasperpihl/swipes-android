@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Tweaks -->
+    <PreferenceCategory
+        android:key="group_tweaks"
+        android:title="@string/group_tweaks">
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_enable_background_sync"
+            android:key="settings_enable_background_sync"
+            android:summary="@string/options_background_sync_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_background_sync" />
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_scroll_to_added_task"
+            android:key="settings_scroll_to_added_task"
+            android:summary="@string/options_scroll_to_added_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_scroll_to_added" />
+
+    </PreferenceCategory>
+
+    <!-- Notifications -->
+    <PreferenceCategory
+        android:key="group_notifications"
+        android:title="@string/group_notifications">
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_enable_notifications"
+            android:key="settings_enable_notifications"
+            android:summary="@string/options_snoozed_tasks_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_snoozed_tasks" />
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_enable_daily_reminder"
+            android:key="settings_enable_daily_reminder"
+            android:summary="@string/options_daily_reminder_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_daily_reminder" />
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_enable_weekly_reminder"
+            android:key="settings_enable_weekly_reminder"
+            android:summary="@string/options_weekly_reminder_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_weekly_reminder" />
+
+        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+            android:defaultValue="@bool/default_enable_vibration"
+            android:key="settings_enable_vibration"
+            android:summary="@string/options_vibration_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_vibration" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

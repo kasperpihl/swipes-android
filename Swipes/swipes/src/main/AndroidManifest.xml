@@ -77,6 +77,15 @@
         </activity>
 
         <activity
+            android:name="com.swipesapp.android.ui.activity.OptionsActivity"
+            android:label="@string/title_activity_options"
+            android:theme="@style/Settings_Preview">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.swipesapp.android.ui.activity.SettingsActivity" />
+        </activity>
+
+        <activity
             android:name="com.swipesapp.android.ui.activity.IntegrationsActivity"
             android:label="@string/title_activity_integrations"
             android:theme="@style/Settings_Preview">
@@ -167,12 +176,12 @@
             android:theme="@style/Theme.AppCompat.Dialog"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
-        <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver" />
+        <receiver android:name=".sync.receiver.NotificationsReceiver" />
 
-        <receiver android:name="com.swipesapp.android.sync.receiver.SnoozeReceiver$ActionsReceiver" />
+        <receiver android:name=".sync.receiver.NotificationsReceiver$ActionsReceiver" />
 
         <receiver
-            android:name="com.swipesapp.android.sync.receiver.SnoozeHelper"
+            android:name=".sync.receiver.NotificationsHelper"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

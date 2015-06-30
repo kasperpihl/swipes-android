@@ -28,20 +28,6 @@
         android:title="@string/group_preferences">
 
         <SwitchPreference
-            android:defaultValue="@bool/default_enable_notifications"
-            android:key="settings_enable_notifications"
-            android:switchTextOff="@string/switch_off"
-            android:switchTextOn="@string/switch_on"
-            android:title="@string/notifications" />
-
-        <SwitchPreference
-            android:defaultValue="@bool/default_enable_vibration"
-            android:key="settings_enable_vibration"
-            android:switchTextOff="@string/switch_off"
-            android:switchTextOn="@string/switch_on"
-            android:title="@string/vibration" />
-
-        <SwitchPreference
             android:defaultValue="@bool/default_enable_location"
             android:key="settings_enable_location"
             android:switchTextOff="@string/switch_off"
@@ -59,6 +45,12 @@
         <PreferenceScreen android:title="@string/snoozes">
             <intent
                 android:targetClass="com.swipesapp.android.ui.activity.SnoozeSettingsActivity"
+                android:targetPackage="com.swipesapp.android" />
+        </PreferenceScreen>
+
+        <PreferenceScreen android:title="@string/options">
+            <intent
+                android:targetClass="com.swipesapp.android.ui.activity.OptionsActivity"
                 android:targetPackage="com.swipesapp.android" />
         </PreferenceScreen>
 
