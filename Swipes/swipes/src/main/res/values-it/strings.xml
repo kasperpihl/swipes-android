@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Welcome -->
+    <string name="welcome_task_one">Scorri verso destra per completare</string>
+    <string name="welcome_task_two">Scorri verso sinistra per posporre</string>
+    <string name="welcome_task_three">Clicca per mostrare i dettagli</string>
+    <string name="welcome_tag_one">home</string>
+    <string name="welcome_tag_two">shopping</string>
+    <string name="welcome_first_branding">Focalizza. Scorri. Realizza.</string>
+    <string name="welcome_second_branding">Task list per persone di successo</string>
+    <string name="welcome_dialog_title">Benvenuto su Swipes!</string>
+    <string name="welcome_dialog_message">Vuoi provare l\'app o fare il log in al tuo account?</string>
+    <string name="welcome_dialog_yes">Log in</string>
+    <string name="welcome_dialog_no">Prova</string>
+    <!-- Sections -->
+    <string name="app_name">Swipes</string>
+    <string name="focus_title">ADESSO</string>
+    <string name="later_title">PIÙ TARDI</string>
+    <string name="done_title">FATTO</string>
+    <string name="overview_title">RIEPILOGO</string>
+    <string name="title_share_intent">Aggiungi a Swipes</string>
+    <string name="title_activity_settings">Impostazioni</string>
+    <string name="title_activity_integrations">Integrazioni</string>
+    <string name="title_activity_snooze_settings">Posponi</string>
+    <string name="title_activity_add_tasks">Aggiungi compito</string>
+    <string name="title_activity_edit_task">Modifica compito</string>
+    <string name="title_activity_snooze_task">Posponi compito</string>
+    <string name="title_activity_about">Info su</string>
+    <string name="title_activity_evernote_learn">Integrazione con Evernote</string>
+    <string name="title_activity_evernote_attachments">Allegati Evernote</string>
+    <!-- Empty view -->
+    <string name="all_done_now">= TUTTO FATTO PER ADESSO =</string>
+    <string name="all_done_today">= FATTO TUTTO PER OGGI =</string>
+    <string name="all_done_now_next">Prossimo compito @ %s</string>
+    <string name="all_done_today_next">Prossimo compito %s</string>
+    <string name="all_done_next_empty">Non ci sono compiti futuri</string>
+    <string name="all_done_today_message">Urrà! Tutti i compiti sono stati fatti, tempo di\nrilassarsi. #GiornoProduttivo</string>
+    <string name="all_done_now_message">Tempo per una pausa! Stai facendo compiti\nin modo sorprendente. #GiornoProduttivo</string>
+    <string name="all_done_share_url">swipesapp.com</string>
+    <string name="later_empty_workspace">Non ci sono compiti con tag programmati: &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">Non ci sono compiti con tag: &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_workspace">Non ci sono compiti con tag completati: &lt;b>%1$s&lt;/b></string>
+    <string name="later_empty_search">Non ci sono compiti programmati per &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_search">Non ci sono compito attuali per &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_search">Non sono stati trovati compiti completati per &lt;b>%1$s&lt;/b></string>
+    <!-- Tasks list -->
+    <string name="tasks_list_login_action">Log in o registra</string>
+    <string name="tasks_list_multi_select_action">Selezione multipla</string>
+    <string name="tasks_list_search_action">Cerca</string>
+    <string name="tasks_list_workspaces_action">Spazio di lavoro</string>
+    <string name="tasks_list_settings_action">Impostazioni</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s Oggi</string>
+    <!-- Settings -->
+    <string name="group_cloud">Cloud</string>
+    <string name="group_preferences">Preferenze</string>
+    <string name="group_help">Aiuto</string>
+    <string name="group_other">Altro</string>
+    <string name="location">Posizione</string>
+    <string name="theme">Tema</string>
+    <string name="settings_theme_dialog_title">Tema</string>
+    <string name="snoozes">Posponi</string>
+    <string name="settings_login">Log in o registra</string>
+    <string name="settings_logout">Log out</string>
+    <string name="settings_integrations">Integrazioni</string>
+    <string name="settings_sync">Sincronizza</string>
+    <string name="settings_sync_summary">Ultimo aggiornamento: %s</string>
+    <string name="switch_on">SÌ</string>
+    <string name="switch_off">NO</string>
+    <string name="preference_yes">Scegli</string>
+    <string name="preference_no">Annulla</string>
+    <string name="theme_light">Luce</string>
+    <string name="theme_dark">Scuro</string>
+    <!-- Options -->
+    <!-- Help -->
+    <string name="help_center">Centro assistenza</string>
+    <string name="help_google_community">Community Google+</string>
+    <string name="help_contact_us">Contattaci</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">Richiesta supporto [Android]</string>
+    <string name="help_email_chooser_title">Contatto con:</string>
+    <string name="help_email_text_hint">Descrivi il tuo problema&#8230;</string>
+    <!-- Snooze settings -->
+    <string name="day_start">Inizio giorno</string>
+    <string name="evening_start">Inizio sera</string>
+    <string name="weekend_day_start">Inizio giorno del weekend</string>
+    <string name="week_start">Inizio settimana</string>
+    <string name="weekend_start">Inizio weekend</string>
+    <string name="settings_weekend_start_dialog_title">Inizio weekend</string>
+    <string name="settings_week_start_dialog_title">Inizio settimana</string>
+    <string name="settings_later_today">Più tardi oggi</string>
+    <string name="settings_later_today_dialog_title">Più tardi oggi</string>
+    <string name="later_today_1h">+1 ora</string>
+    <string name="later_today_2h">+2 ore</string>
+    <string name="later_today_3h">+3 ore</string>
+    <string name="later_today_4h">+4 ore</string>
+    <string name="later_today_5h">+5 ore</string>
+    <string name="later_today_6h">+6 ore</string>
+    <!-- Evernote -->
+    <string name="evernote_link_account">Evernote</string>
+    <string name="evernote_link_account_detail">Clicca per collegare l\'account</string>
+    <string name="evernote_unlink_account">Evernote (connesso)</string>
+    <string name="evernote_unlink_account_detail">Clicca per scollegare</string>
+    <string name="evernote_sync_device">Sincronizza questo dispositivo con Evernote</string>
+    <string name="evernote_auto_import">Importa automaticamente le note con il tag \"swipes\"</string>
+    <string name="evernote_sync_personal">Sincronizza con notebook personale</string>
+    <string name="evernote_sync_business">Sincronizza con Evernote Business</string>
+    <string name="evernote_open_importer">Apri importer Evernote</string>
+    <string name="evernote_learn_more">Per saperne di più</string>
+    <string name="evernote_learn_more_title_left">INTEGRAZIONE</string>
+    <string name="evernote_learn_more_title_right">EVERNOTE</string>
+    <string name="evernote_what_it_is">COS\'È</string>
+    <string name="evernote_what_it_is_description">Questa integrazione permette di sincronizzare le note con le spunte di Evernote con Swipes</string>
+    <string name="evernote_how_it_works">COME FUNZIONA</string>
+    <string name="evernote_how_it_works_detail">Assegna tag \"swipes\" ad una nota in Evernote.
+La aggiungeremo come compito in Swipes e sincronizzeremo tutti i suoi punti.</string>
+    <string name="evernote_get_started">INIZIA</string>
+    <string name="evernote_unlink_dialog_title">Scollegare Evernote?</string>
+    <string name="evernote_unlink_dialog_message">Tutti i compiti saranno scollegati.</string>
+    <string name="evernote_unlink_dialog_yes">Scollega</string>
+    <string name="evernote_unlink_dialog_no">Annulla</string>
+    <string name="evernote_untitled_note">Nota senza titolo</string>
+    <!-- Attachments -->
+    <string name="evernote_search_hint">Cerca note</string>
+    <string name="evernote_filter_description">Solo note con compiti</string>
+    <!-- About -->
+    <string name="about">Info su</string>
+    <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">Quest\'app è stata creata da</string>
+    <string name="about_app_version">Versione</string>
+    <string name="about_policies">Policy</string>
+    <string name="about_policies_detail">Clicca per scaricare la policy</string>
+    <string name="about_oss">Licenze open source</string>
+    <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
+    <!-- Invite -->
+    <string name="settings_invite">Invita un amico su Swipes</string>
+    <string name="invite_subject">Dai un\'occhiata a questa nuova app</string>
+    <string name="invite_body">Hey,\n\n
+Sto provando questa nuova app, Swipes, per organizzare la mia giornata.\n\n
+Rende più facile la pianificazione della giornata, posso posporre i compiti a più tardi o completarli con un semplice \"swipe\".
+Ho pensato potrebbe piacerti.\n\n
+Dai un\'occhiata qui per scaricarla
+http://play.google.com/store/apps/details?id=com.swipesapp.android.\n\n
+Divertiti!</string>
+    <string name="invite_chooser_title">Invita con:</string>
+    <!-- Share -->
+    <string name="share_message_subject">Compiti da completare</string>
+    <string name="share_message_header">Compiti: \n\n</string>
+    <string name="share_message_footer_sent_from">Inviato con my Swipes - Task list per persone di successo</string>
+    <string name="share_message_footer_get_swipes">App gratis per iPhone e Android:
+http://swipesapp.com</string>
+    <string name="share_message_circle">◯&#160;</string>
+    <string name="share_chooser_title">Condividi con:</string>
+    <!-- Actions -->
+    <string name="dialog_yes">Sì</string>
+    <string name="dialog_no">No</string>
+    <string name="delete_task_dialog_text">Questo non può essere incompleto.</string>
+    <string name="delete_task_dialog_yes">Cancella</string>
+    <string name="delete_task_dialog_no">Annulla</string>
+    <string name="add_task_hint">Aggiungi un nuovo compito</string>
+    <string name="show_old">MOSTRA COMPITI VECCHI</string>
+    <string name="clear_old">ELIMINA COMPITI VECCHI</string>
+    <string name="clear_old_dialog_title">Cancellare compiti vecchi?</string>
+    <string name="clear_old_dialog_text">Questo non può essere incompleto.</string>
+    <string name="clear_old_dialog_yes">Cancella</string>
+    <string name="clear_old_dialog_no">Annulla</string>
+    <string name="search_hint">Cerca</string>
+    <string name="logout_dialog_title">Log out del tuo account?</string>
+    <string name="logout_dialog_message">Swipes smetterà di sincronizzare e cancellare i tuoi dati da questo dispositivo.</string>
+    <string name="logout_dialog_yes">Log out</string>
+    <string name="logout_dialog_no">Annulla</string>
+    <string name="keep_data_dialog_title">Mantere i dati del periodo di test?</string>
+    <string name="keep_data_dialog_message">Swipes può sincronizzare i tuoi dati del periodo di test con il cloud.</string>
+    <string name="keep_data_dialog_yes">Mantieni dati</string>
+    <string name="keep_data_dialog_no">Cancella dati</string>
+    <string name="share_intent_add_confirm">Compito creato!</string>
+    <string name="delete_single_task">Cancellare compito?</string>
+    <!-- Scheduler -->
+    <string name="date_today">oggi</string>
+    <string name="date_tomorrow">domani</string>
+    <string name="date_yesterday">ieri</string>
+    <string name="date_unspecified">Indeterminato</string>
+    <string name="snooze_later_today">Più tardi oggi</string>
+    <string name="snooze_this_evening">Questa sera</string>
+    <string name="snooze_tomorrow_eve">Domani sera</string>
+    <string name="snooze_tomorrow">Domani</string>
+    <string name="snooze_two_days_default">Lunedì</string>
+    <string name="snooze_this_weekend">Questo weekend</string>
+    <string name="snooze_next_week">Prossima settimana</string>
+    <string name="snooze_unspecified">Indeterminato</string>
+    <string name="snooze_at_location">Luogo</string>
+    <string name="snooze_pick_date">Scegli data</string>
+    <string name="snooze_done_text">POSPONI</string>
+    <string name="snooze_adjust_hint">Tieni premuto per modificare l\'ora</string>
+    <!-- Week days -->
+    <string name="sunday_full">Domenica</string>
+    <string name="monday_full">Lunedì</string>
+    <string name="tuesday_full">Martedì</string>
+    <string name="wednesday_full">Mercoledì</string>
+    <string name="thursday_full">Giovedì</string>
+    <string name="friday_full">Venerdì</string>
+    <string name="saturday_full">Sabato</string>
+    <!-- Months -->
+    <string name="january_full">Gennaio</string>
+    <string name="february_full">Febbraio</string>
+    <string name="march_full">Marzo</string>
+    <string name="april_full">Aprile</string>
+    <string name="may_full">Maggio</string>
+    <string name="june_full">Giugno</string>
+    <string name="july_full">Luglio</string>
+    <string name="august_full">Agosto</string>
+    <string name="september_full">Settembre</string>
+    <string name="october_full">Ottobre</string>
+    <string name="november_full">Novembre</string>
+    <string name="december_full">Dicembre</string>
+    <!-- Numerals -->
+    <string name="month_first_suffix">%s</string>
+    <string name="month_second_suffix">%s</string>
+    <string name="month_third_suffix">%s</string>
+    <string name="month_default_suffix">%s</string>
+    <!-- Edit task -->
+    <string name="edit_task_repeat_choice_mode">Ripeti ogni&#8230;</string>
+    <string name="repeat_never_description">Non ripetere</string>
+    <string name="repeat_day_description">Ogni giorno a %s</string>
+    <string name="repeat_mon_fri_description">Da lunedì a venerdì a %s</string>
+    <string name="repeat_week_description">Ogni %1$s alle %2$s</string>
+    <string name="repeat_month_description">Ogni mese il %1$s alle %2$s</string>
+    <string name="repeat_year_description">Ogni anno %1$s %2$s alle %3$s</string>
+    <string name="edit_task_tags_default_text">Imposta tag</string>
+    <string name="edit_task_notes_default_text">Aggiungi note</string>
+    <string name="edit_task_evernote_attached">ALLEGATO</string>
+    <!-- Action steps -->
+    <string name="edit_task_add_subtask_hint">Aggiungi un\'operazione</string>
+    <string name="subtask_hide_caption">Mostra alcune operazioni</string>
+    <string name="subtask_show_caption">Mostra tutte le operazioni</string>
+    <string name="delete_subtask_dialog_title">Cancellare operazione?</string>
+    <string name="delete_subtask_dialog_message">Questo non può essere incompleto.</string>
+    <string name="delete_subtask_dialog_yes">Cancella</string>
+    <string name="delete_subtask_dialog_no">Annulla</string>
+    <!-- Repeating -->
+    <string name="repeat_option_never">mai</string>
+    <string name="repeat_option_day">giorno</string>
+    <string name="repeat_option_mon_fri">lun-ven</string>
+    <string name="repeat_option_week">settimana</string>
+    <string name="repeat_option_month">mese</string>
+    <string name="repeat_option_year">anno</string>
+    <!-- Notifications -->
+    <string name="notification_snooze">Posponi +%dh</string>
+    <string name="notification_complete">Completa</string>
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">Aggiungi un nuovo tag</string>
+    <string name="add_tag_dialog_hint">Titolo tag</string>
+    <string name="add_tag_dialog_yes">Salva</string>
+    <string name="add_tag_dialog_no">Annulla</string>
+    <string name="delete_tag_dialog_title">Cancellare tag \"%s\"?</string>
+    <string name="delete_tag_dialog_message">Questo non può essere incompleto.</string>
+    <string name="delete_tag_dialog_yes">Cancella</string>
+    <string name="delete_tag_dialog_no">Annulla</string>
+    <string name="empty_tags_hint">Non ci sono tag assegnati</string>
+    <!-- Workspaces -->
+    <string name="set_workspaces_hint">IMPOSTA SPAZIO DI LAVORO</string>
+    <string name="clear_workspace_button">CANCELLA SPAZIO DI LAVORO</string>
+    <!-- Sync -->
+    <string name="sync_started_message">Sincronizzando&#8230;</string>
+    <string name="sync_completed_message">Sincronizzazione con successo!</string>
+    <string name="sync_failed_message">Sincronizzazione fallita.</string>
+    <!-- Showcase -->
+    <string name="showcase_button_done">FATTO</string>
+    <string name="navigation_tutorial_text">Tocca per navigare tra le sezioni.</string>
+    <!-- Widgets -->
+    <string name="now_widget_label">Swipes adesso</string>
+    <string name="now_widget_tasks_count_label">OGGI</string>
+    <string name="now_widget_empty_count_label">NON CI SONO COMPITI</string>
+    <string name="now_widget_progress_separator">/</string>
+    <string name="now_widget_complete_message">Compito completato!</string>
+    <string name="add_widget_label">Aggiungi a Swipes</string>
+    <string name="add_widget_description">Nuovo compito</string>
+    <!-- Plurals -->
+    <plurals name="delete_task_dialog_title">
+        <item quantity="one">Cancellare compito?</item>
+        <item quantity="other">Cancellare %d compiti?</item>
+    </plurals>
+    <plurals name="notification_title">
+        <item quantity="one">%s</item>
+        <item quantity="other">Hai %s nuovi compiti</item>
+    </plurals>
+    <plurals name="later_workspace_results">
+        <item quantity="one">%1$s compito con tag programmato:
+&lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s compiti con tag programmati:
+&lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="focus_workspace_results">
+        <item quantity="one">%1$s compito attuale con tag:
+&lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s compiti attuali con tag:
+&lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="done_workspace_results">
+        <item quantity="one">%1$s compito con tag completato:
+&lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s compiti con tag completati:
+&lt;b>%2$s&lt;/b></item>
+    </plurals>
+</resources>

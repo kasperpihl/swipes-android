@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Welcome -->
+    <string name="welcome_task_one">Dokončit tahem vpravo</string>
+    <string name="welcome_task_two">Odložte tahem vlevo</string>
+    <string name="welcome_task_three">Kliknutím zobrazte detaily</string>
+    <string name="welcome_tag_one">domů</string>
+    <string name="welcome_tag_two">nákupy</string>
+    <string name="welcome_first_branding">Soustřeďte se. Přetáhněte. A dosáhněte úspěchu.</string>
+    <string name="welcome_second_branding">Úkolovník stvořený pro velké úspěchy</string>
+    <string name="welcome_dialog_title">Vítejte ve Swipes!</string>
+    <string name="welcome_dialog_message">Chcete vyzkoušet aplikaci nebo se přihlásit do svého účtu?</string>
+    <string name="welcome_dialog_yes">Přihlásit se</string>
+    <string name="welcome_dialog_no">Vyzkoušet</string>
+    <!-- Sections -->
+    <string name="app_name">Swipes</string>
+    <string name="focus_title">NYNÍ</string>
+    <string name="later_title">POZDĚJI</string>
+    <string name="done_title">HOTOVO</string>
+    <string name="overview_title">PŘEHLED</string>
+    <string name="title_share_intent">Přidat do Swipes</string>
+    <string name="title_activity_settings">Nastavení</string>
+    <string name="title_activity_integrations">Integrace</string>
+    <string name="title_activity_snooze_settings">Odložení</string>
+    <string name="title_activity_add_tasks">Přidat úkol</string>
+    <string name="title_activity_edit_task">Upravit úkol</string>
+    <string name="title_activity_snooze_task">Odložit úkol</string>
+    <string name="title_activity_about">O programu</string>
+    <string name="title_activity_evernote_learn">Integrace s Evernote</string>
+    <string name="title_activity_evernote_attachments">Přílohy Evernote</string>
+    <!-- Empty view -->
+    <string name="all_done_now">= PROZATÍM VŠE SPLNĚNO =</string>
+    <string name="all_done_today">= PRO DNEŠNÍ DEN VŠE SPLNĚNO =</string>
+    <string name="all_done_now_next">Další úkol @ %s</string>
+    <string name="all_done_today_next">Další úkol %s</string>
+    <string name="all_done_next_empty">Žádné nadcházející úkoly</string>
+    <string name="all_done_today_message">HURÁ! Všechny úkoly splněny, je čas na odpočinek.\n#Produktivní den</string>
+    <string name="all_done_now_message">Čas na přestávku!\n#ProductiveDay</string>
+    <string name="all_done_share_url">swipesapp.com</string>
+    <!-- Tasks list -->
+    <string name="tasks_list_login_action">Přihlášení nebo registrace</string>
+    <string name="tasks_list_multi_select_action">Výběr více položek</string>
+    <string name="tasks_list_search_action">Hledání</string>
+    <string name="tasks_list_workspaces_action">Pracovní plocha</string>
+    <string name="tasks_list_settings_action">Nastavení</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s dne</string>
+    <!-- Settings -->
+    <string name="group_cloud">Cloud</string>
+    <string name="group_preferences">Předvolby</string>
+    <string name="group_help">Pomoc</string>
+    <string name="group_other">Ostatní</string>
+    <string name="location">Místo</string>
+    <string name="theme">Téma</string>
+    <string name="settings_theme_dialog_title">Téma</string>
+    <string name="snoozes">Odložení</string>
+    <string name="settings_login">Přihlášení nebo registrace</string>
+    <string name="settings_logout">Odhlášení</string>
+    <string name="settings_integrations">Integrace</string>
+    <string name="settings_sync">Synchronizace</string>
+    <string name="settings_sync_summary">Poslední aktualizace: %s</string>
+    <string name="switch_on">ANO</string>
+    <string name="switch_off">NE</string>
+    <string name="preference_yes">Vybrat</string>
+    <string name="preference_no">Zrušit</string>
+    <string name="theme_light">Světlé</string>
+    <string name="theme_dark">Tmavé</string>
+    <!-- Options -->
+    <!-- Help -->
+    <string name="help_center">Centrum pomoci</string>
+    <string name="help_google_community">Komunita Google +</string>
+    <string name="help_contact_us">Napiš nám</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">Zástupné symboly</string>
+    <string name="help_email_chooser_title">Spojení s:</string>
+    <string name="help_email_text_hint">Popište Váš problém&#8230;</string>
+    <!-- Snooze settings -->
+    <string name="day_start">Začátek dne</string>
+    <string name="evening_start">Začátek večera</string>
+    <string name="weekend_day_start">První den víkendu</string>
+    <string name="week_start">Začátek týdne</string>
+    <string name="weekend_start">Začátek víkendu</string>
+    <string name="settings_weekend_start_dialog_title">Začátek víkendu</string>
+    <string name="settings_week_start_dialog_title">Začátek týdne</string>
+    <string name="settings_later_today">Dnes později</string>
+    <string name="settings_later_today_dialog_title">Dnes později</string>
+    <string name="later_today_1h">+1 hodina</string>
+    <string name="later_today_2h">+2 hodiny</string>
+    <string name="later_today_3h">+3 hodiny</string>
+    <string name="later_today_4h">+4 hodiny</string>
+    <string name="later_today_5h">+5 hodin</string>
+    <string name="later_today_6h">+6 hodin</string>
+    <!-- Evernote -->
+    <string name="evernote_link_account">Evernote</string>
+    <string name="evernote_link_account_detail">Klepnutím připojit účet</string>
+    <string name="evernote_unlink_account">Evernote (připojeno)</string>
+    <string name="evernote_unlink_account_detail">Klepnutím odpojit</string>
+    <string name="evernote_sync_device">Synchronizovat toto zařízení s Evernote</string>
+    <string name="evernote_auto_import">Automaticky importovat poznámky s tagem \"swipes\"</string>
+    <string name="evernote_sync_personal">Synchronizovat s vlastním poznámkovým blokem</string>
+    <string name="evernote_sync_business">Synchronizovat s Evernote Business</string>
+    <string name="evernote_open_importer">Otevřit Evernote Importer</string>
+    <string name="evernote_learn_more">Zjistit více</string>
+    <string name="evernote_learn_more_title_left">EVERNOTE</string>
+    <string name="evernote_learn_more_title_right">INTEGRACE</string>
+    <string name="evernote_what_it_is">CO TO JE</string>
+    <string name="evernote_what_it_is_description">Tato integrace umožňuje synchronizovat poznámky se zaškrtávacím políčkem z Evernote do Swipes.</string>
+    <string name="evernote_how_it_works">JAK TO FUNGUJE</string>
+    <string name="evernote_how_it_works_detail">Přiřaďte tag \"swipes\" k poznámce v Evernote
+Budeme přidat jako úkol ve Swipes a synchronizovat jeho všechny zatržítka.</string>
+    <string name="evernote_get_started">ZAČÍT</string>
+    <string name="evernote_unlink_dialog_title">Odpojit Evernote?</string>
+    <string name="evernote_unlink_dialog_message">Všechny úkoly byly odpojeny</string>
+    <string name="evernote_unlink_dialog_yes">Odpojit</string>
+    <string name="evernote_unlink_dialog_no">Zrušit</string>
+    <string name="evernote_untitled_note">Poznámka bez názvu</string>
+    <!-- Attachments -->
+    <string name="evernote_search_hint">Hledej poznámku</string>
+    <string name="evernote_filter_description">Pouze poznámky s úkoly</string>
+    <!-- About -->
+    <string name="about">O programu</string>
+    <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">Aplikaci pro vás vytvořili</string>
+    <string name="about_app_version">Verze aplikace</string>
+    <string name="about_policies">Zásady použití</string>
+    <string name="about_policies_detail">Klikni pro stažení zásad použití</string>
+    <string name="about_oss">Otevři source licenses</string>
+    <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
+    <!-- Invite -->
+    <string name="settings_invite">Pozvat přátele do Swipes</string>
+    <string name="invite_subject">Zjisti co je nového v aplikaci</string>
+    <string name="invite_body">Hey,\n\n
+ I\'m trying this new app - Swipes, for organizing my day. \n\n
+ It makes it easy to plan the day, snooze tasks for later or complete them with just a swipe.
+I thought it\'s really something you\'d like.\n\n
+Check it out here http://play.google.com/store/apps/details?id=com.swipesapp.android and download.\n\n
+  Enjoy!</string>
+    <string name="invite_chooser_title">Pozvat pomocí:</string>
+    <!-- Share -->
+    <string name="share_message_subject">Dokončené úkoly</string>
+    <string name="share_message_header">Úkoly :</string>
+    <string name="share_message_footer_sent_from">Sent with my Swipes – Task list made for High Achievers</string>
+    <string name="share_message_footer_get_swipes">Aplikace zdarma pro zařízení  iPhone a Android - http://swipesapp.com</string>
+    <string name="share_message_circle">◯&#160;</string>
+    <string name="share_chooser_title">Sdílet s:</string>
+    <!-- Actions -->
+    <string name="dialog_yes">ANO</string>
+    <string name="dialog_no">NE</string>
+    <string name="delete_task_dialog_text">Nelze vrátit zpět.</string>
+    <string name="delete_task_dialog_yes">ODSTRANIT</string>
+    <string name="delete_task_dialog_no">ZRUŠIT</string>
+    <string name="add_task_hint">Přidat nový úkol</string>
+    <string name="show_old">ZOBRAZIT STARÉ ÚKOLY</string>
+    <string name="clear_old">VYMAZAT STARÉ ÚKOLY</string>
+    <string name="clear_old_dialog_title">Vymazat staré úkoly?</string>
+    <string name="clear_old_dialog_text">Nelze vrátit zpět.</string>
+    <string name="clear_old_dialog_yes">ODSTRANIT</string>
+    <string name="clear_old_dialog_no">ZRUŠIT</string>
+    <string name="search_hint">Hledání</string>
+    <string name="logout_dialog_title">Odhlásit Váš účet?</string>
+    <string name="logout_dialog_message">Swipes zastaví synchronizaci zařízení a odstraní data z tohoto zařízení.</string>
+    <string name="logout_dialog_yes">Odhlásit</string>
+    <string name="logout_dialog_no">Zrušit</string>
+    <string name="keep_data_dialog_title">Zachovat data z období testovaní?</string>
+    <string name="keep_data_dialog_message">Swipes může synchronizovat vaše data z období testování do cloudu.</string>
+    <string name="keep_data_dialog_yes">Zachovat data</string>
+    <string name="keep_data_dialog_no">Odstranit data</string>
+    <string name="share_intent_add_confirm">Úkol vytvořen!</string>
+    <string name="delete_single_task">Odstranit úkol?</string>
+    <!-- Scheduler -->
+    <string name="date_today">dnes</string>
+    <string name="date_tomorrow">zítra</string>
+    <string name="date_yesterday">včera</string>
+    <string name="date_unspecified">Nespecifikováno</string>
+    <string name="snooze_later_today">Dnes později</string>
+    <string name="snooze_this_evening">Dnes večer</string>
+    <string name="snooze_tomorrow_eve">Zítřejší večer</string>
+    <string name="snooze_tomorrow">Zítra</string>
+    <string name="snooze_two_days_default">Pondělí</string>
+    <string name="snooze_this_weekend">Tento víkend</string>
+    <string name="snooze_next_week">Následující týden</string>
+    <string name="snooze_unspecified">Nespecifikováno</string>
+    <string name="snooze_at_location">V místě</string>
+    <string name="snooze_pick_date">Vybrat datum</string>
+    <string name="snooze_done_text">ODLOŽIT</string>
+    <string name="snooze_adjust_hint">Podržením upravit čas</string>
+    <!-- Week days -->
+    <string name="sunday_full">Neděle</string>
+    <string name="monday_full">Pondělí</string>
+    <string name="tuesday_full">Úterý</string>
+    <string name="wednesday_full">Středa</string>
+    <string name="thursday_full">Čtvrtek</string>
+    <string name="friday_full">Pátek</string>
+    <string name="saturday_full">Sobota</string>
+    <!-- Months -->
+    <string name="january_full">Leden</string>
+    <string name="february_full">Únor</string>
+    <string name="march_full">Březen</string>
+    <string name="april_full">Duben</string>
+    <string name="may_full">Květen</string>
+    <string name="june_full">Červen</string>
+    <string name="july_full">Červenec</string>
+    <string name="august_full">Srpen</string>
+    <string name="september_full">Září</string>
+    <string name="october_full">Říjen</string>
+    <string name="november_full">Listopad</string>
+    <string name="december_full">Prosinec</string>
+    <!-- Numerals -->
+    <string name="month_first_suffix">%sst</string>
+    <string name="month_second_suffix">"%s. "</string>
+    <string name="month_third_suffix">"%s. "</string>
+    <string name="month_default_suffix">"%s. "</string>
+    <!-- Edit task -->
+    <string name="edit_task_repeat_choice_mode">Opakovat každý &#8230;</string>
+    <string name="repeat_never_description">Neopakovatelnou nikdy</string>
+    <string name="repeat_day_description">Každý den v %s</string>
+    <string name="repeat_mon_fri_description">Každé pondělí až pátek v%s</string>
+    <string name="repeat_week_description">Vždy %1$s v %2$s</string>
+    <string name="repeat_month_description">Měsíčně %1$s v %2$s</string>
+    <string name="repeat_year_description">Ročně %1$s %2$s v %3$s</string>
+    <string name="edit_task_tags_default_text">Nastavit tagy</string>
+    <string name="edit_task_notes_default_text">Přidat poznámku</string>
+    <string name="edit_task_evernote_attached">PRILOHA</string>
+    <!-- Action steps -->
+    <string name="edit_task_add_subtask_hint">Přidat akci</string>
+    <string name="subtask_hide_caption">Zobrazit méně kroků</string>
+    <string name="subtask_show_caption">Zobrazit vše</string>
+    <string name="delete_subtask_dialog_title">"Vymazat? "</string>
+    <string name="delete_subtask_dialog_message">"Nelze vrátit zpět. "</string>
+    <string name="delete_subtask_dialog_yes">Smazat</string>
+    <string name="delete_subtask_dialog_no">Zrusit</string>
+    <!-- Repeating -->
+    <string name="repeat_option_never">nikdy</string>
+    <string name="repeat_option_day">den</string>
+    <string name="repeat_option_mon_fri">po-pá</string>
+    <string name="repeat_option_week">týden</string>
+    <string name="repeat_option_month">měsíc</string>
+    <string name="repeat_option_year">rok</string>
+    <!-- Notifications -->
+    <string name="notification_snooze">Odložit o %d h</string>
+    <string name="notification_complete">Hotovo</string>
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">Přidat nový tag</string>
+    <string name="add_tag_dialog_hint">Název tagu</string>
+    <string name="add_tag_dialog_yes">Uložit</string>
+    <string name="add_tag_dialog_no">Zrušit</string>
+    <string name="delete_tag_dialog_title">"Smazat tag \"%s\"? "</string>
+    <string name="delete_tag_dialog_message">Nelze vrátit zpět.</string>
+    <string name="delete_tag_dialog_yes">Smazat</string>
+    <string name="delete_tag_dialog_no">"Zrušit "</string>
+    <string name="empty_tags_hint">Nejsou přiřazeny žádné tagy</string>
+    <!-- Workspaces -->
+    <string name="set_workspaces_hint">"NASTAVIT PRACOVNÍ PLOCHU "</string>
+    <string name="clear_workspace_button">VYČISTIT PRACOVNÍ PLOCHU</string>
+    <!-- Sync -->
+    <string name="sync_started_message">Synchronizování &#8230;</string>
+    <string name="sync_completed_message">"Synchronizace proběhla úspěšně! "</string>
+    <string name="sync_failed_message">"Synchronizace se nezdařila. "</string>
+    <!-- Showcase -->
+    <!-- Widgets -->
+    <!-- Plurals -->
+</resources>
