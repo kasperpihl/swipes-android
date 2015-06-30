@@ -82,6 +82,7 @@ public class AddTasksActivity extends BaseActivity {
     private TasksService mTasksService;
 
     private boolean mOpenedFromWidget;
+    private boolean mIsSnoozing;
     private String[] mIntentData;
 
     private static Set<GsonTag> sSelectedTags;
@@ -144,7 +145,7 @@ public class AddTasksActivity extends BaseActivity {
     @Override
     protected void onUserLeaveHint() {
         // Close when opened from the widget and user presses the home key.
-        if (mOpenedFromWidget) cancelAddTask();
+        if (mOpenedFromWidget && !mIsSnoozing) cancelAddTask();
     }
 
     @Override
@@ -160,6 +161,9 @@ public class AddTasksActivity extends BaseActivity {
                 // Uncheck snooze checkbox.
                 mSnoozeCheckbox.setChecked(false);
             }
+
+            // Reset flag.
+            mIsSnoozing = false;
         }
     }
 
@@ -571,9 +575,12 @@ public class AddTasksActivity extends BaseActivity {
         if (sSnoozeTime == null) {
             // Call snooze activity.
             Intent intent = new Intent(this, SnoozeActivity.class);
-            intent.putExtra(Constants.EXTRA_TASK_ID, 0);
+            intent.putExtra(Constants.EXTRA_TASK_ID, 0L);
             intent.putExtra(Constants.EXTRA_NEW_TASK_MODE, true);
             startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
+
+            // Set flag to prevent closing.
+            mIsSnoozing = true;
         } else {
             // Remove snooze.
             sSnoozeTime = null;
