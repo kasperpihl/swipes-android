@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.parse.ParsePushBroadcastReceiver;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Constants;
@@ -40,29 +41,31 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
         if (sSyncService == null) sSyncService = SyncService.newInstance(context);
 
         try {
-            // Read payload from intent.
-            String payload = intent.getStringExtra(EXTRA_PAYLOAD);
-            JSONObject json = new JSONObject(payload);
+            if (PreferenceUtils.isBackgroundSyncEnabled(context)) {
+                // Read payload from intent.
+                String payload = intent.getStringExtra(EXTRA_PAYLOAD);
+                JSONObject json = new JSONObject(payload);
 
-            // Read payload data in the JSON.
-            JSONObject data = new JSONObject(json.getString(JSON_DATA));
-            String contentAvailable = data.getString(JSON_CONTENT);
-            String syncId = json.getString(JSON_SYNC_ID);
+                // Read payload data in the JSON.
+                JSONObject data = new JSONObject(json.getString(JSON_DATA));
+                String contentAvailable = data.getString(JSON_CONTENT);
+                String syncId = json.getString(JSON_SYNC_ID);
 
-            // Determine sync conditions.
-            boolean hasContent = contentAvailable != null && contentAvailable.equals("1");
-            String lastSyncId = PreferenceUtils.readString(PreferenceUtils.LAST_SYNC_ID, context);
-            boolean isDifferentDevice = (syncId != null && !syncId.isEmpty()) && lastSyncId != null && !syncId.equals(lastSyncId);
+                // Determine sync conditions.
+                boolean hasContent = contentAvailable != null && contentAvailable.equals("1");
+                String lastSyncId = PreferenceUtils.readString(PreferenceUtils.LAST_SYNC_ID, context);
+                boolean isDifferentDevice = (syncId != null && !syncId.isEmpty()) && lastSyncId != null && !syncId.equals(lastSyncId);
 
-            if (hasContent && isDifferentDevice) {
-                // Perform background sync.
-                sSyncService.performSync(true, Constants.SYNC_DELAY);
+                if (hasContent && isDifferentDevice) {
+                    // Perform background sync.
+                    sSyncService.performSync(true, Constants.SYNC_DELAY);
+                }
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error parsing push payload.", e);
         }
 
-        Log.d(LOG_TAG, "Push received");
+        if (BuildConfig.DEBUG) Log.d(LOG_TAG, "Push received");
     }
 
     @Override

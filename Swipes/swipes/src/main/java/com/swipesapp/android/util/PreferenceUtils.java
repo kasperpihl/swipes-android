@@ -22,6 +22,7 @@ public class PreferenceUtils {
     public static final String LAST_SYNC_ID = "last_sync_id";
 
     // Options.
+    public static final String BACKGROUND_SYNC_KEY = "settings_enable_background_sync";
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";
     public static final String VIBRATIONS_KEY = "settings_enable_vibration";
     public static final String DAILY_REMINDER_KEY = "settings_enable_daily_reminder";
@@ -289,6 +290,17 @@ public class PreferenceUtils {
     public static boolean isEvernoteSyncEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(EVERNOTE_SYNC_KEY, true);
+    }
+
+    /**
+     * Check if background sync is enabled.
+     *
+     * @param context Context instance.
+     * @return True if it's enabled in the app.
+     */
+    public static boolean isBackgroundSyncEnabled(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(BACKGROUND_SYNC_KEY, true);
     }
 
     /**
