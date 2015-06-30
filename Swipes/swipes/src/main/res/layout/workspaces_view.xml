@@ -58,29 +58,33 @@
             android:id="@+id/workspaces_tags_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="@dimen/tags_margin_sides"
-            android:layout_marginRight="@dimen/tags_margin_sides"
-            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ScrollView
+            <com.swipesapp.android.ui.view.SwipesScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <com.swipesapp.android.ui.view.FlowLayout
                     android:id="@+id/workspaces_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/tags_margin_sides"
+                    android:layout_marginRight="@dimen/tags_margin_sides"
+                    android:paddingBottom="30dp"
+                    android:paddingTop="15dp"
                     android:visibility="gone" />
-            </ScrollView>
+            </com.swipesapp.android.ui.view.SwipesScrollView>
 
             <TextView
                 android:id="@+id/workspaces_empty_tags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tags_margin_sides"
+                android:layout_marginRight="@dimen/tags_margin_sides"
                 android:background="@color/transparent"
+                android:paddingBottom="30dp"
+                android:paddingTop="15dp"
                 android:text="@string/empty_tags_hint"
                 android:textColor="@color/neutral_gray"
                 android:textSize="@dimen/text_size_medium" />

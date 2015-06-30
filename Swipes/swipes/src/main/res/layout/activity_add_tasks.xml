@@ -75,18 +75,26 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/add_task_fields_container">
+        android:layout_above="@id/add_task_fields_container"
+        android:fillViewport="true">
 
-        <com.swipesapp.android.ui.view.FlowLayout
-            android:id="@+id/add_task_tags_container"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/add_task_tags_margin_bottom"
-            android:layout_marginLeft="@dimen/tags_margin_sides"
-            android:layout_marginRight="@dimen/tags_margin_sides"
-            android:layout_marginTop="@dimen/add_task_tags_margin_top"
-            android:visibility="invisible" />
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <com.swipesapp.android.ui.view.FlowLayout
+                android:id="@+id/add_task_tags_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tags_margin_sides"
+                android:layout_marginRight="@dimen/tags_margin_sides"
+                android:paddingBottom="@dimen/add_task_tags_margin_bottom"
+                android:paddingTop="@dimen/add_task_tags_margin_top"
+                android:visibility="invisible" />
+        </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>
