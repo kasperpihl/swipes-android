@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Welcome -->
     <string name="welcome_task_one">Deslize para a direita para concluir</string>
     <string name="welcome_task_two">Deslize para a esquerda para adiar</string>
@@ -20,6 +20,7 @@
     <string name="overview_title">VISÃO GERAL</string>
     <string name="title_share_intent">Adicionar ao Swipes</string>
     <string name="title_activity_settings">Configurações</string>
+    <string name="title_activity_options">Opções</string>
     <string name="title_activity_integrations">Integrações</string>
     <string name="title_activity_snooze_settings">Adiamentos</string>
     <string name="title_activity_add_tasks">Adicionar Tarefa</string>
@@ -55,8 +56,7 @@
     <string name="group_preferences">Preferências</string>
     <string name="group_help">Ajuda</string>
     <string name="group_other">Outros</string>
-    <string name="notifications">Notificações</string>
-    <string name="vibration">Vibração</string>
+    <string name="options">Opções</string>
     <string name="location">Localização</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
@@ -72,6 +72,21 @@
     <string name="preference_no">Cancelar</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Escuro</string>
+    <!-- Options -->
+    <string name="group_tweaks">Ajustes</string>
+    <string name="group_notifications">Notificações</string>
+    <string name="options_background_sync">Sincronização em segundo plano</string>
+    <string name="options_background_sync_detail">Manter as tarefas atualizadas automaticamente em segundo plano.</string>
+    <string name="options_scroll_to_added">Rolar para adicionada</string>
+    <string name="options_scroll_to_added_detail">Rolar automaticamente para focar na última tarefa adicionada.</string>
+    <string name="options_snoozed_tasks">Tarefas adiadas</string>
+    <string name="options_snoozed_tasks_detail">Notificar de tarefas adiadas no seu tempo selecionado.</string>
+    <string name="options_daily_reminder">Lembrete diário</string>
+    <string name="options_daily_reminder_detail">Mostrar um lembrete diário para planejar o dia.</string>
+    <string name="options_weekly_reminder">Lembrete semanal</string>
+    <string name="options_weekly_reminder_detail">Mostrar um lembrete semanal para planejar a semana.</string>
+    <string name="options_vibration">Vibração</string>
+    <string name="options_vibration_detail">Vibrar quando notificações aparecem.</string>
     <!-- Help -->
     <string name="help_center">Central de Ajuda</string>
     <string name="help_google_community">Comunidade no Google+</string>
@@ -245,6 +260,10 @@ Aproveite!</string>
     <!-- Notifications -->
     <string name="notification_snooze">Adiar +%dh</string>
     <string name="notification_complete">Concluir</string>
+    <string name="reminder_daily_title">Planejar seu dia?</string>
+    <string name="reminder_daily_message">Bom dia! Comece seu dia produtivo com um plano.</string>
+    <string name="reminder_weekly_title">Planejar sua semana?</string>
+    <string name="reminder_weekly_message">Boa noite! Comece sua semana produtiva com um plano esta noite.</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Adicionar etiqueta</string>
     <string name="add_tag_dialog_hint">Título da etiqueta</string>
@@ -293,5 +312,13 @@ Aproveite!</string>
     <plurals name="done_workspace_results">
         <item quantity="one">%1$s tarefa concluída com etiquetas: &lt;b>%2$s&lt;/b></item>
         <item quantity="other">%1$s tarefas concluídas com etiquetas: &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="one">Tarefa restando hoje</item>
+        <item quantity="other">Tarefas restando hoje</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="one">Você tem uma tarefa restante para hoje. Algo importante?</item>
+        <item quantity="other">Você tem %s tarefas restantes para hoje. Algo importante?</item>
     </plurals>
 </resources>

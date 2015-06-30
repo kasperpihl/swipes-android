@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Screenshots text -->
+    <string name="screenshot_text_phrases">ESSE É O SWIPES \n SUAS TAREFAS EM UMA LINHA DO TEMPO
+SINCRONIZE TAREFAS E NOTAS \n DO SEU EVERNOTE
+MELHOR NOVA STARTUP 2014
+CONCLUA O QUE É IMPORTANTE \n E ADIE O RESTO PARA DEPOIS
+FOQUE NO TRABALHO \n QUE IMPORTA
+ESSE É O SWIPES \n FEITO PARA VOCÊ
+OS WIDGETS \n DO SWIPES
+TENHA UMA VISÃO COMPLETA \n DAS SUAS TAREFAS
+SWIPES NO ANDROID
+para os que \n FAZEM E CRIAM
+LISTA DE TAREFAS PARA GRANDES CONQUISTAS</string>
+    <!-- Screenshots UI -->
+    <string name="screenshot_ui_phrases">VISÃO GERAL
+AGORA
+MAIS TARDE
+CONCLUÍDO
+2/9 Hoje
+Pesquisar notas
+Mais Tarde
+Hoje à Noite
+Amanhã
+Terça
+Fim de Semana
+Próxima Semana
+Indefinido
+Escolher Data
+2 tarefas atuais com etiquetas: swipes
+DEFINIR FILTRO
+LIMPAR FILTRO
+TUDO FEITO POR HOJE
+Tirando meus sapatos porque a lista de tarefas de hoje está terminada!
+#DiaProdutivo</string>
+    <!-- Screenshots widget -->
+    <string name="screenshot_widget_phrases">6/14 HOJE
+Nova Tarefa</string>
+    <!-- Screenshot tasks -->
+    <string name="screenshot_task_phrases">Ligar para o dentista - pessoal
+Buscar novo molho de chaves - escritório
+Discussão da equipe - trabalho, time
+Escrever uma postagem no blog - trabalho
+Consertar as notas da apresentação - trabalho
+Ligar de volta para o Tim - trabalho, cliente</string>
+</resources>
