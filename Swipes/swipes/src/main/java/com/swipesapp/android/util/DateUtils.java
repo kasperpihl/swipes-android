@@ -210,18 +210,30 @@ public class DateUtils {
      * @return True if date is newer than today.
      */
     public static boolean isNewerThanToday(Date date) {
-        if (date == null) return false;
+        return isNewerThan(date, new Date());
+    }
+
+    /**
+     * Checks if the provided date is newer than another date.
+     *
+     * @param date  Date to check.
+     * @param older Supposedly older date being checked against.
+     * @return True if date is newer than the other.
+     */
+    public static boolean isNewerThan(Date date, Date older) {
+        if (date == null || older == null) return false;
 
         Calendar providedDate = Calendar.getInstance();
         providedDate.setTime(date);
-        Calendar currentDate = Calendar.getInstance();
+        Calendar olderDate = Calendar.getInstance();
+        olderDate.setTime(older);
 
         int providedYear = providedDate.get(Calendar.YEAR);
-        int currentYear = currentDate.get(Calendar.YEAR);
+        int olderYear = olderDate.get(Calendar.YEAR);
         int providedDay = providedDate.get(Calendar.DAY_OF_YEAR);
-        int currentDay = currentDate.get(Calendar.DAY_OF_YEAR);
+        int olderDay = olderDate.get(Calendar.DAY_OF_YEAR);
 
-        return providedYear >= currentYear && (providedDay > currentDay || providedYear > currentYear);
+        return providedYear >= olderYear && (providedDay > olderDay || providedYear > olderYear);
     }
 
     /**

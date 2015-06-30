@@ -84,9 +84,10 @@ public class RepeatHandler {
     private void setInterval(GsonTask task, long interval) {
         Calendar nextDate = Calendar.getInstance();
         nextDate.setTime(task.getLocalRepeatDate());
+        Date initialTime = new Date(nextDate.getTimeInMillis());
 
         // Add interval until the time set is in the future.
-        while (!DateUtils.isNewerThanToday(nextDate.getTime())) {
+        while (!DateUtils.isNewerThanToday(nextDate.getTime()) || !DateUtils.isNewerThan(nextDate.getTime(), initialTime)) {
             long timeInMillis = nextDate.getTimeInMillis();
             nextDate.setTimeInMillis(timeInMillis + interval);
         }
