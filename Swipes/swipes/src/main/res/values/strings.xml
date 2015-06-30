@@ -62,8 +62,6 @@
     <string name="group_help">Help</string>
     <string name="group_other">Other</string>
     <string name="options">Options</string>
-    <string name="notifications">Notifications</string>
-    <string name="vibration">Vibration</string>
     <string name="location">Location</string>
     <string name="theme">Theme</string>
     <string name="settings_theme_dialog_title">Theme</string>
@@ -82,7 +80,7 @@
 
     <!-- Options -->
     <string name="group_tweaks">Tweaks</string>
-    <string name="group_notifications">@string/notifications</string>
+    <string name="group_notifications">Notifications</string>
     <string name="options_background_sync">Background sync</string>
     <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
     <string name="options_scroll_to_added">Scroll to added</string>
@@ -93,7 +91,7 @@
     <string name="options_daily_reminder_detail">Show a daily reminder to plan the day.</string>
     <string name="options_weekly_reminder">Weekly reminder</string>
     <string name="options_weekly_reminder_detail">Show a weekly reminder to plan the week.</string>
-    <string name="options_vibration">@string/vibration</string>
+    <string name="options_vibration">Vibration</string>
     <string name="options_vibration_detail">Vibrate when notifications are shown.</string>
 
     <!-- Help -->
@@ -353,7 +351,7 @@
         <item quantity="other">Tasks left today</item>
     </plurals>
     <plurals name="reminder_evening_message">
-        <item quantity="one">You have a task left for today. Want to see it?</item>
+        <item quantity="one">You have a task left for today. Anything important?</item>
         <item quantity="other">You have %s tasks left for today. Anything important?</item>
     </plurals>
 

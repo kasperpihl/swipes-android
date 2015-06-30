@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Screenshots text -->
+    <string name="screenshot_text_phrases">
+        THIS IS SWIPES \n YOUR TASKS ON A TIMELINE
+        SYNC TASKS AND NOTES \n FROM YOUR EVERNOTE
+        BEST NEW STARTUP 2014
+        COMPLETE THE IMPORTANT \n SNOOZE THE REST FOR LATER
+        FOCUS ON THE WORK \n THAT MATTERS
+        THIS IS SWIPES \n MADE FOR YOU
+        THE SWIPES \n WIDGETS
+        GET A FULL OVERVIEW \n OF YOUR TASKS.
+        SWIPES ON ANDROID
+        for the \n Doers [AND] Creators
+        TASK LIST FOR THE HIGH ACHIEVERS
+    </string>
+
+    <!-- Screenshots UI -->
+    <string name="screenshot_ui_phrases">
+        OVERVIEW
+        NOW
+        LATER
+        DONE
+        2/9 Today
+        Search notes
+        Later Today
+        This Evening
+        Tomorrow
+        Tuesday
+        This Weekend
+        Next Week
+        Unspecified
+        Pick a Date
+        2 current tasks with tags: swipes
+        SET WORKSPACE
+        CLEAR WORKSPACE
+        ALL DONE FOR TODAY
+        Kicking my shoes off because today\'s to-do list is complete!
+        #ProductiveDay
+    </string>
+
+    <!-- Screenshots widget -->
+    <string name="screenshot_widget_phrases">
+        6/14 TODAY
+        New Task
+    </string>
+
+    <!-- Screenshot tasks -->
+    <string name="screenshot_task_phrases">
+        Call the dentist - personal
+        Pick up the new set of keys - office
+        Team discussion - work, team
+        Write a blog post - work
+        Fix the presentation notes - work
+        Call back Tim - work, client
+    </string>
+
+</resources>
