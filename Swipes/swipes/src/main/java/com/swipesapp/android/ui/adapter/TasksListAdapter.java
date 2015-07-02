@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -532,7 +531,6 @@ public class TasksListAdapter extends BaseAdapter {
     private void resetCellState(TaskHolder holder) {
         // Reset visibility.
         if (!mIsDraggingCell) {
-            holder.frontView.setBackgroundColor(Color.TRANSPARENT);
             holder.frontView.setVisibility(View.VISIBLE);
             holder.backView.setVisibility(View.GONE);
             holder.parentView.setVisibility(View.VISIBLE);

@@ -85,22 +85,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Group label -->
-            <TextView
-                android:id="@+id/task_label"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/task_label_height"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:paddingLeft="@dimen/task_label_padding_left"
-                android:paddingRight="@dimen/task_label_padding_right"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_small"
-                android:visibility="gone" />
-
             <!-- Selection indicator -->
             <View xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/selected_indicator"
@@ -113,7 +97,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/task_label"
                 android:layout_toRightOf="@id/selected_indicator"
                 android:baselineAligned="false"
                 android:gravity="center_vertical"
@@ -207,5 +190,23 @@
         </RelativeLayout>
 
     </FrameLayout>
+
+    <!-- Group label -->
+    <TextView
+        android:id="@+id/task_label"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/task_label_height"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/list_item_shadow_size"
+        android:layout_marginTop="@dimen/list_item_shadow_size"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:paddingLeft="@dimen/task_label_padding_left"
+        android:paddingRight="@dimen/task_label_padding_right"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_small"
+        android:visibility="gone" />
 
 </RelativeLayout>
