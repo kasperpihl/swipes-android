@@ -649,7 +649,7 @@ public class SnoozeActivity extends FragmentActivity {
 
     private int apply24HourTreatment(int hourOfDay) {
         // Check if hour is above the 24 limit.
-        if (hourOfDay > 24) {
+        if (hourOfDay >= 24) {
             // Reduce hour to the proper time in the morning. Time is still today, but
             // the next day treatment will move it to tomorrow when called.
             hourOfDay = hourOfDay - 24;
