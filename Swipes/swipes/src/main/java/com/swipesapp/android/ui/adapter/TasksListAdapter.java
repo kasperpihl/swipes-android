@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -410,7 +412,7 @@ public class TasksListAdapter extends BaseAdapter {
         }
     }
 
-    private void setLabelDivider(TaskHolder holder, int position) {
+    private void setLabelDivider(final TaskHolder holder, int position) {
         // Determine label visibility.
         if (position == 0) {
             // First row. Show label divider.
@@ -456,6 +458,26 @@ public class TasksListAdapter extends BaseAdapter {
                     holder.label.setBackgroundResource(R.drawable.cell_label_done);
                     holder.label.setText(DateUtils.formatDayToRecent(mCurrentDate, mContext.get()));
                     break;
+            }
+
+            // HACK: Fix a bug on Jelly Bean and below where padding in the XML isn't working.
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+                final ViewTreeObserver observer = holder.label.getViewTreeObserver();
+                observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        Resources res = mContext.get().getResources();
+                        int paddingLeft = res.getDimensionPixelSize(R.dimen.task_label_padding_left);
+                        int paddingRight = res.getDimensionPixelSize(R.dimen.task_label_padding_right);
+
+                        // Force apply padding when the label is about to be drawn.
+                        holder.label.setPadding(paddingLeft, 0, paddingRight, 0);
+
+                        if (observer.isAlive()) observer.removeOnPreDrawListener(this);
+                        return true;
+                    }
+                });
             }
         }
     }
