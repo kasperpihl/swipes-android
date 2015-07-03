@@ -562,34 +562,33 @@ public class TasksListAdapter extends BaseAdapter {
     }
 
     private void animateOldTask(TaskHolder holder, int position) {
-        // Animate display of old tasks only when needed.
-        if (mAnimateOld && mIsShowingOld && position >= getFirstOldPosition()) {
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            ((Activity) mContext.get()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        if (mIsShowingOld) {
+            // Reset flag when all tasks have been animated.
+            if (isVisibleAreaFull(holder)) {
+                mAnimateOld = false;
+            }
 
-            float fromY = displaymetrics.heightPixels;
-            float toY = holder.containerView.getTranslationY();
+            // Animate display of old tasks only when needed.
+            if (mAnimateOld && position >= getFirstOldPosition()) {
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                ((Activity) mContext.get()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
-            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.containerView, "translationY", fromY, toY);
-            animator.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
-        }
+                float fromY = displaymetrics.heightPixels;
+                float toY = holder.containerView.getTranslationY();
 
-        // Reset flag when all tasks have been animated.
-        if (isVisibleAreaFull(holder)) {
-            mAnimateOld = false;
+                ObjectAnimator animator = ObjectAnimator.ofFloat(holder.parentView, "translationY", fromY, toY);
+                animator.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
+            }
         }
     }
 
     private boolean isVisibleAreaFull(TaskHolder holder) {
-        // Calculate max list height.
-        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
-        int maxListHeight = mListViewHeight + layoutParams.height;
-
         // Update current visible area.
+        ViewGroup.LayoutParams layoutParams = holder.containerView.getLayoutParams();
         mVisibleAreaHeight += layoutParams.height;
 
         // Determine if visible area is full.
-        return mVisibleAreaHeight >= maxListHeight;
+        return mVisibleAreaHeight >= mListViewHeight;
     }
 
     public void setListContentsListener(ListContentsListener listContentsListener) {

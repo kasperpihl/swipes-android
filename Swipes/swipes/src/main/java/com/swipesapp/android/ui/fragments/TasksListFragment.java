@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
@@ -26,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -143,6 +145,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(R.id.list_area)
     LinearLayout mListArea;
+    @InjectView(R.id.list_container)
+    FrameLayout mListContainer;
 
     @InjectView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
@@ -212,7 +216,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 break;
         }
 
-        measureListView(mListView);
+        measureListView();
 
         refreshTaskList(false);
 
@@ -546,12 +550,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         });
     }
 
-    private void measureListView(final DynamicListView listView) {
-        if (listView != null) {
-            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    private void measureListView() {
+        if (mListContainer != null) {
+            mListContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
                     // Save list view height for later calculations.
-                    mListViewHeight = listView.getHeight();
+                    mListViewHeight = mListContainer.getHeight();
                 }
             });
         }
@@ -1125,6 +1129,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             public void onAnimationEnd(Animator animation) {
                 // Hide buttons.
                 mHeaderView.setVisibility(View.GONE);
+
+                // Animate list view to new position.
+                float fromY = mListView.getTranslationY() + mHeaderView.getHeight();
+                float toY = mListView.getTranslationY();
+
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mListView, "translationY", fromY, toY);
+                animator.setDuration(Constants.ANIMATION_DURATION_MEDIUM).start();
 
                 // Show header in landscape.
                 if (DeviceUtils.isLandscape(getActivity())) {

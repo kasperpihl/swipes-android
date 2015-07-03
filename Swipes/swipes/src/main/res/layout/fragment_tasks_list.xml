@@ -21,24 +21,31 @@
         <!-- Done buttons -->
         <include layout="@layout/done_buttons_view" />
 
-        <!-- List view -->
-        <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
-            android:id="@android:id/list"
+        <!-- Container used to measure the max list height regardless of number of items. -->
+        <FrameLayout
+            android:id="@+id/list_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:listSelector="@color/transparent"
-            android:paddingBottom="@dimen/list_padding_bottom"
-            android:paddingLeft="@dimen/list_padding_sides"
-            android:paddingRight="@dimen/list_padding_sides"
-            android:paddingTop="@dimen/list_padding_top"
-            swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
-            swipe:swipeBackIconRight="@+id/swipe_back_icon_right"
-            swipe:swipeBackView="@+id/swipe_back"
-            swipe:swipeFrontView="@+id/swipe_front" />
+            android:layout_weight="1">
+
+            <!-- List view -->
+            <com.fortysevendeg.swipelistview.DynamicListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:listSelector="@color/transparent"
+                android:paddingBottom="@dimen/list_padding_bottom"
+                android:paddingLeft="@dimen/list_padding_sides"
+                android:paddingRight="@dimen/list_padding_sides"
+                android:paddingTop="@dimen/list_padding_top"
+                swipe:swipeBackIconLeft="@+id/swipe_back_icon_left"
+                swipe:swipeBackIconRight="@+id/swipe_back_icon_right"
+                swipe:swipeBackView="@+id/swipe_back"
+                swipe:swipeFrontView="@+id/swipe_front" />
+        </FrameLayout>
 
         <ViewStub
             android:id="@android:id/empty"
