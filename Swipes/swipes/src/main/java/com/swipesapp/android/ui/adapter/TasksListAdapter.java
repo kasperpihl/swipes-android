@@ -649,6 +649,9 @@ public class TasksListAdapter extends BaseAdapter {
 
         // Refresh adapter.
         super.notifyDataSetChanged();
+
+        // Check for empty data.
+        checkEmpty();
     }
 
     public void setShowingOld(boolean isShowing) {

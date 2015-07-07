@@ -27,11 +27,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -145,8 +143,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     @InjectView(R.id.list_area)
     LinearLayout mListArea;
-    @InjectView(R.id.list_container)
-    FrameLayout mListContainer;
 
     @InjectView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
@@ -551,11 +547,16 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void measureListView() {
-        if (mListContainer != null) {
-            mListContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        if (mListArea != null) {
+            mListArea.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
                     // Save list view height for later calculations.
-                    mListViewHeight = mListContainer.getHeight();
+                    mListViewHeight = mListArea.getHeight();
+
+                    // Consider header height in the done section.
+                    if (mSection == Sections.DONE) {
+                        mListViewHeight = mListViewHeight - mHeaderView.getHeight();
+                    }
                 }
             });
         }
@@ -976,11 +977,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         boolean isFilter = !mActivity.getSelectedFilterTags().isEmpty();
         boolean isSearch = !mActivity.getSearchQuery().isEmpty();
 
+        View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
+
         if (mSection == Sections.FOCUS) {
-            ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
-            RelativeLayout emptyMainArea = (RelativeLayout) focusEmptyView.findViewById(R.id.all_done_main_area);
-            RelativeLayout emptySocialArea = (RelativeLayout) focusEmptyView.findViewById(R.id.all_done_social_area);
-            SwipesTextView emptyViewIcon = (SwipesTextView) focusEmptyView.findViewById(R.id.tasks_empty_view_icon);
+            RelativeLayout emptyMainArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_main_area);
+            RelativeLayout emptySocialArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_social_area);
+            SwipesTextView emptyViewIcon = (SwipesTextView) mEmptyView.findViewById(R.id.tasks_empty_view_icon);
 
             // Set visibility of sharing and icon.
             emptyMainArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
@@ -989,15 +991,15 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             updateEmptyView();
 
-            // Animate empty view.
-            if (focusEmptyView.getAlpha() == 0f) {
-                focusEmptyView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
-
-                fadeOutTasksList();
-            }
-
             // Send cleared tasks event.
             sendClearedTasksEvent();
+        }
+
+        // Animate empty view.
+        if (emptyViewContainer.getAlpha() == 0f) {
+            emptyViewContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+
+            fadeOutTasksList();
         }
 
         if (DeviceUtils.isLandscape(getActivity())) {
@@ -1021,22 +1023,22 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void hideEmptyView() {
-        if (mSection == Sections.FOCUS) {
-            ScrollView focusEmptyView = (ScrollView) mEmptyView.findViewById(R.id.focus_empty_view);
+        View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
 
-            // Animate empty view.
-            if (focusEmptyView.getAlpha() == 1f) {
-                focusEmptyView.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+        // Animate empty view.
+        if (emptyViewContainer.getAlpha() == 1f) {
+            emptyViewContainer.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
 
-                fadeInTasksList();
-            }
-
-            mDoneForToday = false;
+            fadeInTasksList();
         }
 
         if (DeviceUtils.isLandscape(getActivity())) {
             // Show landscape header.
             mLandscapeHeader.setVisibility(View.VISIBLE);
+        }
+
+        if (mSection == Sections.FOCUS) {
+            mDoneForToday = false;
         }
     }
 
@@ -1142,13 +1144,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                     mLandscapeHeader.setVisibility(View.VISIBLE);
                 }
 
+                // Set old tasks as shown.
+                sIsShowingOld = true;
+
                 // Show old tasks.
                 mTasks = mTasksService.loadCompletedTasks();
                 keepSelection();
                 mAdapter.showOld(mTasks, mListViewHeight);
-
-                // Set old tasks as shown.
-                sIsShowingOld = true;
             }
         });
     }
@@ -1704,8 +1706,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     public void fadeInTasksList() {
-        mListView.setAlpha(0f);
-        mListView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        if (mSection == Sections.DONE && sIsShowingOld) {
+            mListView.setAlpha(1f);
+        } else {
+            mListView.setAlpha(0f);
+            mListView.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        }
     }
 
     public void setDragAndDropEnabled(boolean enabled) {
