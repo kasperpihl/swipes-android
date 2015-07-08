@@ -57,6 +57,7 @@ import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.migration.MigrationAssistant;
+import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -282,6 +283,9 @@ public class TasksActivity extends BaseActivity {
         // Start sync when coming from the background.
         if (SwipesApplication.isInBackground()) {
             startSync();
+
+            // Read user settings.
+            SettingsHandler.readSettingsFromServer(this);
         }
 
         super.onStart();
@@ -375,6 +379,9 @@ public class TasksActivity extends BaseActivity {
 
                     // Subscribe to push channels.
                     SwipesApplication.subscribePush();
+
+                    // Read user settings.
+                    SettingsHandler.readSettingsFromServer(this);
 
                     // Change visibility of login menu.
                     invalidateOptionsMenu();

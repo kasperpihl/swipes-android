@@ -26,6 +26,7 @@ import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
@@ -272,6 +273,9 @@ public class SettingsActivity extends BaseActivity {
 
                         // Subscribe to push channels.
                         SwipesApplication.subscribePush();
+
+                        // Read user settings.
+                        SettingsHandler.readSettingsFromServer(getActivity());
 
                         if (TasksService.getInstance().countAllTasks() > 0) {
                             // Ask to keep user data.

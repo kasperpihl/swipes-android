@@ -493,4 +493,31 @@ public class DateUtils {
         }
     }
 
+    /**
+     * Returns a preference value from a calendar weekday.
+     *
+     * @param weekday Calendar weekday.
+     * @return Matching preference value.
+     */
+    public static String prefValueFromWeekday(int weekday) {
+        switch (weekday) {
+            case Calendar.SUNDAY:
+                return "sunday";
+            case Calendar.MONDAY:
+                return "monday";
+            case Calendar.TUESDAY:
+                return "tuesday";
+            case Calendar.WEDNESDAY:
+                return "wednesday";
+            case Calendar.THURSDAY:
+                return "thursday";
+            case Calendar.FRIDAY:
+                return "friday";
+            case Calendar.SATURDAY:
+                return "saturday";
+            default:
+                return "";
+        }
+    }
+
 }
