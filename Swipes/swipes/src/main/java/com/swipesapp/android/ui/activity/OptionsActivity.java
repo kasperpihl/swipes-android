@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 
@@ -74,6 +75,9 @@ public class OptionsActivity extends BaseActivity {
                 // Enable or disable vibration preference.
                 handleVibrationPreference();
             }
+
+            // Save user settings.
+            SettingsHandler.saveSettingsToServer(getActivity());
         }
 
         private void handleVibrationPreference() {

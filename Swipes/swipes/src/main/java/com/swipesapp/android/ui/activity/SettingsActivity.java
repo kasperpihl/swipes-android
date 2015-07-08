@@ -92,6 +92,9 @@ public class SettingsActivity extends BaseActivity {
             Analytics.sendRecurringTasks(this);
             Analytics.sendNumberOfTags(this);
         }
+
+        // Read user settings.
+        SettingsHandler.readSettingsFromServer(this);
     }
 
     @Override

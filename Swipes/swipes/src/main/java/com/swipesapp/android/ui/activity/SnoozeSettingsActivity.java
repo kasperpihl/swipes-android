@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.ui.view.TimePreference;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -65,6 +66,9 @@ public class SnoozeSettingsActivity extends BaseActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             // Update displayed values.
             displayValues();
+
+            // Save user settings.
+            SettingsHandler.saveSettingsToServer(getActivity());
         }
 
         private void displayValues() {
