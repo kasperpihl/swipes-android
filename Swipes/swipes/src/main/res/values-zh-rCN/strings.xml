@@ -20,6 +20,7 @@
     <string name="overview_title">概览</string>
     <string name="title_share_intent">添加到 Swipes</string>
     <string name="title_activity_settings">设置</string>
+    <string name="title_activity_options">选项</string>
     <string name="title_activity_integrations">整合</string>
     <string name="title_activity_snooze_settings">稍后做</string>
     <string name="title_activity_add_tasks">添加任务</string>
@@ -49,6 +50,7 @@
     <string name="group_preferences">个性化</string>
     <string name="group_help">帮助</string>
     <string name="group_other">其他</string>
+    <string name="options">选项</string>
     <string name="location">位置</string>
     <string name="theme">主题</string>
     <string name="settings_theme_dialog_title">主题</string>
@@ -64,7 +66,26 @@
     <string name="preference_no">取消</string>
     <string name="theme_light">亮色</string>
     <string name="theme_dark">暗色</string>
+    <string name="language">语言</string>
+    <string name="language_warning_title">退出应用？</string>
+    <string name="language_warning">Swipes更改设置后需要重新启动才生效</string>
+    <string name="language_warning_yes">退出</string>
+    <string name="language_warning_no">取消</string>
     <!-- Options -->
+    <string name="group_tweaks">校准</string>
+    <string name="group_notifications">通知</string>
+    <string name="options_background_sync">后台同步</string>
+    <string name="options_background_sync_detail">保持任务在后台自动更新。</string>
+    <string name="options_scroll_to_added">滚动添加</string>
+    <string name="options_scroll_to_added_detail">自动滚动用于最新添加的任务。</string>
+    <string name="options_snoozed_tasks">闲置任务</string>
+    <string name="options_snoozed_tasks_detail">通知在被选择时为闲置任务。</string>
+    <string name="options_daily_reminder">每日提醒</string>
+    <string name="options_daily_reminder_detail">显示每日提醒日计划。</string>
+    <string name="options_weekly_reminder">每周提醒</string>
+    <string name="options_weekly_reminder_detail">显示每周提醒周计划。</string>
+    <string name="options_vibration">振动</string>
+    <string name="options_vibration_detail">当通知显示时振动。</string>
     <!-- Help -->
     <string name="help_center">帮助中心</string>
     <string name="help_google_community">Google+ 社区</string>
@@ -238,6 +259,10 @@
     <!-- Notifications -->
     <string name="notification_snooze">稍后 +%dh</string>
     <string name="notification_complete">完成</string>
+    <string name="reminder_daily_title">你的每日计划？</string>
+    <string name="reminder_daily_message">早上好！有计划的启动富有成效的一天。</string>
+    <string name="reminder_weekly_title">你本周的计划？</string>
+    <string name="reminder_weekly_message">晚上好！今晚启动您的本周计划吧。</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">添加新标签</string>
     <string name="add_tag_dialog_hint">标签标题</string>
@@ -272,5 +297,20 @@
     </plurals>
     <plurals name="notification_title">
         <item quantity="other">你还有 %s 个新任务</item>
+    </plurals>
+    <plurals name="later_workspace_results">
+        <item quantity="other">%1$s 计划任务标记: &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="focus_workspace_results">
+        <item quantity="other">%1$s 当前任务标记: &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="done_workspace_results">
+        <item quantity="other">%1$s 完成任务标记: &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="other">今天剩余任务</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="other">你今天还剩下 %s 个任务。 哪些是重要的？</item>
     </plurals>
 </resources>
