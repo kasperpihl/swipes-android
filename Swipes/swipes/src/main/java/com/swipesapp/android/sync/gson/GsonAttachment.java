@@ -80,4 +80,19 @@ public class GsonAttachment {
         return identifier.hashCode();
     }
 
+    public boolean hasChanged(GsonAttachment previous) {
+        if (previous != null) {
+            if (previous.getIdentifier() != null && !previous.getIdentifier().equals(identifier)) {
+                return true;
+            } else if (previous.getService() != null && !previous.getService().equals(service)) {
+                return true;
+            } else if (previous.getTitle() != null && !previous.getTitle().equals(title)) {
+                return true;
+            } else if (previous.getSync() != null && previous.getSync() != getSync()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

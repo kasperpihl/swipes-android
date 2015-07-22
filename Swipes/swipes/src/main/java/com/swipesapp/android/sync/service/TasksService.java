@@ -264,23 +264,29 @@ public class TasksService {
         // Load existing attachments.
         List<GsonAttachment> previousAttachments = loadTask(taskId).getAttachments();
         // List to keep track of updated objects.
-        List<GsonAttachment> updatedAttachments = new ArrayList<GsonAttachment>();
+        List<GsonAttachment> updatedAttachments = new ArrayList<>();
 
         if (previousAttachments != null) {
             for (GsonAttachment previous : previousAttachments) {
                 Long id = previous.getId();
                 String identifier = previous.getIdentifier();
                 boolean hasMatch = false;
+                boolean hasChanged = false;
 
                 // Match existing with updated.
                 if (currentAttachments != null) {
                     for (GsonAttachment current : currentAttachments) {
                         if (id.equals(current.getId()) || identifier.equals(current.getIdentifier())) {
-                            // Update attachment.
-                            previous.setIdentifier(current.getIdentifier());
-                            previous.setService(current.getService());
-                            previous.setTitle(current.getTitle());
-                            previous.setSync(current.getSync());
+                            if (current.hasChanged(previous)) {
+                                // Update attributes.
+                                previous.setIdentifier(current.getIdentifier());
+                                previous.setService(current.getService());
+                                previous.setTitle(current.getTitle());
+                                previous.setSync(current.getSync());
+
+                                // Mark as changed.
+                                hasChanged = true;
+                            }
 
                             // Mark as matched.
                             hasMatch = true;
@@ -291,9 +297,10 @@ public class TasksService {
                     }
                 }
 
-                // Check if match was found and persist changes.
+                // Check if match was found.
                 if (hasMatch) {
-                    saveAttachment(previous, taskId);
+                    // Persist changes if needed.
+                    if (hasChanged) saveAttachment(previous, taskId);
                 } else {
                     // No matches, so the attachment was removed.
                     deleteAttachment(previous.getId());
@@ -303,9 +310,10 @@ public class TasksService {
 
         // Persist new attachments.
         if (currentAttachments != null) {
-            currentAttachments.removeAll(updatedAttachments);
+            List<GsonAttachment> newAttachments = new ArrayList<>(currentAttachments);
+            newAttachments.removeAll(updatedAttachments);
 
-            for (GsonAttachment newAttachment : currentAttachments) {
+            for (GsonAttachment newAttachment : newAttachments) {
                 saveAttachment(newAttachment, taskId);
             }
         }
@@ -963,7 +971,7 @@ public class TasksService {
                         task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
                         task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(),
                         task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()),
-                        loadAttachmentsForTask(task.getId()), task.getId());
+                        gsonFromAttachments(task.getAttachments()), task.getId());
 
                 gsonTask.setSubtasksCount(countUncompletedSubtasksForTask(task.getTempId()));
                 gsonTasks.add(gsonTask);
