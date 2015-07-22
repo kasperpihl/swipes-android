@@ -52,5 +52,6 @@
     <item name="toolbar_ripple" type="color">#CCCCCC</item>
     <item name="widget_toolbar_highlight" type="color">#40A1A1A1</item>
     <item name="widget_toolbar_ripple" type="color">#A1A1A1</item>
+    <color name="fab_shadow">#33000000</color>
 
 </resources>

@@ -42,7 +42,7 @@ import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.melnykov.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;

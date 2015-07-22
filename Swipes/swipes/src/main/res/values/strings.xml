@@ -77,6 +77,11 @@
     <string name="preference_no">Cancel</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="language">Language</string>
+    <string name="language_warning_title">Exit the app?</string>
+    <string name="language_warning">Swipes needs to be restarted for the changes to take effect.</string>
+    <string name="language_warning_yes">Exit</string>
+    <string name="language_warning_no">Cancel</string>
 
     <!-- Options -->
     <string name="group_tweaks">Tweaks</string>

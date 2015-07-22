@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.melnykov.fab.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.clans.fab.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/button_add_task"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|right"
     android:layout_margin="@dimen/floating_button_margin"
-    android:src="@drawable/ic_action_add"
+    android:src="@drawable/fab_add"
     fab:fab_colorNormal="@color/focus_accent"
     fab:fab_colorPressed="@color/focus_accent_dark"
-    fab:fab_colorRipple="@color/focus_accent_ripple" />
+    fab:fab_colorRipple="@color/focus_accent_ripple"
+    fab:fab_shadowColor="@color/fab_shadow"
+    fab:fab_size="normal" />
