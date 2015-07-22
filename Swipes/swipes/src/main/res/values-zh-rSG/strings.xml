@@ -38,6 +38,12 @@
     <string name="all_done_today_message">欧耶！任务已经全部完成，放松一下。 #高效的一天</string>
     <string name="all_done_now_message">休息一下！我正在像BOSS一样完成任务。 #高效的一天</string>
     <string name="all_done_share_url">swipesapp.com</string>
+    <string name="later_empty_workspace">没有计划任务标记: &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">没有当前任务标记: &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_workspace">没有完成任务标记: &lt;b>%1$s&lt;/b></string>
+    <string name="later_empty_search">未找到任务 &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_search">未找到任务 &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_search">未找到任务 &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
     <string name="tasks_list_login_action">登录或注册</string>
     <string name="tasks_list_multi_select_action">多选</string>

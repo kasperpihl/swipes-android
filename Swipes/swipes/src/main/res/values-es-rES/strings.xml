@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Welcome -->
     <string name="welcome_task_one">Mueva a la derecha para finalizar</string>
-    <string name="welcome_task_two">Mueva a la izquierda para demorar</string>
+    <string name="welcome_task_two">Desplace a la izquierda para posponer</string>
     <string name="welcome_task_three">Pulse para ver detalles</string>
     <string name="welcome_tag_one">Principal</string>
     <string name="welcome_tag_two">comprando</string>
@@ -22,10 +22,10 @@
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_options">Opciones</string>
     <string name="title_activity_integrations">integraciones</string>
-    <string name="title_activity_snooze_settings">Demorar</string>
+    <string name="title_activity_snooze_settings">Posponer</string>
     <string name="title_activity_add_tasks">Añadir tarea</string>
     <string name="title_activity_edit_task">Editar tarea</string>
-    <string name="title_activity_snooze_task">Demorar tarea</string>
+    <string name="title_activity_snooze_task">Posponer tarea</string>
     <string name="title_activity_about">Acerca de</string>
     <string name="title_activity_evernote_learn">Integración con Evernote</string>
     <string name="title_activity_evernote_attachments">Adjuntos Evernote</string>
@@ -60,7 +60,7 @@
     <string name="location">Situación</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
-    <string name="snoozes">Demorar</string>
+    <string name="snoozes">Posponer</string>
     <string name="settings_login">Identificarse o registrarse</string>
     <string name="settings_logout">Salir</string>
     <string name="settings_integrations">Integraciones</string>
@@ -74,9 +74,19 @@
     <string name="theme_dark">Oscuro</string>
     <!-- Options -->
     <string name="group_tweaks">Modificaciones</string>
+    <string name="group_notifications">Notificaciones</string>
     <string name="options_background_sync">Sincronización en 2º plano.</string>
     <string name="options_background_sync_detail">Mantener aplicaciones actualizada en 2º plano.ç</string>
     <string name="options_scroll_to_added">Desplazarse a añadido.</string>
+    <string name="options_scroll_to_added_detail">Auto-barrido para localizar las tareas nuevas añadidas</string>
+    <string name="options_snoozed_tasks">Tareas demoradas</string>
+    <string name="options_snoozed_tasks_detail">Indícame tareas a posponer en el periodo seleccionado</string>
+    <string name="options_daily_reminder">Recordatorio diario</string>
+    <string name="options_daily_reminder_detail">Mostrar recordatorio diario en plan del día.</string>
+    <string name="options_weekly_reminder">Recordatorio semanal</string>
+    <string name="options_weekly_reminder_detail">Mostrar recordatorio semanal en plan del seminal.</string>
+    <string name="options_vibration">Vibración</string>
+    <string name="options_vibration_detail">Vibrar al visualizar una notificación</string>
     <!-- Help -->
     <string name="help_center">centro de soporte</string>
     <string name="help_google_community">Comunidad Google+</string>
@@ -184,16 +194,16 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="date_yesterday">Ayer</string>
     <string name="date_unspecified">Sin especificar</string>
     <string name="snooze_later_today">A final de día</string>
-    <string name="snooze_this_evening">Esta Tarde</string>
+    <string name="snooze_this_evening">Al final de día</string>
     <string name="snooze_tomorrow_eve">Mañana tarde</string>
     <string name="snooze_tomorrow">Mañana</string>
     <string name="snooze_two_days_default">Lunes</string>
-    <string name="snooze_this_weekend">Esta Semana</string>
-    <string name="snooze_next_week">Prox semana</string>
+    <string name="snooze_this_weekend">Fin de semana</string>
+    <string name="snooze_next_week">Próx semana</string>
     <string name="snooze_unspecified">Sin especificar</string>
     <string name="snooze_at_location">En localizaciòn</string>
     <string name="snooze_pick_date">Selecc día</string>
-    <string name="snooze_done_text">RETRASAR</string>
+    <string name="snooze_done_text">POSPONER</string>
     <string name="snooze_adjust_hint">Arrastar hacia abajo para cambiar hora</string>
     <!-- Week days -->
     <string name="sunday_full">Domingo</string>
@@ -248,8 +258,12 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="repeat_option_month">mes</string>
     <string name="repeat_option_year">año</string>
     <!-- Notifications -->
-    <string name="notification_snooze">Demorar +%dh</string>
+    <string name="notification_snooze">Posponer +%dh</string>
     <string name="notification_complete">Finalizada</string>
+    <string name="reminder_daily_title">¿ Planificamos tu día?</string>
+    <string name="reminder_daily_message">! Buenos días ¡ Crea un plan y gestiona tu productividad diária</string>
+    <string name="reminder_weekly_title">¿ Planificamos tu semana?</string>
+    <string name="reminder_weekly_message">! Buenas noches ¡ Crea un plan y gestiona tu productividad esta noche</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Añadir etiqueta nueva</string>
     <string name="add_tag_dialog_hint">Título de tarea</string>
@@ -298,5 +312,13 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <plurals name="done_workspace_results">
         <item quantity="one">%1$s tareas finalizadas con etiquetas:  &lt;b>%2$s&lt;/b></item>
         <item quantity="other">%1$s tareas finalizadas con etiquetas:  &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="one">Tarea rechazada hoy</item>
+        <item quantity="other">Tareas rechazadas hoy</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="one">En tu tarea rechazada hoy. ¿ Hay algo importante?</item>
+        <item quantity="other">En tus %s tareas rechazadas hoy. ¿ Hay algo importante?</item>
     </plurals>
 </resources>

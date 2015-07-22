@@ -72,6 +72,11 @@
     <string name="preference_no">Cancelar</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Escuro</string>
+    <string name="language">Idioma</string>
+    <string name="language_warning_title">Sair do app?</string>
+    <string name="language_warning">O Swipes precisa ser reiniciado para que as mudanças tenham efeito.</string>
+    <string name="language_warning_yes">Sair</string>
+    <string name="language_warning_no">Cancelar</string>
     <!-- Options -->
     <string name="group_tweaks">Ajustes</string>
     <string name="group_notifications">Notificações</string>
