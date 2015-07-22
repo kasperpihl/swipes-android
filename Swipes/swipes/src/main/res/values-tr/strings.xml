@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Welcome -->
+    <string name="welcome_task_one">Tamamlamak için sağa kaydırın</string>
+    <string name="welcome_task_two">Ertelemek için sola kaydırın</string>
+    <string name="welcome_task_three">Detayları görüntülemek için dokunun</string>
+    <string name="welcome_tag_one">ev</string>
+    <string name="welcome_tag_two">alışveriş</string>
+    <string name="welcome_first_branding">Odaklan. Kaydır. Başar.</string>
+    <string name="welcome_second_branding">Başarılı İnsanların Yapılacaklar Listesi</string>
+    <string name="welcome_dialog_title">Swipes\'a Hoş Geldiniz!</string>
+    <string name="welcome_dialog_message">Uygulamayı denemek ya da oturum açmak ister misiniz?</string>
+    <string name="welcome_dialog_yes">Oturum Aç</string>
+    <string name="welcome_dialog_no">Dene</string>
+    <!-- Sections -->
+    <string name="app_name">Swipes</string>
+    <string name="focus_title">ŞİMDİ</string>
+    <string name="later_title">DAHA SONRA</string>
+    <string name="done_title">TAMAMLANDI</string>
+    <string name="overview_title">GENEL BAKIŞ</string>
+    <string name="title_share_intent">Swipes\'a Ekle</string>
+    <string name="title_activity_settings">Ayarlar</string>
+    <string name="title_activity_options">Seçenekler</string>
+    <string name="title_activity_integrations">Harici uygulamalar</string>
+    <string name="title_activity_snooze_settings">Ertelemeler</string>
+    <string name="title_activity_add_tasks">Görev Ekle</string>
+    <string name="title_activity_edit_task">Görevi Düzenle</string>
+    <string name="title_activity_snooze_task">Görevi Ertele</string>
+    <string name="title_activity_about">Hakkında</string>
+    <string name="title_activity_evernote_learn">Evernote ile Birleştir</string>
+    <string name="title_activity_evernote_attachments">Evernote Ekleri</string>
+    <!-- Empty view -->
+    <string name="all_done_now">= ŞİMDİLİK HEPSİ TAMAMLANDI =</string>
+    <string name="all_done_today">= BUGÜNLÜK HEPSİ TAMAMLANDI =</string>
+    <string name="all_done_now_next">Bir sonraki görev @ %s</string>
+    <string name="all_done_today_next">Bir sonraki görev %s</string>
+    <string name="all_done_next_empty">Herhangi bir görev yok</string>
+    <string name="all_done_today_message">Yaşasın! Bütün görevler tamamlandı, şimdi dinlenme vakti.\n#ProductiveDay</string>
+    <string name="all_done_now_message">Mola vakti! Bir patron gibi\nişlerin üstesinden geliyorum. #ProductiveDay</string>
+    <string name="all_done_share_url">swipesapp.com</string>
+    <string name="later_empty_workspace">Şu etiketli görevlerden zamanlanmış olan yok: &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">Şu etiketli güncel görev yok: &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_workspace">Şu etiketli tamamlanmış görev yok: &lt;b>%1$s&lt;/b></string>
+    <string name="later_empty_search">Şu ya da şunlar için zamanlanmış görev bulunamadı &lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_search">Şu ya da şunlar için güncel görev bulunamadı &lt;b>%1$s&lt;/b></string>
+    <string name="done_empty_search">Şu ya da şunlar için tamamlanmış görev bulunamadı &lt;b>%1$s&lt;/b></string>
+    <!-- Tasks list -->
+    <string name="tasks_list_login_action">Oturum açın ya da kaydolun</string>
+    <string name="tasks_list_multi_select_action">Birden Fazla Seç</string>
+    <string name="tasks_list_search_action">Ara</string>
+    <string name="tasks_list_workspaces_action">Çalışma Alanları</string>
+    <string name="tasks_list_settings_action">Ayarlar</string>
+    <string name="tasks_cell_label_focus">%1$s/%2$s Bugün</string>
+    <!-- Settings -->
+    <string name="group_cloud">Bulut</string>
+    <string name="group_preferences">Tercihler</string>
+    <string name="group_help">Yardım</string>
+    <string name="group_other">Diğer</string>
+    <string name="options">Seçenekler</string>
+    <string name="location">Konum</string>
+    <string name="theme">Tema</string>
+    <string name="settings_theme_dialog_title">Tema</string>
+    <string name="snoozes">Ertelemeler</string>
+    <string name="settings_login">Oturum açın ya da kaydolun</string>
+    <string name="settings_logout">Çıkış Yap</string>
+    <string name="settings_integrations">Harici uygulamalar</string>
+    <string name="settings_sync">Eşitle</string>
+    <string name="settings_sync_summary">Son güncelleme: %s</string>
+    <string name="switch_on">EVET</string>
+    <string name="switch_off">HAYIR</string>
+    <string name="preference_yes">Seç</string>
+    <string name="preference_no">İptal</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <!-- Options -->
+    <string name="group_tweaks">Ayarlar</string>
+    <string name="group_notifications">Bildirimler</string>
+    <string name="options_background_sync">Arka planda eşitle</string>
+    <string name="options_background_sync_detail">Görevleri arka planda otomatik olarak güncel tut.</string>
+    <string name="options_scroll_to_added">Eklenenlere kaydır</string>
+    <string name="options_scroll_to_added_detail">Son eklenen göreve odaklanmak için otomatik olarak kaydır.</string>
+    <string name="options_snoozed_tasks">Ertelenmiş görevler</string>
+    <string name="options_snoozed_tasks_detail">Belirtilen zamanda ertelenmiş görevleri bildir</string>
+    <string name="options_daily_reminder">Günlük hatırlatma</string>
+    <string name="options_daily_reminder_detail">Günü planlamak için hatırlatma göster.</string>
+    <string name="options_weekly_reminder">Haftalık hatırlatma</string>
+    <string name="options_weekly_reminder_detail">Haftayı planlamak için hatırlatma göster.</string>
+    <string name="options_vibration">Titreşim</string>
+    <string name="options_vibration_detail">Bildirimler görüntülendiğinde titreşimle uyar.</string>
+    <!-- Help -->
+    <string name="help_center">Yardım Merkezi</string>
+    <string name="help_google_community">Google+ topluluğu</string>
+    <string name="help_contact_us">Bizimle iletişime geçin</string>
+    <string name="help_email_receiver">support@swipesapp.com</string>
+    <string name="help_email_subject">[Android] Destek talebi</string>
+    <string name="help_email_chooser_title">İletişim:</string>
+    <string name="help_email_text_hint">Probleminizi açıklayın&#8230;</string>
+    <!-- Snooze settings -->
+    <string name="day_start">Gün başlangıcı</string>
+    <string name="evening_start">Akşam başlangıcı</string>
+    <string name="weekend_day_start">Hafta sonu başlangıcı</string>
+    <string name="week_start">Hafta başlangıcı</string>
+    <string name="weekend_start">Hafta sonu başlangıcı</string>
+    <string name="settings_weekend_start_dialog_title">Hafta sonu başlangıcı</string>
+    <string name="settings_week_start_dialog_title">Hafta başlangıcı</string>
+    <string name="settings_later_today">Bugün daha sonra</string>
+    <string name="settings_later_today_dialog_title">Bugün daha sonra</string>
+    <string name="later_today_1h">+1 saat</string>
+    <string name="later_today_2h">+2 saat</string>
+    <string name="later_today_3h">+3 saat</string>
+    <string name="later_today_4h">+4 saat</string>
+    <string name="later_today_5h">+5 saat</string>
+    <string name="later_today_6h">+6 saat</string>
+    <!-- Evernote -->
+    <string name="evernote_link_account">Evernote</string>
+    <string name="evernote_link_account_detail">Hesabı birleştirmek için dokunun</string>
+    <string name="evernote_unlink_account">Evernote (bağlandı)</string>
+    <string name="evernote_unlink_account_detail">Bağlantıyı kaldırmak için dokunun</string>
+    <string name="evernote_sync_device">Bu cihazda Evernote ile eşitle</string>
+    <string name="evernote_auto_import">\"swipes\" etiketli notları otomatik olarak aktarın</string>
+    <string name="evernote_sync_personal">Kişisel not defterleriyle eşitle</string>
+    <string name="evernote_sync_business">Evernote Business ile eşitle</string>
+    <string name="evernote_open_importer">Evernote Aktarıcı\'yı açın</string>
+    <string name="evernote_learn_more">Daha Fazlasını Öğrenin</string>
+    <string name="evernote_learn_more_title_left">EVERNOTE</string>
+    <string name="evernote_learn_more_title_right">ile BİRLEŞTİR</string>
+    <string name="evernote_what_it_is">BU NEDİR</string>
+    <string name="evernote_what_it_is_description">İşaretli notlarınızı Evernote\'dan Swipes\'a eşitlemenizi sağlar.</string>
+    <string name="evernote_how_it_works">NASIL ÇALIŞIR</string>
+    <string name="evernote_how_it_works_detail">Evernote içerisinde notunuzu \"swipes\" ile etiketleyin.
+        Notunuzu Swipes\'a bir görev olarak ekleyip eşitleyeceğiz.</string>
+    <string name="evernote_get_started">BAŞLAYIN</string>
+    <string name="evernote_unlink_dialog_title">Evernote Bağlantısı Kaldırılsın mı?</string>
+    <string name="evernote_unlink_dialog_message">Bütün görevlerin bağlantıları kaldırılacak.</string>
+    <string name="evernote_unlink_dialog_yes">Bağlantıyı Kaldır</string>
+    <string name="evernote_unlink_dialog_no">İptal</string>
+    <string name="evernote_untitled_note">İsimsiz Not</string>
+    <!-- Attachments -->
+    <string name="evernote_search_hint">Notları ara</string>
+    <string name="evernote_filter_description">Sadece görev içeren notlar</string>
+    <!-- About -->
+    <string name="about">Hakkında</string>
+    <string name="app_version">%1$s (%2$s)</string>
+    <string name="about_brought_by">Bu uygulama size şunun tarafından sağlanmıştır</string>
+    <string name="about_app_version">Uygulama sürümü</string>
+    <string name="about_policies">Politikalar</string>
+    <string name="about_policies_detail">Politikaları indirmek için dokunun</string>
+    <string name="about_oss">Açık kaynak lisanslar</string>
+    <string name="about_oss_licenses">Apache adı altında lisanslanmıştır.</string>
+    <!-- Invite -->
+    <string name="settings_invite">Arkadaşlarınızı Swipes\'a davet edin</string>
+    <string name="invite_subject">Bu harika uygulamaya göz atın</string>
+    <string name="invite_body">Merhaba,\n\n
+        Swipes isimli yeni bir uygulama deniyorum. \n\n
+        Günü planlamamı, görevleri sonraya ertelememi ve tek bir hareketle kolayca tamamlamamı sağlıyor.
+        Senin de hoşuna gidebileceğini düşündüm.\n\n
+        Buradan göz atabilirsin http://play.google.com/store/apps/details?id=com.swipesapp.android and download.\n\n
+        Tadını çıkar!</string>
+    <string name="invite_chooser_title">Davet et:</string>
+    <!-- Share -->
+    <string name="share_message_subject">Tamamlanacak görevler</string>
+    <string name="share_message_header">Görevler: \n\n</string>
+    <string name="share_message_footer_sent_from">Swipes ile gönderildi - Başarılı İnsanlar için Yapılacaklar Listesi</string>
+    <string name="share_message_footer_get_swipes">Ücretsiz iPhone ve Android uygulaması - http://swipesapp.com</string>
+    <string name="share_message_circle">◯&#160;</string>
+    <string name="share_chooser_title">Paylaş:</string>
+    <!-- Actions -->
+    <string name="dialog_yes">Evet</string>
+    <string name="dialog_no">Hayır</string>
+    <string name="delete_task_dialog_text">Bu işlem geri alınamaz.</string>
+    <string name="delete_task_dialog_yes">Sil</string>
+    <string name="delete_task_dialog_no">İptal</string>
+    <string name="add_task_hint">Yeni görev ekle</string>
+    <string name="show_old">ESKİ GÖREVLERİ GÖSTER</string>
+    <string name="clear_old">ESKİ GÖREVLERİ TEMİZLE</string>
+    <string name="clear_old_dialog_title">Eski görevler silinsin mi?</string>
+    <string name="clear_old_dialog_text">Bu işlem geri alınamaz.</string>
+    <string name="clear_old_dialog_yes">Sil</string>
+    <string name="clear_old_dialog_no">İptal</string>
+    <string name="search_hint">Ara</string>
+    <string name="logout_dialog_title">Çıkış yapmak istiyor musunuz?</string>
+    <string name="logout_dialog_message">Swipes bu cihazda eşitlemeyi durduracak ve verilerinizi silecek.</string>
+    <string name="logout_dialog_yes">Çıkış Yap</string>
+    <string name="logout_dialog_no">İptal</string>
+    <string name="keep_data_dialog_title">Deneme süresinden kalan veri saklansın mı?</string>
+    <string name="keep_data_dialog_message">Swipes deneme süresi içerisinde kullandığınız verileri bulut üzerinde eşitleyebilir.</string>
+    <string name="keep_data_dialog_yes">Verileri sakla</string>
+    <string name="keep_data_dialog_no">Verileri temizle</string>
+    <string name="share_intent_add_confirm">Görev oluşturuldu!</string>
+    <string name="delete_single_task">Görev silinsin mi?</string>
+    <!-- Scheduler -->
+    <string name="date_today">bugün</string>
+    <string name="date_tomorrow">yarın</string>
+    <string name="date_yesterday">dün</string>
+    <string name="date_unspecified">Belirsiz</string>
+    <string name="snooze_later_today">Bugün Daha Sonra</string>
+    <string name="snooze_this_evening">Bu Akşam</string>
+    <string name="snooze_tomorrow_eve">Yarın Akşam</string>
+    <string name="snooze_tomorrow">Yarın</string>
+    <string name="snooze_two_days_default">Pazartesi</string>
+    <string name="snooze_this_weekend">Bu Hafta Sonu</string>
+    <string name="snooze_next_week">Önümüzdeki Hafta</string>
+    <string name="snooze_unspecified">Belirsiz</string>
+    <string name="snooze_at_location">Konumda</string>
+    <string name="snooze_pick_date">Tarih Seç</string>
+    <string name="snooze_done_text">ERTELE</string>
+    <string name="snooze_adjust_hint">Zamanı ayarlamak için basılı tutun</string>
+    <!-- Week days -->
+    <string name="sunday_full">Pazar</string>
+    <string name="monday_full">Pazartesi</string>
+    <string name="tuesday_full">Salı</string>
+    <string name="wednesday_full">Çarşamba</string>
+    <string name="thursday_full">Perşembe</string>
+    <string name="friday_full">Cuma</string>
+    <string name="saturday_full">Cumartesi</string>
+    <!-- Months -->
+    <string name="january_full">Ocak</string>
+    <string name="february_full">Şubat</string>
+    <string name="march_full">Mart</string>
+    <string name="april_full">Nisan</string>
+    <string name="may_full">Mayıs</string>
+    <string name="june_full">Haziran</string>
+    <string name="july_full">Temmuz</string>
+    <string name="august_full">Ağustos</string>
+    <string name="september_full">Eylül</string>
+    <string name="october_full">Ekim</string>
+    <string name="november_full">Kasım</string>
+    <string name="december_full">Aralık</string>
+    <!-- Numerals -->
+    <string name="month_first_suffix">%s.</string>
+    <string name="month_second_suffix">%s</string>
+    <string name="month_third_suffix">%s</string>
+    <string name="month_default_suffix">%s</string>
+    <!-- Edit task -->
+    <string name="edit_task_repeat_choice_mode">Tekrar et&#8230;</string>
+    <string name="repeat_never_description">Asla tekrarlama</string>
+    <string name="repeat_day_description">Her gün saat %s</string>
+    <string name="repeat_mon_fri_description">Her Pazartesiden Cumaya saat %s</string>
+    <string name="repeat_week_description">Her %1$s saat %2$s</string>
+    <string name="repeat_month_description">Her ayın %1$s. günü saat %2$s</string>
+    <string name="repeat_year_description">Her yıl %1$s ayının %2$s. günü saat %3$s</string>
+    <string name="edit_task_tags_default_text">Etiket belirle</string>
+    <string name="edit_task_notes_default_text">Not ekle</string>
+    <string name="edit_task_evernote_attached">EKLENDİ</string>
+    <!-- Action steps -->
+    <string name="edit_task_add_subtask_hint">Eylem adımı ekle</string>
+    <string name="subtask_hide_caption">Daha az eylem adımı göster</string>
+    <string name="subtask_show_caption">Bütün eylem adımlarını göster</string>
+    <string name="delete_subtask_dialog_title">Eylem adımı silinsin mi?</string>
+    <string name="delete_subtask_dialog_message">Bu işlem geri alınamaz.</string>
+    <string name="delete_subtask_dialog_yes">Sil</string>
+    <string name="delete_subtask_dialog_no">İptal</string>
+    <!-- Repeating -->
+    <string name="repeat_option_never">hiçbir zaman</string>
+    <string name="repeat_option_day">gün</string>
+    <string name="repeat_option_mon_fri">Pzt-Cum</string>
+    <string name="repeat_option_week">hafta</string>
+    <string name="repeat_option_month">ay</string>
+    <string name="repeat_option_year">yıl</string>
+    <!-- Notifications -->
+    <string name="notification_snooze">Ertele +%dsa</string>
+    <string name="notification_complete">Tamamla</string>
+    <string name="reminder_daily_title">Gününüzü planlamak ister misiniz?</string>
+    <string name="reminder_daily_message">Hayırlı sabahlar! Gününüzü planlamaya başlayın.</string>
+    <string name="reminder_weekly_title">Haftanızı planlamak ister misiniz?</string>
+    <string name="reminder_weekly_message">Hayırlı akşamlar! Haftanızı bu geceden planlamaya başlayın.</string>
+    <!-- Tagging -->
+    <string name="add_tag_dialog_title">Yeni etiket ekle</string>
+    <string name="add_tag_dialog_hint">Etiket ismi</string>
+    <string name="add_tag_dialog_yes">Kaydet</string>
+    <string name="add_tag_dialog_no">İptal</string>
+    <string name="delete_tag_dialog_title">\"%s\" etiketi silinsin mi?</string>
+    <string name="delete_tag_dialog_message">Bu işlem geri alınamaz.</string>
+    <string name="delete_tag_dialog_yes">Sil</string>
+    <string name="delete_tag_dialog_no">İptal</string>
+    <string name="empty_tags_hint">Herhangi bir etiket eklenmedi</string>
+    <!-- Workspaces -->
+    <string name="set_workspaces_hint">ÇALIŞMA ALANINI DÜZENLE</string>
+    <string name="clear_workspace_button">ÇALIŞMA ALANINI TEMİZLE</string>
+    <!-- Sync -->
+    <string name="sync_started_message">Eşitleniyor&#8230;</string>
+    <string name="sync_completed_message">Eşitleme başarılı!</string>
+    <string name="sync_failed_message">Eşitleme başarısız oldu.</string>
+    <!-- Showcase -->
+    <string name="showcase_button_done">ANLAŞILDI</string>
+    <string name="navigation_tutorial_text">Bölümler arasında gezinmek için dokunun.</string>
+    <!-- Widgets -->
+    <string name="now_widget_label">Swipes Now</string>
+    <string name="now_widget_tasks_count_label">BUGÜN</string>
+    <string name="now_widget_empty_count_label">GÖREV YOK</string>
+    <string name="now_widget_progress_separator">/</string>
+    <string name="now_widget_complete_message">Görev tamamlandı!</string>
+    <string name="add_widget_label">Swipes\'a Ekle</string>
+    <string name="add_widget_description">Yeni Görev</string>
+    <!-- Plurals -->
+    <plurals name="delete_task_dialog_title">
+        <item quantity="one">Görev silinsin mi?</item>
+        <item quantity="other">%d görev silinsin mi?</item>
+    </plurals>
+    <plurals name="notification_title">
+        <item quantity="one">%s</item>
+        <item quantity="other">%s yeni göreviniz var</item>
+    </plurals>
+    <plurals name="later_workspace_results">
+        <item quantity="one">&lt;b>%2$s&lt;/b> etiketli %1$s zamanlanmış görev</item>
+        <item quantity="other">&lt;b>%2$s&lt;/b> etiketli %1$s zamanlanmış görev</item>
+    </plurals>
+    <plurals name="focus_workspace_results">
+        <item quantity="one">&lt;b>%2$s&lt;/b> etiketli %1$s güncel görev</item>
+        <item quantity="other">&lt;b>%2$s&lt;/b> etiketli %1$s güncel görev</item>
+    </plurals>
+    <plurals name="done_workspace_results">
+        <item quantity="one">&lt;b>%2$s&lt;/b> etiketli %1$s tamamlanmış görev</item>
+        <item quantity="other">&lt;b>%2$s&lt;/b> etiketli %1$s tamamlanmış görev</item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="one">Bugüne kalan görev</item>
+        <item quantity="other">Bugüne kalan görevler</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="one">Bugüne bıraktığınız bir görev mevcut. Önemli bir şey mi var?</item>
+        <item quantity="other">Bugüne bıraktığınız %s görev mevcut. Önemli bir şey mi var?</item>
+    </plurals>
+</resources>
