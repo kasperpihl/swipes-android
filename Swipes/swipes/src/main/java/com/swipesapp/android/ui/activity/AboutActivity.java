@@ -61,6 +61,8 @@ public class AboutActivity extends BaseActivity {
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
+        getSupportActionBar().setTitle(getString(R.string.title_activity_about));
+
         mBroughtBy.setTextColor(ThemeUtils.getTextColor(this));
         mSwipesSignature.setTextColor(ThemeUtils.getSecondaryTextColor(this));
         mSignatureLine.setBackgroundColor(ThemeUtils.getDividerColor(this));

@@ -32,6 +32,8 @@ public class IntegrationsActivity extends BaseActivity {
                 new IntegrationsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        getSupportActionBar().setTitle(getString(R.string.title_activity_integrations));
     }
 
     @Override

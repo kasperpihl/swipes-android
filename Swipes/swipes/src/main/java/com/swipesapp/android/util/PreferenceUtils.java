@@ -20,6 +20,7 @@ public class PreferenceUtils {
     public static final String SYNC_LAST_UPDATE = "sync_last_update";
     public static final String EVERNOTE_SYNC_KEY = "evernote_sync_device";
     public static final String LAST_SYNC_ID = "last_sync_id";
+    public static final String LOCALE_KEY = "settings_locale";
 
     // Options.
     public static final String BACKGROUND_SYNC_KEY = "settings_enable_background_sync";

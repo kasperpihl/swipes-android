@@ -45,9 +45,9 @@
     <string name="done_empty_search">Non sono stati trovati compiti completati per &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
     <string name="tasks_list_login_action">Log in o registra</string>
-    <string name="tasks_list_multi_select_action">Selezione multipla</string>
+    <string name="tasks_list_multi_select_action">Selezione Multipla</string>
     <string name="tasks_list_search_action">Cerca</string>
-    <string name="tasks_list_workspaces_action">Spazio di lavoro</string>
+    <string name="tasks_list_workspaces_action">Spazio di Lavoro</string>
     <string name="tasks_list_settings_action">Impostazioni</string>
     <string name="tasks_cell_label_focus">%1$s/%2$s Oggi</string>
     <!-- Settings -->

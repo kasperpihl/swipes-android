@@ -26,6 +26,7 @@ import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.handler.LanguageHandler;
 import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -37,6 +38,9 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Languages;
+import com.swipesapp.android.values.Themes;
+import com.swipesapp.android.widget.AddWidgetProvider;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -49,6 +53,7 @@ public class SettingsActivity extends BaseActivity {
     private static boolean sHasChangedAccount;
     private static boolean sHasLoggedIn;
     private static boolean sHasSignedUp;
+    private static boolean sHasChangedLocale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,8 @@ public class SettingsActivity extends BaseActivity {
                 new SettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        getSupportActionBar().setTitle(getString(R.string.title_activity_settings));
 
         if (sHasChangedTheme) {
             // Theme has changed. Set result code.
@@ -91,6 +98,10 @@ public class SettingsActivity extends BaseActivity {
             // Update recurring tasks and tags dimensions.
             Analytics.sendRecurringTasks(this);
             Analytics.sendNumberOfTags(this);
+        } else if (sHasChangedLocale) {
+            // Locale has changed. Set result code.
+            setResult(Constants.LOCALE_CHANGED_RESULT_CODE);
+            sHasChangedLocale = false;
         }
 
         // Read user settings.
@@ -222,6 +233,9 @@ public class SettingsActivity extends BaseActivity {
             // Location is not available yet, so hide the setting.
             Preference preferenceLocation = findPreference("settings_enable_location");
             categoryPreferences.removePreference(preferenceLocation);
+
+            // Display current values.
+            displayValues();
         }
 
         @Override
@@ -247,7 +261,23 @@ public class SettingsActivity extends BaseActivity {
 
                 // Reload activity.
                 getActivity().recreate();
+            } else if (key.equalsIgnoreCase(PreferenceUtils.LOCALE_KEY)) {
+                // Locale has changed. Save state.
+                sHasChangedLocale = true;
+
+                // Apply selected language.
+                LanguageHandler.applyLanguage(getActivity().getApplicationContext());
+
+                // Refresh widgets.
+                TasksActivity.refreshWidgets(getActivity().getApplicationContext());
+                AddWidgetProvider.refreshWidget(getActivity().getApplicationContext());
+
+                // Reload activity.
+                getActivity().recreate();
             }
+
+            // Update displayed values.
+            displayValues();
         }
 
         @Override
@@ -440,6 +470,19 @@ public class SettingsActivity extends BaseActivity {
                 Toast.makeText(mContext.get(), getString(R.string.sync_failed_message), Toast.LENGTH_SHORT).show();
             }
         };
+
+        private void displayValues() {
+            // Display selected theme.
+            Themes theme = ThemeUtils.getCurrentTheme(getActivity());
+            Preference preferenceTheme = findPreference("settings_theme");
+            preferenceTheme.setSummary(theme.getDescription(getActivity()));
+
+            // Display selected language.
+            String userLocale = PreferenceUtils.readString(PreferenceUtils.LOCALE_KEY, getActivity());
+            Languages language = Languages.getLanguageByLocale(userLocale);
+            Preference preferenceLanguage = findPreference("settings_locale");
+            preferenceLanguage.setSummary(language.getDescription(getActivity()));
+        }
 
     }
 }

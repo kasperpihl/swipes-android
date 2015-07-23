@@ -8,6 +8,7 @@ import android.content.Intent;
 
 import com.crashlytics.android.Crashlytics;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.handler.LanguageHandler;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.values.Intents;
@@ -25,6 +26,9 @@ public class NotificationsHelper extends BroadcastReceiver {
         if (intent.getAction().equals(Intents.BOOT_COMPLETED)) {
             // Initialize Crashlytics.
             Crashlytics.start(context);
+
+            // Apply user selected language.
+            LanguageHandler.applyLanguage(context);
 
             // Start notifications alarm.
             createNotificationsAlarm(context);

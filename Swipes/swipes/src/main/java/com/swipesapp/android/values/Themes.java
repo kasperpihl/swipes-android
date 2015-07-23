@@ -1,6 +1,9 @@
 package com.swipesapp.android.values;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.swipesapp.android.R;
 
 /**
  * Holds the possible themes.
@@ -35,5 +38,16 @@ public enum Themes {
         }
     }
 
-}
+    public String getDescription(Context context) {
+        switch (this) {
+            case LIGHT:
+                return context.getString(R.string.theme_light);
+            case DARK:
+                return context.getString(R.string.theme_dark);
+            default:
+                Log.wtf(TAG, "Theme does not exist.");
+                return "";
+        }
+    }
 
+}

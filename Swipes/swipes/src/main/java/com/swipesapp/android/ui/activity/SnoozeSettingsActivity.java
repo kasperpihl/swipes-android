@@ -28,6 +28,8 @@ public class SnoozeSettingsActivity extends BaseActivity {
                 new SnoozeSettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        getSupportActionBar().setTitle(getString(R.string.title_activity_snooze_settings));
     }
 
     @Override

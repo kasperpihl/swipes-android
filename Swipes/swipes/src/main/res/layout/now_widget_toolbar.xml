@@ -125,19 +125,18 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/now_widget_empty_count_label"
             android:textColor="@android:color/white"
             android:textSize="17sp"
             android:textStyle="bold" />
 
         <!-- Count label -->
         <TextView
+            android:id="@+id/now_widget_count_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:singleLine="true"
-            android:text="@string/now_widget_tasks_count_label"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 

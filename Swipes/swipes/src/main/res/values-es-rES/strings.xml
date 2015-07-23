@@ -4,7 +4,7 @@
     <string name="welcome_task_one">Mueva a la derecha para finalizar</string>
     <string name="welcome_task_two">Desplace a la izquierda para posponer</string>
     <string name="welcome_task_three">Pulse para ver detalles</string>
-    <string name="welcome_tag_one">Principal</string>
+    <string name="welcome_tag_one">principal</string>
     <string name="welcome_tag_two">comprando</string>
     <string name="welcome_first_branding">Centrarse, Swipe, conseguirlo</string>
     <string name="welcome_second_branding">Listado de tareas a alcanzar</string>
@@ -45,10 +45,10 @@
     <string name="focus_empty_search">No hemos localizado etiquetas para  &lt;b>%1$s&lt;/b></string>
     <string name="done_empty_search">No hemos localizado tareas finalizadas para &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
-    <string name="tasks_list_login_action">Identificarse o registrarse</string>
-    <string name="tasks_list_multi_select_action">Selector multiple</string>
+    <string name="tasks_list_login_action">Identificarse o Registrarse</string>
+    <string name="tasks_list_multi_select_action">Selector Multiple</string>
     <string name="tasks_list_search_action">Busqueda</string>
-    <string name="tasks_list_workspaces_action">lugares de trabajo</string>
+    <string name="tasks_list_workspaces_action">Lugares de Trabajo</string>
     <string name="tasks_list_settings_action">Configuración</string>
     <string name="tasks_cell_label_focus">%1$s/%2$s Hoy</string>
     <!-- Settings -->
@@ -75,20 +75,20 @@
     <!-- Options -->
     <string name="group_tweaks">Modificaciones</string>
     <string name="group_notifications">Notificaciones</string>
-    <string name="options_background_sync">Sincronización en 2º plano.</string>
-    <string name="options_background_sync_detail">Mantener aplicaciones actualizada en 2º plano.ç</string>
-    <string name="options_scroll_to_added">Desplazarse a añadido.</string>
-    <string name="options_scroll_to_added_detail">Auto-barrido para localizar las tareas nuevas añadidas</string>
+    <string name="options_background_sync">Sincronización en 2º plano</string>
+    <string name="options_background_sync_detail">Mantener aplicaciones actualizada en 2º plano.</string>
+    <string name="options_scroll_to_added">Desplazarse a añadido</string>
+    <string name="options_scroll_to_added_detail">Auto-barrido para localizar las tareas nuevas añadidas.</string>
     <string name="options_snoozed_tasks">Tareas demoradas</string>
-    <string name="options_snoozed_tasks_detail">Indícame tareas a posponer en el periodo seleccionado</string>
+    <string name="options_snoozed_tasks_detail">Indícame tareas a posponer en el periodo seleccionado.</string>
     <string name="options_daily_reminder">Recordatorio diario</string>
     <string name="options_daily_reminder_detail">Mostrar recordatorio diario en plan del día.</string>
     <string name="options_weekly_reminder">Recordatorio semanal</string>
     <string name="options_weekly_reminder_detail">Mostrar recordatorio semanal en plan del seminal.</string>
     <string name="options_vibration">Vibración</string>
-    <string name="options_vibration_detail">Vibrar al visualizar una notificación</string>
+    <string name="options_vibration_detail">Vibrar al visualizar una notificación.</string>
     <!-- Help -->
-    <string name="help_center">centro de soporte</string>
+    <string name="help_center">Centro de Soporte</string>
     <string name="help_google_community">Comunidad Google+</string>
     <string name="help_contact_us">Contactenos</string>
     <string name="help_email_receiver">support@swipesapp.com</string>
@@ -148,7 +148,7 @@ Nosotros las importaremos  en Swipes y sincronizaremos todos los datos.</string>
     <string name="about_oss">Abrir libería de referencias</string>
     <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
     <!-- Invite -->
-    <string name="settings_invite">invita a tus amigos a SWIPES</string>
+    <string name="settings_invite">Invita a tus amigos a SWIPES</string>
     <string name="invite_subject">Pruebala está aplicación es \"cojonuda\"</string>
     <string name="invite_body">Que tal. \n\n
 Estoy probando una nueva aplicación. para gestionar mis rutinas diárias. \n\n
@@ -275,14 +275,14 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="delete_tag_dialog_no">Cancelar</string>
     <string name="empty_tags_hint">No se han asignado etiquetas</string>
     <!-- Workspaces -->
-    <string name="set_workspaces_hint">SELECTLUGAR DE TRABAJO</string>
-    <string name="clear_workspace_button">BORRAR LUGAR DE TRABAJO</string>
+    <string name="set_workspaces_hint">SELECCIONAR FILTRO</string>
+    <string name="clear_workspace_button">BORRAR FILTRO</string>
     <!-- Sync -->
     <string name="sync_started_message">Sincronizado&#8230;</string>
     <string name="sync_completed_message">¡ Sincronización correcta !</string>
     <string name="sync_failed_message">Sincronización erronea</string>
     <!-- Showcase -->
-    <string name="showcase_button_done">LO TENGO</string>
+    <string name="showcase_button_done">ENTENDIDO</string>
     <string name="navigation_tutorial_text">Pulse para moverse entre secciones</string>
     <!-- Widgets -->
     <string name="now_widget_label">Ahora Swipes</string>

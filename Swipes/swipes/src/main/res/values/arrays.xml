@@ -49,4 +49,28 @@
         <item>6</item>
     </string-array>
 
+    <string-array name="locale_list">
+        <item>@string/language_english</item>
+        <item>@string/language_czech</item>
+        <item>@string/language_spanish_spain</item>
+        <item>@string/language_italian</item>
+        <item>@string/language_polish</item>
+        <item>@string/language_portuguese_brazil</item>
+        <item>@string/language_russian</item>
+        <item>@string/language_turkish</item>
+        <item>@string/language_chinese_simplified</item>
+    </string-array>
+
+    <string-array name="locale_values_list">
+        <item>en</item>
+        <item>cs_CZ</item>
+        <item>es_ES</item>
+        <item>it_IT</item>
+        <item>pl_PL</item>
+        <item>pt_BR</item>
+        <item>ru_RU</item>
+        <item>tr_TR</item>
+        <item>zh_HANS</item>
+    </string-array>
+
 </resources>

@@ -22,6 +22,7 @@ import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
+import com.swipesapp.android.handler.LanguageHandler;
 import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.sync.receiver.PushReceiver;
 import com.swipesapp.android.sync.service.SyncService;
@@ -74,6 +75,9 @@ public class SwipesApplication extends Application {
         // Initialize Evernote service.
         EvernoteService.newInstance(getApplicationContext());
         EvernoteSyncHandler.newInstance(getApplicationContext());
+
+        // Apply user selected language.
+        LanguageHandler.applyLanguage(getApplicationContext());
 
         // Start notifications alarm.
         NotificationsHelper.createNotificationsAlarm(getApplicationContext());

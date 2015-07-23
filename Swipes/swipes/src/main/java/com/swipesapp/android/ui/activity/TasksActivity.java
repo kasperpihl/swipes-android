@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -335,6 +333,15 @@ public class TasksActivity extends BaseActivity {
 
                     // Start syncing.
                     startSync();
+                    break;
+                case Constants.LOCALE_CHANGED_RESULT_CODE:
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Locale has changed. Reload activity.
+                            recreate();
+                        }
+                    }, 1);
                     break;
             }
         } else if (requestCode == Constants.LOGIN_REQUEST_CODE) {
@@ -746,18 +753,8 @@ public class TasksActivity extends BaseActivity {
     }
 
     public static void refreshWidgets(Context context) {
-        // Load manager and IDs.
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, NowWidgetProvider.class));
-
-        // Update widget intent.
-        Intent intent = new Intent(context, NowWidgetProvider.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-
-        // Send update broadcast.
-        context.sendBroadcast(intent);
-        manager.notifyAppWidgetViewDataChanged(ids, R.id.now_widget_list);
+        // Refresh main widget.
+        NowWidgetProvider.refreshWidget(context);
     }
 
     private void refreshAdapters() {

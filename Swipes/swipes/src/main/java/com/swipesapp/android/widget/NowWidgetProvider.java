@@ -3,6 +3,7 @@ package com.swipesapp.android.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -195,6 +196,10 @@ public class NowWidgetProvider extends AppWidgetProvider {
             views.setViewVisibility(R.id.now_widget_empty_count, View.VISIBLE);
         }
 
+        // Set text for labels.
+        views.setTextViewText(R.id.now_widget_count_label, context.getString(R.string.now_widget_tasks_count_label));
+        views.setTextViewText(R.id.now_widget_empty_count, context.getString(R.string.now_widget_empty_count_label));
+
         // Show progress area.
         views.setViewVisibility(R.id.now_widget_count_area, View.VISIBLE);
 
@@ -229,6 +234,21 @@ public class NowWidgetProvider extends AppWidgetProvider {
             views.setTextViewText(R.id.now_widget_all_done, context.getString(R.string.all_done_today));
             views.setTextViewText(R.id.now_widget_next_task, context.getString(R.string.all_done_next_empty));
         }
+    }
+
+    public static void refreshWidget(Context context) {
+        // Load manager and IDs.
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, NowWidgetProvider.class));
+
+        // Update widget intent.
+        Intent intent = new Intent(context, NowWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+
+        // Send update broadcast.
+        context.sendBroadcast(intent);
+        manager.notifyAppWidgetViewDataChanged(ids, R.id.now_widget_list);
     }
 
 }

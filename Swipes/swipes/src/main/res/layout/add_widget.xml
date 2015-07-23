@@ -20,6 +20,7 @@
 
     <!-- Description -->
     <TextView
+        android:id="@+id/add_widget_button_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -31,7 +32,6 @@
         android:shadowDy="2"
         android:shadowRadius="4"
         android:singleLine="true"
-        android:text="@string/add_widget_description"
         android:textColor="@android:color/white"
         android:textSize="13sp" />
 

@@ -121,8 +121,13 @@ public class Constants {
     public static final int ACCOUNT_CHANGED_RESULT_CODE = 2;
 
     /**
+     * Result code for locale changed.
+     */
+    public static final int LOCALE_CHANGED_RESULT_CODE = 3;
+
+    /**
      * Result code for snoozed task added.
      */
-    public static final int ADDED_SNOOZED_TASK_RESULT_CODE = 1;
+    public static final int ADDED_SNOOZED_TASK_RESULT_CODE = 4;
 
 }

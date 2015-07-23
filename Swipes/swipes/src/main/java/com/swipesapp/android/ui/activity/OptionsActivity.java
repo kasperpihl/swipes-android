@@ -28,6 +28,8 @@ public class OptionsActivity extends BaseActivity {
                 new SettingsFragment()).commit();
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
+
+        getSupportActionBar().setTitle(getString(R.string.title_activity_options));
     }
 
     @Override

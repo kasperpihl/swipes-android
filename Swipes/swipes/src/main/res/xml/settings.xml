@@ -42,6 +42,13 @@
             android:key="settings_theme"
             android:title="@string/theme" />
 
+        <com.swipesapp.android.ui.view.SwipesListPreference
+            android:dialogTitle="@string/language"
+            android:entries="@array/locale_list"
+            android:entryValues="@array/locale_values_list"
+            android:key="settings_locale"
+            android:title="@string/language" />
+
         <PreferenceScreen android:title="@string/snoozes">
             <intent
                 android:targetClass="com.swipesapp.android.ui.activity.SnoozeSettingsActivity"
