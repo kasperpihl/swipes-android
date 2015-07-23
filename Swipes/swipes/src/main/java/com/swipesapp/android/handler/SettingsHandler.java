@@ -11,6 +11,7 @@ import com.swipesapp.android.ui.view.TimePreference;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,52 +44,57 @@ public class SettingsHandler {
                     public void done(ParseObject parseObject, ParseException e) {
                         Map<String, Object> settings = user.getMap(SETTINGS);
 
-                        // Update day start setting.
-                        Object dayStart = settings.get(DAY_START);
-                        if (dayStart != null) {
-                            String value = hoursAndMinutesPrefFromSeconds((int) dayStart);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_DAY_START, value, context);
-                        }
+                        if (settings != null && !settings.isEmpty()) {
+                            // Update day start setting.
+                            Object dayStart = settings.get(DAY_START);
+                            if (dayStart != null) {
+                                String value = hoursAndMinutesPrefFromSeconds((int) dayStart);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_DAY_START, value, context);
+                            }
 
-                        // Update evening start setting.
-                        Object eveningStart = settings.get(EVENING_START);
-                        if (eveningStart != null) {
-                            String value = hoursAndMinutesPrefFromSeconds((int) eveningStart);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_EVENING_START, value, context);
-                        }
+                            // Update evening start setting.
+                            Object eveningStart = settings.get(EVENING_START);
+                            if (eveningStart != null) {
+                                String value = hoursAndMinutesPrefFromSeconds((int) eveningStart);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_EVENING_START, value, context);
+                            }
 
-                        // Update weekend day start setting.
-                        Object weekendDayStart = settings.get(WEEKEND_DAY_START);
-                        if (weekendDayStart != null) {
-                            String value = hoursAndMinutesPrefFromSeconds((int) weekendDayStart);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEKEND_DAY_START, value, context);
-                        }
+                            // Update weekend day start setting.
+                            Object weekendDayStart = settings.get(WEEKEND_DAY_START);
+                            if (weekendDayStart != null) {
+                                String value = hoursAndMinutesPrefFromSeconds((int) weekendDayStart);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEKEND_DAY_START, value, context);
+                            }
 
-                        // Update week start setting.
-                        Object weekStart = settings.get(WEEK_START);
-                        if (weekStart != null) {
-                            String value = DateUtils.prefValueFromWeekday((int) weekStart);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEK_START, value, context);
-                        }
+                            // Update week start setting.
+                            Object weekStart = settings.get(WEEK_START);
+                            if (weekStart != null) {
+                                String value = DateUtils.prefValueFromWeekday((int) weekStart);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEK_START, value, context);
+                            }
 
-                        // Update weekend start setting.
-                        Object weekendStart = settings.get(WEEKEND_START);
-                        if (weekendStart != null) {
-                            String value = DateUtils.prefValueFromWeekday((int) weekendStart);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEKEND_START, value, context);
-                        }
+                            // Update weekend start setting.
+                            Object weekendStart = settings.get(WEEKEND_START);
+                            if (weekendStart != null) {
+                                String value = DateUtils.prefValueFromWeekday((int) weekendStart);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_WEEKEND_START, value, context);
+                            }
 
-                        // Update later today setting.
-                        Object laterToday = settings.get(LATER_TODAY);
-                        if (laterToday != null) {
-                            String value = hoursPrefFromSeconds((int) laterToday);
-                            PreferenceUtils.saveString(PreferenceUtils.SNOOZE_LATER_TODAY, value, context);
-                        }
+                            // Update later today setting.
+                            Object laterToday = settings.get(LATER_TODAY);
+                            if (laterToday != null) {
+                                String value = hoursPrefFromSeconds((int) laterToday);
+                                PreferenceUtils.saveString(PreferenceUtils.SNOOZE_LATER_TODAY, value, context);
+                            }
 
-                        // Update scroll to added setting.
-                        Object scrollToAdded = settings.get(SCROLL_TO_ADDED);
-                        if (scrollToAdded != null) {
-                            PreferenceUtils.saveBoolean(PreferenceUtils.SCROLL_TO_ADDED_KEY, (boolean) scrollToAdded, context);
+                            // Update scroll to added setting.
+                            Object scrollToAdded = settings.get(SCROLL_TO_ADDED);
+                            if (scrollToAdded != null) {
+                                PreferenceUtils.saveBoolean(PreferenceUtils.SCROLL_TO_ADDED_KEY, (boolean) scrollToAdded, context);
+                            }
+                        } else {
+                            // Settings don't exist yet for the user. Sync the local ones.
+                            saveSettingsToServer(context);
                         }
                     }
                 });
@@ -103,6 +109,7 @@ public class SettingsHandler {
 
         if (user != null) {
             Map<String, Object> settings = user.getMap(SETTINGS);
+            if (settings == null) settings = new HashMap<>();
 
             // Save day start setting.
             String dayStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_DAY_START, context);
