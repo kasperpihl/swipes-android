@@ -1090,8 +1090,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Only display buttons in the done section and when the oldest completed task is older than today.
         if (!sIsShowingOld && DateUtils.isOlderThanToday(completionDate)) {
-            mHeaderView.setVisibility(View.VISIBLE);
-            mHeaderView.setAlpha(1f);
+            if (mHeaderView != null) {
+                mHeaderView.setVisibility(View.VISIBLE);
+                mHeaderView.setAlpha(1f);
+            }
         }
     }
 
