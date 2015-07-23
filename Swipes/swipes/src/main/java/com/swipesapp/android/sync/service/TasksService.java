@@ -971,7 +971,7 @@ public class TasksService {
                         task.getCreatedAt(), task.getUpdatedAt(), task.getDeleted(), task.getTitle(), task.getNotes(), task.getOrder(),
                         task.getPriority(), task.getCompletionDate(), task.getSchedule(), task.getLocation(), task.getRepeatDate(),
                         task.getRepeatOption(), task.getOrigin(), task.getOriginIdentifier(), loadTagsForTask(task.getId()),
-                        gsonFromAttachments(task.getAttachments()), task.getId());
+                        loadAttachmentsForTask(task.getId()), task.getId());
 
                 gsonTask.setSubtasksCount(countUncompletedSubtasksForTask(task.getTempId()));
                 gsonTasks.add(gsonTask);
