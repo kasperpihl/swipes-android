@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <!-- Buttons container -->
-    <Button
+    <TextView
         android:id="@+id/now_widget_complete"
         android:layout_width="@dimen/task_circles_size"
         android:layout_height="@dimen/task_circles_size"
