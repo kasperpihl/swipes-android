@@ -20,6 +20,7 @@
     <string name="overview_title">RIEPILOGO</string>
     <string name="title_share_intent">Aggiungi a Swipes</string>
     <string name="title_activity_settings">Impostazioni</string>
+    <string name="title_activity_options">Opzioni</string>
     <string name="title_activity_integrations">Integrazioni</string>
     <string name="title_activity_snooze_settings">Posponi</string>
     <string name="title_activity_add_tasks">Aggiungi compito</string>
@@ -55,6 +56,7 @@
     <string name="group_preferences">Preferenze</string>
     <string name="group_help">Aiuto</string>
     <string name="group_other">Altro</string>
+    <string name="options">Opzioni</string>
     <string name="location">Posizione</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
@@ -70,7 +72,26 @@
     <string name="preference_no">Annulla</string>
     <string name="theme_light">Luce</string>
     <string name="theme_dark">Scuro</string>
+    <string name="language">Lingua</string>
+    <string name="language_warning_title">Uscire ora?</string>
+    <string name="language_warning">Swipes deve essere riavviato per effettuare i cambiamenti.</string>
+    <string name="language_warning_yes">Esci</string>
+    <string name="language_warning_no">Annulla</string>
     <!-- Options -->
+    <string name="group_tweaks">Aggiustamenti</string>
+    <string name="group_notifications">Notifiche</string>
+    <string name="options_background_sync">Sincronizzazione in background</string>
+    <string name="options_background_sync_detail">Mantieni i compiti aggiornati automaticamente in background.</string>
+    <string name="options_scroll_to_added">Scorri agli aggiunti</string>
+    <string name="options_scroll_to_added_detail">Auto-scorri per focalizzare l\'ultimo compito aggiunto.</string>
+    <string name="options_snoozed_tasks">Compiti posposti</string>
+    <string name="options_snoozed_tasks_detail">Informa dei compiti posposti all\'ora selezionata.</string>
+    <string name="options_daily_reminder">Promemoria giornaliero</string>
+    <string name="options_daily_reminder_detail">Mostra un promemoria giornaliero per pianificare il giorno.</string>
+    <string name="options_weekly_reminder">Promemoria settimanale</string>
+    <string name="options_weekly_reminder_detail">Mostra un promemoria settimanale per pianificare la settimana.</string>
+    <string name="options_vibration">Vibrazione</string>
+    <string name="options_vibration_detail">Vibra all\'apparizione delle notifiche.</string>
     <!-- Help -->
     <string name="help_center">Centro assistenza</string>
     <string name="help_google_community">Community Google+</string>
@@ -246,6 +267,10 @@ http://swipesapp.com</string>
     <!-- Notifications -->
     <string name="notification_snooze">Posponi +%dh</string>
     <string name="notification_complete">Completa</string>
+    <string name="reminder_daily_title">Pianifica il tuo giorno?</string>
+    <string name="reminder_daily_message">Buongiorno! Inizia la tua giornata produttiva con un piano.</string>
+    <string name="reminder_weekly_title">Pianifica la tua settimana?</string>
+    <string name="reminder_weekly_message">Buonasera! Stasera inizia la tua settimana produttiva con un piano.</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Aggiungi un nuovo tag</string>
     <string name="add_tag_dialog_hint">Titolo tag</string>
@@ -300,5 +325,13 @@ http://swipesapp.com</string>
 &lt;b>%2$s&lt;/b></item>
         <item quantity="other">%1$s compiti con tag completati:
 &lt;b>%2$s&lt;/b></item>
+    </plurals>
+    <plurals name="reminder_evening_title">
+        <item quantity="one">Compito rimasto oggi</item>
+        <item quantity="other">Compiti rimasti oggi</item>
+    </plurals>
+    <plurals name="reminder_evening_message">
+        <item quantity="one">Oggi hai ancora un compito da fare. Qualcosa di importante?</item>
+        <item quantity="other">Oggi hai ancora %s compiti da fare. Qualcosa di importante?</item>
     </plurals>
 </resources>

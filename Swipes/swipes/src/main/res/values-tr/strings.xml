@@ -72,6 +72,11 @@
     <string name="preference_no">İptal</string>
     <string name="theme_light">Açık</string>
     <string name="theme_dark">Koyu</string>
+    <string name="language">Dil</string>
+    <string name="language_warning_title">Uygulamadan çıkılsın mı?</string>
+    <string name="language_warning">Değişikliklerin etkin olması için Swipes\'ın yeniden başlatılması gerekiyor.</string>
+    <string name="language_warning_yes">Çıkış</string>
+    <string name="language_warning_no">İptal</string>
     <!-- Options -->
     <string name="group_tweaks">Ayarlar</string>
     <string name="group_notifications">Bildirimler</string>

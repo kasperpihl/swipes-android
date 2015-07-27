@@ -45,7 +45,7 @@
     <string name="focus_empty_search">No hemos localizado etiquetas para  &lt;b>%1$s&lt;/b></string>
     <string name="done_empty_search">No hemos localizado tareas finalizadas para &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
-    <string name="tasks_list_login_action">Identificarse o Registrarse</string>
+    <string name="tasks_list_login_action">Identificarse o registrarse</string>
     <string name="tasks_list_multi_select_action">Selector Multiple</string>
     <string name="tasks_list_search_action">Busqueda</string>
     <string name="tasks_list_workspaces_action">Lugares de Trabajo</string>
@@ -72,6 +72,11 @@
     <string name="preference_no">Cancelar</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="language">Idioma</string>
+    <string name="language_warning_title">¿ Salir de la aplicación ?</string>
+    <string name="language_warning">Para gestionar los cambios Swipes necesita ser reiniciado.</string>
+    <string name="language_warning_yes">Salir</string>
+    <string name="language_warning_no">Cancelar</string>
     <!-- Options -->
     <string name="group_tweaks">Modificaciones</string>
     <string name="group_notifications">Notificaciones</string>
@@ -148,7 +153,7 @@ Nosotros las importaremos  en Swipes y sincronizaremos todos los datos.</string>
     <string name="about_oss">Abrir libería de referencias</string>
     <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
     <!-- Invite -->
-    <string name="settings_invite">Invita a tus amigos a SWIPES</string>
+    <string name="settings_invite">Invita a tus amigos a Swipes</string>
     <string name="invite_subject">Pruebala está aplicación es \"cojonuda\"</string>
     <string name="invite_body">Que tal. \n\n
 Estoy probando una nueva aplicación. para gestionar mis rutinas diárias. \n\n
