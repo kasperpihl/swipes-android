@@ -89,6 +89,7 @@ public class AddTasksActivity extends BaseActivity {
     private static String sTitle;
     private static boolean sPriority;
     private static Date sSnoozeTime;
+    private static boolean sHasSnoozed;
 
     private float mFieldsTranslationY;
     private boolean mHasStartedTimer;
@@ -156,6 +157,9 @@ public class AddTasksActivity extends BaseActivity {
                 if (data != null) {
                     String date = data.getStringExtra(Constants.EXTRA_SNOOZE_TIME);
                     sSnoozeTime = DateUtils.dateFromSync(date);
+
+                    // Set success flag.
+                    sHasSnoozed = true;
                 }
             } else {
                 // Uncheck snooze checkbox.
@@ -203,7 +207,7 @@ public class AddTasksActivity extends BaseActivity {
         // Restore state of fields.
         if (sTitle != null) mEditTextTitle.setText(sTitle);
         mButtonPriority.setChecked(sPriority);
-        mSnoozeCheckbox.setChecked(sSnoozeTime != null);
+        mSnoozeCheckbox.setChecked(sHasSnoozed);
 
         // Load title from other apps.
         if (mIntentData != null) {
@@ -234,7 +238,7 @@ public class AddTasksActivity extends BaseActivity {
         }
 
         // Set snooze time if not manually selected.
-        if (sSnoozeTime == null) sSnoozeTime = currentDate;
+        if (!sHasSnoozed) sSnoozeTime = currentDate;
 
         // Save new task.
         if (!title.isEmpty()) {
@@ -256,6 +260,7 @@ public class AddTasksActivity extends BaseActivity {
         sPriority = false;
         sSelectedTags.clear();
         sSnoozeTime = null;
+        sHasSnoozed = false;
 
         // Refresh widget and tasks.
         TasksActivity.refreshWidgets(this);
@@ -572,7 +577,7 @@ public class AddTasksActivity extends BaseActivity {
 
     @OnClick(R.id.add_task_snooze_checkbox)
     protected void setSnooze() {
-        if (sSnoozeTime == null) {
+        if (!sHasSnoozed) {
             // Call snooze activity.
             Intent intent = new Intent(this, SnoozeActivity.class);
             intent.putExtra(Constants.EXTRA_TASK_ID, 0L);
@@ -584,6 +589,7 @@ public class AddTasksActivity extends BaseActivity {
         } else {
             // Remove snooze.
             sSnoozeTime = null;
+            sHasSnoozed = false;
         }
     }
 
