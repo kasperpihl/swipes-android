@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SyncService {
 
-    private static final String API_URL = "http://api.swipesapp.com/v1/sync";
+    private static final String API_URL = "https://api.swipesapp.com/v1/sync";
     private static final String PLATFORM = "android";
     private static final int MAX_OBJECTS = 200;
 
