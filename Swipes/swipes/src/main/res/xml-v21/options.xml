@@ -61,6 +61,14 @@
             android:switchTextOn="@string/switch_on"
             android:title="@string/options_vibration" />
 
+        <SwitchPreference
+            android:defaultValue="@bool/default_use_system_sound"
+            android:key="settings_use_system_sound"
+            android:summary="@string/options_system_sound_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_system_sound" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

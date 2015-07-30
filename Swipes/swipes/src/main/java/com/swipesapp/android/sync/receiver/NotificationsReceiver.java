@@ -131,14 +131,23 @@ public class NotificationsReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
+        int defaults = NotificationCompat.DEFAULT_LIGHTS;
+
         // Turn on vibration if allowed.
         if (PreferenceUtils.isVibrationEnabled(context)) {
-            builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
+            defaults |= NotificationCompat.DEFAULT_VIBRATE;
         }
 
-        // Set custom notification sound.
-        String filesPath = "android.resource://" + context.getPackageName() + "/";
-        builder.setSound(Uri.parse(filesPath + R.raw.notification_default));
+        if (PreferenceUtils.shouldUseSystemSound(context)) {
+            // Set system notification sound.
+            defaults |= NotificationCompat.DEFAULT_SOUND;
+        } else {
+            // Set custom notification sound.
+            String filesPath = "android.resource://" + context.getPackageName() + "/";
+            builder.setSound(Uri.parse(filesPath + R.raw.notification_default));
+        }
+
+        builder.setDefaults(defaults);
 
         // Intent to open app.
         Intent tasksIntent = new Intent(context, ActionsReceiver.class);

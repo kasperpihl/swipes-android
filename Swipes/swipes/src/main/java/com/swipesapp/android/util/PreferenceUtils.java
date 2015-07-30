@@ -29,6 +29,7 @@ public class PreferenceUtils {
     public static final String VIBRATIONS_KEY = "settings_enable_vibration";
     public static final String DAILY_REMINDER_KEY = "settings_enable_daily_reminder";
     public static final String WEEKLY_REMINDER_KEY = "settings_enable_weekly_reminder";
+    public static final String USE_SYSTEM_SOUND_KEY = "settings_use_system_sound";
 
     // Analytics data.
     public static final String SENT_DIMENSIONS = "sent_user_dimensions";
@@ -222,6 +223,17 @@ public class PreferenceUtils {
     public static boolean isVibrationEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(VIBRATIONS_KEY, true);
+    }
+
+    /**
+     * Check if use of system sound is enabled.
+     *
+     * @param context Context instance.
+     * @return True if it's enabled in the app.
+     */
+    public static boolean shouldUseSystemSound(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(USE_SYSTEM_SOUND_KEY, false);
     }
 
     /**

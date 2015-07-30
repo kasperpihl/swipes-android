@@ -12,6 +12,7 @@
     <bool name="default_enable_vibration">true</bool>
     <bool name="default_enable_daily_reminder">true</bool>
     <bool name="default_enable_weekly_reminder">true</bool>
+    <bool name="default_use_system_sound">false</bool>
 
     <!-- Snooze preferences -->
     <string name="default_day_start">09:00</string>

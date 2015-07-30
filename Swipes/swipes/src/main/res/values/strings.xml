@@ -98,6 +98,8 @@
     <string name="options_weekly_reminder_detail">Show a weekly reminder to plan the week.</string>
     <string name="options_vibration">Vibration</string>
     <string name="options_vibration_detail">Vibrate when notifications are shown.</string>
+    <string name="options_system_sound">Use system sound</string>
+    <string name="options_system_sound_detail">Enable to use system sound for notifications.</string>
 
     <!-- Help -->
     <string name="help_center">Help Center</string>
