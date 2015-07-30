@@ -427,16 +427,45 @@ public class SyncService {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
-        TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), DateUtils.dateToSync(tag.getLocalCreatedAt()), DateUtils.dateToSync(tag.getLocalUpdatedAt()), tag.getTitle(), false);
-        mExtTagSyncDao.getDao().insert(tagSync);
+        // Load previous (not yet synced) changes.
+        TagSync tagSync = mExtTagSyncDao.selectTagForSync(tag.getTempId());
+        if (tagSync == null) tagSync = new TagSync();
+
+        // Save changed attributes.
+        tagSync.setObjectId(tag.getObjectId());
+        tagSync.setTempId(tag.getTempId());
+        tagSync.setCreatedAt(DateUtils.dateToSync(tag.getLocalCreatedAt()));
+        tagSync.setUpdatedAt(DateUtils.dateToSync(tag.getLocalUpdatedAt()));
+        tagSync.setTitle(tag.getTitle());
+        tagSync.setDeleted(false);
+
+        // Save or update tracked changes.
+        if (tagSync.getId() == null) {
+            mExtTagSyncDao.getDao().insert(tagSync);
+        } else {
+            mExtTagSyncDao.getDao().update(tagSync);
+        }
     }
 
     public void saveDeletedTagForSync(Tag tag) {
         // Skip saving when the user isn't logged in.
         if (ParseUser.getCurrentUser() == null) return;
 
-        TagSync tagSync = new TagSync(null, tag.getObjectId(), tag.getTempId(), null, null, null, true);
-        mExtTagSyncDao.getDao().insert(tagSync);
+        // Load previous (not yet synced) changes.
+        TagSync tagSync = mExtTagSyncDao.selectTagForSync(tag.getTempId());
+        if (tagSync == null) tagSync = new TagSync();
+
+        // Save changed attributes.
+        tagSync.setObjectId(tag.getObjectId());
+        tagSync.setTempId(tag.getTempId());
+        tagSync.setDeleted(true);
+
+        // Save or update tracked changes.
+        if (tagSync.getId() == null) {
+            mExtTagSyncDao.getDao().insert(tagSync);
+        } else {
+            mExtTagSyncDao.getDao().update(tagSync);
+        }
     }
 
     private TaskSync taskSyncFromGson(GsonTask task) {

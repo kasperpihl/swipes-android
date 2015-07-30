@@ -345,6 +345,25 @@ public class TasksService {
         return id;
     }
 
+    public void editTag(GsonTag tag) {
+        if (tag.getId() != null && tag.getTitle() != null && !tag.getTitle().isEmpty()) {
+            Tag localTag = mExtTagDao.selectTag(tag.getId());
+
+            // Update attributes.
+            localTag.setObjectId(tag.getObjectId());
+            localTag.setTempId(tag.getTempId());
+            localTag.setCreatedAt(tag.getLocalCreatedAt());
+            localTag.setUpdatedAt(tag.getLocalUpdatedAt());
+            localTag.setTitle(tag.getTitle());
+
+            // Persist updated tag.
+            mExtTagDao.getDao().update(localTag);
+
+            // Save changes for sync.
+            SyncService.getInstance().saveTagForSync(tag);
+        }
+    }
+
     /**
      * Saves an existing tag.
      *

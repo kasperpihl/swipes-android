@@ -307,6 +307,7 @@
     <string name="delete_tag_dialog_yes">Delete</string>
     <string name="delete_tag_dialog_no">Cancel</string>
     <string name="empty_tags_hint">No tags assigned</string>
+    <string name="edit_tag_dialog_title">Edit tag</string>
 
     <!-- Workspaces -->
     <string name="set_workspaces_hint">SET WORKSPACE</string>

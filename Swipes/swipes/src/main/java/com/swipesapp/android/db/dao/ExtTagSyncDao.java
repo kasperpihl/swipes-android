@@ -35,4 +35,9 @@ public class ExtTagSyncDao {
         return mDao.queryBuilder().list();
     }
 
+    public TagSync selectTagForSync(String tempId) {
+        return mDao.queryBuilder().where(mDao.queryBuilder().or(TagSyncDao.Properties.TempId.eq(tempId),
+                TagSyncDao.Properties.ObjectId.eq(tempId))).unique();
+    }
+
 }

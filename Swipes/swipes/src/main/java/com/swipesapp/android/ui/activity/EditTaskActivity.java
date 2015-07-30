@@ -183,6 +183,7 @@ public class EditTaskActivity extends FragmentActivity {
     private WeakReference<Context> mContext;
 
     private TasksService mTasksService;
+    private SyncService mSyncService;
 
     private Long mId;
 
@@ -215,6 +216,7 @@ public class EditTaskActivity extends FragmentActivity {
         mContext = new WeakReference<Context>(this);
 
         mTasksService = TasksService.getInstance();
+        mSyncService = SyncService.getInstance();
 
         int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, 1);
         mSection = Sections.getSectionByNumber(sectionNumber);
@@ -757,7 +759,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         updateViews();
 
-        SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
+        mSyncService.performSync(true, Constants.SYNC_DELAY);
 
         // Send analytics events.
         sendTagAssignEvents();
@@ -859,6 +861,20 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Refresh displayed tags.
         loadTags();
+
+        // Perform sync.
+        mSyncService.performSync(true, Constants.SYNC_DELAY);
+    }
+
+    private void confirmEditTag(GsonTag selectedTag) {
+        // Save tag to database.
+        mTasksService.editTag(selectedTag);
+
+        // Refresh displayed tags.
+        loadTags();
+
+        // Perform sync.
+        mSyncService.performSync(true, Constants.SYNC_DELAY);
     }
 
     private LinearLayout customizeAddTagInput(EditText input) {
@@ -922,31 +938,110 @@ public class EditTaskActivity extends FragmentActivity {
         public boolean onLongClick(View view) {
             final GsonTag selectedTag = mTasksService.loadTag((long) view.getId());
 
-            // Display dialog to delete tag.
-            new SwipesDialog.Builder(mContext.get())
-                    .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
-                    .content(R.string.delete_tag_dialog_message)
-                    .positiveText(R.string.delete_tag_dialog_yes)
-                    .negativeText(R.string.delete_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
+            // Create tag title input.
+            final ActionEditText input = new ActionEditText(mContext.get());
+            input.setText(selectedTag.getTitle());
+            input.setHint(getString(R.string.add_tag_dialog_hint));
+            input.setHintTextColor(ThemeUtils.getHintColor(mContext.get()));
+            input.setTextColor(ThemeUtils.getTextColor(mContext.get()));
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.requestFocus();
+
+            // Display dialog to edit tag.
+            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+                    .title(R.string.edit_tag_dialog_title)
+                    .positiveText(R.string.add_tag_dialog_yes)
+                    .neutralText(R.string.delete_tag_dialog_yes)
+                    .negativeText(R.string.add_tag_dialog_no)
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
+                    .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            // Delete tag and unassign it from all tasks.
-                            mTasksService.deleteTag(selectedTag.getId());
+                            String title = input.getText().toString();
 
-                            // Send analytics event.
-                            sendTagDeletedEvent();
+                            if (!title.isEmpty()) {
+                                // Save updated tag.
+                                selectedTag.setTitle(title);
+                                confirmEditTag(selectedTag);
+                            }
+                        }
 
-                            // Refresh displayed tags.
-                            loadTags();
+                        @Override
+                        public void onNeutral(MaterialDialog dialog) {
+                            // Ask to delete tag.
+                            showTagDeleteDialog(selectedTag);
+
+                            // Dismiss edit dialog.
+                            dialog.dismiss();
+                        }
+                    })
+                    .showListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            // Show keyboard automatically.
+                            showKeyboard();
                         }
                     })
                     .show();
 
+            // Dismiss dialog on back press.
+            input.setListener(new KeyboardBackListener() {
+                @Override
+                public void onKeyboardBackPressed() {
+                    dialog.dismiss();
+                }
+            });
+
+            input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // If the action is a key-up event on the return key, save changes.
+                        String title = v.getText().toString();
+
+                        if (!title.isEmpty()) {
+                            // Save updated tag.
+                            selectedTag.setTitle(title);
+                            confirmEditTag(selectedTag);
+                        }
+
+                        dialog.dismiss();
+                    }
+                    return true;
+                }
+            });
+
             return true;
         }
     };
+
+    private void showTagDeleteDialog(final GsonTag selectedTag) {
+        // Display dialog to delete tag.
+        new SwipesDialog.Builder(mContext.get())
+                .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
+                .content(R.string.delete_tag_dialog_message)
+                .positiveText(R.string.delete_tag_dialog_yes)
+                .negativeText(R.string.delete_tag_dialog_no)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        // Delete tag and unassign it from all tasks.
+                        mTasksService.deleteTag(selectedTag.getId());
+
+                        // Send analytics event.
+                        sendTagDeletedEvent();
+
+                        // Refresh displayed tags.
+                        loadTags();
+
+                        // Perform sync.
+                        mSyncService.performSync(true, Constants.SYNC_DELAY);
+                    }
+                })
+                .show();
+    }
 
     private boolean isTagAssigned(GsonTag selectedTag) {
         // Check if tag is already assigned to the task.
