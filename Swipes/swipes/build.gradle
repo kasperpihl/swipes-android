@@ -1,19 +1,19 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'https://dl.bintray.com/intercom/intercom-maven' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
@@ -73,7 +73,6 @@ dependencies {
     compile('de.greenrobot:greendao:1.3.0') {
         exclude module: 'support-v4'
     }
-    compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.koushikdutta.ion:ion:2.0.4'
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'com.github.clans:fab:1.5.4'
@@ -82,5 +81,8 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     compile('io.intercom.android:intercom-sdk:1.0.3@aar') {
         transitive = true
+    }
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
+        transitive = true;
     }
 }

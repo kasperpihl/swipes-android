@@ -13,6 +13,8 @@ import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.values.Intents;
 
+import io.fabric.sdk.android.Fabric;
+
 /**
  * Helper for handling the notifications alarm. Automatically starts the alarm when
  * the device boots and provides a convenience call to start it at will.
@@ -25,7 +27,7 @@ public class NotificationsHelper extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intents.BOOT_COMPLETED)) {
             // Initialize Crashlytics.
-            Crashlytics.start(context);
+            Fabric.with(context, new Crashlytics());
 
             // Apply user selected language.
             LanguageHandler.applyLanguage(context);

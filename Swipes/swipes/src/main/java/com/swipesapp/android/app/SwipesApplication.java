@@ -30,6 +30,7 @@ import com.swipesapp.android.sync.service.TasksService;
 
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import io.intercom.android.sdk.Intercom;
 
 /**
@@ -55,7 +56,7 @@ public class SwipesApplication extends Application {
         super.onCreate();
 
         // Initialize Crashlytics.
-        Crashlytics.start(this);
+        Fabric.with(this, new Crashlytics());
 
         // Initialize the Parse SDK.
         Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
