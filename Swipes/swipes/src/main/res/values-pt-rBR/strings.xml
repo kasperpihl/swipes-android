@@ -279,6 +279,7 @@ Aproveite!</string>
     <string name="delete_tag_dialog_yes">Excluir</string>
     <string name="delete_tag_dialog_no">Cancelar</string>
     <string name="empty_tags_hint">Sem etiquetas atribuídas</string>
+    <string name="edit_tag_dialog_title">Editar etiqueta</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">DEFINIR FILTRO</string>
     <string name="clear_workspace_button">LIMPAR FILTRO</string>
