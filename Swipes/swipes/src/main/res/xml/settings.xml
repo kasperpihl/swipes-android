@@ -27,12 +27,13 @@
         android:key="group_preferences"
         android:title="@string/group_preferences">
 
-        <com.swipesapp.android.ui.view.SwitchPreferenceCompat
+        <CheckBoxPreference
             android:defaultValue="@bool/default_enable_location"
             android:key="settings_enable_location"
             android:switchTextOff="@string/switch_off"
             android:switchTextOn="@string/switch_on"
-            android:title="@string/location" />
+            android:title="@string/location"
+            android:widgetLayout="@layout/preference_switch_layout" />
 
         <com.swipesapp.android.ui.view.SwipesListPreference
             android:defaultValue="@string/default_theme_setting"
