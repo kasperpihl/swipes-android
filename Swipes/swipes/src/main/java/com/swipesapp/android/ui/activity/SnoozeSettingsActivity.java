@@ -9,6 +9,7 @@ import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.handler.SettingsHandler;
+import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.ui.view.TimePreference;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -71,6 +72,20 @@ public class SnoozeSettingsActivity extends BaseActivity {
 
             // Save user settings.
             SettingsHandler.saveSettingsToServer(getActivity());
+
+            if (key.equalsIgnoreCase(PreferenceUtils.SNOOZE_WEEKEND_DAY_START)) {
+                // Reschedule daily reminder.
+                NotificationsHelper.createDailyReminderAlarm(getActivity());
+
+            } else if (key.equalsIgnoreCase(PreferenceUtils.SNOOZE_EVENING_START)) {
+                // Reschedule evening and weekly reminders.
+                NotificationsHelper.createEveningReminderAlarm(getActivity());
+                NotificationsHelper.createWeeklyReminderAlarm(getActivity());
+
+            } else if (key.equalsIgnoreCase(PreferenceUtils.SNOOZE_WEEK_START)) {
+                // Reschedule weekly reminder.
+                NotificationsHelper.createWeeklyReminderAlarm(getActivity());
+            }
         }
 
         private void displayValues() {

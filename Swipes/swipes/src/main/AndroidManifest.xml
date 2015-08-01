@@ -178,6 +178,8 @@
 
         <receiver android:name=".sync.receiver.NotificationsReceiver" />
 
+        <receiver android:name=".sync.receiver.NotificationsReceiver$RemindersReceiver" />
+
         <receiver android:name=".sync.receiver.NotificationsReceiver$ActionsReceiver" />
 
         <receiver

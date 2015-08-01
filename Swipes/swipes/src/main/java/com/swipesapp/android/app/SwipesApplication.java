@@ -80,8 +80,9 @@ public class SwipesApplication extends Application {
         // Apply user selected language.
         LanguageHandler.applyLanguage(getApplicationContext());
 
-        // Start notifications alarm.
-        NotificationsHelper.createNotificationsAlarm(getApplicationContext());
+        // Start notification alarms.
+        NotificationsHelper.createNotificationsAlarm(getApplicationContext(), null);
+        NotificationsHelper.createRemindersAlarm(getApplicationContext());
 
         // Start Analytics tracker.
         startTracker(getApplicationContext());

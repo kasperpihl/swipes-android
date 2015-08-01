@@ -17,8 +17,6 @@ import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.SnoozeActivity;
 import com.swipesapp.android.ui.activity.TasksActivity;
-import com.swipesapp.android.ui.view.TimePreference;
-import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -75,8 +73,8 @@ public class NotificationsReceiver extends BroadcastReceiver {
         // Persist expired tasks in case the receiver is killed.
         saveCurrentData(context);
 
-        // Handle daily and weekly messages.
-        sendPlanningReminders(context);
+        // Schedule next alarm.
+        NotificationsHelper.createNotificationsAlarm(context, null);
     }
 
     private void sendNotification(Context context) {
@@ -124,7 +122,7 @@ public class NotificationsReceiver extends BroadcastReceiver {
         }
     }
 
-    private static NotificationCompat.Builder getDefaultBuilder(Context context) {
+    public static NotificationCompat.Builder getDefaultBuilder(Context context) {
         // Create default builder.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.ic_notification);
@@ -210,110 +208,92 @@ public class NotificationsReceiver extends BroadcastReceiver {
         TasksActivity.refreshWidgets(context);
     }
 
-    private static void sendPlanningReminders(Context context) {
-        if (PreferenceUtils.areNotificationsEnabled(context)) {
-            // Determine if it's time for a daily reminder.
-            if (PreferenceUtils.isDailyReminderEnabled(context) && isDailyReminderTime(context)) {
-                // Check number of tasks for today.
-                if (sTasksService.countTasksForDay(new Date()) <= 1) {
-                    String title = context.getString(R.string.reminder_daily_title);
-                    String message = context.getString(R.string.reminder_daily_message);
-
-                    // Send daily reminder.
-                    sendReminder(title, message, 1, context);
-                }
-            }
-
-            // Determine if it's time for an evening reminder.
-            if (PreferenceUtils.isDailyReminderEnabled(context) && isEveningReminderTime(context)) {
-                int tasksForNow = sTasksService.countTasksForNow();
-                int tasksForToday = sTasksService.countTasksForToday();
-
-                // Determine if there are tasks left.
-                if (tasksForNow > 0 && tasksForNow == tasksForToday) {
-                    String title = context.getResources().getQuantityString(R.plurals.reminder_evening_title, tasksForNow);
-                    String message = context.getResources().getQuantityString(R.plurals.reminder_evening_message, tasksForNow, tasksForNow);
-
-                    // Send evening reminder.
-                    sendReminder(title, message, 2, context);
-                }
-            }
-
-            // Determine if it's time for a weekly reminder.
-            if (PreferenceUtils.isWeeklyReminderEnabled(context) && isWeeklyReminderTime(context)) {
-                Calendar tomorrow = Calendar.getInstance();
-                tomorrow.setTimeInMillis(tomorrow.getTimeInMillis() + 86400000);
-
-                // Check number of tasks for tomorrow.
-                if (sTasksService.countTasksForDay(tomorrow.getTime()) <= 1) {
-                    String title = context.getString(R.string.reminder_weekly_title);
-                    String message = context.getString(R.string.reminder_weekly_message);
-
-                    // Send weekly reminder.
-                    sendReminder(title, message, 3, context);
-                }
-            }
-        }
-    }
-
-    private static boolean isDailyReminderTime(Context context) {
-        // Load day start preference.
-        String prefWeekendDayStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEKEND_DAY_START, context);
-        int weekendDayStartHour = TimePreference.getHour(prefWeekendDayStart);
-        int weekendDayStartMinute = TimePreference.getMinute(prefWeekendDayStart);
-
-        // Check if current time is the same as preference.
-        Calendar now = Calendar.getInstance();
-        boolean isSameHour = now.get(Calendar.HOUR_OF_DAY) == weekendDayStartHour;
-        boolean isSameMinute = now.get(Calendar.MINUTE) == weekendDayStartMinute;
-
-        return isSameHour && isSameMinute;
-    }
-
-    private static boolean isEveningReminderTime(Context context) {
-        // Load evening start preference.
-        String prefEveningStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_EVENING_START, context);
-        int eveningStartHour = TimePreference.getHour(prefEveningStart);
-        int eveningStartMinute = TimePreference.getMinute(prefEveningStart);
-
-        // Check if current time is the same as preference.
-        Calendar now = Calendar.getInstance();
-        boolean isSameHour = now.get(Calendar.HOUR_OF_DAY) == eveningStartHour;
-        boolean isSameMinute = now.get(Calendar.MINUTE) == eveningStartMinute;
-
-        return isSameHour && isSameMinute;
-    }
-
-    private static boolean isWeeklyReminderTime(Context context) {
-        // Load week start preference.
-        String prefWeekStart = PreferenceUtils.readString(PreferenceUtils.SNOOZE_WEEK_START, context);
-        int weekStartDay = DateUtils.weekdayFromPrefValue(prefWeekStart);
-
-        // Check if current time is evening of the day before the week starts.
-        Calendar now = Calendar.getInstance();
-        int dayBeforeWeekStart = weekStartDay - 1 == 0 ? Calendar.SATURDAY : weekStartDay - 1;
-        boolean isDayBeforeWeekStart = now.get(Calendar.DAY_OF_WEEK) == dayBeforeWeekStart;
-
-        return isDayBeforeWeekStart && isEveningReminderTime(context);
-    }
-
-    private static void sendReminder(String title, String content, int id, Context context) {
-        // Customize builder.
-        NotificationCompat.Builder builder = getDefaultBuilder(context);
-        builder.setContentTitle(title);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
-
-        // Send notification.
-        sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        sNotificationManager.notify(id, builder.build());
-    }
-
     private static void sendClickEvent(String action) {
         // Send analytics event.
         Analytics.sendEvent(Categories.NOTIFICATIONS, action, null, (long) sExpiredTasks.size());
     }
 
+    /**
+     * Receiver for the reminders alarm intent.
+     */
+    public static class RemindersReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sTasksService = TasksService.getInstance();
+            String action = intent.getAction();
+
+            if (action != null && PreferenceUtils.areNotificationsEnabled(context)) {
+                switch (action) {
+                    case Intents.DAILY_REMINDER:
+                        // Determine if it's time for a daily reminder.
+                        if (PreferenceUtils.isDailyReminderEnabled(context)) {
+                            // Check number of tasks for today.
+                            if (sTasksService.countTasksForDay(new Date()) <= 1) {
+                                String title = context.getString(R.string.reminder_daily_title);
+                                String message = context.getString(R.string.reminder_daily_message);
+
+                                // Send daily reminder.
+                                sendReminder(title, message, 1, context);
+                            }
+                        }
+                        break;
+
+                    case Intents.EVENING_REMINDER:
+                        // Determine if it's time for an evening reminder.
+                        if (PreferenceUtils.isDailyReminderEnabled(context)) {
+                            int tasksForNow = sTasksService.countTasksForNow();
+                            int tasksForToday = sTasksService.countTasksForToday();
+
+                            // Determine if there are tasks left.
+                            if (tasksForNow > 0 && tasksForNow == tasksForToday) {
+                                String title = context.getResources().getQuantityString(R.plurals.reminder_evening_title, tasksForNow);
+                                String message = context.getResources().getQuantityString(R.plurals.reminder_evening_message, tasksForNow, tasksForNow);
+
+                                // Send evening reminder.
+                                sendReminder(title, message, 2, context);
+                            }
+                        }
+                        break;
+
+                    case Intents.WEEKLY_REMINDER:
+                        // Determine if it's time for a weekly reminder.
+                        if (PreferenceUtils.isWeeklyReminderEnabled(context)) {
+                            Calendar tomorrow = Calendar.getInstance();
+                            tomorrow.setTimeInMillis(tomorrow.getTimeInMillis() + 86400000);
+
+                            // Check number of tasks for tomorrow.
+                            if (sTasksService.countTasksForDay(tomorrow.getTime()) <= 1) {
+                                String title = context.getString(R.string.reminder_weekly_title);
+                                String message = context.getString(R.string.reminder_weekly_message);
+
+                                // Send weekly reminder.
+                                sendReminder(title, message, 3, context);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        private static void sendReminder(String title, String content, int id, Context context) {
+            // Customize builder.
+            NotificationCompat.Builder builder = getDefaultBuilder(context);
+            builder.setContentTitle(title);
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+
+            // Send notification.
+            sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            sNotificationManager.notify(id, builder.build());
+        }
+
+    }
+
+    /**
+     * Receiver for notification actions.
+     */
     public static class ActionsReceiver extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             sTasksService = TasksService.getInstance();
@@ -384,6 +364,7 @@ public class NotificationsReceiver extends BroadcastReceiver {
             sNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             sNotificationManager.cancel(0);
         }
+
     }
 
 }

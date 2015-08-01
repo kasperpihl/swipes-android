@@ -21,6 +21,7 @@ import com.swipesapp.android.db.dao.ExtTaskTagDao;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
+import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.util.ListUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Sections;
@@ -107,6 +108,8 @@ public class TasksService {
     public void saveTask(GsonTask gsonTask, boolean sync) {
         Long id = gsonTask.getId();
         String parentId = gsonTask.getParentLocalId();
+
+        NotificationsHelper.handleNextAlarm(mContext.get(), gsonTask);
 
         if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask, null);
 
@@ -526,6 +529,16 @@ public class TasksService {
     public GsonTask loadTask(String tempId) {
         Task task = mExtTaskDao.selectTask(tempId);
         return task != null ? gsonFromTasks(Arrays.asList(task)).get(0) : null;
+    }
+
+    /**
+     * Loads the most recent scheduled task.
+     *
+     * @return Selected task.
+     */
+    public GsonTask loadFirstScheduledTask() {
+        List<GsonTask> scheduledTasks = loadScheduledTasks();
+        return !scheduledTasks.isEmpty() ? scheduledTasks.get(0) : null;
     }
 
     /**

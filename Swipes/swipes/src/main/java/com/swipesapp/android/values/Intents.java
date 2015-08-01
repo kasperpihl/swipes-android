@@ -97,4 +97,19 @@ public class Intents {
      */
     public static final String WIDGET_OPEN_SUBTASKS = "com.swipesapp.android.WIDGET_OPEN_SUBTASKS";
 
+    /**
+     * Notifies listeners to send daily reminder.
+     */
+    public static final String DAILY_REMINDER = "com.swipesapp.android.SEND_DAILY_REMINDER";
+
+    /**
+     * Notifies listeners to send evening reminder.
+     */
+    public static final String EVENING_REMINDER = "com.swipesapp.android.SEND_EVENING_REMINDER";
+
+    /**
+     * Notifies listeners to send weekly reminder.
+     */
+    public static final String WEEKLY_REMINDER = "com.swipesapp.android.SEND_WEEKLY_REMINDER";
+
 }
