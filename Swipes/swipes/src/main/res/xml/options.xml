@@ -7,6 +7,15 @@
         android:title="@string/group_tweaks">
 
         <CheckBoxPreference
+            android:defaultValue="@bool/default_enable_location"
+            android:key="settings_enable_location"
+            android:summary="@string/options_location_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_location"
+            android:widgetLayout="@layout/preference_switch_layout" />
+
+        <CheckBoxPreference
             android:defaultValue="@bool/default_enable_background_sync"
             android:key="settings_enable_background_sync"
             android:summary="@string/options_background_sync_detail"

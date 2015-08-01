@@ -62,7 +62,6 @@
     <string name="group_help">Help</string>
     <string name="group_other">Other</string>
     <string name="options">Options</string>
-    <string name="location">Location</string>
     <string name="theme">Theme</string>
     <string name="settings_theme_dialog_title">Theme</string>
     <string name="snoozes">Snoozes</string>
@@ -86,6 +85,8 @@
     <!-- Options -->
     <string name="group_tweaks">Tweaks</string>
     <string name="group_notifications">Notifications</string>
+    <string name="options_location">Location</string>
+    <string name="options_location_detail">Access device location.</string>
     <string name="options_background_sync">Background sync</string>
     <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
     <string name="options_scroll_to_added">Scroll to added</string>

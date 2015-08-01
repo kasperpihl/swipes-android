@@ -164,7 +164,6 @@ public class SettingsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.settings);
 
             PreferenceCategory categoryCloud = (PreferenceCategory) findPreference("group_cloud");
-            PreferenceCategory categoryPreferences = (PreferenceCategory) findPreference("group_preferences");
             PreferenceCategory categoryOther = (PreferenceCategory) findPreference("group_other");
 
             Preference preferenceInvite = findPreference("invite");
@@ -229,10 +228,6 @@ public class SettingsActivity extends BaseActivity {
                 // Show last sync date.
                 refreshSyncDate(preferenceSync);
             }
-
-            // Location is not available yet, so hide the setting.
-            Preference preferenceLocation = findPreference("settings_enable_location");
-            categoryPreferences.removePreference(preferenceLocation);
 
             // Display current values.
             displayValues();

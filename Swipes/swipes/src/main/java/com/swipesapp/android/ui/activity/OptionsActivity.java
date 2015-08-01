@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
 import com.swipesapp.android.R;
@@ -54,6 +55,12 @@ public class OptionsActivity extends BaseActivity {
 
             // Enable or disable vibration preference.
             handleVibrationPreference();
+
+            PreferenceCategory categoryTweaks = (PreferenceCategory) findPreference("group_tweaks");
+
+            // Location is not available yet, so hide the setting.
+            Preference preferenceLocation = findPreference("settings_enable_location");
+            categoryTweaks.removePreference(preferenceLocation);
         }
 
         @Override
