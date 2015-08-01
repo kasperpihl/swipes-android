@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -53,6 +54,8 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         themeStatusBar(getResources().getColor(R.color.neutral_accent_dark));
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     /**

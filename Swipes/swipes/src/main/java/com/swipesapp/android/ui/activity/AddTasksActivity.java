@@ -30,6 +30,7 @@ import com.swipesapp.android.analytics.values.Categories;
 import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
@@ -280,6 +281,11 @@ public class AddTasksActivity extends BaseActivity {
             setResult(Constants.ADDED_SNOOZED_TASK_RESULT_CODE, data);
         } else {
             setResult(RESULT_OK, data);
+        }
+
+        // Play sound.
+        if (!title.isEmpty()) {
+            SoundHandler.playSound(this, R.raw.action_positive);
         }
 
         finish();
@@ -536,6 +542,9 @@ public class AddTasksActivity extends BaseActivity {
 
                         // Perform sync.
                         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+                        // Play sound.
+                        SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
                 })
                 .show();
@@ -621,6 +630,9 @@ public class AddTasksActivity extends BaseActivity {
 
         // Perform sync.
         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+        // Play sound.
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     private void confirmEditTag(GsonTag selectedTag) {

@@ -45,6 +45,7 @@ import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.handler.RepeatHandler;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.SyncService;
@@ -714,6 +715,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             } else if (action.equals(Intents.SELECTION_STARTED)) {
                 // TODO: Enable multi-swiping (after it's implemented).
             } else if (action.equals(Intents.SELECTION_CLEARED)) {
+                // Play sound.
+                if (!sSelectedTasks.isEmpty()) {
+                    SoundHandler.playSound(getActivity(), R.raw.action_negative);
+                }
+
                 // Clear selected tasks and stop selection mode.
                 sSelectedTasks.clear();
                 mActivity.cancelSelection();
@@ -797,6 +803,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
                         mActivity.refreshSections(true);
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.focus_task);
                         break;
                     case FOCUS:
                         // Move task from Focus to Done.
@@ -808,6 +816,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mActivity.refreshSections(true);
                         // Send analytics event.
                         sendTaskCompletedEvent();
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.complete_task_1);
                         break;
                 }
             }
@@ -832,6 +842,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mTasksService.saveTask(task, true);
                         // Refresh all lists.
                         mActivity.refreshSections(true);
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.focus_task);
                         break;
                 }
             }
@@ -854,6 +866,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         mActivity.refreshSections(true);
                         // Send analytics event.
                         sendTaskCompletedEvent();
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.complete_task_1);
                         break;
                 }
             }
@@ -908,6 +922,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Refresh widget.
                 TasksActivity.refreshWidgets(getActivity());
             }
+
+            // Play sound.
+            int sound = checked ? R.raw.action_positive : R.raw.action_negative;
+            SoundHandler.playSound(getActivity(), sound);
         }
 
         @Override
@@ -940,6 +958,10 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
 
         mActivity.updateSelectionCount(sSelectedTasks.size());
+
+        // Play sound.
+        int sound = task.isSelected() ? R.raw.action_positive : R.raw.action_negative;
+        SoundHandler.playSound(getActivity(), sound);
     }
 
     @Override
@@ -955,6 +977,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             // Refresh widget.
             TasksActivity.refreshWidgets(getActivity());
+
+            // Play sound.
+            SoundHandler.playSound(getActivity(), R.raw.action_positive);
         }
     }
 
@@ -995,8 +1020,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
             updateEmptyView();
 
-            // Send cleared tasks event.
-            sendClearedTasksEvent();
+            if (!isFilter && !isSearch) {
+                // Send cleared tasks event.
+                sendClearedTasksEvent();
+
+                // Play sound.
+                SoundHandler.playSound(getActivity(), R.raw.all_done_today);
+            }
         }
 
         // Animate empty view.
@@ -1124,6 +1154,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                         // Refresh all task lists.
                         mActivity.refreshSections(true);
+
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.action_negative);
                     }
                 })
                 .show();
@@ -1345,6 +1378,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Perform sync.
         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+        // Play sound.
+        SoundHandler.playSound(getActivity(), R.raw.action_positive);
     }
 
     private void confirmEditTag(GsonTag selectedTag) {
@@ -1519,6 +1555,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                         // Perform sync.
                         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+                        // Play sound.
+                        SoundHandler.playSound(getActivity(), R.raw.action_negative);
                     }
                 })
                 .show();

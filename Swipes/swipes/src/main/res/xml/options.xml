@@ -33,6 +33,15 @@
             android:title="@string/options_scroll_to_added"
             android:widgetLayout="@layout/preference_switch_layout" />
 
+        <CheckBoxPreference
+            android:defaultValue="@bool/default_in_app_sounds"
+            android:key="settings_in_app_sounds"
+            android:summary="@string/options_in_app_sounds_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_in_app_sounds"
+            android:widgetLayout="@layout/preference_switch_layout" />
+
     </PreferenceCategory>
 
     <!-- Notifications -->

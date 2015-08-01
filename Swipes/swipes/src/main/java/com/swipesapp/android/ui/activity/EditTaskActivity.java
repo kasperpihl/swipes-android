@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
@@ -40,6 +41,7 @@ import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.evernote.EvernoteService;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonAttachment;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -212,6 +214,8 @@ public class EditTaskActivity extends FragmentActivity {
         ButterKnife.inject(this);
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         mContext = new WeakReference<Context>(this);
 
@@ -718,6 +722,9 @@ public class EditTaskActivity extends FragmentActivity {
                         // Send analytics event.
                         sendDeletedTaskEvent();
 
+                        // Play sound.
+                        SoundHandler.playSound(mContext.get(), R.raw.action_negative);
+
                         // Close activity.
                         finish();
                     }
@@ -864,6 +871,9 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Perform sync.
         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+        // Play sound.
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     private void confirmEditTag(GsonTag selectedTag) {
@@ -1038,6 +1048,9 @@ public class EditTaskActivity extends FragmentActivity {
 
                         // Perform sync.
                         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+                        // Play sound.
+                        SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
                 })
                 .show();
@@ -1134,6 +1147,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_NEVER);
+
+        SoundHandler.playSound(this, R.raw.action_negative);
     }
 
     @OnClick(R.id.repeat_option_day)
@@ -1149,6 +1164,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_EVERY_DAY);
+
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     @OnClick(R.id.repeat_option_mon_fri)
@@ -1164,6 +1181,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_MONDAY_TO_FRIDAY);
+
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     @OnClick(R.id.repeat_option_week)
@@ -1179,6 +1198,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_EVERY_WEEK);
+
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     @OnClick(R.id.repeat_option_month)
@@ -1194,6 +1215,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_EVERY_MONTH);
+
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     @OnClick(R.id.repeat_option_year)
@@ -1209,6 +1232,8 @@ public class EditTaskActivity extends FragmentActivity {
         performChanges(false);
 
         sendRecurringEvent(Labels.RECURRING_EVERY_YEAR);
+
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     private void clearRepeatSelections() {
@@ -1284,12 +1309,18 @@ public class EditTaskActivity extends FragmentActivity {
 
             // Send analytics event.
             sendSubtaskCompletedEvent();
+
+            // Play sound.
+            SoundHandler.playSound(mContext.get(), R.raw.complete_task_1);
         }
 
         @Override
         public void uncompleteSubtask(GsonTask task) {
             task.setLocalCompletionDate(null);
             saveSubtask(task);
+
+            // Play sound.
+            SoundHandler.playSound(mContext.get(), R.raw.focus_task);
         }
 
         @Override
@@ -1303,6 +1334,9 @@ public class EditTaskActivity extends FragmentActivity {
 
             // Send analytics event.
             sendSubtaskDeletedEvent();
+
+            // Play sound.
+            SoundHandler.playSound(mContext.get(), R.raw.action_negative);
         }
 
         @Override
@@ -1357,6 +1391,9 @@ public class EditTaskActivity extends FragmentActivity {
 
             // Send analytics event.
             sendSubtaskAddedEvent((long) title.length());
+
+            // Play sound.
+            SoundHandler.playSound(this, R.raw.action_positive);
         }
     }
 

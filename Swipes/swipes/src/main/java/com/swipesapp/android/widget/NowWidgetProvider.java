@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.swipesapp.android.R;
 import com.swipesapp.android.handler.RepeatHandler;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.activity.AddTasksActivity;
@@ -95,6 +96,9 @@ public class NowWidgetProvider extends AppWidgetProvider {
             // Refresh widget and tasks.
             TasksActivity.refreshWidgets(context);
             TasksActivity.setPendingRefresh();
+
+            // Play sound.
+            SoundHandler.playSound(context, R.raw.complete_task_1);
 
         } else if (Intents.WIDGET_OPEN_TASK.equals(action) || Intents.WIDGET_OPEN_SUBTASKS.equals(action)) {
             // Open task intent.

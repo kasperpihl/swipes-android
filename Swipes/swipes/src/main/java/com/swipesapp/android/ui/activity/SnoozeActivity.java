@@ -2,6 +2,7 @@ package com.swipesapp.android.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
@@ -23,6 +24,7 @@ import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.ui.view.SwipesTextView;
@@ -136,6 +138,8 @@ public class SnoozeActivity extends FragmentActivity {
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
         mTasksService = TasksService.getInstance();
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
@@ -146,6 +150,9 @@ public class SnoozeActivity extends FragmentActivity {
         loadPreferences();
 
         customizeViews();
+
+        // Play sound.
+        SoundHandler.playSound(this, R.raw.snooze_task);
     }
 
     @Override
@@ -602,6 +609,9 @@ public class SnoozeActivity extends FragmentActivity {
             // Mark schedule as performed.
             setResult(RESULT_OK);
         }
+
+        // Play sound.
+        SoundHandler.playSound(this, R.raw.snooze_task);
 
         finish();
     }

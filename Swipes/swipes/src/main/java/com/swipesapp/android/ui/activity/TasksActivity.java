@@ -56,6 +56,7 @@ import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.migration.MigrationAssistant;
 import com.swipesapp.android.handler.SettingsHandler;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.handler.WelcomeHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
@@ -284,6 +285,9 @@ public class TasksActivity extends BaseActivity {
 
             // Read user settings.
             SettingsHandler.readSettingsFromServer(this);
+
+            // Start sound handler.
+            SoundHandler.load(this);
         }
 
         super.onStart();
@@ -1066,6 +1070,9 @@ public class TasksActivity extends BaseActivity {
 
         // Perform sync.
         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+        // Play sound.
+        SoundHandler.playSound(this, R.raw.action_positive);
     }
 
     private void confirmEditTag(GsonTag selectedTag) {
@@ -1147,6 +1154,11 @@ public class TasksActivity extends BaseActivity {
     @OnClick(R.id.button_close_workspaces)
     public void closeWorkspaces() {
         hideWorkspaces();
+
+        if (!mSelectedFilterTags.isEmpty()) {
+            // Play sound.
+            SoundHandler.playSound(this, R.raw.action_negative);
+        }
 
         // Clear selected tags.
         mSelectedFilterTags.clear();
@@ -1401,6 +1413,9 @@ public class TasksActivity extends BaseActivity {
 
                         // Perform sync.
                         mSyncService.performSync(true, Constants.SYNC_DELAY);
+
+                        // Play sound.
+                        SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
                 })
                 .show();

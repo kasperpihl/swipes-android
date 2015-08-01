@@ -5,11 +5,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
+import com.swipesapp.android.R;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.values.Constants;
 
 /**
- * Custom checkbox for tags providing touch feedback.
+ * Custom checkbox for tags providing touch feedback and sounds.
  *
  * @author Felipe Bari
  */
@@ -17,15 +20,15 @@ public class TagBox extends CheckBox {
 
     public TagBox(Context context) {
         super(context, null);
-        enableTouchFeedback();
+        init(context);
     }
 
     public TagBox(Context context, AttributeSet attrs) {
         super(context, attrs);
-        enableTouchFeedback();
+        init(context);
     }
 
-    public void enableTouchFeedback() {
+    public void init(final Context context) {
         // Create selector based on touch state.
         setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -43,11 +46,16 @@ public class TagBox extends CheckBox {
                 return false;
             }
         });
-    }
 
-    public void disableTouchFeedback() {
-        // Remove touch listener.
-        setOnTouchListener(null);
+        // Play sound when check changes.
+        setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                // Play sound.
+                int sound = isChecked ? R.raw.action_positive : R.raw.action_negative;
+                SoundHandler.playSound(context, sound);
+            }
+        });
     }
 
 }

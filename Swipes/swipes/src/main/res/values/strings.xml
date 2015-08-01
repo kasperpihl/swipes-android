@@ -91,6 +91,8 @@
     <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
     <string name="options_scroll_to_added">Scroll to added</string>
     <string name="options_scroll_to_added_detail">Auto-scroll to focus on the newest added task.</string>
+    <string name="options_in_app_sounds">In-app sounds</string>
+    <string name="options_in_app_sounds_detail">Play sounds when performing actions in the app.</string>
     <string name="options_snoozed_tasks">Snoozed tasks</string>
     <string name="options_snoozed_tasks_detail">Notify of snoozed tasks on their selected time.</string>
     <string name="options_daily_reminder">Daily reminder</string>
