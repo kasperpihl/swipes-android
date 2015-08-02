@@ -33,6 +33,7 @@ import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
+import com.swipesapp.android.values.Sections;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -128,6 +129,7 @@ public class SnoozeActivity extends FragmentActivity {
     private int mLaterTodayDelay;
 
     private boolean mNewTaskMode;
+    private Sections mSection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +146,9 @@ public class SnoozeActivity extends FragmentActivity {
 
         Long id = getIntent().getLongExtra(Constants.EXTRA_TASK_ID, 0);
         mNewTaskMode = getIntent().getBooleanExtra(Constants.EXTRA_NEW_TASK_MODE, false);
+
+        int sectionNumber = getIntent().getIntExtra(Constants.EXTRA_SECTION_NUMBER, -1);
+        mSection = Sections.getSectionByNumber(sectionNumber);
 
         if (!mNewTaskMode) mTask = mTasksService.loadTask(id);
 
@@ -611,7 +616,9 @@ public class SnoozeActivity extends FragmentActivity {
         }
 
         // Play sound.
-        SoundHandler.playSound(this, R.raw.snooze_task);
+        if (mSection != Sections.FOCUS || mTasksService.countTasksForNow() > 0) {
+            SoundHandler.playSound(this, R.raw.snooze_task);
+        }
 
         finish();
     }

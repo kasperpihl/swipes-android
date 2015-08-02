@@ -125,6 +125,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     // Empty view.
     private View mEmptyView;
     private boolean mDoneForToday;
+    private Boolean mIsShowingEmptyView;
 
     private TextView mEmptyResultsText;
     private FlatButton mEmptyClearWorkspaceButton;
@@ -817,7 +818,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Send analytics event.
                         sendTaskCompletedEvent();
                         // Play sound.
-                        SoundHandler.playSound(getActivity(), R.raw.complete_task_1);
+                        if (mTasksService.countTasksForNow() > 0) {
+                            SoundHandler.playSound(getActivity(), R.raw.complete_task_1);
+                        }
                         break;
                 }
             }
@@ -1003,77 +1006,85 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void showEmptyView() {
-        boolean isFilter = !mActivity.getSelectedFilterTags().isEmpty();
-        boolean isSearch = !mActivity.getSearchQuery().isEmpty();
+        if (mIsShowingEmptyView == null || !mIsShowingEmptyView) {
+            boolean isFilter = !mActivity.getSelectedFilterTags().isEmpty();
+            boolean isSearch = !mActivity.getSearchQuery().isEmpty();
 
-        View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
+            View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
 
-        if (mSection == Sections.FOCUS) {
-            RelativeLayout emptyMainArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_main_area);
-            RelativeLayout emptySocialArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_social_area);
-            SwipesTextView emptyViewIcon = (SwipesTextView) mEmptyView.findViewById(R.id.tasks_empty_view_icon);
+            if (mSection == Sections.FOCUS) {
+                RelativeLayout emptyMainArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_main_area);
+                RelativeLayout emptySocialArea = (RelativeLayout) mEmptyView.findViewById(R.id.all_done_social_area);
+                SwipesTextView emptyViewIcon = (SwipesTextView) mEmptyView.findViewById(R.id.tasks_empty_view_icon);
 
-            // Set visibility of sharing and icon.
-            emptyMainArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
-            emptySocialArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
-            emptyViewIcon.setVisibility(isSearch || isFilter ? View.VISIBLE : View.GONE);
+                // Set visibility of sharing and icon.
+                emptyMainArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
+                emptySocialArea.setVisibility(isSearch || isFilter ? View.GONE : View.VISIBLE);
+                emptyViewIcon.setVisibility(isSearch || isFilter ? View.VISIBLE : View.GONE);
 
-            updateEmptyView();
+                updateEmptyView();
 
-            if (!isFilter && !isSearch) {
-                // Send cleared tasks event.
-                sendClearedTasksEvent();
+                if (!isFilter && !isSearch && mIsShowingEmptyView != null) {
+                    // Send cleared tasks event.
+                    sendClearedTasksEvent();
 
-                // Play sound.
-                SoundHandler.playSound(getActivity(), R.raw.all_done_today);
+                    // Play sound.
+                    SoundHandler.playSound(getActivity(), R.raw.all_done_today);
+                }
+            }
+
+            // Animate empty view.
+            if (emptyViewContainer.getAlpha() == 0f) {
+                emptyViewContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+
+                fadeOutTasksList();
+            }
+
+            if (DeviceUtils.isLandscape(getActivity())) {
+                // Hide landscape header.
+                mLandscapeHeader.setVisibility(View.GONE);
+            }
+
+            if (isFilter) {
+                // Show workspace result.
+                mEmptyResultsText.setVisibility(View.VISIBLE);
+                mEmptyClearWorkspaceButton.setVisibility(View.VISIBLE);
+            } else if (isSearch) {
+                // Show search result.
+                updateResultsDescription(0);
+                mEmptyResultsText.setVisibility(View.VISIBLE);
+                mEmptyClearWorkspaceButton.setVisibility(View.GONE);
+            } else {
+                // Hide results.
+                hideEmptyResults();
             }
         }
 
-        // Animate empty view.
-        if (emptyViewContainer.getAlpha() == 0f) {
-            emptyViewContainer.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
-
-            fadeOutTasksList();
-        }
-
-        if (DeviceUtils.isLandscape(getActivity())) {
-            // Hide landscape header.
-            mLandscapeHeader.setVisibility(View.GONE);
-        }
-
-        if (isFilter) {
-            // Show workspace result.
-            mEmptyResultsText.setVisibility(View.VISIBLE);
-            mEmptyClearWorkspaceButton.setVisibility(View.VISIBLE);
-        } else if (isSearch) {
-            // Show search result.
-            updateResultsDescription(0);
-            mEmptyResultsText.setVisibility(View.VISIBLE);
-            mEmptyClearWorkspaceButton.setVisibility(View.GONE);
-        } else {
-            // Hide results.
-            hideEmptyResults();
-        }
+        mIsShowingEmptyView = true;
     }
 
     private void hideEmptyView() {
-        View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
+        if (mIsShowingEmptyView == null || mIsShowingEmptyView) {
+            View emptyViewContainer = mEmptyView.findViewById(R.id.empty_view_container);
 
-        // Animate empty view.
-        if (emptyViewContainer.getAlpha() == 1f) {
-            emptyViewContainer.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
+            // Animate empty view.
+            if (emptyViewContainer.getAlpha() == 1f) {
+                emptyViewContainer.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_LONG).start();
 
-            fadeInTasksList();
+                fadeInTasksList();
+            }
+
+            if (DeviceUtils.isLandscape(getActivity())) {
+                // Show landscape header.
+                mLandscapeHeader.setVisibility(View.VISIBLE);
+            }
+
+            if (mSection == Sections.FOCUS) {
+                mDoneForToday = false;
+            }
         }
 
-        if (DeviceUtils.isLandscape(getActivity())) {
-            // Show landscape header.
-            mLandscapeHeader.setVisibility(View.VISIBLE);
-        }
-
-        if (mSection == Sections.FOCUS) {
-            mDoneForToday = false;
-        }
+        mIsShowingEmptyView = false;
     }
 
     public void hideEmptyResults() {
@@ -1232,6 +1243,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Call snooze activity.
         Intent intent = new Intent(getActivity(), SnoozeActivity.class);
         intent.putExtra(Constants.EXTRA_TASK_ID, task.getId());
+        intent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
         startActivityForResult(intent, Constants.SNOOZE_REQUEST_CODE);
     }
 

@@ -98,8 +98,11 @@ public class NowWidgetProvider extends AppWidgetProvider {
             TasksActivity.setPendingRefresh();
 
             // Play sound.
-            SoundHandler.playSound(context, R.raw.complete_task_1);
-
+            if (sTasksService.countTasksForNow() > 0) {
+                SoundHandler.playSound(context, R.raw.complete_task_1);
+            } else {
+                SoundHandler.playSound(context, R.raw.all_done_today);
+            }
         } else if (Intents.WIDGET_OPEN_TASK.equals(action) || Intents.WIDGET_OPEN_SUBTASKS.equals(action)) {
             // Open task intent.
             Intent openIntent = new Intent(context, EditTaskActivity.class);

@@ -23,6 +23,7 @@ import com.swipesapp.android.db.migration.SwipesHelper;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.evernote.EvernoteSyncHandler;
 import com.swipesapp.android.handler.LanguageHandler;
+import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.sync.receiver.PushReceiver;
 import com.swipesapp.android.sync.service.SyncService;
@@ -98,6 +99,9 @@ public class SwipesApplication extends Application {
 
         // Send initial user dimensions.
         Analytics.startUserDimensions(getApplicationContext());
+
+        // Start sound handler.
+        SoundHandler.load(getApplicationContext());
     }
 
     public static void startDaoSession(Context context) {
