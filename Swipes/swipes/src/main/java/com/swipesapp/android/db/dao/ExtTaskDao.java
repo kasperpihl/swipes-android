@@ -70,7 +70,7 @@ public class ExtTaskDao {
         List<Task> tasks = mDao.queryBuilder().where(mDao.queryBuilder().or(TaskDao.Properties.Schedule.gt(thisMinute.getTime()),
                         TaskDao.Properties.Schedule.isNull()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
-                .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
+                .orderAsc(TaskDao.Properties.Schedule).orderAsc(TaskDao.Properties.CreatedAt).list();
 
         Collections.sort(tasks, new Comparator<Task>() {
             @Override
@@ -90,7 +90,7 @@ public class ExtTaskDao {
 
         return mDao.queryBuilder().where(TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull()).orderAsc(TaskDao.Properties.Order)
-                .orderDesc(TaskDao.Properties.CreatedAt).list();
+                .orderAsc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listCompletedTasks() {
@@ -117,7 +117,7 @@ public class ExtTaskDao {
                 TaskDao.Properties.UpdatedAt.lt(currentMinute.getTime()), TaskDao.Properties.Schedule.gt(previousMinute.getTime()),
                 TaskDao.Properties.Schedule.lt(nextMinute.getTime()), TaskDao.Properties.CompletionDate.isNull(),
                 TaskDao.Properties.Deleted.eq(false), TaskDao.Properties.ParentLocalId.isNull())
-                .orderAsc(TaskDao.Properties.Schedule).orderDesc(TaskDao.Properties.CreatedAt).list();
+                .orderAsc(TaskDao.Properties.Schedule).orderAsc(TaskDao.Properties.CreatedAt).list();
     }
 
     public List<Task> listSubtasksForTask(String objectId) {
