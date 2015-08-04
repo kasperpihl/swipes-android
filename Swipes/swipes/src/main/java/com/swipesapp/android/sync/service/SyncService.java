@@ -1,7 +1,8 @@
 package com.swipesapp.android.sync.service;
 
 import android.content.Context;
-import android.os.Process;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -36,9 +37,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Service for syncing operations.
@@ -63,12 +61,13 @@ public class SyncService {
     private List<TagSync> mSyncedTags;
     private List<TaskSync> mSyncedTasks;
 
-    private ScheduledFuture mSyncSchedule;
-    private ScheduledFuture mEvernoteSyncSchedule;
-
     private SyncListener mListener;
+    private boolean mHasSyncFailed;
+    private int mCallsCount;
 
-    private boolean mIsSyncing;
+    private Handler mSyncHandler;
+
+    private boolean mIsSyncingCloud;
     private boolean mIsSyncingEvernote;
 
     /**
@@ -122,33 +121,37 @@ public class SyncService {
      */
     public void performSync(final boolean changesOnly, int delay) {
         // Skip sync if it's already running.
-        if (!mIsSyncing) {
+        if (!isSyncing()) {
             // Cancel existing schedule if needed.
-            if (mSyncSchedule != null) mSyncSchedule.cancel(false);
+            if (mSyncHandler != null) {
+                mSyncHandler.removeCallbacksAndMessages(null);
+            }
 
-            // Schedule new thread for responsiveness.
-            mSyncSchedule = new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
+            // Create sync runnable;
+            Runnable syncRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    // Forward call to internal sync method.
-                    performSync(changesOnly, false);
+                    // Start sync task.
+                    new SyncTask().execute(changesOnly);
                 }
-            }, delay, TimeUnit.SECONDS);
+            };
+
+            // Start sync after a few seconds.
+            mSyncHandler = new Handler();
+            mSyncHandler.postDelayed(syncRunnable, delay * 1000);
         }
+    }
 
-        // Skip Evernote sync if it's already running.
-        if (!mIsSyncingEvernote) {
-            // Cancel existing schedule if needed.
-            if (mEvernoteSyncSchedule != null) mEvernoteSyncSchedule.cancel(false);
+    /**
+     * Task to perform sync asynchronously.
+     */
+    private class SyncTask extends AsyncTask<Boolean, Void, Void> {
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            // Forward call to internal sync method.
+            performSync(params[0], false);
 
-            // Schedule new thread for responsiveness.
-            mEvernoteSyncSchedule = new ScheduledThreadPoolExecutor(1).schedule(new Runnable() {
-                @Override
-                public void run() {
-                    // Forward call to Evernote sync.
-                    performEvernoteSync();
-                }
-            }, delay, TimeUnit.SECONDS);
+            return null;
         }
     }
 
@@ -169,7 +172,11 @@ public class SyncService {
             // Only sync when called out of recursion or when there still are local changes.
             if (!isRecursion || !tagsChanged.isEmpty() || !tasksChanged.isEmpty()) {
                 // Mark sync as in progress.
-                mIsSyncing = true;
+                mIsSyncingCloud = true;
+                mHasSyncFailed = false;
+
+                // Increase calls count.
+                mCallsCount++;
 
                 // Prepare Gson request.
                 GsonSync request = prepareRequest(tagsChanged, tasksChanged, changesOnly);
@@ -188,33 +195,50 @@ public class SyncService {
                             @Override
                             public void onCompleted(Exception e, String result) {
                                 // Skip processing if response is invalid.
-                                if (!isResponseValid(result)) {
-                                    sendErrorCallback();
-                                    return;
+                                if (isResponseValid(result)) {
+                                    // Delete synced objects from tracking.
+                                    deleteTrackedTags(mSyncedTags);
+                                    deleteTrackedTasks(mSyncedTasks);
+
+                                    // Read API response and save changes locally.
+                                    handleResponse(new Gson().fromJson(result, GsonSync.class));
+
+                                    // Call recursion to sync remaining objects.
+                                    performSync(changesOnly, true);
+                                } else {
+                                    // Mark sync as failed.
+                                    mHasSyncFailed = true;
                                 }
 
-                                // Delete synced objects from tracking.
-                                deleteTrackedTags(mSyncedTags);
-                                deleteTrackedTasks(mSyncedTasks);
+                                // Proceed when recursion is over.
+                                if (mCallsCount == 1) {
+                                    // Mark cloud sync as performed.
+                                    mIsSyncingCloud = false;
 
-                                // Read API response and save changes locally.
-                                handleResponse(new Gson().fromJson(result, GsonSync.class));
+                                    // Sync Evernote.
+                                    performEvernoteSync(changesOnly);
 
-                                // Call recursion to sync remaining objects.
-                                performSync(changesOnly, true);
+                                    // Send sync callbacks.
+                                    if (mHasSyncFailed) {
+                                        sendErrorCallback();
+                                    } else {
+                                        sendCompletionCallback();
+                                    }
+                                }
 
-                                // Notifies listeners that sync is done.
-                                sendCompletionCallback();
+                                // Reduce calls count.
+                                mCallsCount--;
                             }
                         });
             }
         }
     }
 
+
     /**
      * Performs an Evernote sync operation.
      */
-    private synchronized void performEvernoteSync() {
+    private synchronized void performEvernoteSync(final boolean changesOnly) {
         // Skip sync when the user isn't authenticated or sync is disabled.
         if (EvernoteService.getInstance().isAuthenticated() && PreferenceUtils.isEvernoteSyncEnabled(mContext.get())) {
 
@@ -225,13 +249,19 @@ public class SyncService {
             EvernoteSyncHandler.getInstance().synchronizeEvernote(new OnEvernoteCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
-                    Log.d(LOG_TAG, "Evernote synced.");
+                    sendDebugLog("Evernote sync done.");
+
+                    // Refresh local content.
+                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
 
                     // Mark Evernote sync as performed.
                     mIsSyncingEvernote = false;
 
-                    // Refresh local content.
-                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
+                    // Call recursion to sync new objects.
+                    if (!mHasSyncFailed) performSync(changesOnly, true);
+
+                    // Send callback.
+                    sendCompletionCallback();
                 }
 
                 @Override
@@ -240,6 +270,10 @@ public class SyncService {
 
                     // Mark Evernote sync as performed.
                     mIsSyncingEvernote = false;
+                    mHasSyncFailed = true;
+
+                    // Send callback.
+                    sendErrorCallback();
                 }
             });
         }
@@ -323,58 +357,51 @@ public class SyncService {
             Analytics.sendNumberOfTags(mContext.get());
         }
 
-        // Create another thread for processing tasks.
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Start thread with low priority.
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        // Process new tasks and changes.
+        if (response.getTasks() != null) {
+            for (GsonTask task : response.getTasks()) {
+                GsonTask old = TasksService.getInstance().loadTask(task.getTempId());
+                task.setId(old != null ? old.getId() : null);
 
-                // Process new tasks and changes.
-                if (response.getTasks() != null) {
-                    for (GsonTask task : response.getTasks()) {
-                        GsonTask old = TasksService.getInstance().loadTask(task.getTempId());
-                        task.setId(old != null ? old.getId() : null);
+                // Set dates to local format.
+                task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
+                task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
+                task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
+                task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
+                task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
 
-                        // Set dates to local format.
-                        task.setLocalCreatedAt(DateUtils.dateFromSync(task.getCreatedAt()));
-                        task.setLocalUpdatedAt(DateUtils.dateFromSync(task.getUpdatedAt()));
-                        task.setLocalCompletionDate(DateUtils.dateFromSync(task.getCompletionDate()));
-                        task.setLocalSchedule(DateUtils.dateFromSync(task.getSchedule()));
-                        task.setLocalRepeatDate(DateUtils.dateFromSync(task.getRepeatDate()));
+                // Ignore tags change when parameter is null.
+                if (old != null && task.getTags() == null) {
+                    task.setTags(old.getTags());
+                }
 
-                        // Ignore tags change when parameter is null.
-                        if (old != null && task.getTags() == null) {
-                            task.setTags(old.getTags());
-                        }
+                // Ignore attachments change when parameter is null.
+                if (old != null && task.getAttachments() == null) {
+                    task.setAttachments(old.getAttachments());
+                }
 
-                        // Ignore attachments change when parameter is null.
-                        if (old != null && task.getAttachments() == null) {
-                            task.setAttachments(old.getAttachments());
-                        }
-
-                        // Save or update task locally.
-                        TasksService.getInstance().saveTask(task, false);
-                    }
-
-                    // Save last update time.
-                    if (response.getUpdateTime() != null) {
-                        PreferenceUtils.saveString(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
-                    }
-
-                    // Refresh local content.
-                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
-
-                    // Force widget refresh if app is in the background.
-                    if (SwipesApplication.isInBackground()) {
-                        TasksActivity.refreshWidgets(mContext.get());
-                    }
-
-                    // Update recurring tasks dimension.
-                    Analytics.sendRecurringTasks(mContext.get());
+                // Save or update task locally.
+                if (old != null && task.getLocalUpdatedAt().after(old.getLocalUpdatedAt())) {
+                    TasksService.getInstance().saveTask(task, false);
                 }
             }
-        }).start();
+
+            // Update recurring tasks dimension.
+            Analytics.sendRecurringTasks(mContext.get());
+        }
+
+        // Save last update time.
+        if (response.getUpdateTime() != null) {
+            PreferenceUtils.saveString(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
+        }
+
+        // Refresh local content.
+        TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
+
+        // Force widget refresh if app is in the background.
+        if (SwipesApplication.isInBackground()) {
+            TasksActivity.refreshWidgets(mContext.get());
+        }
     }
 
     public void saveTaskChangesForSync(GsonTask current, GsonTask old) {
@@ -538,11 +565,15 @@ public class SyncService {
         }
     }
 
+    private boolean isSyncing() {
+        return mIsSyncingCloud || mIsSyncingEvernote;
+    }
+
     private boolean isResponseValid(String response) {
         // Validates response by attempting to convert it to a Gson object.
         try {
-            new Gson().fromJson(response, GsonSync.class);
-            return !response.isEmpty();
+            GsonSync gson = new Gson().fromJson(response, GsonSync.class);
+            return !response.isEmpty() && gson.getUpdateTime() != null;
         } catch (Exception e) {
             Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" +
                     e.getMessage() + "\n" + response);
@@ -551,26 +582,36 @@ public class SyncService {
     }
 
     private void sendCompletionCallback() {
-        // Mark sync as performed.
-        mIsSyncing = false;
-        Log.d(LOG_TAG, "Sync done.");
+        if (!isSyncing()) {
+            sendDebugLog("Sync done.");
 
-        // Send callback.
-        if (mListener != null) {
-            mListener.onSyncDone();
-            mListener = null;
+            // Send callback.
+            if (mListener != null) {
+                mListener.onSyncDone();
+                mListener = null;
+            }
         }
     }
 
     private void sendErrorCallback() {
-        // Mark sync as performed.
-        mIsSyncing = false;
-        Log.d(LOG_TAG, "Sync error.");
+        if (!isSyncing()) {
+            sendDebugLog("Sync error.");
 
-        // Send callback.
-        if (mListener != null) {
-            mListener.onSyncFailed();
-            mListener = null;
+            // Reset sync flag.
+            mHasSyncFailed = false;
+
+            // Send callback.
+            if (mListener != null) {
+                mListener.onSyncFailed();
+                mListener = null;
+            }
+        }
+    }
+
+    private void sendDebugLog(String message) {
+        // Send log on debug builds only.
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, message);
         }
     }
 

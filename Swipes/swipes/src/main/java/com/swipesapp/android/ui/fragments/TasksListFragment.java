@@ -628,16 +628,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 TasksActivity.setPendingRefresh();
             }
         }
-
-        @Override
-        protected void onPreExecute() {
-            // Nothing is loaded before refresh.
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            // No need to show progress.
-        }
     }
 
     public void updateAdapter(boolean animateRefresh) {
@@ -1659,16 +1649,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 TasksActivity.setPendingRefresh();
             }
         }
-
-        @Override
-        protected void onPreExecute() {
-            // Nothing is loaded before refresh.
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            // No need to show progress.
-        }
     }
 
     public void updateFilterAdapter() {
@@ -1787,16 +1767,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                 // Mark update as pending.
                 TasksActivity.setPendingRefresh();
             }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // Nothing is loaded before refresh.
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            // No need to show progress.
         }
     }
 
