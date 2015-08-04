@@ -1,6 +1,5 @@
 package com.swipesapp.android.ui.activity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -11,11 +10,10 @@ import android.preference.PreferenceFragment;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.values.Screens;
+import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
-
-import java.lang.ref.WeakReference;
 
 public class OptionsActivity extends BaseActivity {
 
@@ -43,13 +41,9 @@ public class OptionsActivity extends BaseActivity {
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 
-        private WeakReference<Context> mContext;
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
-            mContext = new WeakReference<Context>(getActivity());
 
             addPreferencesFromResource(R.xml.options);
 
@@ -83,6 +77,14 @@ public class OptionsActivity extends BaseActivity {
 
                 // Enable or disable vibration preference.
                 handleVibrationPreference();
+            } else if (key.equalsIgnoreCase(PreferenceUtils.BACKGROUND_SYNC_KEY)) {
+
+                // Subscribe or unsubscribe from push.
+                if (PreferenceUtils.isBackgroundSyncEnabled(getActivity())) {
+                    SwipesApplication.subscribePush();
+                } else {
+                    SwipesApplication.unsubscribePush();
+                }
             }
 
             // Save user settings.
@@ -93,9 +95,9 @@ public class OptionsActivity extends BaseActivity {
             Preference preferenceVibration = findPreference("settings_enable_vibration");
 
             // Check if notifications are disabled.
-            if (!PreferenceUtils.areNotificationsEnabled(mContext.get()) &&
-                    !PreferenceUtils.isDailyReminderEnabled(mContext.get()) &&
-                    !PreferenceUtils.isWeeklyReminderEnabled(mContext.get())) {
+            if (!PreferenceUtils.areNotificationsEnabled(getActivity()) &&
+                    !PreferenceUtils.isDailyReminderEnabled(getActivity()) &&
+                    !PreferenceUtils.isWeeklyReminderEnabled(getActivity())) {
 
                 // Disable vibration preference.
                 preferenceVibration.setEnabled(false);
