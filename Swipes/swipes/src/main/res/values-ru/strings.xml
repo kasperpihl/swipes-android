@@ -49,7 +49,6 @@
     <string name="group_preferences">Параметры</string>
     <string name="group_help">Справка</string>
     <string name="group_other">Прочее</string>
-    <string name="location">Местоположение</string>
     <string name="theme">Тема</string>
     <string name="settings_theme_dialog_title">Тема</string>
     <string name="snoozes">Откладывание</string>

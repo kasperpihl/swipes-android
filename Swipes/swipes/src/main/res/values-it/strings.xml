@@ -57,7 +57,6 @@
     <string name="group_help">Aiuto</string>
     <string name="group_other">Altro</string>
     <string name="options">Opzioni</string>
-    <string name="location">Posizione</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
     <string name="snoozes">Posponi</string>
@@ -80,10 +79,14 @@
     <!-- Options -->
     <string name="group_tweaks">Aggiustamenti</string>
     <string name="group_notifications">Notifiche</string>
+    <string name="options_location">Posizione</string>
+    <string name="options_location_detail">Accedi alla posizione del dispositivo.</string>
     <string name="options_background_sync">Sincronizzazione in background</string>
     <string name="options_background_sync_detail">Mantieni i compiti aggiornati automaticamente in background.</string>
     <string name="options_scroll_to_added">Scorri agli aggiunti</string>
     <string name="options_scroll_to_added_detail">Auto-scorri per focalizzare l\'ultimo compito aggiunto.</string>
+    <string name="options_in_app_sounds">Suoni in-app</string>
+    <string name="options_in_app_sounds_detail">Suona quando si eseguono azioni nell\'app.</string>
     <string name="options_snoozed_tasks">Compiti posposti</string>
     <string name="options_snoozed_tasks_detail">Informa dei compiti posposti all\'ora selezionata.</string>
     <string name="options_daily_reminder">Promemoria giornaliero</string>
@@ -92,6 +95,8 @@
     <string name="options_weekly_reminder_detail">Mostra un promemoria settimanale per pianificare la settimana.</string>
     <string name="options_vibration">Vibrazione</string>
     <string name="options_vibration_detail">Vibra all\'apparizione delle notifiche.</string>
+    <string name="options_system_sound">Usa suoni di sistema</string>
+    <string name="options_system_sound_detail">Abilita l\'uso dei suoni di sistema per le notifiche.</string>
     <!-- Help -->
     <string name="help_center">Centro assistenza</string>
     <string name="help_google_community">Community Google+</string>
@@ -281,6 +286,7 @@ http://swipesapp.com</string>
     <string name="delete_tag_dialog_yes">Cancella</string>
     <string name="delete_tag_dialog_no">Annulla</string>
     <string name="empty_tags_hint">Non ci sono tag assegnati</string>
+    <string name="edit_tag_dialog_title">Modifica tag</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">IMPOSTA SPAZIO DI LAVORO</string>
     <string name="clear_workspace_button">CANCELLA SPAZIO DI LAVORO</string>
