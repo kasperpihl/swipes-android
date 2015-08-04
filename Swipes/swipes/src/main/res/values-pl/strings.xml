@@ -20,6 +20,7 @@
     <string name="overview_title">PRZEGLĄD</string>
     <string name="title_share_intent">Dodaj do Swipes</string>
     <string name="title_activity_settings">Ustawienia</string>
+    <string name="title_activity_options">Opcje</string>
     <string name="title_activity_integrations">Integracje</string>
     <string name="title_activity_snooze_settings">Drzemki</string>
     <string name="title_activity_add_tasks">Dodaj zadanie</string>
@@ -49,7 +50,7 @@
     <string name="group_preferences">Preferencje</string>
     <string name="group_help">Pomoc</string>
     <string name="group_other">Inne</string>
-    <string name="location">Lokalizacja</string>
+    <string name="options">Opcje</string>
     <string name="theme">Motyw</string>
     <string name="settings_theme_dialog_title">Motyw</string>
     <string name="snoozes">Drzemki</string>
@@ -64,7 +65,21 @@
     <string name="preference_no">Anuluj</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_dark">Ciemny</string>
+    <string name="language">Język</string>
+    <string name="language_warning_title">Wyjść z aplikacji?</string>
+    <string name="language_warning">Swipes musi zostać zrestartowany aby zmiany zaczęły działać.</string>
+    <string name="language_warning_yes">Wyjście</string>
+    <string name="language_warning_no">Anuluj</string>
     <!-- Options -->
+    <string name="group_tweaks">Usprawnienia</string>
+    <string name="group_notifications">Powiadomienia</string>
+    <string name="options_location">Lokalizacja</string>
+    <string name="options_background_sync">Synchronizacja w tle</string>
+    <string name="options_in_app_sounds">Dźwięki w aplikacji</string>
+    <string name="options_in_app_sounds_detail">Odtwarzaj dźwięki podczas wykonywania działań w aplikacji.</string>
+    <string name="options_vibration">Wibracja</string>
+    <string name="options_vibration_detail">Wibruj kiedy pojawia się powiadomienie.</string>
+    <string name="options_system_sound">Użyj dźwięków systemowych</string>
     <!-- Help -->
     <string name="help_center">Centrum pomocy</string>
     <string name="help_google_community">Społeczność Google+</string>
@@ -239,6 +254,7 @@ Enjoy!</string>
     <!-- Notifications -->
     <string name="notification_snooze">Drzemka +%d h</string>
     <string name="notification_complete">Ukończono</string>
+    <string name="reminder_daily_message">Dzień dobry! Zacznij swój produktywny dzień od zrobienia planu.</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Dodaj nowy tag</string>
     <string name="add_tag_dialog_hint">Tytuł tagu</string>
@@ -249,6 +265,7 @@ Enjoy!</string>
     <string name="delete_tag_dialog_yes">Usuń</string>
     <string name="delete_tag_dialog_no">Anuluj</string>
     <string name="empty_tags_hint">Brak przypisanych tagów</string>
+    <string name="edit_tag_dialog_title">Edytuj tag</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">USTAW PRZESTRZEŃ ROBOCZĄ</string>
     <string name="clear_workspace_button">SKASUJ PRZESTRZEŃ ROBOCZĄ</string>

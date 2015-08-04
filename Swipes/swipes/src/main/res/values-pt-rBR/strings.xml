@@ -57,7 +57,6 @@
     <string name="group_help">Ajuda</string>
     <string name="group_other">Outros</string>
     <string name="options">Opções</string>
-    <string name="location">Localização</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
     <string name="snoozes">Adiamentos</string>
@@ -80,10 +79,14 @@
     <!-- Options -->
     <string name="group_tweaks">Ajustes</string>
     <string name="group_notifications">Notificações</string>
+    <string name="options_location">Localização</string>
+    <string name="options_location_detail">Acessar localização do dispositivo.</string>
     <string name="options_background_sync">Sincronização em segundo plano</string>
     <string name="options_background_sync_detail">Manter as tarefas atualizadas automaticamente em segundo plano.</string>
     <string name="options_scroll_to_added">Rolar para adicionada</string>
     <string name="options_scroll_to_added_detail">Rolar automaticamente para focar na última tarefa adicionada.</string>
+    <string name="options_in_app_sounds">Sons no app</string>
+    <string name="options_in_app_sounds_detail">Tocar sons ao realizar ações no app.</string>
     <string name="options_snoozed_tasks">Tarefas adiadas</string>
     <string name="options_snoozed_tasks_detail">Notificar de tarefas adiadas no seu tempo selecionado.</string>
     <string name="options_daily_reminder">Lembrete diário</string>
@@ -92,6 +95,8 @@
     <string name="options_weekly_reminder_detail">Mostrar um lembrete semanal para planejar a semana.</string>
     <string name="options_vibration">Vibração</string>
     <string name="options_vibration_detail">Vibrar quando notificações aparecem.</string>
+    <string name="options_system_sound">Usar som do sistema</string>
+    <string name="options_system_sound_detail">Habilite para usar o som do sistema nas notificações.</string>
     <!-- Help -->
     <string name="help_center">Central de Ajuda</string>
     <string name="help_google_community">Comunidade no Google+</string>

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Welcome -->
-    <string name="welcome_task_one">Mueva a la derecha para finalizar</string>
-    <string name="welcome_task_two">Desplace a la izquierda para posponer</string>
+    <string name="welcome_task_one">Desliza a la derecha para finalizar</string>
+    <string name="welcome_task_two">Desliza a la izquierda para posponer</string>
     <string name="welcome_task_three">Pulse para ver detalles</string>
     <string name="welcome_tag_one">principal</string>
-    <string name="welcome_tag_two">comprando</string>
-    <string name="welcome_first_branding">Centrarse, Swipe, conseguirlo</string>
-    <string name="welcome_second_branding">Listado de tareas a alcanzar</string>
-    <string name="welcome_dialog_title">! Bienvenido a Swipes  ¡</string>
-    <string name="welcome_dialog_message">¿ Desea probar la aplicación o identificarse como usuario?</string>
+    <string name="welcome_tag_two">compras</string>
+    <string name="welcome_first_branding">Concéntrate. Desliza. Consigue.</string>
+    <string name="welcome_second_branding">Lista de tareas para alcanzar Grandes Logros</string>
+    <string name="welcome_dialog_title">¡Bienvenido a Swipes!</string>
+    <string name="welcome_dialog_message">¿Desea probar la aplicación o identificarse como usuario?</string>
     <string name="welcome_dialog_yes">Identificación</string>
     <string name="welcome_dialog_no">Prueba</string>
     <!-- Sections -->
     <string name="app_name">Swipes</string>
     <string name="focus_title">AHORA</string>
-    <string name="later_title">DESPUES</string>
+    <string name="later_title">DESPUÉS</string>
     <string name="done_title">HECHO</string>
-    <string name="overview_title">SOBREESCRIBIR</string>
+    <string name="overview_title">RESUMEN</string>
     <string name="title_share_intent">Añadir a Swipes</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_options">Opciones</string>
-    <string name="title_activity_integrations">integraciones</string>
-    <string name="title_activity_snooze_settings">Posponer</string>
+    <string name="title_activity_integrations">Integraciones</string>
+    <string name="title_activity_snooze_settings">Configurar tiempos</string>
     <string name="title_activity_add_tasks">Añadir tarea</string>
     <string name="title_activity_edit_task">Editar tarea</string>
     <string name="title_activity_snooze_task">Posponer tarea</string>
@@ -30,24 +30,24 @@
     <string name="title_activity_evernote_learn">Integración con Evernote</string>
     <string name="title_activity_evernote_attachments">Adjuntos Evernote</string>
     <!-- Empty view -->
-    <string name="all_done_now">= AHORA MISMO ESTÁ TODO CORRECTO =</string>
-    <string name="all_done_today">= HOY ESTA TODO CORRECTO =</string>
-    <string name="all_done_now_next">Siguiente tarea @ %s</string>
-    <string name="all_done_today_next">Siguiente tarea @ %s</string>
+    <string name="all_done_now">= AHORA MISMO ESTÁ TODO COMPLETADO =</string>
+    <string name="all_done_today">= HOY ESTÁ TODO COMPLETADO =</string>
+    <string name="all_done_now_next">Siguiente tarea a las %s</string>
+    <string name="all_done_today_next">Siguiente tarea a las %s</string>
     <string name="all_done_next_empty">No hay futuras tareas</string>
-    <string name="all_done_today_message">! Enhorabuena ¡ has gestionado todas las tareas, Es hora de  \nrelajarse. #ProductiveDay</string>
-    <string name="all_done_now_message">¡ Es hora de un descanso  ! He estado swiping \nLas tareas es bien. #ProductiveDay</string>
+    <string name="all_done_today_message">¡Enhorabuena! Has gestionado todas tus tareas, es hora de  \nrelajarse. #ProductiveDay</string>
+    <string name="all_done_now_message">¡Es hora de un descanso ! He gestionando\ntareas como un profesional. #ProductiveDay</string>
     <string name="all_done_share_url">swipesapp.com</string>
     <string name="later_empty_workspace">No hay tareas programadas con la etiqueta: &lt;b>%1$s&lt;/b></string>
-    <string name="focus_empty_workspace">No hay tareas  con la etiqueta:&lt;b>%1$s&lt;/b></string>
+    <string name="focus_empty_workspace">No hay tareas con la etiqueta: &lt;b>%1$s&lt;/b></string>
     <string name="done_empty_workspace">No hay tareas finalizadas con la etiqueta: &lt;b>%1$s&lt;/b></string>
     <string name="later_empty_search">No hemos localizado etiquetas para  &lt;b>%1$s&lt;/b></string>
     <string name="focus_empty_search">No hemos localizado etiquetas para  &lt;b>%1$s&lt;/b></string>
     <string name="done_empty_search">No hemos localizado tareas finalizadas para &lt;b>%1$s&lt;/b></string>
     <!-- Tasks list -->
     <string name="tasks_list_login_action">Identificarse o registrarse</string>
-    <string name="tasks_list_multi_select_action">Selector Multiple</string>
-    <string name="tasks_list_search_action">Busqueda</string>
+    <string name="tasks_list_multi_select_action">Selección Múltiple</string>
+    <string name="tasks_list_search_action">Búsqueda</string>
     <string name="tasks_list_workspaces_action">Lugares de Trabajo</string>
     <string name="tasks_list_settings_action">Configuración</string>
     <string name="tasks_cell_label_focus">%1$s/%2$s Hoy</string>
@@ -57,18 +57,17 @@
     <string name="group_help">Ayuda</string>
     <string name="group_other">Otros</string>
     <string name="options">Opciones</string>
-    <string name="location">Situación</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
-    <string name="snoozes">Posponer</string>
+    <string name="snoozes">Configurar tiempos</string>
     <string name="settings_login">Identificarse o registrarse</string>
     <string name="settings_logout">Salir</string>
     <string name="settings_integrations">Integraciones</string>
-    <string name="settings_sync">Sincronice</string>
+    <string name="settings_sync">Sincroniza</string>
     <string name="settings_sync_summary">Última actualización: %s</string>
     <string name="switch_on">SI</string>
     <string name="switch_off">NO</string>
-    <string name="preference_yes">Seleccione</string>
+    <string name="preference_yes">Selecciona</string>
     <string name="preference_no">Cancelar</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
@@ -80,11 +79,15 @@
     <!-- Options -->
     <string name="group_tweaks">Modificaciones</string>
     <string name="group_notifications">Notificaciones</string>
+    <string name="options_location">Ubicación</string>
+    <string name="options_location_detail">Acceder a ubicación de dispositivo</string>
     <string name="options_background_sync">Sincronización en 2º plano</string>
-    <string name="options_background_sync_detail">Mantener aplicaciones actualizada en 2º plano.</string>
+    <string name="options_background_sync_detail">Mantener aplicación actualizada en 2º plano.</string>
     <string name="options_scroll_to_added">Desplazarse a añadido</string>
     <string name="options_scroll_to_added_detail">Auto-barrido para localizar las tareas nuevas añadidas.</string>
-    <string name="options_snoozed_tasks">Tareas demoradas</string>
+    <string name="options_in_app_sounds">Sonido de aplicación</string>
+    <string name="options_in_app_sounds_detail">Reproducir sonido al realizar algo en la aplicación</string>
+    <string name="options_snoozed_tasks">Tareas pospuestas</string>
     <string name="options_snoozed_tasks_detail">Indícame tareas a posponer en el periodo seleccionado.</string>
     <string name="options_daily_reminder">Recordatorio diario</string>
     <string name="options_daily_reminder_detail">Mostrar recordatorio diario en plan del día.</string>
@@ -92,6 +95,8 @@
     <string name="options_weekly_reminder_detail">Mostrar recordatorio semanal en plan del seminal.</string>
     <string name="options_vibration">Vibración</string>
     <string name="options_vibration_detail">Vibrar al visualizar una notificación.</string>
+    <string name="options_system_sound">Usar sonidos del sistema</string>
+    <string name="options_system_sound_detail">Activar uso de sonido en notificaciones</string>
     <!-- Help -->
     <string name="help_center">Centro de Soporte</string>
     <string name="help_google_community">Comunidad Google+</string>
@@ -103,9 +108,9 @@
     <!-- Snooze settings -->
     <string name="day_start">Inicio de día</string>
     <string name="evening_start">Inicio de tarde</string>
-    <string name="weekend_day_start">Inicio de día fin de semana</string>
+    <string name="weekend_day_start">Día de Inicio de fin de semana</string>
     <string name="week_start">Inicio de semana</string>
-    <string name="weekend_start">Inicio de fin de semana</string>
+    <string name="weekend_start">Inicio fin de semana</string>
     <string name="settings_weekend_start_dialog_title">Inicio de fin de semana</string>
     <string name="settings_week_start_dialog_title">Inicio de semana</string>
     <string name="settings_later_today">Despues</string>
@@ -184,7 +189,7 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="clear_old_dialog_no">Cancelar</string>
     <string name="search_hint">Burcar</string>
     <string name="logout_dialog_title">¿ Salir de su cuenta ?</string>
-    <string name="logout_dialog_message">Swipes parará la crironización y borrará todos los datos en este dispositivo</string>
+    <string name="logout_dialog_message">Swipes parará la sincronización y borrará todos los datos en este dispositivo</string>
     <string name="logout_dialog_yes">Salir</string>
     <string name="logout_dialog_no">Cancelar</string>
     <string name="keep_data_dialog_title">¿Mantener datos desde este period?</string>
@@ -194,12 +199,12 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="share_intent_add_confirm">¡ Tarea Creada !</string>
     <string name="delete_single_task">¿Borrar tarea ?</string>
     <!-- Scheduler -->
-    <string name="date_today">hoy</string>
+    <string name="date_today">Hoy</string>
     <string name="date_tomorrow">Mañana</string>
     <string name="date_yesterday">Ayer</string>
     <string name="date_unspecified">Sin especificar</string>
-    <string name="snooze_later_today">A final de día</string>
-    <string name="snooze_this_evening">Al final de día</string>
+    <string name="snooze_later_today">Hoy</string>
+    <string name="snooze_this_evening">Esta noche</string>
     <string name="snooze_tomorrow_eve">Mañana tarde</string>
     <string name="snooze_tomorrow">Mañana</string>
     <string name="snooze_two_days_default">Lunes</string>
@@ -244,7 +249,7 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="repeat_week_description">Cada%1$s a las %2$s</string>
     <string name="repeat_month_description">El %1$s de cada mes a las %2$s</string>
     <string name="repeat_year_description">Cada año %1$s %2$s a las %3$s</string>
-    <string name="edit_task_tags_default_text">Seleccione etiquetas</string>
+    <string name="edit_task_tags_default_text">Selecciona etiquetas</string>
     <string name="edit_task_notes_default_text">Añade notas</string>
     <string name="edit_task_evernote_attached">ADJUNTO</string>
     <!-- Action steps -->
@@ -279,6 +284,7 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="delete_tag_dialog_yes">Borrar</string>
     <string name="delete_tag_dialog_no">Cancelar</string>
     <string name="empty_tags_hint">No se han asignado etiquetas</string>
+    <string name="edit_tag_dialog_title">Editar etiqueta</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">SELECCIONAR FILTRO</string>
     <string name="clear_workspace_button">BORRAR FILTRO</string>

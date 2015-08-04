@@ -57,7 +57,6 @@
     <string name="group_help">Yardım</string>
     <string name="group_other">Diğer</string>
     <string name="options">Seçenekler</string>
-    <string name="location">Konum</string>
     <string name="theme">Tema</string>
     <string name="settings_theme_dialog_title">Tema</string>
     <string name="snoozes">Ertelemeler</string>
@@ -80,10 +79,14 @@
     <!-- Options -->
     <string name="group_tweaks">Ayarlar</string>
     <string name="group_notifications">Bildirimler</string>
+    <string name="options_location">Konum</string>
+    <string name="options_location_detail">Cihaz konum bilgisine eriş.</string>
     <string name="options_background_sync">Arka planda eşitle</string>
     <string name="options_background_sync_detail">Görevleri arka planda otomatik olarak güncel tut.</string>
     <string name="options_scroll_to_added">Eklenenlere kaydır</string>
     <string name="options_scroll_to_added_detail">Son eklenen göreve odaklanmak için otomatik olarak kaydır.</string>
+    <string name="options_in_app_sounds">Uygulama içi sesler</string>
+    <string name="options_in_app_sounds_detail">Uygulamayı kullanırken ses çalsın.</string>
     <string name="options_snoozed_tasks">Ertelenmiş görevler</string>
     <string name="options_snoozed_tasks_detail">Belirtilen zamanda ertelenmiş görevleri bildir</string>
     <string name="options_daily_reminder">Günlük hatırlatma</string>
@@ -92,6 +95,8 @@
     <string name="options_weekly_reminder_detail">Haftayı planlamak için hatırlatma göster.</string>
     <string name="options_vibration">Titreşim</string>
     <string name="options_vibration_detail">Bildirimler görüntülendiğinde titreşimle uyar.</string>
+    <string name="options_system_sound">Sistem sesini kullan</string>
+    <string name="options_system_sound_detail">Bildirimler için sistem sesini kullanmayı etkinleştir.</string>
     <!-- Help -->
     <string name="help_center">Yardım Merkezi</string>
     <string name="help_google_community">Google+ topluluğu</string>
@@ -279,6 +284,7 @@
     <string name="delete_tag_dialog_yes">Sil</string>
     <string name="delete_tag_dialog_no">İptal</string>
     <string name="empty_tags_hint">Herhangi bir etiket eklenmedi</string>
+    <string name="edit_tag_dialog_title">Etiketi düzenle</string>
     <!-- Workspaces -->
     <string name="set_workspaces_hint">ÇALIŞMA ALANINI DÜZENLE</string>
     <string name="clear_workspace_button">ÇALIŞMA ALANINI TEMİZLE</string>
