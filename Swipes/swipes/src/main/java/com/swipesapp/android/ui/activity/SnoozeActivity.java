@@ -290,9 +290,9 @@ public class SnoozeActivity extends FragmentActivity {
         // Set snooze time.
         Calendar snooze = getBaseCalendar();
         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
-        int minutes = snooze.get(Calendar.MINUTE);
         snooze.set(Calendar.HOUR_OF_DAY, laterToday);
-        snooze.set(Calendar.MINUTE, roundMinutes(minutes));
+
+        roundMinutes(snooze);
 
         applyNextDayTreatment(snooze);
 
@@ -305,6 +305,8 @@ public class SnoozeActivity extends FragmentActivity {
     protected boolean laterTodayAdjust() {
         // Set snooze time.
         Calendar snooze = getBaseCalendar();
+        roundMinutes(snooze);
+
         int laterToday = snooze.get(Calendar.HOUR_OF_DAY) + mLaterTodayDelay;
         int currentMinute = snooze.get(Calendar.MINUTE);
 
@@ -684,14 +686,14 @@ public class SnoozeActivity extends FragmentActivity {
         return DateUtils.formatDayOfWeek(this, now);
     }
 
-    public static int roundMinutes(int minutes) {
-        // Round initial minutes.
-        int mod = minutes % 5;
-        if (mod != 0) {
-            int add = 5 - mod;
-            minutes += add;
-        }
-        return minutes;
+    public static void roundMinutes(Calendar snooze) {
+        int minutes = snooze.get(Calendar.MINUTE);
+
+        // Calculate round to quarter hour.
+        int mod = minutes % 15;
+        int add = mod < 8 ? -mod : 15 - mod;
+
+        snooze.add(Calendar.MINUTE, add);
     }
 
     public static Calendar getBaseCalendar() {
