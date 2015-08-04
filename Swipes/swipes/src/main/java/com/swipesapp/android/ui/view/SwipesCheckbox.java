@@ -39,7 +39,7 @@ public class SwipesCheckbox extends CheckBox {
             }
         }
 
-        int color = ThemeUtils.isLightTheme(context) ? R.color.checkbox_text_selector_light : R.color.checkbox_text_selector_light;
+        int color = ThemeUtils.isLightTheme(context) ? R.color.checkbox_text_selector_light : R.color.checkbox_text_selector_dark;
         setTextColor(context.getResources().getColorStateList(color));
 
         setTypeface(sTypeface);

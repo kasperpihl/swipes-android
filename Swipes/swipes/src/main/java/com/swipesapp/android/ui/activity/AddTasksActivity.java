@@ -116,14 +116,17 @@ public class AddTasksActivity extends BaseActivity {
 
         themeStatusBar(ThemeUtils.getStatusBarColor(this));
 
-        sSelectedTags = new LinkedHashSet<>();
-        List<Integer> tagIds = getIntent().getIntegerArrayListExtra(Constants.EXTRA_TAG_IDS);
+        if (sSelectedTags == null || sSelectedTags.isEmpty()) {
+            sSelectedTags = new LinkedHashSet<>();
 
-        // Load tags from filter.
-        if (tagIds != null) {
-            for (Integer id : tagIds) {
-                GsonTag tag = mTasksService.loadTag(id.longValue());
-                if (tag != null) sSelectedTags.add(tag);
+            List<Integer> tagIds = getIntent().getIntegerArrayListExtra(Constants.EXTRA_TAG_IDS);
+
+            // Load tags from filter.
+            if (tagIds != null) {
+                for (Integer id : tagIds) {
+                    GsonTag tag = mTasksService.loadTag(id.longValue());
+                    if (tag != null) sSelectedTags.add(tag);
+                }
             }
         }
 
@@ -233,8 +236,7 @@ public class AddTasksActivity extends BaseActivity {
         Integer priority = mButtonPriority.isChecked() ? 1 : 0;
         String tempId = UUID.randomUUID().toString();
         String notes = null;
-        List<GsonTag> tags = new ArrayList<>();
-        tags.addAll(sSelectedTags);
+        List<GsonTag> tags = new ArrayList<>(sSelectedTags);
 
         // Load note from intent.
         if (mIntentData != null) {
@@ -244,57 +246,65 @@ public class AddTasksActivity extends BaseActivity {
         // Set snooze time if not manually selected.
         if (!sHasSnoozed) sSnoozeTime = currentDate;
 
-        // Save new task.
         if (!title.isEmpty()) {
+            // Save new task.
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
                     priority, null, sSnoozeTime, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
             mTasksService.saveTask(task, true);
-        }
 
-        // Show success message when needed.
-        if (mIntentData != null || mOpenedFromWidget) {
-            Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
-        }
+            // Show success message when needed.
+            if (mIntentData != null || mOpenedFromWidget) {
+                Toast.makeText(this, getString(R.string.share_intent_add_confirm), Toast.LENGTH_SHORT).show();
+            }
 
-        // Send analytics event.
-        sendTaskAddedEvent();
+            // Send analytics event.
+            sendTaskAddedEvent();
 
-        // Reset state of fields.
-        sTitle = null;
-        sPriority = false;
-        sSelectedTags.clear();
-        sSnoozeTime = null;
-        sHasSnoozed = false;
+            // Reset state of fields.
+            sTitle = null;
+            sPriority = false;
+            sSelectedTags.clear();
+            sSnoozeTime = null;
+            sHasSnoozed = false;
 
-        // Refresh widget and tasks.
-        TasksActivity.refreshWidgets(this);
-        TasksActivity.setPendingRefresh();
+            // Refresh widget and tasks.
+            TasksActivity.refreshWidgets(this);
+            TasksActivity.setPendingRefresh();
 
-        // Fade out views.
-        hideViews();
+            // Set result after adding task.
+            Intent data = new Intent();
+            data.putExtra(Constants.EXTRA_TASK_ID, tempId);
 
-        // Set result after adding task.
-        Intent data = new Intent();
-        data.putExtra(Constants.EXTRA_TASK_ID, tempId);
+            if (mSnoozeCheckbox.isChecked()) {
+                setResult(Constants.ADDED_SNOOZED_TASK_RESULT_CODE, data);
+            } else {
+                setResult(RESULT_OK, data);
+            }
 
-        if (mSnoozeCheckbox.isChecked()) {
-            setResult(Constants.ADDED_SNOOZED_TASK_RESULT_CODE, data);
-        } else {
-            setResult(RESULT_OK, data);
-        }
-
-        // Play sound.
-        if (!title.isEmpty()) {
+            // Play sound.
             SoundHandler.playSound(this, R.raw.action_positive);
-        }
 
-        finish();
+            // Fade out views.
+            hideViews();
+
+            finish();
+        } else {
+            cancelAddTask();
+        }
     }
 
     private void cancelAddTask() {
         // Save state of fields.
         sTitle = mEditTextTitle.getText().toString();
-        sPriority = mButtonPriority.isChecked();
+
+        if (!sTitle.isEmpty()) {
+            sPriority = mButtonPriority.isChecked();
+        } else {
+            sPriority = false;
+            sSelectedTags.clear();
+            sSnoozeTime = null;
+            sHasSnoozed = false;
+        }
 
         // Fade out views.
         hideViews();
