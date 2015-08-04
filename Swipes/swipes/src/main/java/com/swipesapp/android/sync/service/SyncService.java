@@ -381,7 +381,7 @@ public class SyncService {
                 }
 
                 // Save or update task locally.
-                if (old != null && task.getLocalUpdatedAt().after(old.getLocalUpdatedAt())) {
+                if (old == null || task.getLocalUpdatedAt().after(old.getLocalUpdatedAt())) {
                     TasksService.getInstance().saveTask(task, false);
                 }
             }
@@ -573,7 +573,7 @@ public class SyncService {
         // Validates response by attempting to convert it to a Gson object.
         try {
             GsonSync gson = new Gson().fromJson(response, GsonSync.class);
-            return !response.isEmpty() && gson.getUpdateTime() != null;
+            return !response.isEmpty() && gson.getServerTime() != null;
         } catch (Exception e) {
             Log.e(LOG_TAG, "Invalid response, couldn't convert to Gson. Aborting sync.\n" +
                     e.getMessage() + "\n" + response);

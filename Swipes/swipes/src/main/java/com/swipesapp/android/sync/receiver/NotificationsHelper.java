@@ -96,7 +96,8 @@ public class NotificationsHelper extends BroadcastReceiver {
             GsonTask firstScheduled = TasksService.getInstance().loadFirstScheduledTask();
 
             // Check if it was snoozed for a date more recent than the first scheduled.
-            if (firstScheduled == null || latestSchedule.before(firstScheduled.getLocalSchedule())) {
+            if (firstScheduled == null || firstScheduled.getLocalSchedule() == null ||
+                    latestSchedule.before(firstScheduled.getLocalSchedule())) {
 
                 Calendar alarmTime = getBaseCalendar();
                 alarmTime.setTime(latestSchedule);
