@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="evernote_link"
+        android:summary="@string/evernote_link_account_detail"
+        android:title="@string/evernote_link_account" />
+
+    <Preference
+        android:key="evernote_unlink"
+        android:summary="@string/evernote_unlink_account_detail"
+        android:title="@string/evernote_unlink_account" />
+
+    <SwitchPreference
+        android:defaultValue="@bool/default_evernote_sync_device"
+        android:key="evernote_sync_device"
+        android:summary="@string/evernote_sync_device"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on" />
+
+    <SwitchPreference
+        android:defaultValue="@bool/default_evernote_auto_import"
+        android:key="evernote_auto_import"
+        android:summary="@string/evernote_auto_import"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on" />
+
+    <SwitchPreference
+        android:defaultValue="@bool/default_evernote_sync_personal"
+        android:key="evernote_sync_personal"
+        android:summary="@string/evernote_sync_personal"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on" />
+
+    <SwitchPreference
+        android:defaultValue="@bool/default_evernote_sync_business"
+        android:key="evernote_sync_business"
+        android:summary="@string/evernote_sync_business"
+        android:switchTextOff="@string/switch_off"
+        android:switchTextOn="@string/switch_on" />
+
+    <Preference
+        android:key="evernote_open_importer"
+        android:summary="@string/evernote_open_importer" />
+
+    <Preference
+        android:key="evernote_learn_more"
+        android:title="@string/evernote_learn_more" />
+
+</PreferenceScreen>
