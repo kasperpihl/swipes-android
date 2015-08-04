@@ -48,7 +48,7 @@ public class OptionsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.options);
 
             // Enable or disable vibration preference.
-            handleVibrationPreference();
+            handleVibrationAndSoundPreferences();
 
             PreferenceCategory categoryTweaks = (PreferenceCategory) findPreference("group_tweaks");
 
@@ -75,8 +75,8 @@ public class OptionsActivity extends BaseActivity {
                     key.equalsIgnoreCase(PreferenceUtils.DAILY_REMINDER_KEY) ||
                     key.equalsIgnoreCase(PreferenceUtils.WEEKLY_REMINDER_KEY)) {
 
-                // Enable or disable vibration preference.
-                handleVibrationPreference();
+                // Enable or disable vibration and sound preferences.
+                handleVibrationAndSoundPreferences();
             } else if (key.equalsIgnoreCase(PreferenceUtils.BACKGROUND_SYNC_KEY)) {
 
                 // Subscribe or unsubscribe from push.
@@ -91,19 +91,22 @@ public class OptionsActivity extends BaseActivity {
             SettingsHandler.saveSettingsToServer(getActivity());
         }
 
-        private void handleVibrationPreference() {
+        private void handleVibrationAndSoundPreferences() {
             Preference preferenceVibration = findPreference("settings_enable_vibration");
+            Preference preferenceSystemSound = findPreference("settings_use_system_sound");
 
             // Check if notifications are disabled.
             if (!PreferenceUtils.areNotificationsEnabled(getActivity()) &&
                     !PreferenceUtils.isDailyReminderEnabled(getActivity()) &&
                     !PreferenceUtils.isWeeklyReminderEnabled(getActivity())) {
 
-                // Disable vibration preference.
+                // Disable vibration and sound preferences.
                 preferenceVibration.setEnabled(false);
+                preferenceSystemSound.setEnabled(false);
             } else {
-                // Enable vibration preference.
+                // Enable vibration and sound preferences.
                 preferenceVibration.setEnabled(true);
+                preferenceSystemSound.setEnabled(true);
             }
         }
 
