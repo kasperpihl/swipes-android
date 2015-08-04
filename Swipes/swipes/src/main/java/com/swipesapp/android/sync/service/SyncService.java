@@ -28,6 +28,7 @@ import com.swipesapp.android.sync.gson.GsonSync;
 import com.swipesapp.android.sync.gson.GsonTag;
 import com.swipesapp.android.sync.gson.GsonTask;
 import com.swipesapp.android.sync.listener.SyncListener;
+import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.ui.activity.TasksActivity;
 import com.swipesapp.android.util.DateUtils;
 import com.swipesapp.android.util.PreferenceUtils;
@@ -394,6 +395,9 @@ public class SyncService {
         if (response.getUpdateTime() != null) {
             PreferenceUtils.saveString(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
         }
+
+        // Update notifications alarm.
+        NotificationsHelper.createNotificationsAlarm(mContext.get(), null);
 
         // Refresh local content.
         TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);

@@ -109,9 +109,11 @@ public class TasksService {
         Long id = gsonTask.getId();
         String parentId = gsonTask.getParentLocalId();
 
-        NotificationsHelper.handleNextAlarm(mContext.get(), gsonTask);
+        if (sync) {
+            NotificationsHelper.handleNextAlarm(mContext.get(), gsonTask);
 
-        if (sync) SyncService.getInstance().saveTaskChangesForSync(gsonTask, null);
+            SyncService.getInstance().saveTaskChangesForSync(gsonTask, null);
+        }
 
         if (id == null) {
             createTask(gsonTask);
