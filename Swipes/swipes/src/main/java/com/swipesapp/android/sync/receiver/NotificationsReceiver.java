@@ -204,7 +204,8 @@ public class NotificationsReceiver extends BroadcastReceiver {
         // Broadcast tasks changed.
         sTasksService.sendBroadcast(Intents.TASKS_CHANGED);
 
-        // Refresh app widgets.
+        // Refresh tasks and widget.
+        TasksActivity.setPendingRefresh();
         TasksActivity.refreshWidgets(context);
     }
 

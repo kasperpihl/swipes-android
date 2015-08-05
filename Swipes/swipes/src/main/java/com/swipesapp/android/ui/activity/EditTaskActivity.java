@@ -253,7 +253,8 @@ public class EditTaskActivity extends FragmentActivity {
             }
         }
 
-        // Refresh widget.
+        // Refresh tasks and widget.
+        TasksActivity.setPendingRefresh();
         TasksActivity.refreshWidgets(this);
 
         setResult(Activity.RESULT_OK);

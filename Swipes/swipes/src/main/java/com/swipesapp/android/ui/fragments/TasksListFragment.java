@@ -275,11 +275,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         refreshTaskList(true);
                         break;
                 }
-            } else if (requestCode == Constants.EDIT_TASK_REQUEST_CODE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    // Refresh all tasks after editing.
-                    mActivity.refreshSections(true);
-                }
             }
         }
     }
@@ -1244,7 +1239,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         editTaskIntent.putExtra(Constants.EXTRA_SECTION_NUMBER, mSection.getSectionNumber());
         editTaskIntent.putExtra(Constants.EXTRA_SHOW_ACTION_STEPS, showActionSteps);
 
-        startActivityForResult(editTaskIntent, Constants.EDIT_TASK_REQUEST_CODE);
+        startActivity(editTaskIntent);
     }
 
     private void showTags() {
