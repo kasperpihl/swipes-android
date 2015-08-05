@@ -22,11 +22,11 @@ public class ListUtils {
      * @param tasks List to sort.
      */
     public static void sortScheduledTasks(List<GsonTask> tasks) {
-        // Sort by descending creation date.
+        // Sort by ascending creation date.
         Collections.sort(tasks, new Comparator<GsonTask>() {
             @Override
             public int compare(GsonTask task1, GsonTask task2) {
-                return task2.getLocalCreatedAt().compareTo(task1.getLocalCreatedAt());
+                return task1.getLocalCreatedAt().compareTo(task2.getLocalCreatedAt());
             }
         });
 
