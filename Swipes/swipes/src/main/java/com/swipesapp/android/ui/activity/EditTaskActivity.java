@@ -878,7 +878,7 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void confirmEditTag(GsonTag selectedTag) {
         // Save tag to database.
-        mTasksService.editTag(selectedTag);
+        mTasksService.editTag(selectedTag, true);
 
         // Refresh displayed tags.
         loadTags();

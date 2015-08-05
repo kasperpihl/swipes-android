@@ -1387,7 +1387,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void confirmEditTag(GsonTag selectedTag) {
         // Save tag to database.
-        mTasksService.editTag(selectedTag);
+        mTasksService.editTag(selectedTag, true);
 
         // Refresh displayed tags.
         loadTags();

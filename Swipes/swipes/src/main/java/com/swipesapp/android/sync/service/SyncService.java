@@ -336,7 +336,7 @@ public class SyncService {
             for (GsonTag tag : response.getTags()) {
                 GsonTag localTag = TasksService.getInstance().loadTag(tag.getTempId());
 
-                // Check if tag already exists locally.
+                // Check if tag doesn't exist locally.
                 if (localTag == null) {
                     // Set dates to local format.
                     tag.setLocalCreatedAt(DateUtils.dateFromSync(tag.getCreatedAt()));
@@ -347,9 +347,12 @@ public class SyncService {
                         TasksService.getInstance().saveTag(tag);
                     }
                 } else {
-                    // Delete tag locally.
                     if (tag.getDeleted()) {
+                        // Delete tag locally.
                         TasksService.getInstance().deleteTag(localTag.getId());
+                    } else {
+                        // Update tag locally.
+                        TasksService.getInstance().editTag(localTag, false);
                     }
                 }
             }

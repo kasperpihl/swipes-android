@@ -647,7 +647,7 @@ public class AddTasksActivity extends BaseActivity {
 
     private void confirmEditTag(GsonTag selectedTag) {
         // Save tag to database.
-        mTasksService.editTag(selectedTag);
+        mTasksService.editTag(selectedTag, true);
 
         // Refresh displayed tags.
         loadTags();

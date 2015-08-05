@@ -350,7 +350,13 @@ public class TasksService {
         return id;
     }
 
-    public void editTag(GsonTag tag) {
+    /**
+     * Updates an existing tag.
+     *
+     * @param tag  Tag to update.
+     * @param sync True to queue changes for sync.
+     */
+    public void editTag(GsonTag tag, boolean sync) {
         if (tag.getId() != null && tag.getTitle() != null && !tag.getTitle().isEmpty()) {
             Tag localTag = mExtTagDao.selectTag(tag.getId());
 
@@ -365,7 +371,7 @@ public class TasksService {
             mExtTagDao.getDao().update(localTag);
 
             // Save changes for sync.
-            SyncService.getInstance().saveTagForSync(tag);
+            if (sync) SyncService.getInstance().saveTagForSync(tag);
         }
     }
 
