@@ -132,6 +132,7 @@ public class EvernoteSyncHandler {
         }
         mCurrentNoteCount = 0;
         mRunningError = null;
+        final List<GsonTask> newTasks = new ArrayList<>();
 
         for (final Note note : notes) {
             String title = note.getTitle();
@@ -153,13 +154,16 @@ public class EvernoteSyncHandler {
                     GsonTask newTodo = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false,
                             fTitle, null, null, 0, null, currentDate, null, null, RepeatOptions.NEVER,
                             null, null, null, Arrays.asList(attachment), 0);
-                    TasksService.getInstance().saveTask(newTodo, true);
+                    newTasks.add(newTodo);
 
                     sendTaskAddedEvent(false, fTitle);
 
                     sendAttachmentAddedEvent();
 
                     if (++mCurrentNoteCount >= mTotalNoteCount) {
+                        // Persist new tasks.
+                        TasksService.getInstance().saveTasks(newTasks, true);
+
                         if (null == mRunningError)
                             callback.onSuccess(null);
                         else
@@ -276,8 +280,9 @@ public class EvernoteSyncHandler {
         });
     }
 
-    protected boolean handleEvernoteToDo(final EvernoteToDo evernoteToDo, final GsonTask subtask, final EvernoteToDoProcessor processor, boolean isNew, final TasksService tasksService) {
+    protected boolean handleEvernoteToDo(final EvernoteToDo evernoteToDo, final GsonTask subtask, final EvernoteToDoProcessor processor, boolean isNew, List<GsonTask> tasksToSave) {
         boolean updated = false;
+        if (tasksToSave == null) tasksToSave = new ArrayList<>();
 
         // If subtask is deleted from Swipes - mark completed in Evernote
         if (subtask.isDeleted() && !evernoteToDo.isChecked()) {
@@ -301,7 +306,7 @@ public class EvernoteSyncHandler {
                 else {
                     Log.d(LOG_TAG, "uncompleting subtask");
                     subtask.setLocalCompletionDate(null);
-                    tasksService.saveTask(subtask, true);
+                    tasksToSave.add(subtask);
                     updated = true;
                 }
             }
@@ -317,7 +322,7 @@ public class EvernoteSyncHandler {
                 else {
                     Log.d(LOG_TAG, "completing subtask");
                     subtask.setLocalCompletionDate(new Date());
-                    tasksService.saveTask(subtask, true);
+                    tasksToSave.add(subtask);
                     updated = true;
                 }
             }
@@ -328,7 +333,7 @@ public class EvernoteSyncHandler {
             if (processor.updateToDo(evernoteToDo, subtask.getTitle())) {
                 Log.d(LOG_TAG, "renamed evernote");
                 subtask.setOriginIdentifier(subtask.getTitle());
-                tasksService.saveTask(subtask, true);
+                tasksToSave.add(subtask);
                 updated = true;
             }
         }
@@ -365,6 +370,7 @@ public class EvernoteSyncHandler {
         // Creating helper arrays for determining which ones has already been matched
         List<GsonTask> subtasksLeftToBeFound = new ArrayList<GsonTask>(subtasks);
         List<EvernoteToDo> evernoteToDosLeftToBeFound = new ArrayList<EvernoteToDo>(evernoteToDos);
+        List<GsonTask> subtasksToSave = new ArrayList<>();
 
         boolean updated = false;
 
@@ -380,14 +386,17 @@ public class EvernoteSyncHandler {
                     if (null == subtask.getOrigin()) {
                         subtask.setOriginIdentifier(evernoteToDo.getTitle());
                         subtask.setOrigin(Services.EVERNOTE);
-                        tasksService.saveTask(subtask, true);
+                        subtasksToSave.add(subtask);
                     }
-                    if (handleEvernoteToDo(evernoteToDo, subtask, processor, false, tasksService)) {
+                    if (handleEvernoteToDo(evernoteToDo, subtask, processor, false, subtasksToSave)) {
                         updated = true;
                     }
                     break;
                 }
             }
+
+            tasksService.saveTasks(subtasksToSave, true);
+            subtasksToSave.clear();
 
             if (subtasks.size() != subtasksLeftToBeFound.size()) {
                 subtasks.clear();
@@ -425,7 +434,7 @@ public class EvernoteSyncHandler {
                 matchingSubtask = GsonTask.gsonForLocal(null, null, tempId, parentToDo.getTempId(), currentDate, currentDate, false,
                         evernoteToDo.getTitle(), null, null, 0, evernoteToDo.isChecked() ? currentDate : null, currentDate, null, null,
                         RepeatOptions.NEVER, Services.EVERNOTE, evernoteToDo.getTitle(), null, null, 0);
-                tasksService.saveTask(matchingSubtask, true);
+                subtasksToSave.add(matchingSubtask);
 
                 sendTaskAddedEvent(true, evernoteToDo.getTitle());
 
@@ -435,7 +444,7 @@ public class EvernoteSyncHandler {
                 // subtask exists but not marked as evernote yet
                 matchingSubtask.setOriginIdentifier(evernoteToDo.getTitle());
                 matchingSubtask.setOrigin(Services.EVERNOTE);
-                tasksService.saveTask(matchingSubtask, true);
+                subtasksToSave.add(matchingSubtask);
             }
 
             subtasksLeftToBeFound.remove(matchingSubtask);
@@ -443,9 +452,12 @@ public class EvernoteSyncHandler {
             subtasks.addAll(subtasksLeftToBeFound);
             evernoteToDosLeftToBeFound.remove(evernoteToDo);
 
-            if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, tasksService))
+            if (matchingSubtask != null && handleEvernoteToDo(evernoteToDo, matchingSubtask, processor, isNew, subtasksToSave))
                 updated = true;
         }
+
+        tasksService.saveTasks(subtasksToSave, true);
+        subtasksToSave.clear();
 
         // remove evernote subtasks not found in the evernote from our task
         if (subtasks != null && subtasks.size() > 0) {
@@ -467,9 +479,12 @@ public class EvernoteSyncHandler {
                 subtask.setOriginIdentifier(subtask.getTitle());
                 subtask.setOrigin(Services.EVERNOTE);
                 updated = true;
-                tasksService.saveTask(subtask, true);
+                subtasksToSave.add(subtask);
             }
         }
+
+        tasksService.saveTasks(subtasksToSave, true);
+        subtasksToSave.clear();
 
         /* TODO ?
         if( updated && parentToDo.objectId) {

@@ -43,7 +43,9 @@ import com.swipesapp.android.values.Themes;
 import com.swipesapp.android.widget.AddWidgetProvider;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.intercom.android.sdk.Intercom;
 
@@ -430,13 +432,17 @@ public class SettingsActivity extends BaseActivity {
                 SyncService.getInstance().saveTagForSync(tag);
             }
 
-            // Save all tasks for syncing.
+            // Load all non-deleted tasks.
+            List<GsonTask> tasksToSave = new ArrayList<>();
             for (GsonTask task : TasksService.getInstance().loadAllTasks()) {
                 if (!task.getDeleted()) {
                     task.setId(null);
-                    SyncService.getInstance().saveTaskChangesForSync(task, null);
+                    tasksToSave.add(task);
                 }
             }
+
+            // Save tasks for syncing.
+            SyncService.getInstance().saveTasksForSync(tasksToSave);
         }
 
         private void refreshSyncDate(Preference preferenceSync) {

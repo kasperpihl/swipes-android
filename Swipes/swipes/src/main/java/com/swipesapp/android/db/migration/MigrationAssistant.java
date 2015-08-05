@@ -8,6 +8,7 @@ import com.swipesapp.android.sync.service.TasksService;
 import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.values.RepeatOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,13 +48,18 @@ public class MigrationAssistant {
      */
     private static void upgradeToV7(Context context) {
         if (!PreferenceUtils.hasUpgradedToVersion(7, context)) {
+            List<GsonTask> updatedTasks = new ArrayList<>();
+
             // Update all tasks.
             for (GsonTask task : sTasksService.loadAllTasks()) {
                 task.setRepeatOption(RepeatOptions.NEVER);
                 task.setOriginIdentifier(null);
 
-                sTasksService.saveTask(task, false);
+                updatedTasks.add(task);
             }
+
+            // Save updated tasks.
+            sTasksService.saveTasks(updatedTasks, false);
 
             // Mark as upgraded.
             PreferenceUtils.saveBoolean(V7_UPGRADE_KEY, true, context);
@@ -67,6 +73,7 @@ public class MigrationAssistant {
      */
     private static void upgradeToV8(Context context) {
         if (!PreferenceUtils.hasUpgradedToVersion(8, context)) {
+            List<GsonTask> updatedTasks = new ArrayList<>();
             List<GsonTask> tasks = sTasksService.loadAllTasks();
 
             // Update all tasks.
@@ -74,8 +81,11 @@ public class MigrationAssistant {
                 GsonTask task = tasks.get(i);
                 task.setTempId(task.getTempId() + i);
 
-                sTasksService.saveTask(task, false);
+                updatedTasks.add(task);
             }
+
+            // Save updated tasks.
+            sTasksService.saveTasks(updatedTasks, false);
 
             // Mark as upgraded.
             PreferenceUtils.saveBoolean(V8_UPGRADE_KEY, true, context);

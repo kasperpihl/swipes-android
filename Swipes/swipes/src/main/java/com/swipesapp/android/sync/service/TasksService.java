@@ -43,6 +43,8 @@ public class TasksService {
 
     private static TasksService sInstance;
 
+    private DaoSession mDaoSession;
+
     private ExtTaskDao mExtTaskDao;
     private ExtTagDao mExtTagDao;
     private ExtTaskTagDao mExtTaskTagDao;
@@ -58,12 +60,12 @@ public class TasksService {
     private TasksService(Context context) {
         mContext = new WeakReference<Context>(context);
 
-        DaoSession daoSession = SwipesApplication.getDaoSession();
+        mDaoSession = SwipesApplication.getDaoSession();
 
-        mExtTaskDao = ExtTaskDao.getInstance(daoSession);
-        mExtTagDao = ExtTagDao.getInstance(daoSession);
-        mExtTaskTagDao = ExtTaskTagDao.getInstance(daoSession);
-        mExtAttachmentDao = ExtAttachmentDao.getInstance(daoSession);
+        mExtTaskDao = ExtTaskDao.getInstance(mDaoSession);
+        mExtTagDao = ExtTagDao.getInstance(mDaoSession);
+        mExtTaskTagDao = ExtTaskTagDao.getInstance(mDaoSession);
+        mExtAttachmentDao = ExtAttachmentDao.getInstance(mDaoSession);
     }
 
     /**
@@ -130,6 +132,25 @@ public class TasksService {
     }
 
     /**
+     * Creates or updates multiple tasks faster in a transaction. Use this for bulk
+     * operations (e.g. sync, migrations, etc.).
+     *
+     * @param gsonTasks List of objects holding task data.
+     * @param sync      True to queue changes and perform sync.
+     */
+    public void saveTasks(final List<GsonTask> gsonTasks, final boolean sync) {
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                for (GsonTask gsonTask : gsonTasks) {
+                    // Persist task in transaction.
+                    saveTask(gsonTask, sync);
+                }
+            }
+        });
+    }
+
+    /**
      * Updates the parent of a given subtask.
      *
      * @param subtask Subtask to update parent.
@@ -156,17 +177,22 @@ public class TasksService {
      *
      * @param tasks List containing tasks to delete.
      */
-    public void deleteTasks(List<GsonTask> tasks) {
-        for (GsonTask task : tasks) {
-            // Mark task as deleted and persist change.
-            task.setDeleted(true);
-            saveTask(task, true);
+    public void deleteTasks(final List<GsonTask> tasks) {
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                for (GsonTask task : tasks) {
+                    // Mark task as deleted and persist change.
+                    task.setDeleted(true);
+                    saveTask(task, true);
 
-            // Delete subtasks.
-            deleteSubtasksForTask(task.getTempId());
+                    // Delete subtasks.
+                    deleteSubtasksForTask(task.getTempId());
 
-            SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
-        }
+                    SyncService.getInstance().performSync(true, Constants.SYNC_DELAY);
+                }
+            }
+        });
     }
 
     /**
@@ -357,8 +383,8 @@ public class TasksService {
      * @param sync True to queue changes for sync.
      */
     public void editTag(GsonTag tag, boolean sync) {
-        if (tag.getId() != null && tag.getTitle() != null && !tag.getTitle().isEmpty()) {
-            Tag localTag = mExtTagDao.selectTag(tag.getId());
+        if (tag.getTempId() != null && tag.getTitle() != null && !tag.getTitle().isEmpty()) {
+            Tag localTag = mExtTagDao.selectTag(tag.getTempId());
 
             // Update attributes.
             localTag.setObjectId(tag.getObjectId());
@@ -391,6 +417,23 @@ public class TasksService {
     }
 
     /**
+     * Saves multiple existing tags. Use this for bulk operations (e.g. sync).
+     *
+     * @param tags List of tags to save.
+     */
+    public void saveTags(final List<GsonTag> tags) {
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                for (GsonTag tag : tags) {
+                    // Persist tag in transaction.
+                    saveTag(tag);
+                }
+            }
+        });
+    }
+
+    /**
      * Unassigns a tag from a task.
      *
      * @param tagId  ID of the tag to unassign.
@@ -402,6 +445,24 @@ public class TasksService {
         if (assignment != null) mExtTaskTagDao.getDao().delete(assignment);
 
         SyncService.getInstance().saveTaskChangesForSync(loadTask(taskId), null);
+    }
+
+    /**
+     * Unassigns a tag from multiple tasks.
+     *
+     * @param tagId ID of the tag to unassign.
+     * @param tasks List of tasks to unassign from.
+     */
+    public void unassignTag(final Long tagId, final List<GsonTask> tasks) {
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                // Unassign from tasks in transaction.
+                for (GsonTask task : tasks) {
+                    unassignTag(tagId, task.getId());
+                }
+            }
+        });
     }
 
     /**
@@ -971,29 +1032,34 @@ public class TasksService {
      * Clears all user data from the database.
      */
     public void clearAllData() {
-        // Delete all task-tag associations.
-        List<TaskTag> joins = mExtTaskTagDao.listAllAssociations();
-        for (TaskTag join : joins) {
-            join.delete();
-        }
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                // Delete all task-tag associations.
+                List<TaskTag> joins = mExtTaskTagDao.listAllAssociations();
+                for (TaskTag join : joins) {
+                    join.delete();
+                }
 
-        // Delete all tasks.
-        List<Task> tasks = mExtTaskDao.listAllTasks();
-        for (Task task : tasks) {
-            task.delete();
-        }
+                // Delete all tasks.
+                List<Task> tasks = mExtTaskDao.listAllTasks();
+                for (Task task : tasks) {
+                    task.delete();
+                }
 
-        // Delete all tags.
-        List<Tag> tags = mExtTagDao.listAllTags();
-        for (Tag tag : tags) {
-            tag.delete();
-        }
+                // Delete all tags.
+                List<Tag> tags = mExtTagDao.listAllTags();
+                for (Tag tag : tags) {
+                    tag.delete();
+                }
 
-        // Delete all attachments.
-        List<Attachment> attachments = mExtAttachmentDao.listAllAttachments();
-        for (Attachment attachment : attachments) {
-            mExtAttachmentDao.getDao().delete(attachment);
-        }
+                // Delete all attachments.
+                List<Attachment> attachments = mExtAttachmentDao.listAllAttachments();
+                for (Attachment attachment : attachments) {
+                    mExtAttachmentDao.getDao().delete(attachment);
+                }
+            }
+        });
     }
 
     /**

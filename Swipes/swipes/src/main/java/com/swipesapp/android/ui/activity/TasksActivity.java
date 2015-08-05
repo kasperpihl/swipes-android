@@ -1600,13 +1600,17 @@ public class TasksActivity extends BaseActivity {
             mSyncService.saveTagForSync(tag);
         }
 
-        // Save all tasks for syncing.
+        // Load all non-deleted tasks.
+        List<GsonTask> tasksToSave = new ArrayList<>();
         for (GsonTask task : mTasksService.loadAllTasks()) {
             if (!task.getDeleted()) {
                 task.setId(null);
-                mSyncService.saveTaskChangesForSync(task, null);
+                tasksToSave.add(task);
             }
         }
+
+        // Save tasks for syncing.
+        mSyncService.saveTasksForSync(tasksToSave);
     }
 
     private void performInitialSync() {

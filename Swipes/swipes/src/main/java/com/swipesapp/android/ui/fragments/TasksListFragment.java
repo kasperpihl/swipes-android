@@ -1586,17 +1586,17 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Assign to all selected tasks.
         for (GsonTask task : sSelectedTasks) {
             task.setTags(mAssignedTags);
-            mTasksService.saveTask(task, true);
         }
+
+        // Save selected tasks.
+        mTasksService.saveTasks(sSelectedTasks, true);
 
         mAssignedTagsCount++;
     }
 
     private void unassignTag(GsonTag tag) {
         // Unassign from all selected tasks.
-        for (GsonTask task : sSelectedTasks) {
-            mTasksService.unassignTag(tag.getId(), task.getId());
-        }
+        mTasksService.unassignTag(tag.getId(), sSelectedTasks);
 
         // Remove from selected tags.
         mAssignedTags.remove(tag);

@@ -54,6 +54,8 @@ public class SyncService {
 
     private static SyncService sInstance;
 
+    private DaoSession mDaoSession;
+
     private ExtTaskSyncDao mExtTaskSyncDao;
     private ExtTagSyncDao mExtTagSyncDao;
 
@@ -79,10 +81,10 @@ public class SyncService {
     public SyncService(Context context) {
         mContext = new WeakReference<Context>(context);
 
-        DaoSession daoSession = SwipesApplication.getDaoSession();
+        mDaoSession = SwipesApplication.getDaoSession();
 
-        mExtTaskSyncDao = ExtTaskSyncDao.getInstance(daoSession);
-        mExtTagSyncDao = ExtTagSyncDao.getInstance(daoSession);
+        mExtTaskSyncDao = ExtTaskSyncDao.getInstance(mDaoSession);
+        mExtTagSyncDao = ExtTagSyncDao.getInstance(mDaoSession);
     }
 
     /**
@@ -333,6 +335,8 @@ public class SyncService {
     private void handleResponse(final GsonSync response) {
         // Process new tags.
         if (response.getTags() != null) {
+            List<GsonTag> tagsToSave = new ArrayList<>();
+
             for (GsonTag tag : response.getTags()) {
                 GsonTag localTag = TasksService.getInstance().loadTag(tag.getTempId());
 
@@ -342,9 +346,9 @@ public class SyncService {
                     tag.setLocalCreatedAt(DateUtils.dateFromSync(tag.getCreatedAt()));
                     tag.setLocalUpdatedAt(DateUtils.dateFromSync(tag.getUpdatedAt()));
 
-                    // Save tag locally.
+                    // Add to list of tags to save.
                     if (!tag.getDeleted()) {
-                        TasksService.getInstance().saveTag(tag);
+                        tagsToSave.add(tag);
                     }
                 } else {
                     if (tag.getDeleted()) {
@@ -357,12 +361,17 @@ public class SyncService {
                 }
             }
 
+            // Save tags locally.
+            TasksService.getInstance().saveTags(tagsToSave);
+
             // Update number of tags dimension.
             Analytics.sendNumberOfTags(mContext.get());
         }
 
         // Process new tasks and changes.
         if (response.getTasks() != null) {
+            List<GsonTask> tasksToSave = new ArrayList<>();
+
             for (GsonTask task : response.getTasks()) {
                 GsonTask old = TasksService.getInstance().loadTask(task.getTempId());
                 task.setId(old != null ? old.getId() : null);
@@ -384,11 +393,14 @@ public class SyncService {
                     task.setAttachments(old.getAttachments());
                 }
 
-                // Save or update task locally.
+                // Add to list of tasks to save.
                 if (old == null || task.getLocalUpdatedAt().after(old.getLocalUpdatedAt())) {
-                    TasksService.getInstance().saveTask(task, false);
+                    tasksToSave.add(task);
                 }
             }
+
+            // Save or update tasks locally.
+            TasksService.getInstance().saveTasks(tasksToSave, false);
 
             // Update recurring tasks dimension.
             Analytics.sendRecurringTasks(mContext.get());
@@ -455,6 +467,18 @@ public class SyncService {
                 mExtTaskSyncDao.getDao().update(taskSync);
             }
         }
+    }
+
+    public void saveTasksForSync(final List<GsonTask> tasks) {
+        mDaoSession.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                for (GsonTask task : tasks) {
+                    // Save tracked changes in transaction.
+                    saveTaskChangesForSync(task, null);
+                }
+            }
+        });
     }
 
     public void saveTagForSync(GsonTag tag) {
