@@ -181,6 +181,7 @@ public class TasksActivity extends BaseActivity {
 
     private boolean mWasRestored;
     private static boolean sHasPendingRefresh;
+    private Handler mRefreshHandler = new Handler();
 
     private boolean mIsSelectionMode;
 
@@ -639,8 +640,16 @@ public class TasksActivity extends BaseActivity {
                 mActionBarView.setAlpha(1f);
 
                 if (sHasPendingRefresh) {
-                    // Finish refreshing lists.
-                    refreshAdapters();
+                    Runnable refreshRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            // Finish refreshing lists.
+                            refreshAdapters();
+                        }
+                    };
+
+                    // Wait a little before refreshing.
+                    mRefreshHandler.postDelayed(refreshRunnable, 1000);
                 }
 
                 if (mCalledAddTask) {
@@ -655,8 +664,11 @@ public class TasksActivity extends BaseActivity {
                 mScroller.setDuration(FactorSpeedScroller.DURATION_MEDIUM);
 
                 mIsSwipingScreens = false;
-            } else {
+            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
                 mIsSwipingScreens = true;
+
+                // User is swiping again. Cancel refresh.
+                mRefreshHandler.removeCallbacksAndMessages(null);
             }
         }
 
