@@ -221,12 +221,8 @@ public class SyncService {
                                     // Sync Evernote.
                                     performEvernoteSync(changesOnly);
 
-                                    // Send sync callbacks.
-                                    if (mHasSyncFailed) {
-                                        sendErrorCallback();
-                                    } else {
-                                        sendCompletionCallback();
-                                    }
+                                    // Try to finish sync.
+                                    finishSync();
                                 }
 
                                 // Reduce calls count.
@@ -254,17 +250,14 @@ public class SyncService {
                 public void onSuccess(Void data) {
                     sendDebugLog("Evernote sync done.");
 
-                    // Refresh local content.
-                    TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
-
                     // Mark Evernote sync as performed.
                     mIsSyncingEvernote = false;
 
                     // Call recursion to sync new objects.
                     if (!mHasSyncFailed) performSync(changesOnly, true);
 
-                    // Send callback.
-                    sendCompletionCallback();
+                    // Try to finish sync.
+                    finishSync();
                 }
 
                 @Override
@@ -275,8 +268,8 @@ public class SyncService {
                     mIsSyncingEvernote = false;
                     mHasSyncFailed = true;
 
-                    // Send callback.
-                    sendErrorCallback();
+                    // Try to finish sync.
+                    finishSync();
                 }
             });
         }
@@ -410,16 +403,28 @@ public class SyncService {
         if (response.getUpdateTime() != null) {
             PreferenceUtils.saveString(PreferenceUtils.SYNC_LAST_UPDATE, response.getUpdateTime(), mContext.get());
         }
+    }
 
-        // Update notifications alarm.
-        NotificationsHelper.createNotificationsAlarm(mContext.get(), null);
+    private void finishSync() {
+        if (!isSyncing()) {
+            // Update notifications alarm.
+            NotificationsHelper.createNotificationsAlarm(mContext.get(), null);
 
-        // Refresh local content.
-        TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
+            // Refresh local content.
+            TasksService.getInstance().sendBroadcast(Intents.TASKS_CHANGED);
 
-        // Force widget refresh if app is in the background.
-        if (SwipesApplication.isInBackground()) {
-            TasksActivity.refreshWidgets(mContext.get());
+            // Force widget and tasks refresh if app is in the background.
+            if (SwipesApplication.isInBackground()) {
+                TasksActivity.refreshWidgets(mContext.get());
+                TasksActivity.setPendingRefresh();
+            }
+
+            // Send sync callbacks.
+            if (mHasSyncFailed) {
+                sendErrorCallback();
+            } else {
+                sendCompletionCallback();
+            }
         }
     }
 
@@ -613,29 +618,25 @@ public class SyncService {
     }
 
     private void sendCompletionCallback() {
-        if (!isSyncing()) {
-            sendDebugLog("Sync done.");
+        sendDebugLog("Sync done.");
 
-            // Send callback.
-            if (mListener != null) {
-                mListener.onSyncDone();
-                mListener = null;
-            }
+        // Send callback.
+        if (mListener != null) {
+            mListener.onSyncDone();
+            mListener = null;
         }
     }
 
     private void sendErrorCallback() {
-        if (!isSyncing()) {
-            sendDebugLog("Sync error.");
+        sendDebugLog("Sync error.");
 
-            // Reset sync flag.
-            mHasSyncFailed = false;
+        // Reset sync flag.
+        mHasSyncFailed = false;
 
-            // Send callback.
-            if (mListener != null) {
-                mListener.onSyncFailed();
-                mListener = null;
-            }
+        // Send callback.
+        if (mListener != null) {
+            mListener.onSyncFailed();
+            mListener = null;
         }
     }
 
