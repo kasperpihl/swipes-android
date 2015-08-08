@@ -249,15 +249,18 @@ public class DateUtils {
         providedDate.setTime(date);
         Calendar currentDate = Calendar.getInstance();
 
+        Calendar weekFromToday = Calendar.getInstance();
+        weekFromToday.setTimeInMillis(weekFromToday.getTimeInMillis() + 604800000L);
+        weekFromToday.set(Calendar.HOUR_OF_DAY, 23);
+        weekFromToday.set(Calendar.MINUTE, 59);
+        weekFromToday.set(Calendar.SECOND, 59);
+        weekFromToday.set(Calendar.MILLISECOND, 999);
+
         long providedMillis = providedDate.getTimeInMillis();
         long currentMillis = currentDate.getTimeInMillis();
-        int providedDayOfWeek = providedDate.get(Calendar.DAY_OF_WEEK);
-        int currentDayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK);
+        long weekFromTodayMillis = weekFromToday.getTimeInMillis();
 
-        boolean isWithinWeek = providedMillis > currentMillis && providedMillis - currentMillis < 604800000L;
-        boolean isSameDayNextWeek = providedMillis > currentMillis && providedDayOfWeek == currentDayOfWeek;
-
-        return isWithinWeek || isSameDayNextWeek;
+        return providedMillis > currentMillis && providedMillis <= weekFromTodayMillis;
     }
 
     /**
