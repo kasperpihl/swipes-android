@@ -117,6 +117,11 @@ public class TasksListAdapter extends BaseAdapter {
     }
 
     @Override
+    public boolean hasStableIds() {
+        return true;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TaskHolder holder;
         View row = convertView;
