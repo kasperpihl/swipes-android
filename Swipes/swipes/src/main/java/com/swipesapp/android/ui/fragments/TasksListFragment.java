@@ -1782,6 +1782,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
         // Refresh list with results.
         mListView.setContentList(mTasks);
+        mListView.smoothScrollToPosition(0);
         mAdapter.update(mTasks, false);
     }
 
