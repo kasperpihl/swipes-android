@@ -89,6 +89,10 @@
     <string name="options_location_detail">Access device location.</string>
     <string name="options_background_sync">Background sync</string>
     <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
+    <string name="options_background_sync_frequency">Frequency</string>
+    <string name="options_background_sync_frequency_off">Off</string>
+    <string name="options_background_sync_frequency_normal">Normal</string>
+    <string name="options_background_sync_frequency_real_time">Real time</string>
     <string name="options_add_to_bottom">Add to bottom</string>
     <string name="options_add_to_bottom_detail">Add new tasks to the bottom of the list.</string>
     <string name="options_scroll_to_added">Scroll to added</string>

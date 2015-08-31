@@ -316,7 +316,7 @@ public class PreferenceUtils {
      */
     public static boolean isBackgroundSyncEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(BACKGROUND_SYNC_KEY, true);
+        return settings.getBoolean(BACKGROUND_SYNC_KEY, false);
     }
 
     /**
