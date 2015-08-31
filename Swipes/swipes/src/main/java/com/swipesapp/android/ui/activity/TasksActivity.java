@@ -177,7 +177,7 @@ public class TasksActivity extends BaseActivity {
 
     private boolean mCalledAddTask;
     private String mAddedTaskId;
-    private boolean mHasAddedSnoozedTask;
+    private boolean mHasAddedTask;
 
     private String mShareMessage;
 
@@ -417,42 +417,40 @@ public class TasksActivity extends BaseActivity {
 
                 // Check if added task was snoozed.
                 if (resultCode == Constants.ADDED_SNOOZED_TASK_RESULT_CODE) {
-                    if (PreferenceUtils.isAutoScrollEnabled(this)) {
-                        // Auto-scroll by default when workspace is inactive.
-                        boolean shouldScroll = mSelectedFilterTags.isEmpty();
+                    // Auto-scroll by default when workspace is inactive.
+                    boolean shouldScroll = mSelectedFilterTags.isEmpty();
 
-                        if (!shouldScroll) {
-                            GsonTask task = mTasksService.loadTask(mAddedTaskId);
+                    if (!shouldScroll) {
+                        GsonTask task = mTasksService.loadTask(mAddedTaskId);
 
-                            // When a workspace is active, make sure the added task is visible (i.e. has one
-                            // of the selected tags) before auto-scrolling.
-                            for (GsonTag filterTag : mSelectedFilterTags) {
-                                for (GsonTag tag : task.getTags()) {
-                                    if (tag.getTempId().equals(filterTag.getTempId())) {
-                                        // Tag found. Task is visible, auto-scroll can happen.
-                                        shouldScroll = true;
-                                    }
+                        // When a workspace is active, make sure the added task is visible (i.e. has one
+                        // of the selected tags) before auto-scrolling.
+                        for (GsonTag filterTag : mSelectedFilterTags) {
+                            for (GsonTag tag : task.getTags()) {
+                                if (tag.getTempId().equals(filterTag.getTempId())) {
+                                    // Tag found. Task is visible, auto-scroll can happen.
+                                    shouldScroll = true;
                                 }
                             }
                         }
+                    }
 
-                        if (shouldScroll) {
-                            // Wait for fade animation to complete.
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Move to later section.
-                                    mScroller.setDuration(FactorSpeedScroller.DURATION_LONG);
-                                    mViewPager.setCurrentItem(Sections.LATER.getSectionNumber());
-                                }
-                            }, Constants.ANIMATION_DURATION_MEDIUM);
+                    if (shouldScroll && PreferenceUtils.isAutoScrollEnabled(this)) {
+                        // Wait for fade animation to complete.
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Move to later section.
+                                mScroller.setDuration(FactorSpeedScroller.DURATION_LONG);
+                                mViewPager.setCurrentItem(Sections.LATER.getSectionNumber());
+                            }
+                        }, Constants.ANIMATION_DURATION_MEDIUM);
 
-                        }
-
-                        // Mark added task as snoozed.
-                        mHasAddedSnoozedTask = true;
                     }
                 }
+
+                // Mark as added task.
+                mHasAddedTask = true;
             }
         }
     }
@@ -1919,13 +1917,13 @@ public class TasksActivity extends BaseActivity {
         return mAddedTaskId;
     }
 
-    public boolean hasAddedSnoozedTask() {
-        return mHasAddedSnoozedTask;
+    public boolean hasAddedTask() {
+        return mHasAddedTask;
     }
 
-    public void clearAddedSnozedTask() {
-        // Clear flag after adding a snoozed task.
-        mHasAddedSnoozedTask = false;
+    public void clearAddedTask() {
+        // Clear flag after adding a task.
+        mHasAddedTask = false;
     }
 
     private void sendAppLaunchEvent() {

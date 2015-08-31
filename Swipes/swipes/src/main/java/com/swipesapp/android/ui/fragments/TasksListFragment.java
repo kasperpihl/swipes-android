@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -138,7 +139,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     private FlatButton mClearWorkspaceButton;
 
     // List position of last added task.
-    private int mAddedTaskPosition;
+    private Integer mAddedTaskPosition;
 
     @InjectView(android.R.id.empty)
     ViewStub mViewStub;
@@ -610,7 +611,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             keepSelection();
 
             // Find last added task for scrolling.
-            if (mSection == Sections.LATER && mActivity.hasAddedSnoozedTask()) {
+            if ((mSection == Sections.LATER || mSection == Sections.FOCUS) && mActivity.hasAddedTask()) {
                 mAddedTaskPosition = findLastAddedTask();
             }
 
@@ -641,13 +642,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
                 // Scroll to last added task.
                 scrollToLastAdded();
-
-                // Clear flag after scrolling.
-                mActivity.clearAddedSnozedTask();
                 break;
             case FOCUS:
                 mListView.setContentList(mTasks);
                 mAdapter.update(mTasks, animateRefresh);
+
+                // Scroll to last added task.
+                scrollToLastAdded();
                 break;
             case DONE:
                 handleDoneButtons(mTasks);
@@ -668,8 +669,8 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         }
     }
 
-    private int findLastAddedTask() {
-        int position = 0;
+    private Integer findLastAddedTask() {
+        Integer position = null;
         for (int x = 0; x < mTasks.size(); x++) {
             GsonTask task = mTasks.get(x);
             if (task.getTempId().equals(mActivity.getAddedTaskId())) {
@@ -682,10 +683,26 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     }
 
     private void scrollToLastAdded() {
-        if (mActivity.hasAddedSnoozedTask()) {
-            // Scroll to position and clear it.
-            mListView.setSelection(mAddedTaskPosition);
-            mAddedTaskPosition = 0;
+        if (mActivity.hasAddedTask() && mAddedTaskPosition != null) {
+            if (PreferenceUtils.isAutoScrollEnabled(getActivity())) {
+                // Scroll to position.
+                if (mSection == Sections.FOCUS) {
+                    final int position = mAddedTaskPosition;
+                    // Wait for fade animation to complete.
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mListView.smoothScrollToPosition(position);
+                        }
+                    }, Constants.ANIMATION_DURATION_MEDIUM);
+                } else if (mSection == Sections.LATER) {
+                    mListView.setSelection(mAddedTaskPosition);
+                }
+            }
+
+            // Clear scrolling flags.
+            mActivity.clearAddedTask();
+            mAddedTaskPosition = null;
         }
     }
 
@@ -1656,7 +1673,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             keepSelection();
 
             // Find last added task for scrolling.
-            if (mSection == Sections.LATER && mActivity.hasAddedSnoozedTask()) {
+            if ((mSection == Sections.LATER || mSection == Sections.FOCUS) && mActivity.hasAddedTask()) {
                 mAddedTaskPosition = findLastAddedTask();
             }
 
@@ -1694,12 +1711,9 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mListView.setContentList(mTasks);
         mAdapter.update(mTasks, false);
 
-        if (mSection == Sections.LATER) {
+        if (mSection == Sections.LATER || mSection == Sections.FOCUS) {
             // Scroll to last added task.
             scrollToLastAdded();
-
-            // Clear flag after scrolling.
-            mActivity.clearAddedSnozedTask();
         }
     }
 
