@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.client.android.EvernoteSession;
+import com.parse.ParseUser;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.handler.IntercomHandler;
@@ -81,8 +82,14 @@ public class IntegrationsActivity extends BaseActivity {
             Preference evernoteLink = findPreference("evernote_link");
             evernoteLink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // Link Evernote account.
-                    EvernoteService.getInstance().authenticate(getActivity());
+                    // Check if Swipes account is logged in.
+                    if (ParseUser.getCurrentUser() != null) {
+                        // Link Evernote account.
+                        EvernoteService.getInstance().authenticate(getActivity());
+                    } else {
+                        // Ask to login.
+                        showLoginDialog();
+                    }
                     return true;
                 }
             });
@@ -176,6 +183,16 @@ public class IntegrationsActivity extends BaseActivity {
                     }
                     break;
             }
+        }
+
+        private void showLoginDialog() {
+            // Display dialog to login.
+            new SwipesDialog.Builder(getActivity())
+                    .title(R.string.evernote_login_dialog_title)
+                    .content(R.string.evernote_login_dialog_message)
+                    .positiveText(R.string.evernote_login_dialog_ok)
+                    .actionsColorRes(R.color.neutral_accent)
+                    .show();
         }
 
         private void sendEvernoteLinkedEvent() {

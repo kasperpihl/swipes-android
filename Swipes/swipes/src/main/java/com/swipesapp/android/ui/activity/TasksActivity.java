@@ -57,6 +57,7 @@ import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.migration.MigrationAssistant;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.handler.WelcomeHandler;
@@ -191,6 +192,7 @@ public class TasksActivity extends BaseActivity {
     private String mSearchQuery;
 
     private boolean mShouldClearData;
+    private boolean mClickedLogin;
 
     private boolean mIsShowingNavigation;
 
@@ -552,6 +554,9 @@ public class TasksActivity extends BaseActivity {
 
         // Save welcome tasks on first run for the user.
         WelcomeHandler.addWelcomeTasks(this);
+
+        // Show Evernote dialog if needed.
+        showEvernoteWarning();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -1629,6 +1634,9 @@ public class TasksActivity extends BaseActivity {
     }
 
     private void performInitialSync() {
+        // Clear last sync date.
+        PreferenceUtils.remove(PreferenceUtils.SYNC_LAST_UPDATE, this);
+
         // Perform initial sync.
         startSync();
     }
@@ -1924,6 +1932,46 @@ public class TasksActivity extends BaseActivity {
     public void clearAddedTask() {
         // Clear flag after adding a task.
         mHasAddedTask = false;
+    }
+
+    private void showEvernoteWarning() {
+        // Check if Evernote is connected without a Swipes account.
+        if (EvernoteService.getInstance().isAuthenticated() && ParseUser.getCurrentUser() == null) {
+            // Display warning dialog.
+            new SwipesDialog.Builder(this)
+                    .title(R.string.evernote_login_dialog_title)
+                    .content(R.string.evernote_login_warning_message)
+                    .positiveText(R.string.evernote_login_dialog_yes)
+                    .negativeText(R.string.evernote_login_dialog_no)
+                    .actionsColorRes(R.color.neutral_accent)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            mClickedLogin = true;
+
+                            // Call login.
+                            startLogin();
+
+                            // Avoid clearing data before initial sync.
+                            mShouldClearData = false;
+                        }
+                    })
+                    .dismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            if (!mClickedLogin) {
+                                // Unlink Evernote account.
+                                EvernoteService.getInstance().logout();
+
+                                // Update Evernote user level dimension.
+                                Analytics.sendEvernoteUserLevel(mContext.get());
+                            }
+
+                            mClickedLogin = false;
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void sendAppLaunchEvent() {

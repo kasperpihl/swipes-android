@@ -9,10 +9,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.evernote.client.android.EvernoteSession;
+import com.parse.ParseUser;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
+import com.swipesapp.android.ui.view.SwipesDialog;
 
 import java.lang.ref.WeakReference;
 
@@ -51,8 +53,14 @@ public class EvernoteLearnActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (!EvernoteService.getInstance().isAuthenticated()) {
-                    // Link Evernote account.
-                    EvernoteService.getInstance().authenticate(mContext.get());
+                    // Check if Swipes account is logged in.
+                    if (ParseUser.getCurrentUser() != null) {
+                        // Link Evernote account.
+                        EvernoteService.getInstance().authenticate(mContext.get());
+                    } else {
+                        // Ask to login.
+                        showLoginDialog();
+                    }
                 } else {
                     finish();
                 }
@@ -82,6 +90,16 @@ public class EvernoteLearnActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    private void showLoginDialog() {
+        // Display dialog to login.
+        new SwipesDialog.Builder(this)
+                .title(R.string.evernote_login_dialog_title)
+                .content(R.string.evernote_login_dialog_message)
+                .positiveText(R.string.evernote_login_dialog_ok)
+                .actionsColorRes(R.color.neutral_accent)
+                .show();
     }
 
 }

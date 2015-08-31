@@ -162,6 +162,12 @@
     <string name="evernote_unlink_dialog_yes">Unlink</string>
     <string name="evernote_unlink_dialog_no">Cancel</string>
     <string name="evernote_untitled_note">Untitled note</string>
+    <string name="evernote_login_dialog_title">Log in to Swipes</string>
+    <string name="evernote_login_dialog_message">Please log in to your Swipes account before linking Evernote.</string>
+    <string name="evernote_login_warning_message">Please log in to your Swipes account to sync with Evernote.</string>
+    <string name="evernote_login_dialog_yes">Log in</string>
+    <string name="evernote_login_dialog_no">Cancel</string>
+    <string name="evernote_login_dialog_ok">Got it</string>
 
     <!-- Attachments -->
     <string name="evernote_search_hint">Search notes</string>
