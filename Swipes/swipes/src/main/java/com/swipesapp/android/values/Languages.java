@@ -35,28 +35,30 @@ public enum Languages {
     }
 
     public static Languages getLanguageByLocale(String locale) {
-        if (locale.equalsIgnoreCase(ENGLISH.getLocale())) {
-            return ENGLISH;
-        } else if (locale.equalsIgnoreCase(CZECH.getLocale())) {
-            return CZECH;
-        } else if (locale.equalsIgnoreCase(SPANISH_SPAIN.getLocale())) {
-            return SPANISH_SPAIN;
-        } else if (locale.equalsIgnoreCase(ITALIAN.getLocale())) {
-            return ITALIAN;
-        } else if (locale.equalsIgnoreCase(POLISH.getLocale())) {
-            return POLISH;
-        } else if (locale.equalsIgnoreCase(PORTUGUESE_BRAZIL.getLocale())) {
-            return PORTUGUESE_BRAZIL;
-        } else if (locale.equalsIgnoreCase(RUSSIAN.getLocale())) {
-            return RUSSIAN;
-        } else if (locale.equalsIgnoreCase(TURKISH.getLocale())) {
-            return TURKISH;
-        } else if (locale.equalsIgnoreCase(CHINESE_SIMPLIFIED.getLocale())) {
-            return CHINESE_SIMPLIFIED;
-        } else {
-            Log.wtf(TAG, "Locale does not exist.");
-            return ENGLISH;
+        if (locale != null) {
+            if (locale.equalsIgnoreCase(ENGLISH.getLocale())) {
+                return ENGLISH;
+            } else if (locale.equalsIgnoreCase(CZECH.getLocale())) {
+                return CZECH;
+            } else if (locale.equalsIgnoreCase(SPANISH_SPAIN.getLocale())) {
+                return SPANISH_SPAIN;
+            } else if (locale.equalsIgnoreCase(ITALIAN.getLocale())) {
+                return ITALIAN;
+            } else if (locale.equalsIgnoreCase(POLISH.getLocale())) {
+                return POLISH;
+            } else if (locale.equalsIgnoreCase(PORTUGUESE_BRAZIL.getLocale())) {
+                return PORTUGUESE_BRAZIL;
+            } else if (locale.equalsIgnoreCase(RUSSIAN.getLocale())) {
+                return RUSSIAN;
+            } else if (locale.equalsIgnoreCase(TURKISH.getLocale())) {
+                return TURKISH;
+            } else if (locale.equalsIgnoreCase(CHINESE_SIMPLIFIED.getLocale())) {
+                return CHINESE_SIMPLIFIED;
+            }
         }
+
+        Log.wtf(TAG, "Locale does not exist.");
+        return ENGLISH;
     }
 
     public String getDescription(Context context) {

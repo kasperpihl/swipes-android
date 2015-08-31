@@ -392,7 +392,7 @@ public class TasksActivity extends BaseActivity {
                     Analytics.sendUserLevel(this);
 
                     // Subscribe to push channels.
-                    SwipesApplication.subscribePush();
+                    SwipesApplication.subscribePush(this);
 
                     // Read user settings.
                     SettingsHandler.readSettingsFromServer(this);
@@ -572,12 +572,11 @@ public class TasksActivity extends BaseActivity {
         }
 
         // Apply borderless ripple on Lollipop.
-        int resource = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
-                android.R.attr.selectableItemBackgroundBorderless : android.R.attr.selectableItemBackground;
-
-        TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute(resource, outValue, true);
-        mActionBarView.setBackgroundResource(outValue.resourceId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            TypedValue outValue = new TypedValue();
+            getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true);
+            mActionBarView.setBackgroundResource(outValue.resourceId);
+        }
     }
 
     private void setupSystemBars(Sections section) {

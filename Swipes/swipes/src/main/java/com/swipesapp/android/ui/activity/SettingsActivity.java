@@ -26,6 +26,7 @@ import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
+import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.handler.LanguageHandler;
 import com.swipesapp.android.handler.SettingsHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -302,7 +303,7 @@ public class SettingsActivity extends BaseActivity {
                         }
 
                         // Subscribe to push channels.
-                        SwipesApplication.subscribePush();
+                        SwipesApplication.subscribePush(getActivity());
 
                         // Read user settings.
                         SettingsHandler.readSettingsFromServer(getActivity());
@@ -355,6 +356,9 @@ public class SettingsActivity extends BaseActivity {
                             // Logout Parse user.
                             ParseUser.logOut();
 
+                            // Unlink Evernote account.
+                            EvernoteService.getInstance().logout();
+
                             // Unsubscribe from push channels.
                             SwipesApplication.unsubscribePush();
 
@@ -374,19 +378,17 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private void resetPreferences() {
+            // Preserve current language and theme.
+            String theme = PreferenceUtils.readString(PreferenceUtils.THEME_KEY, getActivity());
+            String locale = PreferenceUtils.readString(PreferenceUtils.LOCALE_KEY, getActivity());
+
             // Reset user preferences.
-            PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
-            PreferenceManager.setDefaultValues(getActivity(), R.xml.options, true);
-            PreferenceManager.setDefaultValues(getActivity(), R.xml.snooze_settings, true);
-            PreferenceManager.setDefaultValues(getActivity(), R.xml.integrations, true);
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().commit();
+            SwipesApplication.loadDefaultPreferences(getActivity());
 
-            // Clear last sync date.
-            PreferenceUtils.remove(PreferenceUtils.SYNC_LAST_UPDATE, getActivity());
-
-            // Clear state of initial setup.
-            PreferenceUtils.remove(PreferenceUtils.FIRST_RUN, getActivity());
-            PreferenceUtils.remove(PreferenceUtils.WELCOME_DIALOG, getActivity());
-            PreferenceUtils.remove(PreferenceUtils.DID_TRY_OUT, getActivity());
+            // Reapply language and theme.
+            PreferenceUtils.saveString(PreferenceUtils.THEME_KEY, theme, getActivity());
+            PreferenceUtils.saveString(PreferenceUtils.LOCALE_KEY, locale, getActivity());
         }
 
         private void askToKeepData() {

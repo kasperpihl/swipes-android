@@ -81,7 +81,7 @@ public class OptionsActivity extends BaseActivity {
 
                 // Subscribe or unsubscribe from push.
                 if (PreferenceUtils.isBackgroundSyncEnabled(getActivity())) {
-                    SwipesApplication.subscribePush();
+                    SwipesApplication.subscribePush(getActivity());
                 } else {
                     SwipesApplication.unsubscribePush();
                 }

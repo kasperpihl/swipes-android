@@ -28,6 +28,7 @@ import com.swipesapp.android.sync.receiver.NotificationsHelper;
 import com.swipesapp.android.sync.receiver.PushReceiver;
 import com.swipesapp.android.sync.service.SyncService;
 import com.swipesapp.android.sync.service.TasksService;
+import com.swipesapp.android.util.PreferenceUtils;
 
 import java.util.List;
 
@@ -59,13 +60,16 @@ public class SwipesApplication extends Application {
         // Initialize Crashlytics.
         Fabric.with(this, new Crashlytics());
 
+        // Load default user preferences.
+        loadDefaultPreferences(getApplicationContext());
+
         // Initialize the Parse SDK.
         Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
         ParseFacebookUtils.initialize(getString(R.string.facebook_app_id));
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 
         // Subscribe to push channels.
-        subscribePush();
+        subscribePush(getApplicationContext());
 
         // Initialize database session.
         startDaoSession(getApplicationContext());
@@ -90,12 +94,6 @@ public class SwipesApplication extends Application {
 
         // Initialize Intercom.
         Intercom.initialize(this, IntercomHandler.API_KEY, IntercomHandler.APP_ID);
-
-        // Load default user preferences.
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, true);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.options, true);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.snooze_settings, true);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.integrations, true);
 
         // Send initial user dimensions.
         Analytics.startUserDimensions(getApplicationContext());
@@ -135,6 +133,13 @@ public class SwipesApplication extends Application {
         return sTracker;
     }
 
+    public static void loadDefaultPreferences(Context context) {
+        PreferenceManager.setDefaultValues(context, R.xml.settings, true);
+        PreferenceManager.setDefaultValues(context, R.xml.options, true);
+        PreferenceManager.setDefaultValues(context, R.xml.snooze_settings, true);
+        PreferenceManager.setDefaultValues(context, R.xml.integrations, true);
+    }
+
     public static void startBackgroundTimer() {
         sHandler = new Handler();
         sRunnable = new Runnable() {
@@ -159,25 +164,28 @@ public class SwipesApplication extends Application {
         return sIsInBackground;
     }
 
-    public static void subscribePush() {
-        ParseUser user = ParseUser.getCurrentUser();
-        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+    public static void subscribePush(Context context) {
+        if (PreferenceUtils.isBackgroundSyncEnabled(context)) {
+            // Background sync is enabled. Try to subscribe.
+            ParseUser user = ParseUser.getCurrentUser();
+            ParseInstallation installation = ParseInstallation.getCurrentInstallation();
 
-        if (user != null) {
-            List<?> channels = installation.getList(PushReceiver.KEY_CHANNELS);
+            if (user != null) {
+                List<?> channels = installation.getList(PushReceiver.KEY_CHANNELS);
 
-            if (channels == null || !channels.contains(user.getObjectId())) {
-                // User is logged in. Subscribe to push channel.
-                installation.add(PushReceiver.KEY_CHANNELS, user.getObjectId());
+                if (channels == null || !channels.contains(user.getObjectId())) {
+                    // User is logged in. Subscribe to push channel.
+                    installation.add(PushReceiver.KEY_CHANNELS, user.getObjectId());
 
-                if (BuildConfig.DEBUG) {
-                    // Also subscribe to debug channel when needed.
-                    installation.add(PushReceiver.KEY_CHANNELS, PushReceiver.CHANNEL_DEV);
+                    if (BuildConfig.DEBUG) {
+                        // Also subscribe to debug channel when needed.
+                        installation.add(PushReceiver.KEY_CHANNELS, PushReceiver.CHANNEL_DEV);
+                    }
                 }
             }
-        }
 
-        installation.saveInBackground();
+            installation.saveInBackground();
+        }
     }
 
     public static void unsubscribePush() {
