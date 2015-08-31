@@ -24,6 +24,7 @@ public class PreferenceUtils {
 
     // Options.
     public static final String BACKGROUND_SYNC_KEY = "settings_enable_background_sync";
+    public static final String ADD_TO_BOTTOM_KEY = "settings_add_to_bottom";
     public static final String SCROLL_TO_ADDED_KEY = "settings_scroll_to_added_task";
     public static final String IN_APP_SOUNDS_KEY = "settings_in_app_sounds";
     public static final String NOTIFICATIONS_KEY = "settings_enable_notifications";

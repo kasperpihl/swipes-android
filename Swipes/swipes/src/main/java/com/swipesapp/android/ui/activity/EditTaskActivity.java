@@ -1393,10 +1393,16 @@ public class EditTaskActivity extends FragmentActivity {
         String tempId = UUID.randomUUID().toString();
 
         if (!title.isEmpty()) {
+            List<GsonTask> tasksToSave = new ArrayList<>();
+
+            // Create new task.
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, mTask.getTempId(), currentDate,
                     currentDate, false, title, null, 0, 0, null, currentDate, null, null, RepeatOptions.NEVER,
                     null, null, new ArrayList<GsonTag>(), null, 0);
-            mTasksService.saveTask(task, true);
+
+            // Reorder tasks and save.
+            handleOrder(task, tasksToSave);
+            mTasksService.saveTasks(tasksToSave, true);
 
             refreshSubtasks();
 
@@ -1411,6 +1417,18 @@ public class EditTaskActivity extends FragmentActivity {
 
             // Play sound.
             SoundHandler.playSound(this, R.raw.action_positive);
+        }
+    }
+
+    private void handleOrder(GsonTask newTask, List<GsonTask> tasksToSave) {
+        // Add new task to bottom of the list.
+        tasksToSave.addAll(mSubtasks);
+        tasksToSave.add(newTask);
+
+        // Reorder tasks.
+        for (int i = 0; i < tasksToSave.size(); i++) {
+            GsonTask task = tasksToSave.get(i);
+            task.setOrder(i);
         }
     }
 

@@ -7,6 +7,7 @@
 
     <!-- Options -->
     <bool name="default_enable_background_sync">true</bool>
+    <bool name="default_add_to_bottom">false</bool>
     <bool name="default_scroll_to_added_task">true</bool>
     <bool name="default_in_app_sounds">true</bool>
     <bool name="default_enable_notifications">true</bool>

@@ -41,6 +41,7 @@ import com.swipesapp.android.ui.view.FlowLayout;
 import com.swipesapp.android.ui.view.SwipesDialog;
 import com.swipesapp.android.ui.view.SwipesTextView;
 import com.swipesapp.android.util.DateUtils;
+import com.swipesapp.android.util.PreferenceUtils;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.values.Intents;
@@ -247,10 +248,15 @@ public class AddTasksActivity extends BaseActivity {
         if (!sHasSnoozed) sSnoozeTime = currentDate;
 
         if (!title.isEmpty()) {
-            // Save new task.
+            List<GsonTask> tasksToSave = new ArrayList<>();
+
+            // Create new task.
             GsonTask task = GsonTask.gsonForLocal(null, null, tempId, null, currentDate, currentDate, false, title, notes, 0,
                     priority, null, sSnoozeTime, null, null, RepeatOptions.NEVER, null, null, tags, null, 0);
-            mTasksService.saveTask(task, true);
+
+            // Reorder tasks and save.
+            handleOrder(task, tasksToSave);
+            mTasksService.saveTasks(tasksToSave, true);
 
             // Show success message when needed.
             if (mIntentData != null || mOpenedFromWidget) {
@@ -290,6 +296,27 @@ public class AddTasksActivity extends BaseActivity {
             finish();
         } else {
             cancelAddTask();
+        }
+    }
+
+    private void handleOrder(GsonTask newTask, List<GsonTask> tasksToSave) {
+        boolean addToBottom = PreferenceUtils.readBoolean(PreferenceUtils.ADD_TO_BOTTOM_KEY, this);
+        List<GsonTask> focusedTasks = mTasksService.loadFocusedTasks();
+
+        if (addToBottom) {
+            // Add new task to bottom of the list.
+            tasksToSave.addAll(focusedTasks);
+            tasksToSave.add(newTask);
+        } else {
+            // Add new task to top of the list.
+            tasksToSave.add(newTask);
+            tasksToSave.addAll(focusedTasks);
+        }
+
+        // Reorder tasks.
+        for (int i = 0; i < tasksToSave.size(); i++) {
+            GsonTask task = tasksToSave.get(i);
+            task.setOrder(i);
         }
     }
 

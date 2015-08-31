@@ -32,6 +32,7 @@ public class SettingsHandler {
     private static final String WEEKEND_START = "SettingWeekendStart";
     private static final String LATER_TODAY = "SettingLaterToday";
     private static final String SCROLL_TO_ADDED = "SettingScrollToAdded";
+    private static final String ADD_TO_BOTTOM = "SettingAddToBottom";
 
     public static void readSettingsFromServer(final Context context) {
         final ParseUser user = ParseUser.getCurrentUser();
@@ -85,6 +86,12 @@ public class SettingsHandler {
                             if (laterToday != null) {
                                 String value = hoursPrefFromSeconds((int) laterToday);
                                 PreferenceUtils.saveString(PreferenceUtils.SNOOZE_LATER_TODAY, value, context);
+                            }
+
+                            // Update add to bottom setting.
+                            Object addToBottom = settings.get(ADD_TO_BOTTOM);
+                            if (addToBottom != null) {
+                                PreferenceUtils.saveBoolean(PreferenceUtils.ADD_TO_BOTTOM_KEY, (boolean) addToBottom, context);
                             }
 
                             // Update scroll to added setting.
@@ -152,6 +159,9 @@ public class SettingsHandler {
                 int value = secondsFromHoursPref(laterToday);
                 settings.put(LATER_TODAY, value);
             }
+
+            // Save add to bottom setting.
+            settings.put(ADD_TO_BOTTOM, PreferenceUtils.readBoolean(PreferenceUtils.ADD_TO_BOTTOM_KEY, context));
 
             // Save scroll to added setting.
             settings.put(SCROLL_TO_ADDED, PreferenceUtils.isAutoScrollEnabled(context));

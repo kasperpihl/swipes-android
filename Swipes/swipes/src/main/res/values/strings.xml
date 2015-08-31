@@ -89,6 +89,8 @@
     <string name="options_location_detail">Access device location.</string>
     <string name="options_background_sync">Background sync</string>
     <string name="options_background_sync_detail">Keep tasks updated automatically in the background.</string>
+    <string name="options_add_to_bottom">Add to bottom</string>
+    <string name="options_add_to_bottom_detail">Add new tasks to the bottom of the list.</string>
     <string name="options_scroll_to_added">Scroll to added</string>
     <string name="options_scroll_to_added_detail">Auto-scroll to focus on the newest added task.</string>
     <string name="options_in_app_sounds">In-app sounds</string>

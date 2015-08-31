@@ -25,6 +25,15 @@
             android:widgetLayout="@layout/preference_switch_layout" />
 
         <CheckBoxPreference
+            android:defaultValue="@bool/default_add_to_bottom"
+            android:key="settings_add_to_bottom"
+            android:summary="@string/options_add_to_bottom_detail"
+            android:switchTextOff="@string/switch_off"
+            android:switchTextOn="@string/switch_on"
+            android:title="@string/options_add_to_bottom"
+            android:widgetLayout="@layout/preference_switch_layout" />
+
+        <CheckBoxPreference
             android:defaultValue="@bool/default_scroll_to_added_task"
             android:key="settings_scroll_to_added_task"
             android:summary="@string/options_scroll_to_added_detail"

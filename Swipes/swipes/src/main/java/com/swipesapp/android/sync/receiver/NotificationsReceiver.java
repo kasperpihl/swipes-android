@@ -43,7 +43,6 @@ public class NotificationsReceiver extends BroadcastReceiver {
     private static NotificationManager sNotificationManager;
     private static TasksService sTasksService;
     private static List<GsonTask> sExpiredTasks;
-    private static int sPreviousCount;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -60,15 +59,14 @@ public class NotificationsReceiver extends BroadcastReceiver {
             }
         }
 
-        if (sExpiredTasks.size() > sPreviousCount) {
-            // Refresh tasks and widgets.
-            refreshContent(context);
+        // Reorder tasks.
+        handleOrder(context);
 
-            // Send notification if allowed to.
-            sendNotification(context);
-        }
+        // Refresh tasks and widgets.
+        refreshContent(context);
 
-        sPreviousCount = sExpiredTasks.size();
+        // Send notification if allowed to.
+        sendNotification(context);
 
         // Persist expired tasks in case the receiver is killed.
         saveCurrentData(context);
@@ -162,7 +160,6 @@ public class NotificationsReceiver extends BroadcastReceiver {
         if (sExpiredTasks == null) sExpiredTasks = new ArrayList<>();
 
         String expired = PreferenceUtils.readString(KEY_EXPIRED_TASKS, context);
-        sPreviousCount = PreferenceUtils.readInt(KEY_PREVIOUS_COUNT, context);
 
         // Load tasks from comma-separated task IDs.
         if (expired != null) {
@@ -191,13 +188,38 @@ public class NotificationsReceiver extends BroadcastReceiver {
         }
 
         PreferenceUtils.saveString(KEY_EXPIRED_TASKS, taskIds, context);
-        PreferenceUtils.saveInt(KEY_PREVIOUS_COUNT, sPreviousCount, context);
     }
 
     private static int loadSnoozeDelay(Context context) {
         // Load delay from user preference.
         String prefLaterToday = PreferenceUtils.readString(PreferenceUtils.SNOOZE_LATER_TODAY, context);
         return Integer.valueOf(prefLaterToday);
+    }
+
+    private void handleOrder(Context context) {
+        boolean addToBottom = PreferenceUtils.readBoolean(PreferenceUtils.ADD_TO_BOTTOM_KEY, context);
+        List<GsonTask> focusedTasks = sTasksService.loadFocusedTasks();
+        focusedTasks.removeAll(sExpiredTasks);
+        List<GsonTask> tasksToSave = new ArrayList<>();
+
+        if (addToBottom) {
+            // Add new tasks to bottom of the list.
+            tasksToSave.addAll(focusedTasks);
+            tasksToSave.addAll(sExpiredTasks);
+        } else {
+            // Add new tasks to top of the list.
+            tasksToSave.addAll(sExpiredTasks);
+            tasksToSave.addAll(focusedTasks);
+        }
+
+        // Reorder tasks.
+        for (int i = 0; i < tasksToSave.size(); i++) {
+            GsonTask task = tasksToSave.get(i);
+            task.setOrder(i);
+        }
+
+        // Save order changes.
+        sTasksService.saveTasks(tasksToSave, true);
     }
 
     private static void refreshContent(Context context) {
@@ -356,7 +378,6 @@ public class NotificationsReceiver extends BroadcastReceiver {
 
             // Clear expired tasks.
             sExpiredTasks.clear();
-            sPreviousCount = 0;
 
             // Persist expired tasks in case the receiver is killed.
             saveCurrentData(context);

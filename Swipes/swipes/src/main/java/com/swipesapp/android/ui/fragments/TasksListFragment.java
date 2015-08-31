@@ -789,9 +789,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             if (task != null) {
                 switch (mSection) {
                     case LATER:
+                        List<GsonTask> tasksToSave = new ArrayList<>();
                         // Move task from Later to Focus.
                         task.setLocalSchedule(new Date());
-                        mTasksService.saveTask(task, true);
+                        // Reorder tasks and save.
+                        handleOrder(task, tasksToSave);
+                        mTasksService.saveTasks(tasksToSave, true);
                         // Refresh all lists.
                         mActivity.refreshSections(true);
                         // Play sound.
@@ -981,7 +984,29 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         for (int i = 0; i < tasks.size(); i++) {
             GsonTask task = tasks.get(i);
             task.setOrder(i);
-            mTasksService.saveTask(task, true);
+        }
+
+        mTasksService.saveTasks(tasks, true);
+    }
+
+    private void handleOrder(GsonTask newTask, List<GsonTask> tasksToSave) {
+        boolean addToBottom = PreferenceUtils.readBoolean(PreferenceUtils.ADD_TO_BOTTOM_KEY, getActivity());
+        List<GsonTask> focusedTasks = mTasksService.loadFocusedTasks();
+
+        if (addToBottom) {
+            // Add new task to bottom of the list.
+            tasksToSave.addAll(focusedTasks);
+            tasksToSave.add(newTask);
+        } else {
+            // Add new task to top of the list.
+            tasksToSave.add(newTask);
+            tasksToSave.addAll(focusedTasks);
+        }
+
+        // Reorder tasks.
+        for (int i = 0; i < tasksToSave.size(); i++) {
+            GsonTask task = tasksToSave.get(i);
+            task.setOrder(i);
         }
     }
 
