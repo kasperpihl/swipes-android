@@ -1,12 +1,14 @@
 package com.swipesapp.android.ui.activity;
 
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -255,24 +257,15 @@ public class SnoozeActivity extends FragmentActivity {
         mPickDateTitle.setTextColor(textColor);
     }
 
-    public void setSelector(final SwipesTextView icon) {
-        // Create selector based on touch state.
-        ((View) icon.getParent()).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Change alpha to pressed state.
-                        icon.animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        // Change alpha to default state.
-                        icon.animate().alpha(1.0f);
-                        break;
-                }
-                return false;
-            }
-        });
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void setSelector(SwipesTextView icon) {
+        // Use borderless ripple on Lollipop.
+        int resource = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
+                android.R.attr.selectableItemBackgroundBorderless : android.R.attr.selectableItemBackground;
+
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(resource, outValue, true);
+        ((View) icon.getParent()).setBackgroundResource(outValue.resourceId);
     }
 
     @OnClick(R.id.snooze_main_layout)

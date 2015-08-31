@@ -18,6 +18,7 @@
 
         <LinearLayout
             android:id="@+id/add_task_priority_container"
+            style="@style/Selectable_Item_Borderless"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"

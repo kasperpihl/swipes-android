@@ -3,6 +3,7 @@ package com.swipesapp.android.ui.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -554,6 +556,7 @@ public class TasksActivity extends BaseActivity {
         WelcomeHandler.addWelcomeTasks(this);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupActionBarCustomView() {
         // Inflate custom view.
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -568,10 +571,13 @@ public class TasksActivity extends BaseActivity {
             mActionBarView.setOnClickListener(mNavigationToggleListener);
         }
 
-        // Apply ripple effect.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mActionBarView.setBackgroundResource(R.drawable.navigation_menu_ripple);
-        }
+        // Apply borderless ripple on Lollipop.
+        int resource = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
+                android.R.attr.selectableItemBackgroundBorderless : android.R.attr.selectableItemBackground;
+
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(resource, outValue, true);
+        mActionBarView.setBackgroundResource(outValue.resourceId);
     }
 
     private void setupSystemBars(Sections section) {

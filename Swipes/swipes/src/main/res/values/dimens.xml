@@ -64,7 +64,8 @@
     <dimen name="edit_task_header_height">@dimen/toolbar_height</dimen>
     <dimen name="edit_task_margin_sides">16dp</dimen>
     <dimen name="edit_task_icon_size">22sp</dimen>
-    <dimen name="edit_task_margin_vertical">30dp</dimen>
+    <dimen name="edit_task_padding_vertical">16dp</dimen>
+    <dimen name="edit_task_priority_padding">8dp</dimen>
 
     <!-- Subtasks -->
     <dimen name="subtask_text_size">16sp</dimen>
@@ -74,9 +75,11 @@
     <dimen name="subtask_counter_padding_left">16dp</dimen>
     <dimen name="subtask_counter_padding_right">24dp</dimen>
     <dimen name="subtask_margin_sides">16dp</dimen>
+    <dimen name="subtask_margin_vertical">16dp</dimen>
     <dimen name="subtask_footer_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="subtask_add_icon_size">37sp</dimen>
     <dimen name="subtask_add_icon_margin_sides">8dp</dimen>
+    <dimen name="subtask_button_padding">8dp</dimen>
 
     <!-- Tags -->
     <dimen name="tags_back_icon_size">@dimen/action_buttons_size</dimen>
@@ -117,6 +120,7 @@
     <dimen name="evernote_attachments_icon_size">@dimen/action_buttons_size</dimen>
     <dimen name="evernote_attachments_label_width">80dp</dimen>
     <dimen name="evernote_attachments_label_height">10dp</dimen>
+    <dimen name="evernote_attachments_checkbox_padding">8dp</dimen>
 
     <!-- Showcase -->
     <dimen name="showcase_padding_bottom">@dimen/navigation_bar_height</dimen>

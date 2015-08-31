@@ -607,6 +607,12 @@ public class EditTaskActivity extends FragmentActivity {
         }
     };
 
+    @OnClick(R.id.notes_container)
+    protected void editNotes() {
+        mNotes.requestFocus();
+        showKeyboard();
+    }
+
     private TextView.OnEditorActionListener mNotesEnterListener =
             new TextView.OnEditorActionListener() {
                 @Override
@@ -652,8 +658,11 @@ public class EditTaskActivity extends FragmentActivity {
         // Do nothing.
     }
 
-    @OnClick(R.id.button_edit_task_priority)
+    @OnClick(R.id.edit_task_priority_container)
     protected void setPriority() {
+        boolean checked = mPriority.isChecked();
+        mPriority.setChecked(!checked);
+
         Integer priority = mPriority.isChecked() ? 1 : 0;
         mTask.setPriority(priority);
         mTasksService.saveTask(mTask, true);
@@ -1351,6 +1360,13 @@ public class EditTaskActivity extends FragmentActivity {
         mAdapter.update(mSubtasks);
     }
 
+    public void addSubtask(View view) {
+        View title = view.findViewById(R.id.subtask_add_title);
+        title.requestFocus();
+
+        showKeyboard();
+    }
+
     private TextView.OnEditorActionListener mSubtaskEnterListener =
             new TextView.OnEditorActionListener() {
                 @Override
@@ -1421,8 +1437,10 @@ public class EditTaskActivity extends FragmentActivity {
         return true;
     }
 
-    @OnClick(R.id.subtask_first_button)
+    @OnClick(R.id.subtask_first_buttons_container)
     protected void firstSubtaskButtonClick() {
+        mSubtaskFirstButton.setChecked(true);
+
         mSubtaskFirstItem.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_SHORT)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -1438,6 +1456,8 @@ public class EditTaskActivity extends FragmentActivity {
                         mSubtaskFooter.animate().alpha(1f).setDuration(Constants.ANIMATION_DURATION_SHORT);
                     }
                 });
+
+        SoundHandler.playSound(mContext.get(), R.raw.complete_task_1);
     }
 
     private void showSubtasks() {

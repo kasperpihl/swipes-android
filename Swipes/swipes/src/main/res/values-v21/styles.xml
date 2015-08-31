@@ -1,0 +1,8 @@
+<resources>
+
+    <!-- Selectable items. -->
+    <style name="Selectable_Item_Borderless">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+</resources>

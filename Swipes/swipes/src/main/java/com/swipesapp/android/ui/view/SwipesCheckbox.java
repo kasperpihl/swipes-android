@@ -1,10 +1,11 @@
 package com.swipesapp.android.ui.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
+import android.util.TypedValue;
 import android.widget.CheckBox;
 
 import com.swipesapp.android.R;
@@ -46,29 +47,15 @@ public class SwipesCheckbox extends CheckBox {
         enableTouchFeedback();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void enableTouchFeedback() {
-        // Create selector based on touch state.
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Change alpha to pressed state.
-                        animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        // Change alpha to default state.
-                        animate().alpha(1.0f);
-                        break;
-                }
-                return false;
-            }
-        });
-    }
+        // Use borderless ripple on Lollipop.
+        int resource = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
+                android.R.attr.selectableItemBackgroundBorderless : android.R.attr.selectableItemBackground;
 
-    public void disableTouchFeedback() {
-        // Remove touch listener.
-        setOnTouchListener(null);
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(resource, outValue, true);
+        setBackgroundResource(outValue.resourceId);
     }
 
 }

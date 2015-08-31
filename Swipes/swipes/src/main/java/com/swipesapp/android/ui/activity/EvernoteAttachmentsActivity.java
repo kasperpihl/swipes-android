@@ -183,7 +183,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
 
             // Reset refresh timer.
             mRefreshHandler.removeCallbacks(mResultsRefresher);
-            mRefreshHandler.postDelayed(mResultsRefresher, 1000);
+            mRefreshHandler.postDelayed(mResultsRefresher, 500);
         }
     };
 
@@ -241,8 +241,11 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         // Do nothing.
     }
 
-    @OnClick(R.id.filter_checkbox)
+    @OnClick(R.id.filter_checkbox_area)
     protected void filter() {
+        boolean checked = mCheckbox.isChecked();
+        mCheckbox.setChecked(!checked);
+
         loadResults();
     }
 

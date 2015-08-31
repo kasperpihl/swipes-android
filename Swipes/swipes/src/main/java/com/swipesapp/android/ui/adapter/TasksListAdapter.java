@@ -264,10 +264,14 @@ public class TasksListAdapter extends BaseAdapter {
             holder.subtasksCount.setVisibility(View.VISIBLE);
         }
 
+        // Load ripple background for theme.
+        int background = ThemeUtils.isLightTheme(mContext.get()) ?
+                R.drawable.list_item_selector_light : R.drawable.list_item_selector_dark;
+
         // Sets colors for cell, matching the current theme.
         holder.title.setTextColor(ThemeUtils.getTextColor(mContext.get()));
         holder.subtasksCount.setTextColor(mContext.get().getResources().getColor(R.color.neutral_gray));
-        holder.containerView.setBackgroundColor(ThemeUtils.getBackgroundColor(mContext.get()));
+        holder.containerView.setBackgroundResource(background);
 
         // Set label divider.
         setLabelDivider(holder, position);

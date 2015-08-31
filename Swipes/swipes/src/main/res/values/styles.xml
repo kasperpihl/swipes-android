@@ -117,4 +117,13 @@
         <item name="android:textSize">@dimen/showcase_text_size</item>
     </style>
 
+    <!-- Selectable items. -->
+    <style name="Selectable_Item">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Selectable_Item_Borderless">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
 </resources>

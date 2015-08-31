@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/subtask_add_container"
+    style="@style/Selectable_Item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/subtask_cell_height"
+    android:onClick="addSubtask"
     android:orientation="horizontal">
 
     <!-- Circle container -->

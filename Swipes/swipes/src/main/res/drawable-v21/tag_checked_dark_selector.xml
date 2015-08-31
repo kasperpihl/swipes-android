@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/dark_ripple"
+    tools:targetApi="21">
+    <item
+        android:id="@android:id/mask"
+        android:drawable="@drawable/tag_checked_dark_pressed" />
+    <item android:drawable="@drawable/tag_checked_dark" />
+</ripple>

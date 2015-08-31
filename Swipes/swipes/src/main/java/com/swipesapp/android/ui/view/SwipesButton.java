@@ -1,74 +1,58 @@
 package com.swipesapp.android.ui.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
+import android.util.TypedValue;
 import android.widget.Button;
 
-import com.swipesapp.android.values.Constants;
 import com.swipesapp.android.util.ThemeUtils;
+import com.swipesapp.android.values.Constants;
 
 public class SwipesButton extends Button {
 
-    private Context mContext;
     private static Typeface sTypeface;
 
     public SwipesButton(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public SwipesButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public SwipesButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        mContext = context;
-
+    private void init() {
         if (sTypeface == null) {
             synchronized (SwipesButton.class) {
                 if (sTypeface == null) {
-                    sTypeface = Typeface.createFromAsset(mContext.getAssets(), Constants.FONT_NAME);
+                    sTypeface = Typeface.createFromAsset(getContext().getAssets(), Constants.FONT_NAME);
                 }
             }
         }
 
         setTypeface(sTypeface);
-        setTextColor(ThemeUtils.getTextColor(mContext));
+        setTextColor(ThemeUtils.getTextColor(getContext()));
         setSelector();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setSelector() {
-        // Create selector based on touch state.
-        setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Change alpha to pressed state.
-                        animate().alpha(Constants.PRESSED_BUTTON_ALPHA);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        // Change alpha to default state.
-                        animate().alpha(1.0f);
-                        break;
-                }
-                return false;
-            }
-        });
-    }
+        // Use borderless ripple on Lollipop.
+        int resource = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
+                android.R.attr.selectableItemBackgroundBorderless : android.R.attr.selectableItemBackground;
 
-    public void disableTouchFeedback() {
-        // Remove touch listener.
-        setOnTouchListener(null);
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(resource, outValue, true);
+        setBackgroundResource(outValue.resourceId);
     }
 
 }

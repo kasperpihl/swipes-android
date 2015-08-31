@@ -8,18 +8,25 @@
     <!-- Buttons container -->
     <FrameLayout
         android:id="@+id/subtask_first_buttons_container"
+        style="@style/Selectable_Item_Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/subtask_margin_sides"
-        android:layout_marginRight="@dimen/subtask_margin_sides">
+        android:layout_marginLeft="@dimen/subtask_button_padding"
+        android:layout_marginRight="@dimen/subtask_button_padding"
+        android:paddingBottom="@dimen/subtask_button_padding"
+        android:paddingLeft="@dimen/subtask_button_padding"
+        android:paddingRight="@dimen/subtask_button_padding"
+        android:paddingTop="@dimen/subtask_button_padding">
 
         <CheckBox
             android:id="@+id/subtask_first_button"
             android:layout_width="@dimen/task_circles_size"
             android:layout_height="@dimen/task_circles_size"
-            android:button="@null" />
+            android:button="@null"
+            android:clickable="false"
+            android:focusable="false" />
     </FrameLayout>
 
     <!-- Circle container -->

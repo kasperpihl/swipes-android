@@ -12,19 +12,19 @@
     <!-- Show/hide subtasks button -->
     <LinearLayout
         android:id="@+id/subtask_visibility_container"
-        android:layout_width="wrap_content"
+        style="@style/Selectable_Item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/subtask_margin_vertical"
+        android:paddingTop="@dimen/subtask_margin_vertical">
 
         <com.swipesapp.android.ui.view.SwipesTextView
             android:id="@+id/subtask_visibility_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
             android:layout_marginRight="@dimen/subtask_margin_sides"
-            android:layout_marginTop="15dp"
             android:background="@color/transparent"
             android:text="@string/left_arrow"
             android:textSize="@dimen/subtask_footer_icon_size" />

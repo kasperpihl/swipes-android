@@ -81,23 +81,30 @@
                 android:id="@+id/evernote_footer_area"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/evernote_attachments_header_height"
-                android:paddingLeft="@dimen/evernote_attachments_margin_sides"
-                android:paddingRight="@dimen/evernote_attachments_margin_sides">
+                android:paddingLeft="@dimen/evernote_attachments_checkbox_padding"
+                android:paddingRight="@dimen/evernote_attachments_checkbox_padding">
 
                 <FrameLayout
                     android:id="@+id/filter_checkbox_area"
+                    style="@style/Selectable_Item_Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/evernote_attachments_margin_sides">
+                    android:layout_marginRight="@dimen/evernote_attachments_checkbox_padding"
+                    android:paddingBottom="@dimen/evernote_attachments_checkbox_padding"
+                    android:paddingLeft="@dimen/evernote_attachments_checkbox_padding"
+                    android:paddingRight="@dimen/evernote_attachments_checkbox_padding"
+                    android:paddingTop="@dimen/evernote_attachments_checkbox_padding">
 
                     <CheckBox
                         android:id="@+id/filter_checkbox"
                         android:layout_width="@dimen/evernote_attachments_checkbox_size"
                         android:layout_height="@dimen/evernote_attachments_checkbox_size"
                         android:button="@null"
-                        android:checked="true" />
+                        android:checked="true"
+                        android:clickable="false"
+                        android:focusable="false" />
                 </FrameLayout>
 
                 <TextView

@@ -3,6 +3,7 @@ package com.swipesapp.android.ui.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.swipesapp.android.ui.listener.SubtaskListener;
 import com.swipesapp.android.ui.view.ActionEditText;
 import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.util.ThreadUtils;
+import com.swipesapp.android.values.Constants;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -96,14 +98,23 @@ public class SubtasksAdapter extends BaseAdapter {
         holder.button.setChecked(isCompleted);
 
         // Setup action.
-        holder.button.setOnClickListener(new View.OnClickListener() {
+        holder.buttonContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.button.isChecked()) {
-                    mListener.completeSubtask(task);
-                } else {
-                    mListener.uncompleteSubtask(task);
-                }
+                final boolean checked = holder.button.isChecked();
+                holder.button.setChecked(!checked);
+
+                // Wait a little for the button animation to complete.
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!checked) {
+                            mListener.completeSubtask(task);
+                        } else {
+                            mListener.uncompleteSubtask(task);
+                        }
+                    }
+                }, Constants.ANIMATION_DURATION_SHORT);
             }
         });
 

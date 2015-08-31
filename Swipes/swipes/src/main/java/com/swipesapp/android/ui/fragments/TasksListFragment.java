@@ -292,8 +292,13 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         // Initialize list view.
         mListView = (DynamicListView) rootView.findViewById(android.R.id.list);
 
+        // Load ripple background for theme.
+        int background = ThemeUtils.isLightTheme(getActivity()) ?
+                R.drawable.list_item_selector_light : R.drawable.list_item_selector_dark;
+
         // Set colors and components.
-        mListView.setContainerBackgroundColor(ThemeUtils.getBackgroundColor(getActivity()));
+        mListView.setContainerBackground(background);
+        mListView.setContainerColor(ThemeUtils.getBackgroundColor(getActivity()));
         mListView.setAccentColor(ThemeUtils.getSectionColor(mSection, getActivity()));
         mListView.setFrontDetailText(R.id.task_time);
         mListView.setFrontCounter(R.id.task_subtask_count);

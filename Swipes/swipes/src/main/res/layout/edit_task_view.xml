@@ -13,26 +13,41 @@
         android:id="@+id/title_priority_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="7dp"
         android:layout_marginTop="20dp">
 
-        <CheckBox
-            android:id="@+id/button_edit_task_priority"
-            android:layout_width="@dimen/task_circles_size"
-            android:layout_height="@dimen/task_circles_size"
+        <LinearLayout
+            android:id="@+id/edit_task_priority_container"
+            style="@style/Selectable_Item_Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/edit_task_margin_sides"
-            android:layout_marginRight="@dimen/edit_task_margin_sides"
-            android:background="@drawable/focus_circle_selector"
-            android:button="@null" />
+            android:layout_marginLeft="@dimen/edit_task_priority_padding"
+            android:layout_marginRight="@dimen/edit_task_priority_padding"
+            android:paddingBottom="@dimen/edit_task_priority_padding"
+            android:paddingLeft="@dimen/edit_task_priority_padding"
+            android:paddingRight="@dimen/edit_task_priority_padding"
+            android:paddingTop="@dimen/edit_task_priority_padding">
+
+            <CheckBox
+                android:id="@+id/button_edit_task_priority"
+                android:layout_width="@dimen/task_circles_size"
+                android:layout_height="@dimen/task_circles_size"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/focus_circle_selector"
+                android:button="@null"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
 
         <com.swipesapp.android.ui.view.ActionEditText
             android:id="@+id/edit_task_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/edit_task_margin_sides"
-            android:layout_toRightOf="@id/button_edit_task_priority"
+            android:layout_toRightOf="@id/edit_task_priority_container"
             android:background="@color/transparent"
             android:focusableInTouchMode="true"
             android:imeOptions="actionDone"
@@ -61,8 +76,7 @@
     <ScrollView
         android:id="@+id/properties_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="15dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,9 +91,11 @@
             <!-- Scheduled time -->
             <RelativeLayout
                 android:id="@+id/schedule_container"
+                style="@style/Selectable_Item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/edit_task_margin_vertical">
+                android:paddingBottom="@dimen/edit_task_padding_vertical"
+                android:paddingTop="@dimen/edit_task_padding_vertical">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/edit_task_schedule_icon"
@@ -104,9 +120,11 @@
             <!-- Repeat mode -->
             <RelativeLayout
                 android:id="@+id/repeat_container"
+                style="@style/Selectable_Item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/edit_task_margin_vertical">
+                android:paddingBottom="@dimen/edit_task_padding_vertical"
+                android:paddingTop="@dimen/edit_task_padding_vertical">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/edit_task_repeat_icon"
@@ -133,9 +151,11 @@
             <!-- Assigned tags -->
             <RelativeLayout
                 android:id="@+id/tags_container"
+                style="@style/Selectable_Item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/edit_task_margin_vertical">
+                android:paddingBottom="@dimen/edit_task_padding_vertical"
+                android:paddingTop="@dimen/edit_task_padding_vertical">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/edit_task_tags_icon"
@@ -161,9 +181,11 @@
             <!-- Evernote attachment -->
             <RelativeLayout
                 android:id="@+id/evernote_attachment_container"
+                style="@style/Selectable_Item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/edit_task_margin_vertical"
+                android:paddingBottom="@dimen/edit_task_padding_vertical"
+                android:paddingTop="@dimen/edit_task_padding_vertical"
                 android:visibility="gone">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
@@ -212,10 +234,12 @@
             <!-- Notes -->
             <RelativeLayout
                 android:id="@+id/notes_container"
+                style="@style/Selectable_Item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="@dimen/edit_task_margin_vertical">
+                android:layout_marginBottom="@dimen/edit_task_padding_vertical"
+                android:paddingBottom="@dimen/edit_task_padding_vertical"
+                android:paddingTop="@dimen/edit_task_padding_vertical">
 
                 <com.swipesapp.android.ui.view.SwipesTextView
                     android:id="@+id/edit_task_notes_icon"
