@@ -63,7 +63,7 @@
     <string name="settings_login">Identificarse o registrarse</string>
     <string name="settings_logout">Salir</string>
     <string name="settings_integrations">Integraciones</string>
-    <string name="settings_sync">Sincroniza</string>
+    <string name="settings_sync">Sincronizar</string>
     <string name="settings_sync_summary">Última actualización: %s</string>
     <string name="switch_on">SI</string>
     <string name="switch_off">NO</string>
@@ -72,8 +72,8 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="language">Idioma</string>
-    <string name="language_warning_title">¿ Salir de la aplicación ?</string>
-    <string name="language_warning">Para gestionar los cambios Swipes necesita ser reiniciado.</string>
+    <string name="language_warning_title">¿Salir de la aplicación?</string>
+    <string name="language_warning">Para gestionar los cambios, Swipes necesita reiniciarse.</string>
     <string name="language_warning_yes">Salir</string>
     <string name="language_warning_no">Cancelar</string>
     <!-- Options -->
@@ -83,38 +83,44 @@
     <string name="options_location_detail">Acceder a ubicación de dispositivo</string>
     <string name="options_background_sync">Sincronización en 2º plano</string>
     <string name="options_background_sync_detail">Mantener aplicación actualizada en 2º plano.</string>
-    <string name="options_scroll_to_added">Desplazarse a añadido</string>
-    <string name="options_scroll_to_added_detail">Auto-barrido para localizar las tareas nuevas añadidas.</string>
-    <string name="options_in_app_sounds">Sonido de aplicación</string>
-    <string name="options_in_app_sounds_detail">Reproducir sonido al realizar algo en la aplicación</string>
+    <string name="options_background_sync_frequency">Frecuencia</string>
+    <string name="options_background_sync_frequency_off">Apagar</string>
+    <string name="options_background_sync_frequency_normal">Normal</string>
+    <string name="options_background_sync_frequency_real_time">Tiempo real</string>
+    <string name="options_add_to_bottom">Añadir abajo</string>
+    <string name="options_add_to_bottom_detail">Añadir a continuación de la lista</string>
+    <string name="options_scroll_to_added">Muestra primero las tareas añadidas</string>
+    <string name="options_scroll_to_added_detail">Muestra primeto las tareas nuevas añadidas.</string>
+    <string name="options_in_app_sounds">Sonidos de aplicación</string>
+    <string name="options_in_app_sounds_detail">Reproducir sonidos al interaccionar con la aplicación</string>
     <string name="options_snoozed_tasks">Tareas pospuestas</string>
-    <string name="options_snoozed_tasks_detail">Indícame tareas a posponer en el periodo seleccionado.</string>
+    <string name="options_snoozed_tasks_detail">Notificar tareas pospuestas al llegar el momento seleccionado.</string>
     <string name="options_daily_reminder">Recordatorio diario</string>
-    <string name="options_daily_reminder_detail">Mostrar recordatorio diario en plan del día.</string>
+    <string name="options_daily_reminder_detail">Mostrar recordatorio diario para planificar el día.</string>
     <string name="options_weekly_reminder">Recordatorio semanal</string>
-    <string name="options_weekly_reminder_detail">Mostrar recordatorio semanal en plan del seminal.</string>
+    <string name="options_weekly_reminder_detail">Mostrar recordatorio semanal para planificar la semana.</string>
     <string name="options_vibration">Vibración</string>
-    <string name="options_vibration_detail">Vibrar al visualizar una notificación.</string>
+    <string name="options_vibration_detail">Vibrar al mostrar una notificación.</string>
     <string name="options_system_sound">Usar sonidos del sistema</string>
     <string name="options_system_sound_detail">Activar uso de sonido en notificaciones</string>
     <!-- Help -->
-    <string name="help_center">Centro de Soporte</string>
+    <string name="help_center">Centro de Ayuda</string>
     <string name="help_google_community">Comunidad Google+</string>
-    <string name="help_contact_us">Contactenos</string>
+    <string name="help_contact_us">Contáctenos</string>
     <string name="help_email_receiver">support@swipesapp.com</string>
-    <string name="help_email_subject">[Android] Solicitud de soporte</string>
+    <string name="help_email_subject">[Android] Solicitud de ayuda</string>
     <string name="help_email_chooser_title">Contacte con:</string>
     <string name="help_email_text_hint">Describa el problema &#8230;</string>
     <!-- Snooze settings -->
     <string name="day_start">Inicio de día</string>
-    <string name="evening_start">Inicio de tarde</string>
+    <string name="evening_start">Final del día</string>
     <string name="weekend_day_start">Día de Inicio de fin de semana</string>
     <string name="week_start">Inicio de semana</string>
-    <string name="weekend_start">Inicio fin de semana</string>
+    <string name="weekend_start">Inicio de fin de semana</string>
     <string name="settings_weekend_start_dialog_title">Inicio de fin de semana</string>
     <string name="settings_week_start_dialog_title">Inicio de semana</string>
-    <string name="settings_later_today">Despues</string>
-    <string name="settings_later_today_dialog_title">Despues</string>
+    <string name="settings_later_today">Hoy, más tarde</string>
+    <string name="settings_later_today_dialog_title">Hoy, más tarde</string>
     <string name="later_today_1h">+ 1 hora</string>
     <string name="later_today_2h">+ 2 horas</string>
     <string name="later_today_3h">+ 3 horas</string>
@@ -128,98 +134,104 @@
     <string name="evernote_unlink_account_detail">Pulse para desvincular</string>
     <string name="evernote_sync_device">Sincroniza este dispositivo con Evernote</string>
     <string name="evernote_auto_import">Importación automática de notas con la etiqueta \"swipes\"</string>
-    <string name="evernote_sync_personal">Sincroniza con libretas vinculadas</string>
+    <string name="evernote_sync_personal">Sincroniza con libretas personales vinculadas</string>
     <string name="evernote_sync_business">Sincroniza con Evernote Business</string>
     <string name="evernote_open_importer">Abrir Evernote Importer</string>
-    <string name="evernote_learn_more">Aprender más</string>
-    <string name="evernote_learn_more_title_left">EVERNOTE</string>
-    <string name="evernote_learn_more_title_right">INTEGRACION</string>
-    <string name="evernote_what_it_is">¿  QUE ES ESTO ?</string>
+    <string name="evernote_learn_more">Saber más</string>
+    <string name="evernote_learn_more_title_left">INTEGRACIÓN</string>
+    <string name="evernote_learn_more_title_right">EVERNOTE</string>
+    <string name="evernote_what_it_is">¿QUÉ ES ESTO?</string>
     <string name="evernote_what_it_is_description">"La vinculación le permite sincronizar la notas \"marcadas\" de Evernote en Swipes. "</string>
-    <string name="evernote_how_it_works">COMO FUNCIONA</string>
+    <string name="evernote_how_it_works">CÓMO FUNCIONA</string>
     <string name="evernote_how_it_works_detail">Utilice la etiqueta \"Swipes\" en las notas de Evernote
-Nosotros las importaremos  en Swipes y sincronizaremos todos los datos.</string>
+Nosotros las añadiremos a Swipes y sincronizaremos todos los puntos de la lista de comprobación.</string>
     <string name="evernote_get_started">COMENZAR</string>
-    <string name="evernote_unlink_dialog_title">¿ Desvincular Evernote ?</string>
-    <string name="evernote_unlink_dialog_message">Todas las tareas han sido desvinculadas</string>
+    <string name="evernote_unlink_dialog_title">¿Desvincular Evernote?</string>
+    <string name="evernote_unlink_dialog_message">Todas las tareas han sido desvinculadas.</string>
     <string name="evernote_unlink_dialog_yes">Desvincular</string>
     <string name="evernote_unlink_dialog_no">Cancelar</string>
     <string name="evernote_untitled_note">Nota sin título</string>
+    <string name="evernote_login_dialog_title">identifícate en Swipes</string>
+    <string name="evernote_login_dialog_message">Por favor identifícate en Swipes antes de vincularte a Evernote.</string>
+    <string name="evernote_login_warning_message">Por favor identifícate en Swipes para sincronizar con Evernote.</string>
+    <string name="evernote_login_dialog_yes">Identificarse</string>
+    <string name="evernote_login_dialog_no">Cancelar</string>
+    <string name="evernote_login_dialog_ok">Cógelo</string>
     <!-- Attachments -->
     <string name="evernote_search_hint">Buscar notas</string>
     <string name="evernote_filter_description">Solo notas con tareas</string>
     <!-- About -->
     <string name="about">"Acerca de "</string>
     <string name="app_version">%1$s (%2$s)</string>
-    <string name="about_brought_by">Esta aplicación ha sido adquirida para ti por</string>
+    <string name="about_brought_by">Aplicación proporcionada por</string>
     <string name="about_app_version">Versión</string>
-    <string name="about_policies">Politica</string>
-    <string name="about_policies_detail">Pulse para descargar politica</string>
-    <string name="about_oss">Abrir libería de referencias</string>
+    <string name="about_policies">Política</string>
+    <string name="about_policies_detail">Pulse para descargar política</string>
+    <string name="about_oss">Licencias de código abierto</string>
     <string name="about_oss_licenses">TimePreference based on CommonsWare code. Licensed under Apache.</string>
     <!-- Invite -->
     <string name="settings_invite">Invita a tus amigos a Swipes</string>
-    <string name="invite_subject">Pruebala está aplicación es \"cojonuda\"</string>
-    <string name="invite_body">Que tal. \n\n
-Estoy probando una nueva aplicación. para gestionar mis rutinas diárias. \n\n
-Mi gestión del día a pasado a ser sencilla, completando y demorando las tareas con una simple desplazamiento de la tarea.
-Seguro que te que te puede ayudar, \n\n a mi lo hizo
-mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.android , drsgargalá y pruebalá. \n\n
-¡¡ Es alucinante !!</string>
-    <string name="invite_chooser_title">Invitado con :</string>
+    <string name="invite_subject">Prueba esta aplicación; es estupenda.</string>
+    <string name="invite_body">¿Qué tal? \n\n
+Estoy probando una nueva aplicación para gestionar mis rutinas diarias. \n\n
+Hace que planificar el día sea muy fácil, deslizando tareas para posponerlas o marcarlas como realizadas.
+Creo que te gustará.\n\n
+Échale un vistazo aquí http://play.google.com/store/apps/details?id=com.swipesapp.android , y pruébala. \n\n
+¡Que la disfrutes!</string>
+    <string name="invite_chooser_title">Invitar con:</string>
     <!-- Share -->
-    <string name="share_message_subject">Tareas a gestionar</string>
-    <string name="share_message_header">Tareas\n\n</string>
-    <string name="share_message_footer_sent_from">Enviar a mi Swipes - Gestión de tareas para objetivos altos.</string>
-    <string name="share_message_footer_get_swipes">Aplicación gratuita para  iPhone y Android  - http://swipesapp.com</string>
+    <string name="share_message_subject">Tareas para completar</string>
+    <string name="share_message_header">Tareas: \n\n</string>
+    <string name="share_message_footer_sent_from">Enviado con Swipes - Gestión de tareas para Grandes Logros.</string>
+    <string name="share_message_footer_get_swipes">Aplicación gratuita para iPhone y Android  - http://swipesapp.com</string>
     <string name="share_message_circle">◯&#160;</string>
-    <string name="share_chooser_title">Compartir con :</string>
+    <string name="share_chooser_title">Compartir con:</string>
     <!-- Actions -->
-    <string name="dialog_yes">Si</string>
+    <string name="dialog_yes">Sí</string>
     <string name="dialog_no">No</string>
-    <string name="delete_task_dialog_text">Esto no se podrá desacer</string>
+    <string name="delete_task_dialog_text">Esto no se podrá deshacer.</string>
     <string name="delete_task_dialog_yes">Borrar</string>
     <string name="delete_task_dialog_no">Cancelar</string>
     <string name="add_task_hint">Añadir tarea</string>
     <string name="show_old">VER TAREAS ANTIGUAS</string>
-    <string name="clear_old">ELIMNAR TAREAS ANTIGUAS</string>
-    <string name="clear_old_dialog_title">¿Eliminar taeras antíguas?</string>
-    <string name="clear_old_dialog_text">Esto no se podrá desacer</string>
+    <string name="clear_old">ELIMINAR TAREAS ANTIGUAS</string>
+    <string name="clear_old_dialog_title">¿Eliminar taeras antiguas?</string>
+    <string name="clear_old_dialog_text">Esto no se podrá deshacer.</string>
     <string name="clear_old_dialog_yes">Borrar</string>
     <string name="clear_old_dialog_no">Cancelar</string>
-    <string name="search_hint">Burcar</string>
-    <string name="logout_dialog_title">¿ Salir de su cuenta ?</string>
+    <string name="search_hint">Buscar</string>
+    <string name="logout_dialog_title">¿Salir de la cuenta?</string>
     <string name="logout_dialog_message">Swipes parará la sincronización y borrará todos los datos en este dispositivo</string>
     <string name="logout_dialog_yes">Salir</string>
     <string name="logout_dialog_no">Cancelar</string>
-    <string name="keep_data_dialog_title">¿Mantener datos desde este period?</string>
-    <string name="keep_data_dialog_message">Swipes puede sincronizar su datos del period de prueba en la nube.</string>
+    <string name="keep_data_dialog_title">¿Mantener datos desde el periodo de prueba?</string>
+    <string name="keep_data_dialog_message">Swipes puede sincronizar su datos desde el periodo de prueba a la nube.</string>
     <string name="keep_data_dialog_yes">Mantener datos</string>
     <string name="keep_data_dialog_no">Borrar datos</string>
-    <string name="share_intent_add_confirm">¡ Tarea Creada !</string>
-    <string name="delete_single_task">¿Borrar tarea ?</string>
+    <string name="share_intent_add_confirm">¡Tarea creada!</string>
+    <string name="delete_single_task">¿Borrar tarea?</string>
     <!-- Scheduler -->
     <string name="date_today">Hoy</string>
     <string name="date_tomorrow">Mañana</string>
     <string name="date_yesterday">Ayer</string>
     <string name="date_unspecified">Sin especificar</string>
-    <string name="snooze_later_today">Hoy</string>
-    <string name="snooze_this_evening">Esta noche</string>
+    <string name="snooze_later_today">Hoy, más tarde</string>
+    <string name="snooze_this_evening">Al final del día</string>
     <string name="snooze_tomorrow_eve">Mañana tarde</string>
     <string name="snooze_tomorrow">Mañana</string>
     <string name="snooze_two_days_default">Lunes</string>
     <string name="snooze_this_weekend">Fin de semana</string>
     <string name="snooze_next_week">Próx semana</string>
     <string name="snooze_unspecified">Sin especificar</string>
-    <string name="snooze_at_location">En localizaciòn</string>
+    <string name="snooze_at_location">En un lugar</string>
     <string name="snooze_pick_date">Selecc día</string>
     <string name="snooze_done_text">POSPONER</string>
-    <string name="snooze_adjust_hint">Arrastar hacia abajo para cambiar hora</string>
+    <string name="snooze_adjust_hint">Mantener pulsado para ajustar la hora</string>
     <!-- Week days -->
     <string name="sunday_full">Domingo</string>
     <string name="monday_full">Lunes</string>
     <string name="tuesday_full">Martes</string>
-    <string name="wednesday_full">Miercoles</string>
+    <string name="wednesday_full">Miércoles</string>
     <string name="thursday_full">Jueves</string>
     <string name="friday_full">Viernes</string>
     <string name="saturday_full">Sábado</string>
@@ -254,10 +266,10 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="edit_task_evernote_attached">ADJUNTO</string>
     <!-- Action steps -->
     <string name="edit_task_add_subtask_hint">"Añade un paso "</string>
-    <string name="subtask_hide_caption">Reducir los pasos visualizados</string>
-    <string name="subtask_show_caption">Ver todos  los pasos</string>
-    <string name="delete_subtask_dialog_title">¿Eliminar paso en tarea?</string>
-    <string name="delete_subtask_dialog_message">Esto no puede ser desecho</string>
+    <string name="subtask_hide_caption">Mostrar menos pasos</string>
+    <string name="subtask_show_caption">Ver todos los pasos</string>
+    <string name="delete_subtask_dialog_title">¿Eliminar paso?</string>
+    <string name="delete_subtask_dialog_message">Esto no se puede deshacer.</string>
     <string name="delete_subtask_dialog_yes">Borrar</string>
     <string name="delete_subtask_dialog_no">Cancelar</string>
     <!-- Repeating -->
@@ -270,17 +282,17 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <!-- Notifications -->
     <string name="notification_snooze">Posponer +%dh</string>
     <string name="notification_complete">Finalizada</string>
-    <string name="reminder_daily_title">¿ Planificamos tu día?</string>
-    <string name="reminder_daily_message">! Buenos días ¡ Crea un plan y gestiona tu productividad diária</string>
-    <string name="reminder_weekly_title">¿ Planificamos tu semana?</string>
-    <string name="reminder_weekly_message">! Buenas noches ¡ Crea un plan y gestiona tu productividad esta noche</string>
+    <string name="reminder_daily_title">¿Planificamos tu día?</string>
+    <string name="reminder_daily_message">¡Buenos días! Crea un plan y gestiona tu productividad diaria.</string>
+    <string name="reminder_weekly_title">¿Planificamos tu semana?</string>
+    <string name="reminder_weekly_message">¡Buenas tardes! Comienza una semana productiva elaborando ahora un plan.</string>
     <!-- Tagging -->
     <string name="add_tag_dialog_title">Añadir etiqueta nueva</string>
-    <string name="add_tag_dialog_hint">Título de tarea</string>
+    <string name="add_tag_dialog_hint">Título de la etiqueta</string>
     <string name="add_tag_dialog_yes">Grabar</string>
     <string name="add_tag_dialog_no">Cancelar</string>
     <string name="delete_tag_dialog_title">¿Borrar etiqueta %s\"?</string>
-    <string name="delete_tag_dialog_message">Esto no puede ser desecho.</string>
+    <string name="delete_tag_dialog_message">Esto no puede deshacerse.</string>
     <string name="delete_tag_dialog_yes">Borrar</string>
     <string name="delete_tag_dialog_no">Cancelar</string>
     <string name="empty_tags_hint">No se han asignado etiquetas</string>
@@ -289,47 +301,47 @@ mira este acceso http://play.google.com/store/apps/details?id=com.swipesapp.andr
     <string name="set_workspaces_hint">SELECCIONAR FILTRO</string>
     <string name="clear_workspace_button">BORRAR FILTRO</string>
     <!-- Sync -->
-    <string name="sync_started_message">Sincronizado&#8230;</string>
-    <string name="sync_completed_message">¡ Sincronización correcta !</string>
-    <string name="sync_failed_message">Sincronización erronea</string>
+    <string name="sync_started_message">Sincronizando&#8230;</string>
+    <string name="sync_completed_message">¡Sincronización correcta!</string>
+    <string name="sync_failed_message">Fallo en la sincronización</string>
     <!-- Showcase -->
     <string name="showcase_button_done">ENTENDIDO</string>
     <string name="navigation_tutorial_text">Pulse para moverse entre secciones</string>
     <!-- Widgets -->
-    <string name="now_widget_label">Ahora Swipes</string>
+    <string name="now_widget_label">Swipes - Ahora</string>
     <string name="now_widget_tasks_count_label">HOY</string>
     <string name="now_widget_empty_count_label">SIN TAREAS</string>
     <string name="now_widget_progress_separator">/</string>
-    <string name="now_widget_complete_message">"Tarea finalizadas "</string>
+    <string name="now_widget_complete_message">¡Tarea finalizada!</string>
     <string name="add_widget_label">Añadir a Swipes</string>
     <string name="add_widget_description">Tarea nueva</string>
     <!-- Plurals -->
     <plurals name="delete_task_dialog_title">
-        <item quantity="one">¿ Borrar tarea ?</item>
-        <item quantity="other">¿ Borrar %d tareas?</item>
+        <item quantity="one">¿Borrar tarea?</item>
+        <item quantity="other">¿Borrar %d tareas?</item>
     </plurals>
     <plurals name="notification_title">
         <item quantity="one">%s</item>
         <item quantity="other">Tienes %s tareas nuevas</item>
     </plurals>
     <plurals name="later_workspace_results">
-        <item quantity="one">%1$s tarea programadas con estas etiquetas: &lt;b>%2$s&lt;/b></item>
-        <item quantity="other">%1$s tarea programadas con estas etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="one">%1$s tareas programadas con estas etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tareas programadas con estas etiquetas: &lt;b>%2$s&lt;/b></item>
     </plurals>
     <plurals name="focus_workspace_results">
-        <item quantity="one">%1$s tareas actuales con etiquetas: &lt;b>%2$s&lt;/b></item>
-        <item quantity="other">%1$s tareas actuales con etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="one">%1$s tareas actuales con estas etiquetas: &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tareas actuales con estas etiquetas: &lt;b>%2$s&lt;/b></item>
     </plurals>
     <plurals name="done_workspace_results">
-        <item quantity="one">%1$s tareas finalizadas con etiquetas:  &lt;b>%2$s&lt;/b></item>
-        <item quantity="other">%1$s tareas finalizadas con etiquetas:  &lt;b>%2$s&lt;/b></item>
+        <item quantity="one">%1$s tareas finalizadas con estas etiquetas:  &lt;b>%2$s&lt;/b></item>
+        <item quantity="other">%1$s tareas finalizadas con estas etiquetas:  &lt;b>%2$s&lt;/b></item>
     </plurals>
     <plurals name="reminder_evening_title">
-        <item quantity="one">Tarea rechazada hoy</item>
-        <item quantity="other">Tareas rechazadas hoy</item>
+        <item quantity="one">Tarea pendiente hoy</item>
+        <item quantity="other">Tareas pendientes hoy</item>
     </plurals>
     <plurals name="reminder_evening_message">
-        <item quantity="one">En tu tarea rechazada hoy. ¿ Hay algo importante?</item>
-        <item quantity="other">En tus %s tareas rechazadas hoy. ¿ Hay algo importante?</item>
+        <item quantity="one">Tienes una tarea pendiente para hoy. ¿Es importante?</item>
+        <item quantity="other">Tienes %s tareas pendientes para hoy. ¿Alguna es importante?</item>
     </plurals>
 </resources>

@@ -83,6 +83,12 @@
     <string name="options_location_detail">Acessar localização do dispositivo.</string>
     <string name="options_background_sync">Sincronização em segundo plano</string>
     <string name="options_background_sync_detail">Manter as tarefas atualizadas automaticamente em segundo plano.</string>
+    <string name="options_background_sync_frequency">Frequencia</string>
+    <string name="options_background_sync_frequency_off">Desligada</string>
+    <string name="options_background_sync_frequency_normal">Normal</string>
+    <string name="options_background_sync_frequency_real_time">Tempo real</string>
+    <string name="options_add_to_bottom">Adicionar no final</string>
+    <string name="options_add_to_bottom_detail">Adicionar novas tarefas ao final da lista.</string>
     <string name="options_scroll_to_added">Rolar para adicionada</string>
     <string name="options_scroll_to_added_detail">Rolar automaticamente para focar na última tarefa adicionada.</string>
     <string name="options_in_app_sounds">Sons no app</string>
@@ -145,6 +151,12 @@ Vamos adicioná-la como uma tarefa no Swipes e sincronizar suas caixas de seleç
     <string name="evernote_unlink_dialog_yes">Desconectar</string>
     <string name="evernote_unlink_dialog_no">Cancelar</string>
     <string name="evernote_untitled_note">Nota sem título</string>
+    <string name="evernote_login_dialog_title">Entrar no Swipes</string>
+    <string name="evernote_login_dialog_message">Por favor, entre na sua conta do Swipes antes de conectar ao Evernote.</string>
+    <string name="evernote_login_warning_message">Por favor, entre na sua conta do Swipes para sincronizar com o Evernote.</string>
+    <string name="evernote_login_dialog_yes">Entrar</string>
+    <string name="evernote_login_dialog_no">Cancelar</string>
+    <string name="evernote_login_dialog_ok">Entendi</string>
     <!-- Attachments -->
     <string name="evernote_search_hint">Pesquisar notas</string>
     <string name="evernote_filter_description">Somente notas com tarefas</string>

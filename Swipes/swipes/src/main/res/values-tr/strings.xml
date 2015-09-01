@@ -83,6 +83,12 @@
     <string name="options_location_detail">Cihaz konum bilgisine eriş.</string>
     <string name="options_background_sync">Arka planda eşitle</string>
     <string name="options_background_sync_detail">Görevleri arka planda otomatik olarak güncel tut.</string>
+    <string name="options_background_sync_frequency">Sıklık</string>
+    <string name="options_background_sync_frequency_off">Kapalı</string>
+    <string name="options_background_sync_frequency_normal">Normal</string>
+    <string name="options_background_sync_frequency_real_time">Gerçek zaman</string>
+    <string name="options_add_to_bottom">En alta ekle</string>
+    <string name="options_add_to_bottom_detail">Yeni görevleri listenin sonuna ekle.</string>
     <string name="options_scroll_to_added">Eklenenlere kaydır</string>
     <string name="options_scroll_to_added_detail">Son eklenen göreve odaklanmak için otomatik olarak kaydır.</string>
     <string name="options_in_app_sounds">Uygulama içi sesler</string>
@@ -145,6 +151,12 @@
     <string name="evernote_unlink_dialog_yes">Bağlantıyı Kaldır</string>
     <string name="evernote_unlink_dialog_no">İptal</string>
     <string name="evernote_untitled_note">İsimsiz Not</string>
+    <string name="evernote_login_dialog_title">Swipes\'a Giriş Yap</string>
+    <string name="evernote_login_dialog_message">Evernote bağlantısını gerçekleştirmek için önce Swipes hesabınıza giriş yapmalısınız.</string>
+    <string name="evernote_login_warning_message">Evernote ile eşitlemek için önce Swipes hesabınıza giriş yapmalısınız.</string>
+    <string name="evernote_login_dialog_yes">Giriş yap</string>
+    <string name="evernote_login_dialog_no">İptal</string>
+    <string name="evernote_login_dialog_ok">Tamamdır</string>
     <!-- Attachments -->
     <string name="evernote_search_hint">Notları ara</string>
     <string name="evernote_filter_description">Sadece görev içeren notlar</string>
@@ -293,7 +305,7 @@
     <string name="sync_completed_message">Eşitleme başarılı!</string>
     <string name="sync_failed_message">Eşitleme başarısız oldu.</string>
     <!-- Showcase -->
-    <string name="showcase_button_done">ANLAŞILDI</string>
+    <string name="showcase_button_done">TAMAMDIR</string>
     <string name="navigation_tutorial_text">Bölümler arasında gezinmek için dokunun.</string>
     <!-- Widgets -->
     <string name="now_widget_label">Swipes Now</string>
