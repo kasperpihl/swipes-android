@@ -59,14 +59,16 @@ public class NotificationsReceiver extends BroadcastReceiver {
             }
         }
 
-        // Reorder tasks.
-        handleOrder(context);
+        if (sExpiredTasks.size() > 0) {
+            // Reorder tasks.
+            handleOrder(context);
 
-        // Refresh tasks and widgets.
-        refreshContent(context);
+            // Refresh tasks and widgets.
+            refreshContent(context);
 
-        // Send notification if allowed to.
-        sendNotification(context);
+            // Send notification if allowed to.
+            sendNotification(context);
+        }
 
         // Persist expired tasks in case the receiver is killed.
         saveCurrentData(context);
