@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.swipesapp.android.db.migration.MigrationAssistant;
-
 /**
  * Utilitary class for shared preferences operations.
  *
@@ -258,32 +256,6 @@ public class PreferenceUtils {
     public static boolean isWeeklyReminderEnabled(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(WEEKLY_REMINDER_KEY, true);
-    }
-
-    /**
-     * Determines if the app has been upgraded to a given version.
-     *
-     * @param version Version to check for upgrade.
-     * @param context Context instance.
-     * @return True if it has been upgraded.
-     */
-    public static boolean hasUpgradedToVersion(int version, Context context) {
-        boolean hasUpgraded = false;
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-
-        switch (version) {
-            case 7:
-                hasUpgraded = settings.getBoolean(MigrationAssistant.V7_UPGRADE_KEY, false);
-                break;
-            case 8:
-                hasUpgraded = settings.getBoolean(MigrationAssistant.V8_UPGRADE_KEY, false);
-                break;
-            case 21:
-                hasUpgraded = settings.getBoolean(MigrationAssistant.V21_UPGRADE_KEY, false);
-                break;
-        }
-
-        return hasUpgraded;
     }
 
     /**
