@@ -11,7 +11,6 @@
         android:id="@+id/action_bar_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/toolbar_icon_margin_sides"
         android:layout_marginRight="@dimen/toolbar_icon_margin_sides"
         android:background="@color/transparent"
         android:clickable="false"
