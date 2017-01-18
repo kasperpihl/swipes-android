@@ -17,7 +17,6 @@ import com.parse.interceptors.ParseLogInterceptor;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.db.DaoMaster;
 import com.swipesapp.android.db.DaoSession;
 import com.swipesapp.android.db.migration.SwipesHelper;
@@ -34,7 +33,6 @@ import com.swipesapp.android.util.PreferenceUtils;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
-import io.intercom.android.sdk.Intercom;
 
 /**
  * Swipes custom application class.
@@ -96,9 +94,6 @@ public class SwipesApplication extends Application {
 
         // Start Analytics tracker.
         startTracker(getApplicationContext());
-
-        // Initialize Intercom.
-        Intercom.initialize(this, IntercomHandler.API_KEY, IntercomHandler.APP_ID);
 
         // Send initial user dimensions.
         Analytics.startUserDimensions(getApplicationContext());

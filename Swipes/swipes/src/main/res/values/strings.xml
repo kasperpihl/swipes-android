@@ -175,7 +175,7 @@
 
     <!-- About -->
     <string name="about">About</string>
-    <string name="app_version">%1$s (%2$s)</string>
+    <string name="app_version" translatable="false">%1$s (%2$d)</string>
     <string name="about_brought_by">This app is brought to you by</string>
     <string name="about_app_version">App version</string>
     <string name="about_policies">Policies</string>

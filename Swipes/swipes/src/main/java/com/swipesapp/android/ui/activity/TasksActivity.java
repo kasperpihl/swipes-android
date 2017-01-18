@@ -48,11 +48,8 @@ import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
@@ -87,7 +84,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -95,7 +91,6 @@ import java.util.Set;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import io.intercom.android.sdk.Intercom;
 
 public class TasksActivity extends BaseActivity {
 
@@ -369,11 +364,6 @@ public class TasksActivity extends BaseActivity {
                     // Reset flag.
                     mShouldClearData = false;
 
-                    if (PreferenceUtils.hasTriedOut(this)) {
-                        // End anonymous Intercom session.
-                        Intercom.client().reset();
-                    }
-
                     if (data != null) {
                         boolean signedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
                         String email = data.getStringExtra(ParseExtras.EXTRA_USER_EMAIL);
@@ -385,9 +375,6 @@ public class TasksActivity extends BaseActivity {
                             // Send login event to analytics.
                             sendLoginEvent();
                         }
-
-                        // Start Intercom session with email.
-                        IntercomHandler.beginIntercomSession(email);
                     }
 
                     // Update user level dimension.
@@ -1080,7 +1067,7 @@ public class TasksActivity extends BaseActivity {
         GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
-        sendTagAddedEvent((long) title.length(), Labels.TAGS_FROM_FILTER);
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, Labels.TAGS_FROM_FILTER, (long) title.length());
 
         mSelectedFilterTags.add(tag);
         loadWorkspacesTags();
@@ -1423,7 +1410,7 @@ public class TasksActivity extends BaseActivity {
                         mTasksService.deleteTag(selectedTag.getId());
 
                         // Send analytics event.
-                        sendTagDeletedEvent(Labels.TAGS_FROM_FILTER);
+                        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_FILTER, null);
 
                         // Refresh displayed tags.
                         loadWorkspacesTags();
@@ -1678,9 +1665,6 @@ public class TasksActivity extends BaseActivity {
 
                             // Show navigation menu tutorial.
                             showNavigationTutorial();
-
-                            // Start anonymous Intercom session.
-                            IntercomHandler.beginIntercomSession(null);
                         }
                     }
                 })
@@ -2005,42 +1989,9 @@ public class TasksActivity extends BaseActivity {
 
     private void sendSharingMessageEvent() {
         long value = isDoneForToday() ? 1 : 0;
-        String valueIntercom = isDoneForToday() ? Labels.DONE_TODAY : Labels.DONE_NOW;
 
         // Send analytics event.
         Analytics.sendEvent(Categories.SHARING, Actions.SHARE_MESSAGE_OPEN, mShareMessage, value);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.DONE_FOR_TODAY, valueIntercom);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.SHARE_MESSAGE_OPENED, fields);
-    }
-
-    public static void sendTagDeletedEvent(String from) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, from, null);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.FROM, from);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
-    }
-
-    public static void sendTagAddedEvent(long length, String from) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, from, length);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, length);
-        fields.put(IntercomFields.FROM, from);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
     }
 
 }

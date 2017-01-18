@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -16,13 +18,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
+import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
@@ -45,10 +45,7 @@ import com.swipesapp.android.widget.AddWidgetProvider;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import io.intercom.android.sdk.Intercom;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -145,13 +142,6 @@ public class SettingsActivity extends BaseActivity {
 
         // Update theme dimension.
         Analytics.sendActiveTheme(this);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.THEME, label);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.CHANGED_THEME, fields);
     }
 
     public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
@@ -181,8 +171,8 @@ public class SettingsActivity extends BaseActivity {
             Preference preferenceContact = findPreference("contact_us");
             preferenceContact.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    // Open Intercom chat.
-                    Intercom.client().displayMessageComposer();
+                    // Open support email.
+                    contactUs();
                     return true;
                 }
             });
@@ -287,19 +277,10 @@ public class SettingsActivity extends BaseActivity {
                         PreferenceUtils.saveString(PreferenceUtils.WELCOME_DIALOG, "YES", getActivity());
                         PreferenceUtils.saveString(PreferenceUtils.FIRST_RUN, "NO", getActivity());
 
-                        if (PreferenceUtils.hasTriedOut(getActivity())) {
-                            // End anonymous Intercom session.
-                            Intercom.client().reset();
-                        }
-
                         if (data != null) {
                             // Mark signup or login as performed.
                             sHasSignedUp = data.getBooleanExtra(ParseExtras.EXTRA_SIGNED_UP, false);
                             sHasLoggedIn = !sHasSignedUp;
-
-                            // Start Intercom session with email.
-                            String email = data.getStringExtra(ParseExtras.EXTRA_USER_EMAIL);
-                            IntercomHandler.beginIntercomSession(email);
                         }
 
                         // Subscribe to push channels.
@@ -333,6 +314,24 @@ public class SettingsActivity extends BaseActivity {
             Analytics.sendEvent(Categories.SHARING, Actions.INVITE_OPEN, null, null);
         }
 
+        private void contactUs() {
+            // Load device info.
+            String hint = getString(R.string.help_email_text_hint);
+            String appVersion = "\n\n\n" + "App version: " + getString(R.string.app_version,
+                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+            String deviceData = "\n" + "Device model: " + Build.MANUFACTURER + " " + Build.MODEL;
+            deviceData += "\n" + "Android version: " + Build.VERSION.RELEASE;
+
+            // Create email intent.
+            Intent contactIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", getString(R.string.help_email_receiver), null));
+            contactIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.help_email_subject));
+            contactIntent.putExtra(Intent.EXTRA_TEXT, hint + appVersion + deviceData);
+
+            // Open app selector.
+            startActivity(Intent.createChooser(contactIntent, getString(R.string.help_email_chooser_title)));
+        }
+
         private void startLogin() {
             // Call Parse login activity.
             ParseLoginBuilder builder = new ParseLoginBuilder(getActivity());
@@ -361,9 +360,6 @@ public class SettingsActivity extends BaseActivity {
 
                             // Unsubscribe from push channels.
                             SwipesApplication.unsubscribePush();
-
-                            // End Intercom session.
-                            Intercom.client().reset();
 
                             // Clear user data.
                             TasksService.getInstance().clearAllData();

@@ -12,7 +12,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'https://dl.bintray.com/intercom/intercom-maven' }
     maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
@@ -82,9 +81,6 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.6.2.3@aar'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
-    compile('io.intercom.android:intercom-sdk:1.0.3@aar') {
-        transitive = true
-    }
     compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
         transitive = true;
     }

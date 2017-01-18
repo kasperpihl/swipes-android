@@ -11,10 +11,8 @@ import com.evernote.client.android.EvernoteSession;
 import com.parse.ParseUser;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.evernote.EvernoteService;
 import com.swipesapp.android.ui.view.SwipesDialog;
@@ -51,7 +49,7 @@ public class IntegrationsActivity extends BaseActivity {
             case EvernoteSession.REQUEST_CODE_OAUTH:
                 if (resultCode == Activity.RESULT_OK) {
                     // Send Evernote linked event.
-                    sendEvernoteLinkedEvent();
+                    Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
 
                     // Update Evernote user level dimension.
                     Analytics.sendEvernoteUserLevel(this);
@@ -61,14 +59,6 @@ public class IntegrationsActivity extends BaseActivity {
                 }
                 break;
         }
-    }
-
-    private void sendEvernoteLinkedEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.LINKED_EVERNOTE, null);
     }
 
     public static class IntegrationsFragment extends PreferenceFragment {
@@ -173,7 +163,7 @@ public class IntegrationsActivity extends BaseActivity {
                 case Constants.EVERNOTE_LEARN_REQUEST_CODE:
                     if (resultCode == Activity.RESULT_OK) {
                         // Send Evernote linked event.
-                        sendEvernoteLinkedEvent();
+                        Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
 
                         // Update Evernote user level dimension.
                         Analytics.sendEvernoteUserLevel(getActivity());
@@ -193,14 +183,6 @@ public class IntegrationsActivity extends BaseActivity {
                     .positiveText(R.string.evernote_login_dialog_ok)
                     .actionsColorRes(R.color.neutral_accent)
                     .show();
-        }
-
-        private void sendEvernoteLinkedEvent() {
-            // Send analytics event.
-            Analytics.sendEvent(Categories.INTEGRATIONS, Actions.LINKED_EVERNOTE, null, null);
-
-            // Send Intercom events.
-            IntercomHandler.sendEvent(IntercomEvents.LINKED_EVERNOTE, null);
         }
 
     }

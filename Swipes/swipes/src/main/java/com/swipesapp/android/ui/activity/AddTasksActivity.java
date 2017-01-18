@@ -24,11 +24,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.handler.SoundHandler;
 import com.swipesapp.android.sync.gson.GsonTag;
@@ -51,7 +48,6 @@ import com.swipesapp.android.values.Sections;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -572,7 +568,7 @@ public class AddTasksActivity extends BaseActivity {
                         mTasksService.deleteTag(selectedTag.getId());
 
                         // Send analytics event.
-                        TasksActivity.sendTagDeletedEvent(Labels.TAGS_FROM_ADD_TASK);
+                        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_ADD_TASK, null);
 
                         // Refresh displayed tags.
                         loadTags();
@@ -659,7 +655,7 @@ public class AddTasksActivity extends BaseActivity {
         GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
-        TasksActivity.sendTagAddedEvent((long) title.length(), Labels.TAGS_FROM_ADD_TASK);
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, Labels.TAGS_FROM_ADD_TASK, (long) title.length());
 
         // Refresh displayed tags.
         sSelectedTags.add(tag);
@@ -744,28 +740,6 @@ public class AddTasksActivity extends BaseActivity {
 
         // Send task added event.
         Analytics.sendEvent(Categories.TASKS, Actions.ADDED_TASK, label, value);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, value);
-        fields.put(IntercomFields.FROM, label);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_TASK, fields);
-
-        // Send tag assigned event.
-        sendTagAssignEvent();
-    }
-
-    private void sendTagAssignEvent() {
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-        fields.put(IntercomFields.NUMBER_OF_TAGS, sSelectedTags.size());
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_ADD_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ASSIGN_TAGS, fields);
     }
 
 }

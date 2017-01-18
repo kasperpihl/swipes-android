@@ -32,11 +32,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.edam.type.Note;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.analytics.values.Screens;
 import com.swipesapp.android.app.SwipesApplication;
@@ -70,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -669,7 +665,7 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Send priority changed event.
         String label = mPriority.isChecked() ? Labels.PRIORITY_ON : Labels.PRIORITY_OFF;
-        sendTaskPriorityEvent(label);
+        Analytics.sendEvent(Categories.TASKS, Actions.PRIORITY, label, null);
 
         updateViews();
     }
@@ -730,7 +726,7 @@ public class EditTaskActivity extends FragmentActivity {
                         mTasksService.deleteTasks(Arrays.asList(mTask));
 
                         // Send analytics event.
-                        sendDeletedTaskEvent();
+                        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, 1l);
 
                         // Play sound.
                         SoundHandler.playSound(mContext.get(), R.raw.action_negative);
@@ -871,7 +867,7 @@ public class EditTaskActivity extends FragmentActivity {
         GsonTag tag = mTasksService.loadTag(id);
 
         // Send analytics event.
-        sendTagAddedEvent((long) title.length());
+        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, Labels.TAGS_FROM_EDIT_TASK, (long) title.length());
 
         // Assign to task.
         assignTag(tag);
@@ -1051,7 +1047,7 @@ public class EditTaskActivity extends FragmentActivity {
                         mTasksService.deleteTag(selectedTag.getId());
 
                         // Send analytics event.
-                        sendTagDeletedEvent();
+                        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_EDIT_TASK, null);
 
                         // Refresh displayed tags.
                         loadTags();
@@ -1121,7 +1117,7 @@ public class EditTaskActivity extends FragmentActivity {
         startActivity(Intent.createChooser(inviteIntent, getString(R.string.share_chooser_title)));
 
         // Send analytics event.
-        sendShareTaskEvent();
+        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, 1l);
     }
 
     private void showRepeatOptions() {
@@ -1318,7 +1314,7 @@ public class EditTaskActivity extends FragmentActivity {
             saveSubtask(task);
 
             // Send analytics event.
-            sendSubtaskCompletedEvent();
+            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.COMPLETED_SUBTASK, null, null);
 
             // Play sound.
             SoundHandler.playSound(mContext.get(), R.raw.complete_task_1);
@@ -1343,7 +1339,7 @@ public class EditTaskActivity extends FragmentActivity {
                 hideSubtasks();
 
             // Send analytics event.
-            sendSubtaskDeletedEvent();
+            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.DELETED_SUBTASK, null, null);
 
             // Play sound.
             SoundHandler.playSound(mContext.get(), R.raw.action_negative);
@@ -1413,7 +1409,7 @@ public class EditTaskActivity extends FragmentActivity {
             if (mListView.getVisibility() == View.GONE) showSubtasks();
 
             // Send analytics event.
-            sendSubtaskAddedEvent((long) title.length());
+            Analytics.sendEvent(Categories.ACTION_STEPS, Actions.ADDED_SUBTASK, Labels.ADDED_FROM_INPUT, (long) title.length());
 
             // Play sound.
             SoundHandler.playSound(this, R.raw.action_positive);
@@ -1546,7 +1542,7 @@ public class EditTaskActivity extends FragmentActivity {
             startActivity(evernoteIntent);
 
             // Send analytics event.
-            sendEvernoteOpenEvent();
+            Analytics.sendEvent(Categories.ACTIONS, Actions.OPEN_EVERNOTE, null, null);
         }
     }
 
@@ -1556,13 +1552,6 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Update recurring tasks dimension.
         Analytics.sendRecurringTasks(this);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.REOCURRENCE, option);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.RECURRING_TASK, fields);
     }
 
     private void sendNoteChangedEvent() {
@@ -1570,151 +1559,16 @@ public class EditTaskActivity extends FragmentActivity {
 
         // Send analytics event.
         Analytics.sendEvent(Categories.TASKS, Actions.NOTE, null, length);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, length);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.NOTE, fields);
     }
 
     private void sendTagAssignEvents() {
         if (mAssignedTagsCount > 0) {
-            sendTagAssignEvent();
+            Analytics.sendEvent(Categories.TAGS, Actions.ASSIGNED_TAGS, Labels.TAGS_FROM_EDIT_TASK, (long) mAssignedTagsCount);
         }
 
         if (mUnassignedTagsCount > 0) {
-            sendTagUnassignEvent();
+            Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS, Labels.TAGS_FROM_EDIT_TASK, (long) mUnassignedTagsCount);
         }
-    }
-
-    private void sendTagAssignEvent() {
-        // Send tags assigned event.
-        Analytics.sendEvent(Categories.TAGS, Actions.ASSIGNED_TAGS,
-                Labels.TAGS_FROM_EDIT_TASK, (long) mAssignedTagsCount);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-        fields.put(IntercomFields.NUMBER_OF_TAGS, mAssignedTagsCount);
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_EDIT_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ASSIGN_TAGS, fields);
-    }
-
-    private void sendTagUnassignEvent() {
-        // Send tags unassigned event.
-        Analytics.sendEvent(Categories.TAGS, Actions.UNASSIGNED_TAGS,
-                Labels.TAGS_FROM_EDIT_TASK, (long) mUnassignedTagsCount);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-        fields.put(IntercomFields.NUMBER_OF_TAGS, mUnassignedTagsCount);
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_EDIT_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.UNASSIGN_TAGS, fields);
-    }
-
-    private void sendDeletedTaskEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TASKS, Actions.DELETED_TASKS, null, 1l);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.DELETED_TASKS, fields);
-    }
-
-    private void sendSubtaskAddedEvent(long length) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.ACTION_STEPS, Actions.ADDED_SUBTASK, Labels.ADDED_FROM_INPUT, length);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.FROM, Labels.ADDED_FROM_INPUT);
-        fields.put(IntercomFields.TASK_ACTION_STEPS, mSubtasks.size());
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_SUBTASK, fields);
-    }
-
-    private void sendSubtaskCompletedEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.ACTION_STEPS, Actions.COMPLETED_SUBTASK, null, null);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.COMPLETED_SUBTASK, null);
-    }
-
-    private void sendSubtaskDeletedEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.ACTION_STEPS, Actions.DELETED_SUBTASK, null, null);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.DELETED_SUBTASK, null);
-    }
-
-    private void sendTaskPriorityEvent(String label) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TASKS, Actions.PRIORITY, label, null);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.ASSIGNED, label);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.PRIORITY, fields);
-    }
-
-    private void sendTagAddedEvent(long length) {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.ADDED_TAG, Labels.TAGS_FROM_EDIT_TASK, length);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.LENGHT, length);
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_EDIT_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.ADDED_TAG, fields);
-    }
-
-    private void sendTagDeletedEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.TAGS, Actions.DELETED_TAG, Labels.TAGS_FROM_EDIT_TASK, null);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_EDIT_TASK);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.DELETED_TAG, fields);
-    }
-
-    private void sendShareTaskEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.SHARE_TASK, Actions.SHARE_TASK_OPEN, null, 1l);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TASKS, 1);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.SHARE_TASK_OPENED, fields);
-    }
-
-    private void sendEvernoteOpenEvent() {
-        // Send analytics event.
-        Analytics.sendEvent(Categories.ACTIONS, Actions.OPEN_EVERNOTE, null, null);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.OPEN_EVERNOTE, null);
     }
 
 }

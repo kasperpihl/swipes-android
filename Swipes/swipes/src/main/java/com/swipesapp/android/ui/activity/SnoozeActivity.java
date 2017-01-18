@@ -19,11 +19,8 @@ import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
 import com.swipesapp.android.analytics.values.Actions;
 import com.swipesapp.android.analytics.values.Categories;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
 import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.handler.SoundHandler;
@@ -39,7 +36,6 @@ import com.swipesapp.android.values.Sections;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
@@ -621,7 +617,6 @@ public class SnoozeActivity extends FragmentActivity {
     private void sendSnoozedEvent(String option, Date schedule, boolean timePicker) {
         Date currentSchedule = mNewTaskMode ? new Date() : mTask.getLocalSchedule();
         Long daysAhead = null;
-        String usedPicker = timePicker ? Labels.VALUE_YES : Labels.VALUE_NO;
 
         if (currentSchedule != null && schedule != null) {
             daysAhead = (long) DateUtils.getDateDifference(currentSchedule, schedule, TimeUnit.DAYS);
@@ -629,16 +624,6 @@ public class SnoozeActivity extends FragmentActivity {
 
         // Send analytics event.
         Analytics.sendEvent(Categories.TASKS, Actions.SNOOZED_TASK, option, daysAhead);
-
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.FROM, option);
-        fields.put(IntercomFields.TIME_PICKER, usedPicker);
-
-        if (daysAhead != null) fields.put(IntercomFields.DAYS_AHEAD, daysAhead);
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.SNOOZED_TASKS, fields);
     }
 
     public static void applyNextDayTreatment(Calendar snooze) {

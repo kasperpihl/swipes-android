@@ -162,7 +162,6 @@
     <string name="evernote_filter_description">Sadece görev içeren notlar</string>
     <!-- About -->
     <string name="about">Hakkında</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Bu uygulama size şunun tarafından sağlanmıştır</string>
     <string name="about_app_version">Uygulama sürümü</string>
     <string name="about_policies">Politikalar</string>

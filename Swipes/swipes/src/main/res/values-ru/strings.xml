@@ -117,7 +117,6 @@
     <string name="evernote_filter_description">Только заметки с задачами</string>
     <!-- About -->
     <string name="about">О программе</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Разработано командой Swipes</string>
     <string name="about_app_version">Версия приложения</string>
     <string name="about_policies">Лицензионное соглашение</string>

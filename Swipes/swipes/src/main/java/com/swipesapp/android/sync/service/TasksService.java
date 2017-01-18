@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.swipesapp.android.analytics.handler.Analytics;
-import com.swipesapp.android.analytics.handler.IntercomHandler;
-import com.swipesapp.android.analytics.values.IntercomEvents;
-import com.swipesapp.android.analytics.values.IntercomFields;
-import com.swipesapp.android.analytics.values.Labels;
 import com.swipesapp.android.app.SwipesApplication;
 import com.swipesapp.android.db.Attachment;
 import com.swipesapp.android.db.DaoSession;
@@ -31,7 +27,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -487,9 +482,6 @@ public class TasksService {
 
         // Update number of tags dimension.
         Analytics.sendNumberOfTags(mContext.get());
-
-        // Send unassign event.
-        sendTagUnassignEvent(assignments);
     }
 
     /**
@@ -1183,23 +1175,6 @@ public class TasksService {
         }
 
         return attachments;
-    }
-
-    /**
-     * Sends a tag unassigned event.
-     *
-     * @param assignments Tasks this tag is being unassigned from.
-     */
-    private void sendTagUnassignEvent(List assignments) {
-        // Prepare Intercom fields.
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(IntercomFields.NUMBER_OF_TAGS, 1);
-        fields.put(IntercomFields.FROM, Labels.TAGS_FROM_DELETE_TAG);
-
-        if (assignments != null) fields.put(IntercomFields.NUMBER_OF_TASKS, assignments.size());
-
-        // Send Intercom events.
-        IntercomHandler.sendEvent(IntercomEvents.UNASSIGN_TAGS, fields);
     }
 
 }

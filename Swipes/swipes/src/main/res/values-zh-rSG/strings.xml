@@ -144,7 +144,6 @@
     <string name="evernote_filter_description">只有任务里的笔记</string>
     <!-- About -->
     <string name="about">关于</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">这个APP来自</string>
     <string name="about_app_version">应用版本</string>
     <string name="about_policies">隐私声明</string>

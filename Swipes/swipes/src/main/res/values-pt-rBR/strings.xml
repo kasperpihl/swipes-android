@@ -162,7 +162,6 @@ Vamos adicioná-la como uma tarefa no Swipes e sincronizar suas caixas de seleç
     <string name="evernote_filter_description">Somente notas com tarefas</string>
     <!-- About -->
     <string name="about">Sobre</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Trazido a você por</string>
     <string name="about_app_version">Versão do aplicativo</string>
     <string name="about_policies">Política de Privacidade</string>

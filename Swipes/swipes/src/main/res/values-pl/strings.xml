@@ -133,7 +133,6 @@ Dodamy go jako zadanie w Swipes i zsynchronizujemy wszystkie pola wyboru.</strin
     <string name="evernote_filter_description">Tylko notatki z zadaniami</string>
     <!-- About -->
     <string name="about">O nas</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Aplikacja została stworzona dla Ciebie przez</string>
     <string name="about_app_version">Wersja aplikacji</string>
     <string name="about_policies">Polityka prywatności</string>

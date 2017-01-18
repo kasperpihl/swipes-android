@@ -150,7 +150,6 @@ La aggiungeremo come compito in Swipes e sincronizzeremo tutti i suoi punti.</st
     <string name="evernote_filter_description">Solo note con compiti</string>
     <!-- About -->
     <string name="about">Info su</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Quest\'app è stata creata da</string>
     <string name="about_app_version">Versione</string>
     <string name="about_policies">Policy</string>

@@ -117,7 +117,6 @@ Budeme přidat jako úkol ve Swipes a synchronizovat jeho všechny zatržítka.<
     <string name="evernote_filter_description">Pouze poznámky s úkoly</string>
     <!-- About -->
     <string name="about">O programu</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Aplikaci pro vás vytvořili</string>
     <string name="about_app_version">Verze aplikace</string>
     <string name="about_policies">Zásady použití</string>

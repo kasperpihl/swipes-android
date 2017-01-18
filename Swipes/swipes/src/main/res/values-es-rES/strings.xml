@@ -162,7 +162,6 @@ Nosotros las añadiremos a Swipes y sincronizaremos todos los puntos de la lista
     <string name="evernote_filter_description">Solo notas con tareas</string>
     <!-- About -->
     <string name="about">"Acerca de "</string>
-    <string name="app_version">%1$s (%2$s)</string>
     <string name="about_brought_by">Aplicación proporcionada por</string>
     <string name="about_app_version">Versión</string>
     <string name="about_policies">Política</string>

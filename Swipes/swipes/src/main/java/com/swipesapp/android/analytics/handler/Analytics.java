@@ -112,8 +112,6 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            IntercomHandler.sendIntercomAttributes(context);
-
             logDebugMessage("Sent dimension: User Level - " + userLevel);
         }
     }
@@ -144,8 +142,6 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            IntercomHandler.sendIntercomAttributes(context);
-
             logDebugMessage("Sent dimension: Evernote User Level - " + userLevel);
         }
     }
@@ -168,8 +164,6 @@ public class Analytics {
                     .setCustomDimension(Dimensions.DIMEN_ACTIVE_THEME, theme)
                     .setNewSession()
                     .build());
-
-            IntercomHandler.sendIntercomAttributes(context);
 
             logDebugMessage("Sent dimension: Active Theme - " + theme);
         }
@@ -194,8 +188,6 @@ public class Analytics {
                     .setNewSession()
                     .build());
 
-            IntercomHandler.sendIntercomAttributes(context);
-
             logDebugMessage("Sent dimension: Recurring Tasks - " + currentCount);
         }
     }
@@ -218,8 +210,6 @@ public class Analytics {
                     .setCustomDimension(Dimensions.DIMEN_NUMBER_OF_TAGS, currentCount)
                     .setNewSession()
                     .build());
-
-            IntercomHandler.sendIntercomAttributes(context);
 
             logDebugMessage("Sent dimension: Number of Tags - " + currentCount);
         }
@@ -244,8 +234,6 @@ public class Analytics {
                     .setCustomDimension(Dimensions.DIMEN_MAILBOX_STATUS, status)
                     .setNewSession()
                     .build());
-
-            IntercomHandler.sendIntercomAttributes(context);
 
             logDebugMessage("Sent dimension: Mailbox Status - " + status);
         }
