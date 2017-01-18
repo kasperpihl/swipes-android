@@ -924,14 +924,6 @@ public class TasksActivity extends BaseActivity {
         mTasksService.sendBroadcast(Intents.SHARE_TASKS);
     }
 
-    public void shareOnFacebook(View v) {
-        // TODO: Call sharing flow.
-    }
-
-    public void shareOnTwitter(View v) {
-        // TODO: Call sharing flow.
-    }
-
     public void shareAll(View v) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

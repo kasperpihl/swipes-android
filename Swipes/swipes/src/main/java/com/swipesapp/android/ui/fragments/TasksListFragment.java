@@ -499,16 +499,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             share.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
                     R.drawable.ic_share_light : R.drawable.ic_share_dark);
             setButtonSelector(share);
-
-            Button facebookShare = (Button) mEmptyView.findViewById(R.id.button_facebook_share);
-            facebookShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
-                    R.drawable.ic_facebook_light : R.drawable.ic_facebook_dark);
-            setButtonSelector(facebookShare);
-
-            Button twitterShare = (Button) mEmptyView.findViewById(R.id.button_twitter_share);
-            twitterShare.setBackgroundResource(ThemeUtils.isLightTheme(getActivity()) ?
-                    R.drawable.ic_twitter_light : R.drawable.ic_twitter_dark);
-            setButtonSelector(twitterShare);
         }
 
         // Setup results footer.
