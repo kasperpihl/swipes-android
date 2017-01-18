@@ -4,6 +4,7 @@
     <!-- API keys -->
     <string name="application_id">nf9lMphPOh3jZivxqQaMAg6YLtzlfvRjExUEKST3</string>
     <string name="client_key">SrkvKzFm51nbKZ3hzuwnFxPPz24I9erkjvkf0XzS</string>
+    <string name="server">https://pg-app-7zd37b94rjuze3x1cwrxfhlf9qj292.scalabl.cloud/1/</string>
     <string name="facebook_app_id">531435630236702</string>
 
     <!-- Test API keys -->

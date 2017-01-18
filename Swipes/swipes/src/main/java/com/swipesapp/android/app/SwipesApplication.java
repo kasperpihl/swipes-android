@@ -13,6 +13,7 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
+import com.parse.interceptors.ParseLogInterceptor;
 import com.swipesapp.android.BuildConfig;
 import com.swipesapp.android.R;
 import com.swipesapp.android.analytics.handler.Analytics;
@@ -64,8 +65,12 @@ public class SwipesApplication extends Application {
         loadDefaultPreferences(getApplicationContext());
 
         // Initialize the Parse SDK.
-        Parse.initialize(this, getString(R.string.application_id), getString(R.string.client_key));
-        ParseFacebookUtils.initialize(getString(R.string.facebook_app_id));
+        Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
+                .applicationId(getString(R.string.application_id))
+                .clientKey(getString(R.string.client_key))
+                .server(getString(R.string.server))
+                .addNetworkInterceptor(new ParseLogInterceptor()).build());
+        ParseFacebookUtils.initialize(getApplicationContext());
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 
         // Subscribe to push channels.

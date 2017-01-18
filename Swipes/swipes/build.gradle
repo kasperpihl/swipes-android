@@ -88,4 +88,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
         transitive = true;
     }
+    debugCompile 'com.parse:parseinterceptors:0.0.2'
 }
