@@ -25,6 +25,6 @@
     <dimen name="evernote_attachments_dialog_height">580dp</dimen>
 
     <!-- Components -->
-    <dimen name="floating_button_margin">24dp</dimen>
+    <dimen name="floating_button_margin">16dp</dimen>
 
 </resources>

@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.InputType;
@@ -24,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -42,7 +44,6 @@ import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.github.clans.fab.FloatingActionButton;
 import com.parse.ParseUser;
 import com.parse.ui.ParseExtras;
 import com.parse.ui.ParseLoginBuilder;
@@ -1853,6 +1854,10 @@ public class TasksActivity extends BaseActivity {
 
             // Fade out floating button.
             mButtonAddTask.animate().alpha(0f).setDuration(Constants.ANIMATION_DURATION_MEDIUM);
+        }
+
+        @Override
+        public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
         }
     };
 

@@ -1,9 +1,9 @@
 package com.swipesapp.android.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -39,7 +39,7 @@ import io.fabric.sdk.android.Fabric;
  *
  * @author Felipe Bari
  */
-public class SwipesApplication extends Application {
+public class SwipesApplication extends MultiDexApplication {
 
     public static DaoSession sDaoSession;
 
