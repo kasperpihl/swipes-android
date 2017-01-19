@@ -1,6 +1,7 @@
 package com.swipesapp.android.app;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDexApplication;
@@ -100,6 +101,14 @@ public class SwipesApplication extends MultiDexApplication {
 
         // Start sound handler.
         SoundHandler.load(getApplicationContext());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Configuration changed (possible rotation). Reapply language.
+        LanguageHandler.applyLanguage(getApplicationContext());
     }
 
     public static void startDaoSession(Context context) {
