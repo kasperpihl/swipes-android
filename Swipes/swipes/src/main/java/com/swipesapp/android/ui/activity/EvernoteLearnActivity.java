@@ -18,8 +18,8 @@ import com.swipesapp.android.ui.view.SwipesDialog;
 
 import java.lang.ref.WeakReference;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class EvernoteLearnActivity extends BaseActivity {
 
@@ -94,12 +94,11 @@ public class EvernoteLearnActivity extends BaseActivity {
 
     private void showLoginDialog() {
         // Display dialog to login.
-        new SwipesDialog.Builder(this)
+        SwipesDialog.show(new SwipesDialog.Builder(this)
+                .actionsColorRes(R.color.neutral_accent)
                 .title(R.string.evernote_login_dialog_title)
                 .content(R.string.evernote_login_dialog_message)
-                .positiveText(R.string.evernote_login_dialog_ok)
-                .actionsColorRes(R.color.neutral_accent)
-                .show();
+                .positiveText(R.string.evernote_login_dialog_ok));
     }
 
 }

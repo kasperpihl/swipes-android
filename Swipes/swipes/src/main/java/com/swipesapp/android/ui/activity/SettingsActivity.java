@@ -343,12 +343,12 @@ public class SettingsActivity extends BaseActivity {
 
         private void performLogout() {
             // Display confirmation dialog.
-            new SwipesDialog.Builder(getActivity())
+            SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                    .actionsColorRes(R.color.neutral_accent)
                     .title(R.string.logout_dialog_title)
                     .content(R.string.logout_dialog_message)
                     .positiveText(R.string.logout_dialog_yes)
                     .negativeText(R.string.logout_dialog_no)
-                    .actionsColorRes(R.color.neutral_accent)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
@@ -369,8 +369,7 @@ public class SettingsActivity extends BaseActivity {
 
                             finishAccountChange();
                         }
-                    })
-                    .show();
+                    }));
         }
 
         private void resetPreferences() {
@@ -389,12 +388,12 @@ public class SettingsActivity extends BaseActivity {
 
         private void askToKeepData() {
             // Display confirmation dialog.
-            new SwipesDialog.Builder(getActivity())
+            SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                    .actionsColorRes(R.color.neutral_accent)
                     .title(R.string.keep_data_dialog_title)
                     .content(R.string.keep_data_dialog_message)
                     .positiveText(R.string.keep_data_dialog_yes)
                     .negativeText(R.string.keep_data_dialog_no)
-                    .actionsColorRes(R.color.neutral_accent)
                     .cancelable(false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -412,8 +411,7 @@ public class SettingsActivity extends BaseActivity {
 
                             finishAccountChange();
                         }
-                    })
-                    .show();
+                    }));
         }
 
         private void finishAccountChange() {

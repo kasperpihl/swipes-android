@@ -89,8 +89,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TasksActivity extends BaseActivity {
@@ -994,11 +994,11 @@ public class TasksActivity extends BaseActivity {
             input.requestFocus();
 
             // Display dialog to save new tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                    .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
                     .title(R.string.add_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -1017,8 +1017,7 @@ public class TasksActivity extends BaseActivity {
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {
@@ -1314,12 +1313,12 @@ public class TasksActivity extends BaseActivity {
             input.requestFocus();
 
             // Display dialog to edit tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .title(R.string.edit_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .neutralText(R.string.delete_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -1348,8 +1347,7 @@ public class TasksActivity extends BaseActivity {
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {
@@ -1384,12 +1382,12 @@ public class TasksActivity extends BaseActivity {
 
     private void showTagDeleteDialog(final GsonTag selectedTag) {
         // Display dialog to delete tag.
-        new SwipesDialog.Builder(mContext.get())
+        SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
                 .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
                 .content(R.string.delete_tag_dialog_message)
                 .positiveText(R.string.delete_tag_dialog_yes)
                 .negativeText(R.string.delete_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mCurrentSection, mContext.get()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1411,8 +1409,7 @@ public class TasksActivity extends BaseActivity {
                         // Play sound.
                         SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
-                })
-                .show();
+                }));
     }
 
     public Set<GsonTag> getSelectedFilterTags() {
@@ -1550,12 +1547,12 @@ public class TasksActivity extends BaseActivity {
 
     private void askToKeepData() {
         // Display confirmation dialog.
-        new SwipesDialog.Builder(this)
+        SwipesDialog.show(new SwipesDialog.Builder(this)
+                .actionsColorRes(R.color.neutral_accent)
                 .title(R.string.keep_data_dialog_title)
                 .content(R.string.keep_data_dialog_message)
                 .positiveText(R.string.keep_data_dialog_yes)
                 .negativeText(R.string.keep_data_dialog_no)
-                .actionsColorRes(R.color.neutral_accent)
                 .cancelable(false)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -1576,8 +1573,7 @@ public class TasksActivity extends BaseActivity {
                         // Sync user data.
                         performInitialSync();
                     }
-                })
-                .show();
+                }));
     }
 
     private void clearData() {
@@ -1617,12 +1613,12 @@ public class TasksActivity extends BaseActivity {
 
     private void showWelcomeDialog() {
         // Display welcome dialog.
-        new SwipesDialog.Builder(this)
+        SwipesDialog.show(new SwipesDialog.Builder(this)
+                .actionsColorRes(R.color.neutral_accent)
                 .title(R.string.welcome_dialog_title)
                 .content(R.string.welcome_dialog_message)
                 .positiveText(R.string.welcome_dialog_yes)
                 .negativeText(R.string.welcome_dialog_no)
-                .actionsColorRes(R.color.neutral_accent)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1654,8 +1650,7 @@ public class TasksActivity extends BaseActivity {
                             showNavigationTutorial();
                         }
                     }
-                })
-                .show();
+                }));
     }
 
     private View.OnClickListener mNavigationToggleListener = new View.OnClickListener() {
@@ -1913,12 +1908,12 @@ public class TasksActivity extends BaseActivity {
         // Check if Evernote is connected without a Swipes account.
         if (EvernoteService.getInstance().isAuthenticated() && ParseUser.getCurrentUser() == null) {
             // Display warning dialog.
-            new SwipesDialog.Builder(this)
+            SwipesDialog.show(new SwipesDialog.Builder(this)
+                    .actionsColorRes(R.color.neutral_accent)
                     .title(R.string.evernote_login_dialog_title)
                     .content(R.string.evernote_login_warning_message)
                     .positiveText(R.string.evernote_login_dialog_yes)
                     .negativeText(R.string.evernote_login_dialog_no)
-                    .actionsColorRes(R.color.neutral_accent)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
@@ -1944,8 +1939,7 @@ public class TasksActivity extends BaseActivity {
 
                             mClickedLogin = false;
                         }
-                    })
-                    .show();
+                    }));
         }
     }
 

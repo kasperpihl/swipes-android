@@ -53,8 +53,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddTasksActivity extends BaseActivity {
@@ -485,12 +485,12 @@ public class AddTasksActivity extends BaseActivity {
             input.requestFocus();
 
             // Display dialog to edit tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .title(R.string.edit_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .neutralText(R.string.delete_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -519,8 +519,7 @@ public class AddTasksActivity extends BaseActivity {
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {
@@ -555,12 +554,12 @@ public class AddTasksActivity extends BaseActivity {
 
     private void showTagDeleteDialog(final GsonTag selectedTag) {
         // Display dialog to delete tag.
-        new SwipesDialog.Builder(mContext.get())
+        SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                 .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
                 .content(R.string.delete_tag_dialog_message)
                 .positiveText(R.string.delete_tag_dialog_yes)
                 .negativeText(R.string.delete_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -579,8 +578,7 @@ public class AddTasksActivity extends BaseActivity {
                         // Play sound.
                         SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
-                })
-                .show();
+                }));
     }
 
     View.OnClickListener mAddTagListener = new View.OnClickListener() {
@@ -595,11 +593,11 @@ public class AddTasksActivity extends BaseActivity {
             input.requestFocus();
 
             // Display dialog to save new tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .title(R.string.add_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -618,8 +616,7 @@ public class AddTasksActivity extends BaseActivity {
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {

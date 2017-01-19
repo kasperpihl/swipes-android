@@ -33,20 +33,21 @@ public class SwipesListPreference extends ListPreference {
             }
         }
 
-        SwipesDialog.Builder builder = new SwipesDialog.Builder(mContext)
+        SwipesDialog.Builder builder = (SwipesDialog.Builder) new SwipesDialog.Builder(mContext)
+                .actionsColorRes(R.color.neutral_accent)
                 .title(getDialogTitle())
                 .icon(getDialogIcon())
                 .positiveText(R.string.preference_yes)
-                .actionsColorRes(R.color.neutral_accent)
                 .items(getEntries())
-                .itemsCallbackSingleChoice(selected, new MaterialDialog.ListCallback() {
+                .itemsCallbackSingleChoice(selected, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         if (which >= 0 && getEntryValues() != null) {
                             String value = getEntryValues()[which].toString();
                             if (callChangeListener(value))
                                 setValue(value);
                         }
+                        return true;
                     }
                 });
 

@@ -88,12 +88,12 @@ public class IntegrationsActivity extends BaseActivity {
             evernoteUnlink.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     // Show confirmation dialog.
-                    new SwipesDialog.Builder(getActivity())
+                    SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                            .actionsColorRes(R.color.neutral_accent)
                             .title(R.string.evernote_unlink_dialog_title)
                             .content(R.string.evernote_unlink_dialog_message)
                             .positiveText(R.string.evernote_unlink_dialog_yes)
                             .negativeText(R.string.evernote_unlink_dialog_no)
-                            .actionsColorRes(R.color.neutral_accent)
                             .callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
@@ -106,8 +106,7 @@ public class IntegrationsActivity extends BaseActivity {
                                     // Reload activity.
                                     getActivity().recreate();
                                 }
-                            })
-                            .show();
+                            }));
 
                     return true;
                 }
@@ -177,12 +176,11 @@ public class IntegrationsActivity extends BaseActivity {
 
         private void showLoginDialog() {
             // Display dialog to login.
-            new SwipesDialog.Builder(getActivity())
+            SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                    .actionsColorRes(R.color.neutral_accent)
                     .title(R.string.evernote_login_dialog_title)
                     .content(R.string.evernote_login_dialog_message)
-                    .positiveText(R.string.evernote_login_dialog_ok)
-                    .actionsColorRes(R.color.neutral_accent)
-                    .show();
+                    .positiveText(R.string.evernote_login_dialog_ok));
         }
 
     }

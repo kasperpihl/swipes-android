@@ -70,8 +70,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
@@ -712,12 +712,12 @@ public class EditTaskActivity extends FragmentActivity {
     @OnClick(R.id.edit_task_delete_button)
     protected void deleteTask() {
         // Display confirmation dialog.
-        new SwipesDialog.Builder(this)
+        SwipesDialog.show(new SwipesDialog.Builder(this)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
                 .title(getResources().getString(R.string.delete_single_task))
                 .content(R.string.delete_task_dialog_text)
                 .positiveText(R.string.delete_task_dialog_yes)
                 .negativeText(R.string.delete_task_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -734,8 +734,7 @@ public class EditTaskActivity extends FragmentActivity {
                         // Close activity.
                         finish();
                     }
-                })
-                .show();
+                }));
     }
 
     @OnClick(R.id.edit_task_evernote_button)
@@ -800,11 +799,11 @@ public class EditTaskActivity extends FragmentActivity {
         input.requestFocus();
 
         // Display dialog to save new tag.
-        final SwipesDialog dialog = new SwipesDialog.Builder(this)
+        final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(this)
+                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
                 .title(R.string.add_tag_dialog_title)
                 .positiveText(R.string.add_tag_dialog_yes)
                 .negativeText(R.string.add_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, this))
                 .customView(customizeAddTagInput(input), false)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -831,8 +830,7 @@ public class EditTaskActivity extends FragmentActivity {
                     public void onDismiss(DialogInterface dialogInterface) {
                         hideKeyboard();
                     }
-                })
-                .show();
+                }));
 
         // Dismiss dialog on back press.
         input.setListener(new KeyboardBackListener() {
@@ -964,12 +962,12 @@ public class EditTaskActivity extends FragmentActivity {
             input.requestFocus();
 
             // Display dialog to edit tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(mContext.get())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .title(R.string.edit_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .neutralText(R.string.delete_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, mContext.get()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -998,8 +996,7 @@ public class EditTaskActivity extends FragmentActivity {
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {
@@ -1034,12 +1031,12 @@ public class EditTaskActivity extends FragmentActivity {
 
     private void showTagDeleteDialog(final GsonTag selectedTag) {
         // Display dialog to delete tag.
-        new SwipesDialog.Builder(mContext.get())
+        SwipesDialog.show(new SwipesDialog.Builder(mContext.get())
+                .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
                 .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
                 .content(R.string.delete_tag_dialog_message)
                 .positiveText(R.string.delete_tag_dialog_yes)
                 .negativeText(R.string.delete_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, mContext.get()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1058,8 +1055,7 @@ public class EditTaskActivity extends FragmentActivity {
                         // Play sound.
                         SoundHandler.playSound(mContext.get(), R.raw.action_negative);
                     }
-                })
-                .show();
+                }));
     }
 
     private boolean isTagAssigned(GsonTag selectedTag) {

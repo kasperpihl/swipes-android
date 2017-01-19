@@ -73,8 +73,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -1156,12 +1156,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void deleteSelectedTasks() {
         // Display confirmation dialog.
-        new SwipesDialog.Builder(getActivity())
+        SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .title(getResources().getQuantityString(R.plurals.delete_task_dialog_title, sSelectedTasks.size(), sSelectedTasks.size()))
                 .content(R.string.delete_task_dialog_text)
                 .positiveText(R.string.delete_task_dialog_yes)
                 .negativeText(R.string.delete_task_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1181,8 +1181,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Play sound.
                         SoundHandler.playSound(getActivity(), R.raw.action_negative);
                     }
-                })
-                .show();
+                }));
     }
 
     @OnClick(R.id.button_show_old)
@@ -1220,12 +1219,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     @OnClick(R.id.button_clear_old)
     protected void clearOldTasks() {
         // Display confirmation dialog.
-        new SwipesDialog.Builder(getActivity())
+        SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .title(R.string.clear_old_dialog_title)
                 .content(R.string.clear_old_dialog_text)
                 .positiveText(R.string.clear_old_dialog_yes)
                 .negativeText(R.string.clear_old_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1247,8 +1246,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Hide buttons.
                         mHeaderView.setVisibility(View.GONE);
                     }
-                })
-                .show();
+                }));
     }
 
     private void openSnoozeSelector(GsonTask task) {
@@ -1333,11 +1331,11 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         input.requestFocus();
 
         // Display dialog to save new tag.
-        final SwipesDialog dialog = new SwipesDialog.Builder(getActivity())
+        final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .title(R.string.add_tag_dialog_title)
                 .positiveText(R.string.add_tag_dialog_yes)
                 .negativeText(R.string.add_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .customView(customizeAddTagInput(input), false)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -1356,8 +1354,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Show keyboard automatically.
                         showKeyboard();
                     }
-                })
-                .show();
+                }));
 
         // Dismiss dialog on back press.
         input.setListener(new KeyboardBackListener() {
@@ -1489,12 +1486,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
             input.requestFocus();
 
             // Display dialog to edit tag.
-            final SwipesDialog dialog = new SwipesDialog.Builder(getActivity())
+            final SwipesDialog dialog = SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()))
                     .title(R.string.edit_tag_dialog_title)
                     .positiveText(R.string.add_tag_dialog_yes)
                     .neutralText(R.string.delete_tag_dialog_yes)
                     .negativeText(R.string.add_tag_dialog_no)
-                    .actionsColor(ThemeUtils.getSectionColor(Sections.FOCUS, getActivity()))
                     .customView(customizeAddTagInput(input), false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -1523,8 +1520,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                             // Show keyboard automatically.
                             showKeyboard();
                         }
-                    })
-                    .show();
+                    }));
 
             // Dismiss dialog on back press.
             input.setListener(new KeyboardBackListener() {
@@ -1559,12 +1555,12 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
 
     private void showTagDeleteDialog(final GsonTag selectedTag) {
         // Display dialog to delete tag.
-        new SwipesDialog.Builder(getActivity())
+        SwipesDialog.show(new SwipesDialog.Builder(getActivity())
+                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .title(getString(R.string.delete_tag_dialog_title, selectedTag.getTitle()))
                 .content(R.string.delete_tag_dialog_message)
                 .positiveText(R.string.delete_tag_dialog_yes)
                 .negativeText(R.string.delete_tag_dialog_no)
-                .actionsColor(ThemeUtils.getSectionColor(mSection, getActivity()))
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -1583,8 +1579,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
                         // Play sound.
                         SoundHandler.playSound(getActivity(), R.raw.action_negative);
                     }
-                })
-                .show();
+                }));
     }
 
     private boolean isTagAssigned(GsonTag selectedTag) {
