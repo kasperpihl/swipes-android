@@ -89,59 +89,59 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class TasksActivity extends BaseActivity {
 
-    @InjectView(R.id.tasks_area)
+    @BindView(R.id.tasks_area)
     RelativeLayout mTasksArea;
 
-    @InjectView(R.id.pager)
+    @BindView(R.id.pager)
     DynamicViewPager mViewPager;
 
-    @InjectView(R.id.toolbar_area)
+    @BindView(R.id.toolbar_area)
     FrameLayout mToolbarArea;
 
-    @InjectView(R.id.button_add_task)
+    @BindView(R.id.button_add_task)
     FloatingActionButton mButtonAddTask;
 
-    @InjectView(R.id.edit_tasks_bar)
+    @BindView(R.id.edit_tasks_bar)
     FrameLayout mEditTasksBar;
-    @InjectView(R.id.edit_bar_area)
+    @BindView(R.id.edit_bar_area)
     RelativeLayout mEditBarArea;
-    @InjectView(R.id.edit_bar_selection_count)
+    @BindView(R.id.edit_bar_selection_count)
     TextView mEditBarCount;
 
-    @InjectView(R.id.action_buttons_container)
+    @BindView(R.id.action_buttons_container)
     LinearLayout mActionButtonsContainer;
 
-    @InjectView(R.id.workspaces_view)
+    @BindView(R.id.workspaces_view)
     FrameLayout mWorkspacesView;
-    @InjectView(R.id.workspaces_area)
+    @BindView(R.id.workspaces_area)
     LinearLayout mWorkspacesArea;
-    @InjectView(R.id.workspaces_tags)
+    @BindView(R.id.workspaces_tags)
     FlowLayout mWorkspacesTags;
-    @InjectView(R.id.workspaces_empty_tags)
+    @BindView(R.id.workspaces_empty_tags)
     TextView mWorkspacesEmptyTags;
 
-    @InjectView(R.id.action_bar_search)
+    @BindView(R.id.action_bar_search)
     LinearLayout mSearchBar;
-    @InjectView(R.id.action_bar_close_search)
+    @BindView(R.id.action_bar_close_search)
     SwipesTextView mSearchClose;
-    @InjectView(R.id.action_bar_search_field)
+    @BindView(R.id.action_bar_search_field)
     ActionEditText mSearchField;
 
-    @InjectView(R.id.navigation_menu)
+    @BindView(R.id.navigation_menu)
     LinearLayout mNavigationMenu;
-    @InjectView(R.id.navigation_menu_container)
+    @BindView(R.id.navigation_menu_container)
     RelativeLayout mNavigationMenuContainer;
 
-    @InjectView(R.id.navigation_later_button)
+    @BindView(R.id.navigation_later_button)
     SwipesButton mNavigationLaterButton;
-    @InjectView(R.id.navigation_focus_button)
+    @BindView(R.id.navigation_focus_button)
     SwipesButton mNavigationFocusButton;
-    @InjectView(R.id.navigation_done_button)
+    @BindView(R.id.navigation_done_button)
     SwipesButton mNavigationDoneButton;
 
     private static final String LOG_TAG = TasksActivity.class.getSimpleName();
@@ -196,7 +196,7 @@ public class TasksActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.isLightTheme(this) ? R.style.Tasks_Theme_Light : R.style.Tasks_Theme_Dark);
         setContentView(R.layout.activity_tasks);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getNeutralBackgroundColor(this));
 
@@ -228,12 +228,6 @@ public class TasksActivity extends BaseActivity {
         customizeSelectionColors();
 
         loadSearchBar();
-    }
-
-    @Override
-    protected void onDestroy() {
-        ButterKnife.reset(this);
-        super.onDestroy();
     }
 
     @Override

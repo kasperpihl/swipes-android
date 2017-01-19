@@ -39,70 +39,70 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class SnoozeActivity extends FragmentActivity {
 
-    @InjectView(R.id.snooze_view)
+    @BindView(R.id.snooze_view)
     LinearLayout mView;
 
     // Later today.
-    @InjectView(R.id.snooze_later_today_icon)
+    @BindView(R.id.snooze_later_today_icon)
     SwipesTextView mLaterTodayIcon;
-    @InjectView(R.id.snooze_later_today_title)
+    @BindView(R.id.snooze_later_today_title)
     TextView mLaterTodayTitle;
 
     // This evening.
-    @InjectView(R.id.snooze_this_evening_icon)
+    @BindView(R.id.snooze_this_evening_icon)
     SwipesTextView mThisEveningIcon;
-    @InjectView(R.id.snooze_this_evening_title)
+    @BindView(R.id.snooze_this_evening_title)
     TextView mThisEveningTitle;
 
     // Tomorrow.
-    @InjectView(R.id.snooze_tomorrow_icon)
+    @BindView(R.id.snooze_tomorrow_icon)
     SwipesTextView mTomorrowIcon;
-    @InjectView(R.id.snooze_tomorrow_title)
+    @BindView(R.id.snooze_tomorrow_title)
     TextView mTomorrowTitle;
 
     // Two days.
-    @InjectView(R.id.snooze_two_days_icon)
+    @BindView(R.id.snooze_two_days_icon)
     SwipesTextView mTwoDaysIcon;
-    @InjectView(R.id.snooze_two_days_title)
+    @BindView(R.id.snooze_two_days_title)
     TextView mTwoDaysTitle;
 
     // This weekend.
-    @InjectView(R.id.snooze_this_weekend_icon)
+    @BindView(R.id.snooze_this_weekend_icon)
     SwipesTextView mThisWeekendIcon;
-    @InjectView(R.id.snooze_this_weekend_title)
+    @BindView(R.id.snooze_this_weekend_title)
     TextView mThisWeekendTitle;
 
     // Next week.
-    @InjectView(R.id.snooze_next_week_icon)
+    @BindView(R.id.snooze_next_week_icon)
     SwipesTextView mNextWeekIcon;
-    @InjectView(R.id.snooze_next_week_title)
+    @BindView(R.id.snooze_next_week_title)
     TextView mNextWeekTitle;
 
     // Unspecified.
-    @InjectView(R.id.snooze_unspecified_icon)
+    @BindView(R.id.snooze_unspecified_icon)
     SwipesTextView mUnspecifiedIcon;
-    @InjectView(R.id.snooze_unspecified_title)
+    @BindView(R.id.snooze_unspecified_title)
     TextView mUnspecifiedTitle;
 
     // At location.
-    @InjectView(R.id.snooze_at_location_icon)
+    @BindView(R.id.snooze_at_location_icon)
     SwipesTextView mAtLocationIcon;
-    @InjectView(R.id.snooze_at_location_title)
+    @BindView(R.id.snooze_at_location_title)
     TextView mAtLocationTitle;
 
     // Pick date.
-    @InjectView(R.id.snooze_pick_date_icon)
+    @BindView(R.id.snooze_pick_date_icon)
     SwipesTextView mPickDateIcon;
-    @InjectView(R.id.snooze_pick_date_title)
+    @BindView(R.id.snooze_pick_date_title)
     TextView mPickDateTitle;
 
-    @InjectView(R.id.snooze_adjust_hint)
+    @BindView(R.id.snooze_adjust_hint)
     TextView mAdjustHint;
 
     private static final String TIME_PICKER_TAG = "SNOOZE_TIME_PICKER";
@@ -134,7 +134,7 @@ public class SnoozeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_snooze);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 

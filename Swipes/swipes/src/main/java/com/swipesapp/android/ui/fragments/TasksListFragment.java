@@ -74,7 +74,7 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -137,31 +137,31 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
     // List position of last added task.
     private Integer mAddedTaskPosition;
 
-    @InjectView(android.R.id.empty)
+    @BindView(android.R.id.empty)
     ViewStub mViewStub;
 
-    @InjectView(R.id.header_view)
+    @BindView(R.id.header_view)
     LinearLayout mHeaderView;
 
-    @InjectView(R.id.list_area)
+    @BindView(R.id.list_area)
     LinearLayout mListArea;
 
-    @InjectView(R.id.assign_tags_area)
+    @BindView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
 
-    @InjectView(R.id.assign_tags_container)
+    @BindView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
-    @InjectView(R.id.landscape_header)
+    @BindView(R.id.landscape_header)
     RelativeLayout mLandscapeHeader;
 
-    @InjectView(R.id.landscape_header_area)
+    @BindView(R.id.landscape_header_area)
     LinearLayout mLandscapeHeaderArea;
 
-    @InjectView(R.id.action_bar_title)
+    @BindView(R.id.action_bar_title)
     TextView mLandscapeHeaderTitle;
 
-    @InjectView(R.id.action_bar_icon)
+    @BindView(R.id.action_bar_icon)
     SwipesTextView mLandscapeHeaderIcon;
 
     public static TasksListFragment newInstance(int sectionNumber) {
@@ -193,7 +193,7 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         mSection = Sections.getSectionByNumber(sectionNumber);
 
         View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
 
         // Setup view for current section.
         switch (mSection) {
@@ -220,12 +220,6 @@ public class TasksListFragment extends ListFragment implements DynamicListView.L
         refreshTaskList(false);
 
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        ButterKnife.reset(this);
-        super.onDestroyView();
     }
 
     @Override

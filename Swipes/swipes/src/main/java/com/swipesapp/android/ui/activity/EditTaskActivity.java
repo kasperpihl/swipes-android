@@ -71,103 +71,103 @@ import java.util.List;
 import java.util.UUID;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
 public class EditTaskActivity extends FragmentActivity {
 
-    @InjectView(R.id.main_layout)
+    @BindView(R.id.main_layout)
     LinearLayout mLayout;
 
-    @InjectView(R.id.edit_task_button_header)
+    @BindView(R.id.edit_task_button_header)
     RelativeLayout mButtonHeader;
-    @InjectView(R.id.edit_task_evernote_button)
+    @BindView(R.id.edit_task_evernote_button)
     SwipesButton mEvernoteButton;
-    @InjectView(R.id.edit_task_delete_button)
+    @BindView(R.id.edit_task_delete_button)
     SwipesButton mDeleteButton;
-    @InjectView(R.id.edit_task_share_button)
+    @BindView(R.id.edit_task_share_button)
     SwipesButton mShareButton;
 
-    @InjectView(R.id.properties_view)
+    @BindView(R.id.properties_view)
     ScrollView mPropertiesView;
 
-    @InjectView(R.id.button_edit_task_priority)
+    @BindView(R.id.button_edit_task_priority)
     CheckBox mPriority;
-    @InjectView(R.id.edit_task_title)
+    @BindView(R.id.edit_task_title)
     ActionEditText mTitle;
 
-    @InjectView(R.id.edit_task_schedule_icon)
+    @BindView(R.id.edit_task_schedule_icon)
     SwipesTextView mScheduleIcon;
-    @InjectView(R.id.edit_task_schedule)
+    @BindView(R.id.edit_task_schedule)
     TextView mSchedule;
 
-    @InjectView(R.id.edit_task_repeat_icon)
+    @BindView(R.id.edit_task_repeat_icon)
     SwipesTextView mRepeatIcon;
-    @InjectView(R.id.edit_task_repeat)
+    @BindView(R.id.edit_task_repeat)
     TextView mRepeat;
-    @InjectView(R.id.repeat_options)
+    @BindView(R.id.repeat_options)
     LinearLayout mRepeatOptions;
 
-    @InjectView(R.id.repeat_option_never)
+    @BindView(R.id.repeat_option_never)
     RepeatOption mRepeatNever;
-    @InjectView(R.id.repeat_option_day)
+    @BindView(R.id.repeat_option_day)
     RepeatOption mRepeatDay;
-    @InjectView(R.id.repeat_option_mon_fri)
+    @BindView(R.id.repeat_option_mon_fri)
     RepeatOption mRepeatMonFri;
-    @InjectView(R.id.repeat_option_week)
+    @BindView(R.id.repeat_option_week)
     RepeatOption mRepeatWeek;
-    @InjectView(R.id.repeat_option_month)
+    @BindView(R.id.repeat_option_month)
     RepeatOption mRepeatMonth;
-    @InjectView(R.id.repeat_option_year)
+    @BindView(R.id.repeat_option_year)
     RepeatOption mRepeatYear;
 
-    @InjectView(R.id.edit_task_tags_icon)
+    @BindView(R.id.edit_task_tags_icon)
     SwipesTextView mTagsIcon;
-    @InjectView(R.id.edit_task_tags)
+    @BindView(R.id.edit_task_tags)
     TextView mTags;
 
-    @InjectView(R.id.evernote_attachment_container)
+    @BindView(R.id.evernote_attachment_container)
     RelativeLayout mEvernoteAttachmentContainer;
-    @InjectView(R.id.evernote_attachment_icon)
+    @BindView(R.id.evernote_attachment_icon)
     SwipesTextView mEvernoteAttachmentIcon;
-    @InjectView(R.id.evernote_attachment_title)
+    @BindView(R.id.evernote_attachment_title)
     TextView mEvernoteAttachmentTitle;
-    @InjectView(R.id.evernote_attached_view)
+    @BindView(R.id.evernote_attached_view)
     TextView mEvernoteAttachedView;
 
-    @InjectView(R.id.edit_task_notes_icon)
+    @BindView(R.id.edit_task_notes_icon)
     SwipesTextView mNotesIcon;
-    @InjectView(R.id.edit_task_notes)
+    @BindView(R.id.edit_task_notes)
     ActionEditText mNotes;
 
-    @InjectView(R.id.assign_tags_area)
+    @BindView(R.id.assign_tags_area)
     LinearLayout mTagsArea;
-    @InjectView(R.id.assign_tags_container)
+    @BindView(R.id.assign_tags_container)
     FlowLayout mTaskTagsContainer;
 
-    @InjectView(R.id.subtask_footer)
+    @BindView(R.id.subtask_footer)
     LinearLayout mSubtaskFooter;
 
-    @InjectView(R.id.subtask_add_icon)
+    @BindView(R.id.subtask_add_icon)
     SwipesTextView mSubtaskAddIcon;
-    @InjectView(R.id.subtask_add_title)
+    @BindView(R.id.subtask_add_title)
     ActionEditText mSubtaskAddTitle;
 
-    @InjectView(R.id.subtask_visibility_container)
+    @BindView(R.id.subtask_visibility_container)
     LinearLayout mSubtaskVisibilityContainer;
-    @InjectView(R.id.subtask_visibility_icon)
+    @BindView(R.id.subtask_visibility_icon)
     SwipesTextView mSubtaskVisibilityIcon;
-    @InjectView(R.id.subtask_visibility_caption)
+    @BindView(R.id.subtask_visibility_caption)
     TextView mSubtaskVisibilityCaption;
 
-    @InjectView(R.id.subtask_first_buttons_container)
+    @BindView(R.id.subtask_first_buttons_container)
     FrameLayout mSubtaskFirstButtonsContainer;
-    @InjectView(R.id.subtask_first_item)
+    @BindView(R.id.subtask_first_item)
     RelativeLayout mSubtaskFirstItem;
-    @InjectView(R.id.subtask_first_item_title)
+    @BindView(R.id.subtask_first_item_title)
     ActionEditText mSubtaskFirstTitle;
-    @InjectView(R.id.subtask_first_button)
+    @BindView(R.id.subtask_first_button)
     CheckBox mSubtaskFirstButton;
 
     private static final String TAG_SEPARATOR = ", ";
@@ -207,7 +207,7 @@ public class EditTaskActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_edit_task);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 

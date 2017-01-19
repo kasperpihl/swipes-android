@@ -54,27 +54,27 @@ import java.util.Set;
 import java.util.UUID;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class AddTasksActivity extends BaseActivity {
 
-    @InjectView(R.id.add_task_container)
+    @BindView(R.id.add_task_container)
     RelativeLayout mContainer;
 
-    @InjectView(R.id.add_task_fields_container)
+    @BindView(R.id.add_task_fields_container)
     RelativeLayout mFieldsContainer;
 
-    @InjectView(R.id.add_task_title)
+    @BindView(R.id.add_task_title)
     ActionEditText mEditTextTitle;
 
-    @InjectView(R.id.add_task_priority)
+    @BindView(R.id.add_task_priority)
     CheckBox mButtonPriority;
 
-    @InjectView(R.id.add_task_tags_container)
+    @BindView(R.id.add_task_tags_container)
     FlowLayout mTagsContainer;
 
-    @InjectView(R.id.add_task_snooze_checkbox)
+    @BindView(R.id.add_task_snooze_checkbox)
     CheckBox mSnoozeCheckbox;
 
     private WeakReference<Context> mContext;
@@ -99,7 +99,7 @@ public class AddTasksActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.isLightTheme(this) ? R.style.Tasks_Theme_Light : R.style.Tasks_Theme_Dark);
         setContentView(R.layout.activity_add_tasks);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 

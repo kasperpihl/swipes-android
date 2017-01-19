@@ -35,18 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class EvernoteAttachmentsActivity extends FragmentActivity {
 
-    @InjectView(R.id.attachments_view)
+    @BindView(R.id.attachments_view)
     LinearLayout mView;
 
-    @InjectView(R.id.search_field)
+    @BindView(R.id.search_field)
     ActionEditText mSearchField;
 
-    @InjectView(R.id.filter_checkbox)
+    @BindView(R.id.filter_checkbox)
     CheckBox mCheckbox;
 
     private static final String LOG_TAG = EvernoteAttachmentsActivity.class.getSimpleName();
@@ -70,7 +70,7 @@ public class EvernoteAttachmentsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getDialogThemeResource(this));
         setContentView(R.layout.activity_evernote_attachments);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 

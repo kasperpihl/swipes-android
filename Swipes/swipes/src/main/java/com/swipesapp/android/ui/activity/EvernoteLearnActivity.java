@@ -19,11 +19,11 @@ import com.swipesapp.android.ui.view.SwipesDialog;
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class EvernoteLearnActivity extends BaseActivity {
 
-    @InjectView(R.id.evernote_get_started)
+    @BindView(R.id.evernote_get_started)
     Button mButtonGetStarted;
 
     private WeakReference<Context> mContext;
@@ -33,7 +33,7 @@ public class EvernoteLearnActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Light_Theme);
         setContentView(R.layout.activity_evernote_learn);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mContext = new WeakReference<Context>(this);
 

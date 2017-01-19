@@ -17,39 +17,39 @@ import com.swipesapp.android.util.ThemeUtils;
 import com.swipesapp.android.values.Constants;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class AboutActivity extends BaseActivity {
 
-    @InjectView(R.id.about_brought_by)
+    @BindView(R.id.about_brought_by)
     TextView mBroughtBy;
 
-    @InjectView(R.id.about_swipes_signature)
+    @BindView(R.id.about_swipes_signature)
     SwipesTextView mSwipesSignature;
 
-    @InjectView(R.id.about_signature_line)
+    @BindView(R.id.about_signature_line)
     View mSignatureLine;
 
-    @InjectView(R.id.about_version)
+    @BindView(R.id.about_version)
     TextView mVersion;
 
-    @InjectView(R.id.about_version_number)
+    @BindView(R.id.about_version_number)
     TextView mVersionNumber;
 
-    @InjectView(R.id.about_policies_container)
+    @BindView(R.id.about_policies_container)
     LinearLayout mPoliciesContainer;
 
-    @InjectView(R.id.about_policies)
+    @BindView(R.id.about_policies)
     TextView mPolicies;
 
-    @InjectView(R.id.about_policies_detail)
+    @BindView(R.id.about_policies_detail)
     TextView mPoliciesDetail;
 
-    @InjectView(R.id.about_oss)
+    @BindView(R.id.about_oss)
     TextView mOss;
 
-    @InjectView(R.id.about_oss_licenses)
+    @BindView(R.id.about_oss_licenses)
     TextView mOssLicenses;
 
     @Override
@@ -57,7 +57,7 @@ public class AboutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getThemeResource(this));
         setContentView(R.layout.activity_about);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         getWindow().getDecorView().setBackgroundColor(ThemeUtils.getBackgroundColor(this));
 
