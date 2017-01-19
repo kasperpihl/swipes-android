@@ -12,7 +12,6 @@
 
     <!-- Parse permissions -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <permission
         android:name="com.swipesapp.android.permission.C2D_MESSAGE"
