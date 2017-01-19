@@ -1,9 +1,6 @@
 [submodule "Swipes/libraries/android-swipelistview"]
 	path = Swipes/libraries/android-swipelistview
 	url = https://bitbucket.org/felipebari/android-swipelistview.git
-[submodule "Swipes/libraries/PagerSlidingTabStrip"]
-	path = Swipes/libraries/PagerSlidingTabStrip
-	url = https://github.com/douglasdrumond/PagerSlidingTabStrip.git
 [submodule "Swipes/libraries/android-betterpickers"]
 	path = Swipes/libraries/android-betterpickers
 	url = https://bitbucket.org/felipebari/android-betterpickers
