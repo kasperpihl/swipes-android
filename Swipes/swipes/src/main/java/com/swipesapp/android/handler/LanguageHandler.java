@@ -13,7 +13,7 @@ import java.util.Locale;
 /**
  * Handler to deal with language.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class LanguageHandler {
 

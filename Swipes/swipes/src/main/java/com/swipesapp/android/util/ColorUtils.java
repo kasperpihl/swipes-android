@@ -5,7 +5,7 @@ import android.graphics.Color;
 /**
  * Utilitary class for color operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ColorUtils {
 

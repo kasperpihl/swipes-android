@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 /**
  * Handler to deal with in-app sounds.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SoundHandler {
 

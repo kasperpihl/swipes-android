@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Extended DAO for tasks, allowing custom DB operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ExtTaskDao {
 

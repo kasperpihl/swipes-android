@@ -5,7 +5,7 @@ import com.swipesapp.android.sync.gson.GsonTask;
 /**
  * Listener to handle subtask actions.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public interface SubtaskListener {
 

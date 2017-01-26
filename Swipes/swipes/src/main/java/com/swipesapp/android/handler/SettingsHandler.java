@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Handler to deal with user settings.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SettingsHandler {
 

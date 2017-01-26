@@ -1,12 +1,12 @@
 [submodule "Swipes/libraries/android-swipelistview"]
 	path = Swipes/libraries/android-swipelistview
-	url = https://bitbucket.org/felipebari/android-swipelistview.git
+	url = git@github.com:fehbari/android-swipelistview.git
 [submodule "Swipes/libraries/android-betterpickers"]
 	path = Swipes/libraries/android-betterpickers
-	url = https://bitbucket.org/felipebari/android-betterpickers
+	url = git@github.com:fehbari/android-betterpickers
 [submodule "Swipes/libraries/ParseUI-Android"]
 	path = Swipes/libraries/ParseUI-Android
-	url = https://bitbucket.org/felipebari/parseui-android.git
+	url = git@github.com:fehbari/parseui-android.git
 [submodule "Swipes/libraries/evernote-sdk-android"]
 	path = Swipes/libraries/evernote-sdk-android
-	url = https://bitbucket.org/felipebari/evernote-sdk-android.git
+	url = git@github.com:fehbari/evernote-sdk-android.git

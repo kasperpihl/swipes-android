@@ -7,7 +7,7 @@ import android.widget.Scroller;
  * Customizes speed of scroller with a fine tuned duration using a factor, providing
  * a more natural feel to the animation.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class FactorSpeedScroller extends Scroller {
 

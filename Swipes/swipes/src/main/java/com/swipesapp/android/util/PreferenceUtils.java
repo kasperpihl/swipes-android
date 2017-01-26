@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 /**
  * Utilitary class for shared preferences operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class PreferenceUtils {
 

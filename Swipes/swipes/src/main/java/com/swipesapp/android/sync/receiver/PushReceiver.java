@@ -16,7 +16,7 @@ import org.json.JSONObject;
 /**
  * Custom receiver to handle push messages.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class PushReceiver extends ParsePushBroadcastReceiver {
 

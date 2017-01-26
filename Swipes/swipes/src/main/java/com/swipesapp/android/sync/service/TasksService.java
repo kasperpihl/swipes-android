@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Service for task operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class TasksService {
 

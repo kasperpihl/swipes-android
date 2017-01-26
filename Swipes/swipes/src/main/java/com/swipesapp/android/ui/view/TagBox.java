@@ -11,7 +11,7 @@ import com.swipesapp.android.handler.SoundHandler;
 /**
  * Custom checkbox for tags providing sounds.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class TagBox extends CheckBox {
 

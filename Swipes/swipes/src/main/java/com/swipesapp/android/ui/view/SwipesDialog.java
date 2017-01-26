@@ -14,7 +14,7 @@ import com.swipesapp.android.util.ThemeUtils;
  * <p/>
  * Automatically sets theme, background dim amount and drawable.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SwipesDialog extends MaterialDialog {
 

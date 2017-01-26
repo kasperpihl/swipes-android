@@ -3,7 +3,7 @@ package com.swipesapp.android.values;
 /**
  * Holds the possible repeat options.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class RepeatOptions {
 

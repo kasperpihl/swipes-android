@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
 import com.fortysevendeg.swipelistview.DynamicViewPager;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -479,9 +480,15 @@ public class TasksActivity extends BaseActivity {
                     m.setAccessible(true);
                     m.invoke(menu, true);
                 } catch (Exception e) {
-                    Log.e(LOG_TAG, "Error setting menu icons.", e);
+                    Crashlytics.logException(e);
                 }
+            } else {
+                String error = String.format("Error setting menu icons. Menu class name is %s, " +
+                        "expected MenuBuilder.", menu.getClass().getSimpleName());
+                Crashlytics.logException(new AssertionError(error));
             }
+        } else {
+            Crashlytics.logException(new AssertionError("Error setting menu icons. Menu object is null."));
         }
 
         return super.onPrepareOptionsMenu(menu);

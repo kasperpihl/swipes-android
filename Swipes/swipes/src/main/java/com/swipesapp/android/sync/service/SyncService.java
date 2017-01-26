@@ -42,7 +42,7 @@ import java.util.UUID;
 /**
  * Service for syncing operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SyncService {
 

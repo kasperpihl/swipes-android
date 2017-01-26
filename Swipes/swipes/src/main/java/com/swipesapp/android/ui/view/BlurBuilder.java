@@ -14,7 +14,7 @@ import android.view.Window;
 /**
  * Applies blur to a bitmap or view.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class BlurBuilder {
 

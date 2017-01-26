@@ -27,7 +27,7 @@ import io.fabric.sdk.android.Fabric;
  * Helper for handling the notification alarms. Automatically starts the alarms when
  * the device boots and provides convenience calls to start them at will.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class NotificationsHelper extends BroadcastReceiver {
 

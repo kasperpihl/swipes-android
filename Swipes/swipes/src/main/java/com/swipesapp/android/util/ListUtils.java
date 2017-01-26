@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Utilitary class for list operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ListUtils {
 

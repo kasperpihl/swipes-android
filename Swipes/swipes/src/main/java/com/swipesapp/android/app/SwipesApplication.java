@@ -37,7 +37,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Swipes custom application class.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SwipesApplication extends MultiDexApplication {
 

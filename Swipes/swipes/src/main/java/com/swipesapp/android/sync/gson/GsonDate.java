@@ -11,7 +11,7 @@ import com.google.gson.annotations.Expose;
  * "iso": "2014-11-06T12:30:00.000Z"
  * }
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonDate {
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 /**
  * Gson mapping class for attachments.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonAttachment {
 

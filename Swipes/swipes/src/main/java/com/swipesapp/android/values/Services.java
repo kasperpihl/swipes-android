@@ -3,7 +3,7 @@ package com.swipesapp.android.values;
 /**
  * Holds the possible service integrations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class Services {
 

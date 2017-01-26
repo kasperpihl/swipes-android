@@ -9,7 +9,7 @@ import com.swipesapp.android.db.DaoMaster;
 /**
  * Extended database helper to deal with migrations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SwipesHelper extends DaoMaster.OpenHelper {
 

@@ -16,7 +16,7 @@ import com.swipesapp.android.values.Intents;
 /**
  * Provider for the Add to Swipes widget.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class AddWidgetProvider extends AppWidgetProvider {
 

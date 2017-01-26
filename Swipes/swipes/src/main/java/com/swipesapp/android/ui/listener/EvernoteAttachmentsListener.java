@@ -5,7 +5,7 @@ import com.evernote.edam.type.Note;
 /**
  * Listener to handle Evernote attachments actions.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public interface EvernoteAttachmentsListener {
 

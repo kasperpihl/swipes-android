@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.*;
  * <p/>
  * Run it as a Java application (not Android).
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SwipesDaoGenerator {
 

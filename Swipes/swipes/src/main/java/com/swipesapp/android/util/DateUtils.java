@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Utilitary class for date operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class DateUtils {
 

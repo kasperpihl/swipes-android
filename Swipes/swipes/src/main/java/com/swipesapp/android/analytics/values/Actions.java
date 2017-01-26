@@ -3,7 +3,7 @@ package com.swipesapp.android.analytics.values;
 /**
  * Holds the event actions to track in analytics.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class Actions {
 

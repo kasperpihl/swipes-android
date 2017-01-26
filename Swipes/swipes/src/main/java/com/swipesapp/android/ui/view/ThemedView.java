@@ -9,7 +9,7 @@ import com.swipesapp.android.util.ThemeUtils;
 /**
  * Simple view with background set according to the current theme.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ThemedView extends View {
 

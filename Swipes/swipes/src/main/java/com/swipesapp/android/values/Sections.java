@@ -9,7 +9,7 @@ import com.swipesapp.android.analytics.values.Screens;
 /**
  * Holds the possible sections.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public enum Sections {
 

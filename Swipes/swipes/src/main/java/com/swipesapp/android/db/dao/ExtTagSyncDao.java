@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Extended DAO for tag syncing, allowing custom DB operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ExtTagSyncDao {
 

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Extended DAO for task syncing, allowing custom DB operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ExtTaskSyncDao {
 

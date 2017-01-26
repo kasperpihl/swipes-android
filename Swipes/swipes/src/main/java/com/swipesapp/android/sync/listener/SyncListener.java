@@ -3,7 +3,7 @@ package com.swipesapp.android.sync.listener;
 /**
  * Listener to handle sync events.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public interface SyncListener {
 

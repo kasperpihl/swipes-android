@@ -13,7 +13,7 @@ import com.swipesapp.android.ui.listener.KeyboardBackListener;
  * An EditText that lets you use actions ("Done", "Go", etc.) on multi-line edits.
  * It also informs listeners when the back button has been pressed.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ActionEditText extends EditText {
 

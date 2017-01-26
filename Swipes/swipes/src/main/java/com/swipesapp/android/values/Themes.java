@@ -8,7 +8,7 @@ import com.swipesapp.android.R;
 /**
  * Holds the possible themes.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public enum Themes {
 

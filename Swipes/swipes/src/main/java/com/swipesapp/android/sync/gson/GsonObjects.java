@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Gson mapping class for "objects" request parameter.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonObjects {
 

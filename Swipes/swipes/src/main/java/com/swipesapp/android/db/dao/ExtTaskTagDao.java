@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Extended DAO for join of tasks and tags, allowing custom DB operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ExtTaskTagDao {
 

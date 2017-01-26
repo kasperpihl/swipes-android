@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Provider for the Swipes Now widget.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class NowWidgetProvider extends AppWidgetProvider {
 

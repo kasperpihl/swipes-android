@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Convenience class to handle analytics calls.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class Analytics {
 

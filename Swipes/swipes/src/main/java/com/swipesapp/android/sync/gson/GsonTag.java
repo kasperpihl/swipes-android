@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Gson mapping class for tag fields.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonTag {
 

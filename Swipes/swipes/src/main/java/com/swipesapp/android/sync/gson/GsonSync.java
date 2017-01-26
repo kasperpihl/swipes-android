@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Gson mapping class for "sync" endpoint.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonSync {
 

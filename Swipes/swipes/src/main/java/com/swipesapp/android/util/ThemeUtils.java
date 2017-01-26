@@ -10,7 +10,7 @@ import com.swipesapp.android.values.Themes;
 /**
  * Utilitary class for theme operations.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ThemeUtils {
 

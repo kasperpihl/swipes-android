@@ -14,7 +14,7 @@ import com.swipesapp.android.values.Sections;
 /**
  * Text view with background set according to selection.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class RepeatOption extends TextView {
 

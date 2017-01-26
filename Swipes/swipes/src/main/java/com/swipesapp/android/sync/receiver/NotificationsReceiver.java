@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Receiver for the notifications alarm intent.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class NotificationsReceiver extends BroadcastReceiver {
 

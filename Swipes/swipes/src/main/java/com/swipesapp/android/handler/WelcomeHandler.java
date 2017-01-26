@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Handler to deal with welcome actions.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class WelcomeHandler {
 

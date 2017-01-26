@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Assistant to apply fixes between versions of the app.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class MigrationAssistant {
 

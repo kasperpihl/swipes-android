@@ -7,7 +7,7 @@ import com.swipesapp.android.BuildConfig;
 /**
  * Utilitary methods to deal with threading.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class ThreadUtils {
 

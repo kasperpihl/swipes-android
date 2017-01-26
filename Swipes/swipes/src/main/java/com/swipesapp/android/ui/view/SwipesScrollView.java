@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 /**
  * Custom ScrollView that wraps content, while having a maximum height of x% of the screen.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class SwipesScrollView extends ScrollView {
 

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Gson mapping class for task fields.
  *
- * @author Felipe Bari
+ * @author Fernanda Bari
  */
 public class GsonTask {
 
